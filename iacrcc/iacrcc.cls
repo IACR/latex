@@ -213,7 +213,7 @@
   \setcounter{IACR@author@cnt}{1}%
   \setcounter{IACR@inst@cnt}{1}%
   \setbox0\hbox{\def\thanks##1{\global\@IACR@autoinstfalse}\def\inst##1{\global\@IACR@autoinstfalse}\def\and{\stepcounter{IACR@author@cnt}}\@author}%
-  \setbox0\hbox{\def\and{\stepcounter{IACR@inst@cnt}}\@institute}%
+  \setbox0\hbox{\def\and{\stepcounter{IACR@inst@cnt}}\@affiliation}%
   \xdef\IACR@author@last{\theIACR@author@cnt}%
   \edef\IACR@inst@last{\theIACR@inst@cnt}%
   \ifnum\IACR@author@last=\IACR@inst@last\else\@IACR@autoinstfalse\fi
@@ -242,7 +242,7 @@
         \setcounter{IACR@author@cnt}{1}%
         \def\and{\par\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~}
         \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
-        \@institute
+        \@affiliation
         \fi
       }%
   \end{center}%
@@ -257,7 +257,7 @@
 \gdef\@author{Anonymous Submission to \publname}
 \renewcommand{\author}[2][]{}
 \renewcommand{\authorrunning}[1]{}
-\renewcommand{\institute}[2][]{}
+\renewcommand{\affiliation}[2][]{}
 \fi
 
 

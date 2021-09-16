@@ -1,0 +1,3 @@
+[submodule "iacrcc/cryptobib"]
+	path = iacrcc/cryptobib
+	url = https://github.com/cryptobib/export.git
