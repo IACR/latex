@@ -15,6 +15,12 @@
 
 
 %%%% 3. AUTHOR, INSTITUTE %%%%
+
+\iftrue
+\author{Alice Accomplished}
+\affiliation{University of California, Santa Barbara}
+\else
+% This is the format we want to have:
 \author{Alice Accomplished
   \affiliation{1,2}}
 \author{Bob Badenuff
@@ -22,7 +28,7 @@
   \sponsor{1}}
 \affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
 \affiliation{University of Second Choice}
-
+\fi
 
 %%%% 4. TITLE %%%%
 \title[Thoughts on binary functions]{Thoughts about binary functions on $GF(p)$}
@@ -52,15 +58,14 @@ unconditionally secure in \autoref{sec:main}.
 
 \lipsum[9]
 
-\section{Main Result}
-\label{sec:main}
+\section{Main Result}\label{sec:main}
 
 \lipsum
 
 
 %%%% 8. BILBIOGRAPHY %%%%
 \bibliographystyle{alpha}
-\bibliography{abbrev3,crypto,biblio}
+\bibliography{cryptobib/abbrev3,cryptobib/crypto,biblio}
 %%%% NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use bilbio.bib for additional references not in the cryptobib database.
