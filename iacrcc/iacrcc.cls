@@ -167,6 +167,9 @@
 \newcommand{\authorrunning}[1]{\gdef\IACR@runningauthors{#1}}
 \newcommand{\titlerunning}[1]{\gdef\IACR@runningtitle{#1}}
 
+\global\let\@author\@empty
+\global\let\@affiliation\@empty
+
 \newcounter{IACR@author@cnt}
 \newcounter{IACR@inst@cnt}
 \newif\if@IACR@autoinst
@@ -249,7 +252,21 @@
   \par
   \vskip 1.5em}
 
-\def\author{\@ifnextchar[{\IACR@@@author}{\IACR@@author}}
+\renewcommand\author[2][]{%
+  \ifx\@author\@empty
+	\gdef\@author{#2}%
+  \else
+	\g@addto@macro\@author{\and#2}%
+  \fi}
+
+\renewcommand\affiliation[2][]{%
+  \ifx\@affiliation\@empty
+    \gdef\@affiliation{#2}%
+  \else
+    \g@addto@macro\@affiliation{\and#2}%
+  \fi}
+
+%\def\author{\@ifnextchar[{\IACR@@@author}{\IACR@@author}}
 \def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
 \def\IACR@@author#1{\gdef\@author{#1}}
 
