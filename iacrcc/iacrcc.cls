@@ -209,7 +209,7 @@
   \immediate\openout\json=\jobname.json
   \immediate\write\json{title: \@title}
   \immediate\write\json{authors: \@printauthor}
-  \immediate\write\json{affiliation: \@affiliation}
+  \immediate\write\json{affiliation: \@printaffiliation}
   \immediate\closeout\json
 }
 \def\@maketitle{%
@@ -264,23 +264,25 @@
 	  \gdef\@printauthor{#2}%
 	}{%
 	  \gdef\@author{\href{https://orcid.org/#1}{#2}}%
-	  \gdef\@printauthor{#2 (https://orcid.org/#1)}%
+	  \gdef\@printauthor{#2 https://orcid.org/#1 }%
 	}%
   \else
     \ifstrempty{#1}{%
 	  \g@addto@macro\@author{\and#2}%
-	  \g@addto@macro\@printauthor{, #2}%
+	  \g@addto@macro\@printauthor{ : #2}%
 	}{%
 	  \g@addto@macro\@author{\href{https://orcid.org/#1}{\and#2}}%
-	  \g@addto@macro\@printauthor{, #2 (https://orcid.org/#1)}%
+	  \g@addto@macro\@printauthor{ : #2 https://orcid.org/#1}%
 	}%
   \fi}
 
 \renewcommand\affiliation[2][]{%
   \ifx\@affiliation\@empty
     \gdef\@affiliation{#2}%
+	\gdef\@printaffiliation{#2}%
   \else
     \g@addto@macro\@affiliation{\and#2}%
+	\g@addto@macro\@printaffiliation{ : #2}%
   \fi}
 
 
