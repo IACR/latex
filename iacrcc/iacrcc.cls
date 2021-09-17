@@ -208,6 +208,8 @@
   \newwrite\json
   \immediate\openout\json=\jobname.json
   \immediate\write\json{title: \@title}
+  \immediate\write\json{authors: \@printauthor}
+  \immediate\write\json{affiliation: \@affiliation}
   \immediate\closeout\json
 }
 \def\@maketitle{%
@@ -259,14 +261,18 @@
   \ifx\@author\@empty
 	\ifstrempty{#1}{%
 	  \gdef\@author{#2}%
+	  \gdef\@printauthor{#2}%
 	}{%
 	  \gdef\@author{\href{https://orcid.org/#1}{#2}}%
+	  \gdef\@printauthor{#2 (https://orcid.org/#1)}%
 	}%
   \else
     \ifstrempty{#1}{%
 	  \g@addto@macro\@author{\and#2}%
+	  \g@addto@macro\@printauthor{, #2}%
 	}{%
 	  \g@addto@macro\@author{\href{https://orcid.org/#1}{\and#2}}%
+	  \g@addto@macro\@printauthor{, #2 (https://orcid.org/#1)}%
 	}%
   \fi}
 
