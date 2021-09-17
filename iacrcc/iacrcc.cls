@@ -149,7 +149,6 @@
   \setcounter{tocdepth}{2}
 \fi
 
-
 % Geometry
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
 \RequirePackage{afterpage}
@@ -239,7 +238,7 @@
         \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
           \stepcounter{IACR@author@cnt}%
           \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
-        \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
+        {\hypersetup{hidelinks}\@author}\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
         \vskip 1em\par
         \small
         \setcounter{IACR@author@cnt}{1}%
@@ -252,11 +251,23 @@
   \par
   \vskip 1.5em}
 
+\def\author{\@ifnextchar[{\IACR@@@author}{\IACR@@author}}
+\def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
+\def\IACR@@author#1{\gdef\@author{#1}}
+
 \renewcommand\author[2][]{%
   \ifx\@author\@empty
-	\gdef\@author{#2}%
+	\ifstrempty{#1}{%
+	  \gdef\@author{#2}%
+	}{%
+	  \gdef\@author{\href{https://orcid.org/#1}{#2}}%
+	}%
   \else
-	\g@addto@macro\@author{\and#2}%
+    \ifstrempty{#1}{%
+	  \g@addto@macro\@author{\and#2}%
+	}{%
+	  \g@addto@macro\@author{\href{https://orcid.org/#1}{\and#2}}%
+	}%
   \fi}
 
 \renewcommand\affiliation[2][]{%
@@ -266,9 +277,6 @@
     \g@addto@macro\@affiliation{\and#2}%
   \fi}
 
-%\def\author{\@ifnextchar[{\IACR@@@author}{\IACR@@author}}
-\def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
-\def\IACR@@author#1{\gdef\@author{#1}}
 
 \if@anonymous
 \gdef\@author{Anonymous Submission to \publname}
