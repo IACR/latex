@@ -246,7 +246,7 @@
         \setcounter{IACR@author@cnt}{1}%
         \def\and{\par\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~}
         \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
-        \@affiliation
+        {\hypersetup{hidelinks}\@affiliation}
         \fi
       }%
   \end{center}%
@@ -278,13 +278,22 @@
 
 \renewcommand\affiliation[2][]{%
   \ifx\@affiliation\@empty
-    \gdef\@affiliation{#2}%
-	\gdef\@printaffiliation{#2}%
+	\ifstrempty{#1}{%
+	  \gdef\@affiliation{#2}%
+	  \gdef\@printaffiliation{#2}%
+	}{%
+	  \gdef\@affiliation{\href{https://ror.org/#1}{#2}}%
+	  \gdef\@printaffiliation{#2 https://ror.org/#1 }%
+	}%
   \else
-    \g@addto@macro\@affiliation{\and#2}%
-	\g@addto@macro\@printaffiliation{ : #2}%
+    \ifstrempty{#1}{%
+	  \g@addto@macro\@affiliation{\and#2}%
+	  \g@addto@macro\@printaffiliation{ : #2}%
+	}{%
+	  \g@addto@macro\@affiliation{\href{https://ror.org/#1}{\and#2}}%
+	  \g@addto@macro\@printaffiliation{ : #2 https://ror.org/#1}%
+	}%
   \fi}
-
 
 \if@anonymous
 \gdef\@author{Anonymous Submission to \publname}

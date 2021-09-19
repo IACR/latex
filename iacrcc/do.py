@@ -1,7 +1,9 @@
-
+import json
+import urllib.request
 
 Authors = []
 Orcid = []
+ROR = []
 affindex = [[]]
 Affiliation = []
 
@@ -45,6 +47,16 @@ for line in f:
   elif line.startswith("affiliation: "):
     affiliation = line.replace("affiliation: ", "", 1).strip()
     Affiliation = affiliation.split(" : ")
+  
+    i = 0
+    for a in Affiliation:
+      ROR.append("")
+      # Extract the ROR ID if present
+      if "https://ror.org/" in a:
+        split = a.split("https://ror.org/")
+        ROR[i] = "https://api.ror.org/organizations/" + split[1]
+        Affiliation[i] = split[0]
+      i = i + 1
 
 f.close()
 
@@ -55,7 +67,13 @@ for a in Authors:
   print ("  Orcid: " + Orcid[i])
   print ("  Affiliation(s): ")
   for index in affindex[i]:
-    print (Affiliation[int(index)-1])
+    ror = ROR[int(index)-1]
+    print ("    " + Affiliation[int(index)-1])
+    print ("    ROR: " + ror)
+    if ror != "":
+      with urllib.request.urlopen(ror) as url:
+        data = json.loads(url.read().decode("utf-8"))
+        print("      Retrieved name from ROR: " + data["name"])
   i = i+1
 
 
