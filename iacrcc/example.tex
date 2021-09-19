@@ -9,6 +9,7 @@
 %%%% NOTES:
 % - Add "spthm" for LNCS-like theorems
 
+\errorcontextlines=5
 
 %%%% 2. PACKAGES %%%%
 \usepackage{lipsum} % Example package -- can be removed
@@ -17,8 +18,13 @@
 %%%% 3. AUTHOR, INSTITUTE %%%%
 
 \iftrue
-\author{Alice Accomplished}
-\affiliation{University of California, Santa Barbara}
+
+\author[0000-0003-1010-8157]{Alice Accomplished\inst{1,2}}
+\author{Bob Badenuff\inst{2}}
+\author[0000-0002-2447-4329]{Charlie C\inst{2}}
+\affiliation[02t274463]{University of California, Santa Barbara}
+\affiliation{University of Second Choice}
+
 \else
 % This is the format we want to have:
 \author{Alice Accomplished
@@ -28,6 +34,16 @@
   \sponsor{1}}
 \affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
 \affiliation{University of Second Choice}
+
+%  Authors are listed individually in the \author tag, with a list of affiliations.
+\author{Alice Accomplished\inst{1,2}\sponsor{1}\email{alice@usc.edu}} (two affiliations)
+\author{Bob Badenuff\inst{2}} (a single affiliation)
+%  Affiliations are listed as an array. One \affiliation per institution
+\affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
+\affiliation{University of Second Choice}
+% Sponsors are listed individually, and are referenced from the author by \sponsor
+\sponsor{National Security Agency\grantid{666-2021}}
+
 \fi
 
 %%%% 4. TITLE %%%%
