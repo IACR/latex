@@ -164,18 +164,28 @@
 % Add support for keys
 \RequirePackage{pgfkeys}
 
-\pgfkeys{/IACR/entities/.cd,
+\pgfkeys{/IACR-author/entities/.cd,
   inst/.initial=\@empty,
   orcid/.initial=\@empty,
   email/.initial=\@empty,
   }
-\def\IACR@set@keys#1{%%
-  \pgfkeys{/IACR/entities/.cd,#1}}
-\def\IACR@get#1{%%
-  \pgfkeysvalueof{/IACR/entities/#1}}
+\def\IACR@author@params@set@keys#1{%%
+  \pgfkeys{/IACR-author/entities/.cd,#1}}
+\def\IACR@author@params@get#1{%%
+  \pgfkeysvalueof{/IACR-author/entities/#1}}
+\newcommand\IACR@author@params@clearkeys{%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,email=\@empty}%
+}
 
-\newcommand\IACR@clearkeys{%
-  \IACR@set@keys{inst=\@empty,orcid=\@empty,email=\@empty}%
+\pgfkeys{/IACR-affiliation/entities/.cd,
+  ror/.initial=\@empty,
+  }
+\def\IACR@affiliation@params@set@keys#1{%%
+  \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
+\def\IACR@affiliation@params@get#1{%%
+  \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
+\newcommand\IACR@affiliation@params@clearkeys{%
+  \IACR@affiliation@params@set@keys{ror=\@empty}%
 }
 
 % Title/Author/affiliations
@@ -298,26 +308,26 @@
 	  \appto\@author{\and#2}%
 	\fi
   }{%
-    \IACR@set@keys{#1}%%
-    \immediate\write\yaml{\space\space\space\space affil: \IACR@get{inst}}%
-    \edef\@IACRorcid{\IACR@get{orcid}}%
+    \IACR@author@params@set@keys{#1}%%
+    \immediate\write\yaml{\space\space\space\space affil: \IACR@author@params@get{inst}}%
+    \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
     \ifx\@IACRorcid\@empty
 	  \ifx\@author\@empty
 	    \gdef\@author{#2}%
 	  \else
         \eappto\@author{\noexpand\and#2}%
 	  \fi
-	  \eappto\@author{\noexpand\inst{\IACR@get{inst}}}%	
+	  \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%	
     \else
       \ifx\@author\@empty
 	    \gdef\@author{#2}%
 	  \else
         \eappto\@author{\noexpand\and#2}%
 	  \fi
-	  \eappto\@author{\inst{\IACR@get{inst}}}%
+	  \eappto\@author{\inst{\IACR@author@params@get{inst}}}%
       \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
     \fi	  
-    \IACR@clearkeys%
+    \IACR@author@params@clearkeys%
   }%
 }
 
@@ -328,19 +338,21 @@
   \fi
   \immediate\write\yaml{\space\space -}%
   \immediate\write\yaml{\space\space\space\space name: #2}%
+  %  
   \ifx\@affiliation\@empty
-	\ifstrempty{#1}{%
-	  \gdef\@affiliation{#2}%
-	}{%
-	  \gdef\@affiliation{\href{https://ror.org/#1}{#2}}%
-	}%
+    \gdef\@affiliation{#2}%
   \else
-    \ifstrempty{#1}{%
-	  \g@addto@macro\@affiliation{\and#2}%
-	}{%
-	  \g@addto@macro\@affiliation{\href{https://ror.org/#1}{\and#2}}%
-	}%
-  \fi}
+    \g@addto@macro\@affiliation{\and#2}%
+  \fi
+  %
+  \ifstrempty{#1}{}{%
+    \IACR@affiliation@params@set@keys{#1}%%
+    \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
+    \ifx\@IACRror\@empty
+    \else
+    \immediate\write\yaml{\space\space\space\space ror: \@IACRror}%
+    \fi
+  }}
 
 \if@anonymous
 \gdef\@author{Anonymous Submission to \publname}
