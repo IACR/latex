@@ -159,6 +159,22 @@
 \renewcommand*\descriptionlabel[1]{\hspace\labelsep
                                    \normalfont\bfseries\sffamily\boldmath #1}
 
+% Add support for keys
+\RequirePackage{pgfkeys}
+
+\pgfkeys{/IACR/entities/.cd,
+  inst/.initial=\@empty,
+  orcid/.initial=\@empty,
+  email/.initial=\@empty,
+  }
+\def\IACR@set@keys#1{%%
+  \pgfkeys{/IACR/entities/.cd,#1}}
+\def\IACR@get#1{%%
+  \pgfkeysvalueof{/IACR/entities/#1}}
+
+\newcommand\IACR@clearkeys{%
+  \IACR@set@keys{inst=\@empty,orcid=\@empty,email=\@empty}%
+}
 
 % Title/Author/affiliations
 \def\@affiliation{No institute given.}
@@ -263,16 +279,32 @@
 	  \gdef\@author{#2}%
 	  \gdef\@printauthor{#2}%
 	}{%
-	  \gdef\@author{\href{https://orcid.org/#1}{#2}}%
-	  \gdef\@printauthor{#2 https://orcid.org/#1 }%
+	  \IACR@set@keys{#1}%%
+	  \edef\@IACRorcid{\IACR@get{orcid}}%
+	  \ifx\@IACRorcid\@empty	  
+	    \edef\@author{#2\noexpand\inst{\IACR@get{inst}}}%
+	    \edef\@printauthor{#2\noexpand\inst{\IACR@get{inst}}}%
+	  \else
+        \edef\@author{\noexpand\href{https://orcid.org/\IACR@get{orcid}}{#2}\noexpand\inst{\IACR@get{inst}}}%
+	    \edef\@printauthor{#2\noexpand\inst{\IACR@get{inst}} https://orcid.org/\IACR@get{orcid}}%  
+	  \fi
+	  \IACR@clearkeys%
 	}%
   \else
     \ifstrempty{#1}{%
-	  \g@addto@macro\@author{\and#2}%
-	  \g@addto@macro\@printauthor{ : #2}%
+	  \appto\@author{\and#2}%
+	  \appto\@printauthor{ : #2}%
 	}{%
-	  \g@addto@macro\@author{\href{https://orcid.org/#1}{\and#2}}%
-	  \g@addto@macro\@printauthor{ : #2 https://orcid.org/#1}%
+	  \IACR@set@keys{#1}%%
+	  \edef\@IACRorcid{\IACR@get{orcid}}%
+	  \ifx\@IACRorcid\@empty
+	    \eappto\@author{\noexpand\and#2\noexpand\inst{\IACR@get{inst}}}%
+	    \eappto\@printauthor{ : #2\noexpand\inst{\IACR@get{inst}}}%
+	  \else
+	    \eappto\@author{\noexpand\href{https://orcid.org/\IACR@get{orcid}}{\noexpand\and#2}\inst{\IACR@get{inst}}}%
+		\eappto\@printauthor{ : #2\noexpand\inst{\IACR@get{inst}} https://orcid.org/\IACR@get{orcid}}%
+      \fi	  
+	  \IACR@clearkeys%
 	}%
   \fi}
 
