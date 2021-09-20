@@ -131,6 +131,8 @@
 \if@loadhr
   \RequirePackage{xcolor}
   \RequirePackage{etoolbox}
+  \RequirePackage{xstring} % for IfSubStr
+  
   \AtEndPreamble{
     \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
     \hypersetup{pdflang=en}
@@ -159,6 +161,23 @@
 \renewcommand*\descriptionlabel[1]{\hspace\labelsep
                                    \normalfont\bfseries\sffamily\boldmath #1}
 
+% Add support for keys
+\RequirePackage{pgfkeys}
+\RequirePackage{orcidlink}
+
+\pgfkeys{/IACR/entities/.cd,
+  inst/.initial=\@empty,
+  orcid/.initial=\@empty,
+  email/.initial=\@empty,
+  }
+\def\IACR@set@keys#1{%%
+  \pgfkeys{/IACR/entities/.cd,#1}}
+\def\IACR@get#1{%%
+  \pgfkeysvalueof{/IACR/entities/#1}}
+
+\newcommand\IACR@clearkeys{%
+  \IACR@set@keys{inst=\@empty,orcid=\@empty,email=\@empty}%
+}
 
 % Title/Author/affiliations
 \def\@affiliation{No institute given.}
@@ -174,6 +193,16 @@
 \newif\if@IACR@autoinst
 \@IACR@autoinsttrue
 \def\IACR@author@last{0}
+
+\newwrite\yaml
+\immediate\openout\yaml=\jobname.yaml
+\newcount\num@authors
+\num@authors=0\relax
+\newcount\num@affil
+\num@affil=0\relax
+
+
+\AtEndDocument{\immediate\closeout\yaml}
 
 \renewcommand\maketitle{\par
   \begingroup
@@ -205,12 +234,6 @@
     \global\advance\headheight by -\baselineskip%
     \global\advance\headsep by \baselineskip%
   }%
-  \newwrite\json
-  \immediate\openout\json=\jobname.json
-  \immediate\write\json{title: \@title}
-  \immediate\write\json{authors: \@printauthor}
-  \immediate\write\json{affiliation: \@printaffiliation}
-  \immediate\closeout\json
 }
 \def\@maketitle{%
   % Count authors and affiliations
@@ -239,8 +262,8 @@
         \setcounter{IACR@author@cnt}{1}%
         \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
           \stepcounter{IACR@author@cnt}%
-          \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
-        {\hypersetup{hidelinks}\@author}\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
+          \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}		
+        \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
         \vskip 1em\par
         \small
         \setcounter{IACR@author@cnt}{1}%
@@ -257,41 +280,66 @@
 \def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
 \def\IACR@@author#1{\gdef\@author{#1}}
 
-\renewcommand\author[2][]{%
-  \ifx\@author\@empty
-	\ifstrempty{#1}{%
+\renewcommand\author[2][]{%  
+  \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
+      Do not put several authors in the same \string\author\space macro!}}{}%   
+  \ifnum\num@affil>0\relax
+    \ClassError{iacrcc}{affiliations must follow authors}{}%
+  \fi
+  \global\advance\num@authors by 1\relax%
+  \ifnum\num@authors=1\relax
+    \immediate\write\yaml{authors:}%
+  \fi
+  \immediate\write\yaml{\space\space -}%
+  \immediate\write\yaml{\space\space\space\space name: #2}%  
+  \ifstrempty{#1}{%
+    \ifx\@author\@empty
 	  \gdef\@author{#2}%
-	  \gdef\@printauthor{#2}%
-	}{%
-	  \gdef\@author{\href{https://orcid.org/#1}{#2}}%
-	  \gdef\@printauthor{#2 https://orcid.org/#1 }%
-	}%
-  \else
-    \ifstrempty{#1}{%
-	  \g@addto@macro\@author{\and#2}%
-	  \g@addto@macro\@printauthor{ : #2}%
-	}{%
-	  \g@addto@macro\@author{\href{https://orcid.org/#1}{\and#2}}%
-	  \g@addto@macro\@printauthor{ : #2 https://orcid.org/#1}%
-	}%
-  \fi}
+	\else
+	  \appto\@author{\and#2}%
+	\fi
+  }{%
+    \IACR@set@keys{#1}%%
+    \immediate\write\yaml{\space\space\space\space affil: \IACR@get{inst}}%
+    \edef\@IACRorcid{\IACR@get{orcid}}%
+    \ifx\@IACRorcid\@empty
+	  \ifx\@author\@empty
+	    \gdef\@author{#2}%
+	  \else
+        \eappto\@author{\noexpand\and#2}%
+	  \fi
+	  \eappto\@author{\noexpand\inst{\IACR@get{inst}}}%	
+    \else
+      \ifx\@author\@empty
+	    \gdef\@author{#2}%
+	  \else
+        \eappto\@author{\noexpand\and#2}%
+	  \fi
+	  \eappto\@author{\,\noexpand\orcidlink{\IACR@get{orcid}}\inst{\IACR@get{inst}}}%
+      \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
+    \fi	  
+    \IACR@clearkeys%
+  }%
+}
 
 \renewcommand\affiliation[2][]{%
+  \global\advance\num@affil by 1\relax%
+  \ifnum\num@affil=1\relax
+  \immediate\write\yaml{affiliations:}%
+  \fi
+  \immediate\write\yaml{\space\space -}%
+  \immediate\write\yaml{\space\space\space\space name: #2}%
   \ifx\@affiliation\@empty
 	\ifstrempty{#1}{%
 	  \gdef\@affiliation{#2}%
-	  \gdef\@printaffiliation{#2}%
 	}{%
 	  \gdef\@affiliation{\href{https://ror.org/#1}{#2}}%
-	  \gdef\@printaffiliation{#2 https://ror.org/#1 }%
 	}%
   \else
     \ifstrempty{#1}{%
 	  \g@addto@macro\@affiliation{\and#2}%
-	  \g@addto@macro\@printaffiliation{ : #2}%
 	}{%
 	  \g@addto@macro\@affiliation{\href{https://ror.org/#1}{\and#2}}%
-	  \g@addto@macro\@printaffiliation{ : #2 https://ror.org/#1}%
 	}%
   \fi}
 
