@@ -163,7 +163,6 @@
 
 % Add support for keys
 \RequirePackage{pgfkeys}
-\RequirePackage{orcidlink}
 
 \pgfkeys{/IACR/entities/.cd,
   inst/.initial=\@empty,
@@ -315,7 +314,7 @@
 	  \else
         \eappto\@author{\noexpand\and#2}%
 	  \fi
-	  \eappto\@author{\,\noexpand\orcidlink{\IACR@get{orcid}}\inst{\IACR@get{inst}}}%
+	  \eappto\@author{\inst{\IACR@get{inst}}}%
       \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
     \fi	  
     \IACR@clearkeys%
