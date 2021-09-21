@@ -287,10 +287,14 @@
         \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
         \vskip 1em\par
         \small
-        \setcounter{IACR@author@cnt}{1}%
-        \def\and{\par\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~}
-        \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
-        {\hypersetup{hidelinks}\@affiliation}
+        \setcounter{IACR@author@cnt}{1}%        
+        % When there is only one author with one or more affiliations
+		% do not display the affiliation counter
+		\def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
+		\ifnum\num@authors=1\relax\else
+		  \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
+		\fi
+        \@affiliation
         \fi
       }%
   \end{center}%
@@ -373,7 +377,7 @@
 		  \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
 		\fi
 	  \fi
-	  \eappto\@author{\inst{\IACR@author@params@get{inst}}}%
+	  \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
       \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
     \fi	  
 	\IACR@author@params@clearkeys%
@@ -419,7 +423,11 @@
 
 \newcommand{\subtitle}[1]{\gdef\@subtitle{#1}}
 
-\newcommand{\inst}[1]{\unskip$^{#1}$}
+\newcommand{\inst}[1]{%
+  \ifnum\num@authors=1\relax\else
+    \unskip$^{#1}$%
+  \fi}
+  
 \def\fnmsep{\unskip$^,$}
 
 
