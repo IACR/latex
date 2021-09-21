@@ -387,7 +387,7 @@
 \renewcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax%
   \ifnum\num@affil=1\relax
-  \immediate\write\yaml{affiliations:}%
+    \immediate\write\yaml{affiliations:}%
   \fi
   \immediate\write\yaml{\space\space -}%
   \immediate\write\yaml{\space\space\space\space name: #2}%
@@ -401,9 +401,8 @@
   \ifstrempty{#1}{}{%
     \IACR@affiliation@params@set@keys{#1}%%
     \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
-    \ifx\@IACRror\@empty
-    \else
-    \immediate\write\yaml{\space\space\space\space ror: \@IACRror}%
+    \ifx\@IACRror\@empty\else
+      \immediate\write\yaml{\space\space\space\space ror: \@IACRror}%
     \fi
   }%
   \IACR@affiliation@params@clearkeys%
@@ -425,7 +424,9 @@
 
 \newcommand{\inst}[1]{%
   \ifnum\num@authors=1\relax\else
-    \unskip$^{#1}$%
+    \ifnum\num@affil=1\relax\else
+      \unskip$^{#1}$%
+    \fi
   \fi}
   
 \def\fnmsep{\unskip$^,$}
