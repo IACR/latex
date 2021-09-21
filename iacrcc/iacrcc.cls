@@ -283,17 +283,17 @@
         \setcounter{IACR@author@cnt}{1}%
         \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
           \stepcounter{IACR@author@cnt}%
-          \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}		
+          \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
         \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
         \vskip 1em\par
         \small
         \setcounter{IACR@author@cnt}{1}%        
         % When there is only one author with one or more affiliations
-		% do not display the affiliation counter
-		\def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
-		\ifnum\num@authors=1\relax\else
-		  \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
-		\fi
+        % do not display the affiliation counter
+        \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
+        \ifnum\num@authors=1\relax\else
+          \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
+        \fi
         \@affiliation
         \fi
       }%
@@ -339,48 +339,48 @@
   \immediate\write\yaml{\space\space\space\space name: #2}%  
   \ifstrempty{#1}{%
     \ifx\@author\@empty
-	  \gdef\@author{#2}%
-	\else
-	  \appto\@author{\and#2}%
-	\fi
+      \gdef\@author{#2}%
+    \else
+      \appto\@author{\and#2}%
+    \fi
   }{%
     \IACR@author@params@set@keys{#1}%%
     \immediate\write\yaml{\space\space\space\space affil: \IACR@author@params@get{inst}}%
     \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
     \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
     \ifx\@IACRorcid\@empty
-	  \ifx\@author\@empty
-	    \edef\@author{#2}%
-		% Add the footnote text if present
-	    \ifx\@IACRfootnote\@empty\else
-		  \eappto\@author{#2\noexpand\footnote{\@IACRfootnote}}%
-		\fi
-	  \else
-	    \eappto\@author{\noexpand\and#2}%		
-		% Add the footnote text if present
-		\ifx\@IACRfootnote\@empty\else
-		  \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-		\fi
-	  \fi
-	  \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%	
+      \ifx\@author\@empty
+        \edef\@author{#2}%
+        % Add the footnote text if present
+        \ifx\@IACRfootnote\@empty\else
+          \eappto\@author{#2\noexpand\footnote{\@IACRfootnote}}%
+        \fi
+      \else
+        \eappto\@author{\noexpand\and#2}%
+        % Add the footnote text if present
+        \ifx\@IACRfootnote\@empty\else
+          \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+        \fi
+      \fi
+      \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
     \else
       \ifx\@author\@empty
-	    \edef\@author{#2}%
-		% Add the footnote text if present
-	    \ifx\@IACRfootnote\@empty\else
-		  \edef\@author{\noexpand\footnote{\@IACRfootnote}}%
-		\fi
-	  \else
-	    % Add the footnote text if present
-		\eappto\@author{\noexpand\and#2}%
-	    \ifx\@IACRfootnote\@empty\else
-		  \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-		\fi
-	  \fi
-	  \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
+        \edef\@author{#2}%
+        % Add the footnote text if present
+        \ifx\@IACRfootnote\@empty\else
+          \edef\@author{\noexpand\footnote{\@IACRfootnote}}%
+        \fi
+      \else
+        % Add the footnote text if present
+        \eappto\@author{\noexpand\and#2}%
+        \ifx\@IACRfootnote\@empty\else
+          \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+        \fi
+      \fi
+      \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
       \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
-    \fi	  
-	\IACR@author@params@clearkeys%
+    \fi  
+    \IACR@author@params@clearkeys%
   }%
 }
 
