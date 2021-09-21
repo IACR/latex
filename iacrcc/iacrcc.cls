@@ -43,13 +43,20 @@
 % \title[short]{Long title}
 %
 %%  Authors are listed individually in the \author tag, with a list of affiliations.
-% \author{Alice Accomplished\inst{1,2}\sponsor{1}\email{alice@usc.edu}} (two affiliations)
-% \author{Bob Badenuff\inst{2}} (a single affiliation)
+% \author[inst={1,2}]{Alice Accomplished} (two affiliations)
+% \author[inst={1}]{Bob Badenuff} (a single affiliation)
+% There are more optional arguments for the author. A full example is:
+% \author[inst={1,2},orcid=0000-0000-0000-0000,email=me@university.com,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+%
 %%  Affiliations are listed as an array. One \affiliation per institution
-% \affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
+% \affiliation[ror=02t274463]{University of California, Santa Barbara}
 % \affiliation{University of Second Choice}
-%% Sponsors are listed individually, and are referenced from the author by \sponsor
+% where the optional ror provides a ror id (https://ror.org/)
+%% TODO: Sponsors are listed individually, and are referenced from the author by \sponsor
 % \sponsor{National Security Agency\grantid{666-2021}}
+%
+% A footnote can be placed on the front page without a symbol / numbering using:
+% \genericfootnote{This is the full version of our paper published at XX}
 %
 % \begin{abstract}
 % Lorem ipsum dolor sit amet...
@@ -59,7 +66,6 @@
 % - please don't use any \pagestyle or \thispagestyle command
 % - if you have proof with explicit \qed inside, you should either
 %   remove \qed symbols, replace them by \qedhere, or add option [spthm]
-
 
 % Common definitions
 \RequirePackage{xkeyval}
@@ -168,13 +174,14 @@
   inst/.initial=\@empty,
   orcid/.initial=\@empty,
   email/.initial=\@empty,
+  footnote/.initial=\@empty,
   }
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,email=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,email=\@empty,footnote=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
@@ -244,6 +251,11 @@
     \global\advance\headsep by \baselineskip%
   }%
 }
+
+% Add support for a footnote without symbol on the front page
+\gdef\@genericfootnote{\@empty}
+\newcommand\genericfootnote[1]{\gdef\@genericfootnote{\renewcommand\thefootnote{}\footnotetext{#1}}}
+
 \def\@maketitle{%
   % Count authors and affiliations
   \setcounter{IACR@author@cnt}{1}%
@@ -260,7 +272,7 @@
   \begin{center}%
   \let \footnote \thanks
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
-      {\LARGE \bfseries\sffamily\boldmath \@title\par}
+      {\LARGE \bfseries\sffamily\boldmath \@title\@genericfootnote\par}
     \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi}%
     \vskip 1.5em%
     {\large
@@ -289,16 +301,36 @@
 \def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
 \def\IACR@@author#1{\gdef\@author{#1}}
 
+% Redefine the author command.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \author[inst={1,2},orcid=0000-0000-0000-0000,email=me@university.com,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% * inst: superscripts which refer to the affiliations, in the example 
+%         Alice Accomplished has two affiliations (namely listed as the first and % second)
+% * orcid: the ORCID (Open Researcher and Contributor ID) of the author (see: https://orcid.org/)
+% * email: the email address of the author
+% * footnote: space for a footnote different from for example affiliation and funding 
+%             and not used for meta-data collection for indexing.
 \renewcommand\author[2][]{%  
   \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
       Do not put several authors in the same \string\author\space macro!}}{}%   
   \ifnum\num@affil>0\relax
     \ClassError{iacrcc}{affiliations must follow authors}{}%
   \fi
+  %
+  % TODO: FIXME: somehow the tests below do not work
+  % Throw an error if the string " and " occurs in an author field
+  \IfSubStr{\detokenize{#2}}{ and }{\ClassError{iacrcc}{%
+      Do not put several authors in the same \string\author\space macro!}{}}{}%   
+  % Throw an error if the string " \and " occurs in an author field
+  \IfSubStr{\detokenize{#2}}{ \\and }{%
+    \ClassError{iacrcc}{Do not put several authors in the same \string\author\space macro!}{}}{}%   
   \global\advance\num@authors by 1\relax%
   \ifnum\num@authors=1\relax
     \immediate\write\yaml{authors:}%
   \fi
+  %
   \immediate\write\yaml{\space\space -}%
   \immediate\write\yaml{\space\space\space\space name: #2}%  
   \ifstrempty{#1}{%
@@ -311,23 +343,40 @@
     \IACR@author@params@set@keys{#1}%%
     \immediate\write\yaml{\space\space\space\space affil: \IACR@author@params@get{inst}}%
     \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
+    \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
     \ifx\@IACRorcid\@empty
 	  \ifx\@author\@empty
-	    \gdef\@author{#2}%
+	    \edef\@author{#2}%
+		% Add the footnote text if present
+	    \ifx\@IACRfootnote\@empty\else
+		  \eappto\@author{#2\noexpand\footnote{\@IACRfootnote}}%
+		\fi
 	  \else
-        \eappto\@author{\noexpand\and#2}%
+	    \eappto\@author{\noexpand\and#2}%		
+		% Add the footnote text if present
+		\ifx\@IACRfootnote\@empty\else
+		  \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+		\fi
 	  \fi
 	  \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%	
     \else
       \ifx\@author\@empty
-	    \gdef\@author{#2}%
+	    \edef\@author{#2}%
+		% Add the footnote text if present
+	    \ifx\@IACRfootnote\@empty\else
+		  \edef\@author{\noexpand\footnote{\@IACRfootnote}}%
+		\fi
 	  \else
-        \eappto\@author{\noexpand\and#2}%
+	    % Add the footnote text if present
+		\eappto\@author{\noexpand\and#2}%
+	    \ifx\@IACRfootnote\@empty\else
+		  \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+		\fi
 	  \fi
 	  \eappto\@author{\inst{\IACR@author@params@get{inst}}}%
       \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
     \fi	  
-    \IACR@author@params@clearkeys%
+	\IACR@author@params@clearkeys%
   }%
 }
 
@@ -352,7 +401,9 @@
     \else
     \immediate\write\yaml{\space\space\space\space ror: \@IACRror}%
     \fi
-  }}
+  }%
+  \IACR@affiliation@params@clearkeys%
+}
 
 \if@anonymous
 \gdef\@author{Anonymous Submission to \publname}
