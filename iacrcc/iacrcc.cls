@@ -210,17 +210,19 @@
 \@IACR@autoinsttrue
 \def\IACR@author@last{0}
 
-\newwrite\yaml
-\immediate\openout\yaml=\jobname.yaml
+\newwrite\meta
+\immediate\openout\meta=\jobname.meta
+\RequirePackage{pgfplots}
 \newcount\num@authors
 \num@authors=0\relax
 \newcount\num@affil
 \num@affil=0\relax
 
 
-\AtEndDocument{\immediate\closeout\yaml}
+\AtEndDocument{\immediate\closeout\meta}
 
 \renewcommand\maketitle{\par
+  \immediate\write\meta{title: \@title}
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -305,6 +307,9 @@
 \def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
 \def\IACR@@author#1{\gdef\@author{#1}}
 
+% This is for indentation in meta file. There must be a better way \_(--)_/
+\newcommand{\IACRSS}{\space\space}
+
 % Redefine the author command.
 % The idea is that every author makes a separate call to this command.
 % This should look like:
@@ -331,12 +336,11 @@
   \IfSubStr{\detokenize{#2}}{ \\and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\author\space macro!}{}}{}%   
   \global\advance\num@authors by 1\relax%
-  \ifnum\num@authors=1\relax
-    \immediate\write\yaml{authors:}%
-  \fi
   %
-  \immediate\write\yaml{\space\space -}%
-  \immediate\write\yaml{\space\space\space\space name: #2}%  
+  % Write out the author in the meta file.
+  \immediate\write\meta{author:}%
+  % name is indented by two spaces.
+  \immediate\write\meta{\IACRSS name: #2}%
   \ifstrempty{#1}{%
     \ifx\@author\@empty
       \gdef\@author{#2}%
@@ -345,7 +349,7 @@
     \fi
   }{%
     \IACR@author@params@set@keys{#1}%%
-    \immediate\write\yaml{\space\space\space\space affil: \IACR@author@params@get{inst}}%
+    \immediate\write\meta{\IACRSS affil: \IACR@author@params@get{inst}}%
     \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
     \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
     \ifx\@IACRorcid\@empty
@@ -378,7 +382,7 @@
         \fi
       \fi
       \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
-      \immediate\write\yaml{\space\space\space\space orcid: \@IACRorcid}%
+      \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
     \fi  
     \IACR@author@params@clearkeys%
   }%
@@ -387,10 +391,9 @@
 \renewcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax%
   \ifnum\num@affil=1\relax
-    \immediate\write\yaml{affiliations:}%
+    \immediate\write\meta{affiliation:}%
   \fi
-  \immediate\write\yaml{\space\space -}%
-  \immediate\write\yaml{\space\space\space\space name: #2}%
+  \immediate\write\meta{\IACRSS name: #2}%
   %  
   \ifx\@affiliation\@empty
     \gdef\@affiliation{#2}%
@@ -402,7 +405,7 @@
     \IACR@affiliation@params@set@keys{#1}%%
     \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
     \ifx\@IACRror\@empty\else
-      \immediate\write\yaml{\space\space\space\space ror: \@IACRror}%
+      \immediate\write\meta{\IACRSS ror: \@IACRror}%
     \fi
   }%
   \IACR@affiliation@params@clearkeys%
@@ -796,6 +799,5 @@
 % Fonts
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
-
 \endinput
 %end of file iacrtrans.cls
