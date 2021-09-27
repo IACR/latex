@@ -321,7 +321,10 @@
 % * email: the email address of the author
 % * footnote: space for a footnote different from for example affiliation and funding 
 %             and not used for meta-data collection for indexing.
-\renewcommand\author[2][]{%  
+
+\newcommand\surname[1]{#1}
+
+\renewcommand\author[2][]{%    
   \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
       Do not put several authors in the same \string\author\space macro!}}{}%   
   \ifnum\num@affil>0\relax
@@ -338,9 +341,11 @@
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
+  \renewcommand\surname[1]{^^J\IACRSS surname: ##1}%
   \immediate\write\meta{author:}%
   % name is indented by two spaces.
   \immediate\write\meta{\IACRSS name: #2}%
+  \renewcommand\surname[1]{##1}%
   \ifstrempty{#1}{%
     \ifx\@author\@empty
       \gdef\@author{#2}%
