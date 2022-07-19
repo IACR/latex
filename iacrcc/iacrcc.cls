@@ -137,6 +137,11 @@
 \if@loadhr
   \RequirePackage{xcolor}
   \RequirePackage{etoolbox}
+  % Make robust some counters that are made fragile by `calc` needed for orcidlink
+  \robustify\setcounter
+  \robustify\addtocounter
+  \robustify\setlength
+  \robustify\addtolength
   \RequirePackage{xstring} % for IfSubStr
   
   \AtEndPreamble{
@@ -167,32 +172,36 @@
 \renewcommand*\descriptionlabel[1]{\hspace\labelsep
                                    \normalfont\bfseries\sffamily\boldmath #1}
 
+% Package for clickable Orcid logo
+\RequirePackage{orcidlink}
+
 % Add support for keys
 \RequirePackage{pgfkeys}
 
 \pgfkeys{/IACR-author/entities/.cd,
   inst/.initial=\@empty,
   orcid/.initial=\@empty,
-  email/.initial=\@empty,
   footnote/.initial=\@empty,
+  onclick/.initial=\@empty,
   }
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,email=\@empty,footnote=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
   ror/.initial=\@empty,
+  onclick/.initial=\@empty,
   }
 \def\IACR@affiliation@params@set@keys#1{%%
   \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
 \def\IACR@affiliation@params@get#1{%%
   \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
 \newcommand\IACR@affiliation@params@clearkeys{%
-  \IACR@affiliation@params@set@keys{ror=\@empty}%
+  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty}%
 }
 
 % Title/Author/affiliations
@@ -218,7 +227,6 @@
 \newcount\num@affil
 \num@affil=0\relax
 
-
 \AtEndDocument{\immediate\closeout\meta}
 
 \renewcommand\maketitle{\par
@@ -238,9 +246,7 @@
   \global\let\maketitle\relax
   \global\let\@maketitle\relax
   \global\let\@thanks\@empty
-%  \global\let\@author\@empty
   \global\let\@date\@empty
-%  \global\let\@title\@empty
   \global\let\title\relax
   \global\let\author\relax
   \global\let\date\relax
@@ -324,19 +330,32 @@
 
 \newcommand\surname[1]{#1}
 
+% Extra commands
+\def\email{\@ifnextchar[{\IACR@@email}{\IACR@email}}
+\if@loadhr
+\def\IACR@@email[#1]#2{\href{mailto:#1}{\nolinkurl{#2}}}
+\def\IACR@email#1{\href{mailto:#1}{\nolinkurl{#1}}}
+\else
+\RequirePackage{url}
+\def\IACR@@email[#1]#2{\url{#2}}
+\def\IACR@email#1{\url{#1}}
+\fi
+
 \renewcommand\author[2][]{%    
   \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
-      Do not put several authors in the same \string\author\space macro!}}{}%   
+      Do not put several authors in the same \string\author\space macro!}}{}%
   \ifnum\num@affil>0\relax
     \ClassError{iacrcc}{affiliations must follow authors}{}%
   \fi
   %
   % TODO: FIXME: somehow the tests below do not work
   % Throw an error if the string " and " occurs in an author field
-  \IfSubStr{\detokenize{#2}}{ and }{\ClassError{iacrcc}{%
+  % Somehow the problem was the detokenize...
+  \IfSubStr{#2}{ and }{\ClassError{iacrcc}{%
       Do not put several authors in the same \string\author\space macro!}{}}{}%   
   % Throw an error if the string " \and " occurs in an author field
-  \IfSubStr{\detokenize{#2}}{ \\and }{%
+  % This is still not working...
+  \IfSubStr{#2}{ \\and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\author\space macro!}{}}{}%   
   \global\advance\num@authors by 1\relax%
   %
@@ -353,43 +372,38 @@
       \appto\@author{\and#2}%
     \fi
   }{%
-    \IACR@author@params@set@keys{#1}%%
+    \IACR@author@params@set@keys{#1}%
     \immediate\write\meta{\IACRSS affil: \IACR@author@params@get{inst}}%
     \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
     \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
-    \ifx\@IACRorcid\@empty
-      \ifx\@author\@empty
-        \edef\@author{#2}%
-        % Add the footnote text if present
-        \ifx\@IACRfootnote\@empty\else
-          \eappto\@author{#2\noexpand\footnote{\@IACRfootnote}}%
-        \fi
-      \else
-        \eappto\@author{\noexpand\and#2}%
-        % Add the footnote text if present
-        \ifx\@IACRfootnote\@empty\else
-          \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-        \fi
-      \fi
-      \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
+	\edef\@IACRonclick{\IACR@author@params@get{onclick}}%
+	\edef\@IACRinst{\IACR@author@params@get{inst}}%
+	% Author name + optionally clickable
+	\ifx\@author\@empty
+      \ifx\@IACRonclick\@empty
+	    \def\@author{#2}%
+	  \else
+	    \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+	  \fi
     \else
-      \ifx\@author\@empty
-        \edef\@author{#2}%
-        % Add the footnote text if present
-        \ifx\@IACRfootnote\@empty\else
-          \edef\@author{\noexpand\footnote{\@IACRfootnote}}%
-        \fi
-      \else
-        % Add the footnote text if present
-        \eappto\@author{\noexpand\and#2}%
-        \ifx\@IACRfootnote\@empty\else
-          \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-        \fi
-      \fi
-      \eappto\@author{\noexpand\inst{\IACR@author@params@get{inst}}}%
-      \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
-    \fi  
-    \IACR@author@params@clearkeys%
+      \ifx\@IACRonclick\@empty
+	    \appto\@author{\and#2}%
+	  \else
+	    \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+	  \fi
+    \fi
+    % Add the footnote text if present
+    \ifx\@IACRfootnote\@empty\else
+      \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+    \fi
+    \ifx\@IACRorcid\@empty\else
+      \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
+	  \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
+    \fi
+    \ifx\@IACRinst\@empty\else
+      \eappto\@author{\noexpand\inst{\@IACRinst}}%
+    \fi
+	\IACR@author@params@clearkeys%
   }%
 }
 
@@ -399,20 +413,25 @@
     \immediate\write\meta{affiliation:}%
   \fi
   \immediate\write\meta{\IACRSS name: #2}%
-  %  
-  \ifx\@affiliation\@empty
-    \gdef\@affiliation{#2}%
-  \else
-    \g@addto@macro\@affiliation{\and#2}%
+  \IACR@affiliation@params@set@keys{#1}%%
+  \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
+  \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
+  \ifx\@IACRror\@empty\else
+    \immediate\write\meta{\IACRSS ror: \@IACRror}%
   \fi
-  %
-  \ifstrempty{#1}{}{%
-    \IACR@affiliation@params@set@keys{#1}%%
-    \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
-    \ifx\@IACRror\@empty\else
-      \immediate\write\meta{\IACRSS ror: \@IACRror}%
+  \ifx\@IACRonclick\@empty
+    \ifx\@affiliation\@empty
+      \gdef\@affiliation{#2}%
+    \else
+      \appto\@affiliation{\and#2}%
     \fi
-  }%
+  \else
+    \ifx\@affiliation\@empty
+      \edef\@affiliation{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+    \else
+      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}}%
+    \fi
+  \fi	
   \IACR@affiliation@params@clearkeys%
 }
 
@@ -742,17 +761,6 @@
 \restylefloat{table}
 \floatstyle{iacrbelow}
 \restylefloat{figure}
-\fi
-
-% Extra commands
-\def\email{\@ifnextchar[{\IACR@@email}{\IACR@email}}
-\if@loadhr
-\def\IACR@@email[#1]#2{\href{mailto:#1}{\nolinkurl{#2}}}
-\def\IACR@email#1{\href{mailto:#1}{\nolinkurl{#1}}}
-\else
-\RequirePackage{url}
-\def\IACR@@email[#1]#2{\url{#2}}
-\def\IACR@email#1{\url{#1}}
 \fi
 
 % Line # for submission
