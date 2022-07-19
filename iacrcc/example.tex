@@ -14,46 +14,21 @@
 %%%% 2. PACKAGES %%%%
 \usepackage{lipsum} % Example package -- can be removed
 
-
 %%%% 3. AUTHOR, INSTITUTE %%%%
 
-\iftrue
+\author[orcid=0000-0003-1010-8157,inst={1},onclick={https://www.joppebos.com}]{Joppe W. \surname{Bos}}
+\author[inst={1,2},onclick={www.test.com}]{Kevin S. \surname{McCurley}}
+\affiliation[ror=02t274463,onclick={https://www.nxp.com}]{NXP Semiconductors}
+\affiliation{Self}
 
-% NOTE: There are two affiliations, referred to by 1,2
-\author[orcid=0000-0003-1010-8157,inst={1,2}]{Alice Accomplished}
-% NOTE: Only one affiliation for this author.
-\author[inst={1},footnote={Thanks to my mom!}]{Bob Badenuff}
-\affiliation[ror=02t274463]{University of California, Santa Barbara}
-\affiliation{University of Second Choice}
-
-\genericfootnote{This is the full-version of our previous work.}
-
-\else
-% This is the format we want to have:
-\author{Alice Accomplished
-  \affiliation{1,2}}
-\author{Bob Badenuff
-  \affiliation{1}
-  \sponsor{1}}
-\affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
-\affiliation{University of Second Choice}
-
-%  Authors are listed individually in the \author tag, with a list of affiliations.
-\author{Alice Accomplished\inst{1,2}\sponsor{1}\email{alice@usc.edu}} (two affiliations)
-\author{Bob Badenuff\inst{2}} (a single affiliation)
-%  Affiliations are listed as an array. One \affiliation per institution
-\affiliation{University of California, Santa Barbara\department{Department of Computer Science}\RORID{02t274463}}
-\affiliation{University of Second Choice}
-% Sponsors are listed individually, and are referenced from the author by \sponsor
-\sponsor{National Security Agency\grantid{666-2021}}
-
-\fi
 
 %%%% 4. TITLE %%%%
 % Note that \thanks and \footnote are forbidden in \title. Please use
 % \genericfootnote.
-\title[Thoughts on binary functions]{Thoughts about
-"binary" functions on $GF(p)$}
+%\title[IACR Communications in Cryptology Class]{How to Use the IACR Communications in Cryptology \LaTeX Class}
+
+\title[IACR Communications in Cryptology Class]{How to Use the IACR Communications in Cryptology Class}
+
 \begin{document}
 
 \maketitle
@@ -69,25 +44,62 @@
 
 %%%% 6. PAPER CONTENT %%%%
 \section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX 
+class. 
 
-Widely used primitives like the AES~\cite{AES} do not have perfect
-security, and can be analysed with linear
-cryptanalysis~\cite{EC:Matsui93}, differential
-cryptanalysis~\cite{JC:BihSha91}, or differential power
-analysis~\cite{C:KocJafJun99}.  We show that the One-Time-Pad is
-unconditionally secure in \autoref{sec:main}.
+\section{Title Page}
+To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper) 
+you can use the {\tt \textbackslash{}genericfootnote} command. 
 
-\lipsum[9]
+\subsubsection*{The Author Command}
+Authors are listed individually using the {\tt \textbackslash{}author} command. 
+There are a number \emph{optional} options to {\tt \textbackslash{}author}:
 
-\section{Main Result}\label{sec:main}
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
+{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
+{\tt footnote} & Create an author-specific footnote.\\
+{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+\end{tabular}
 
-\lipsum
+\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
+this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
+surnames which might be confusing. 
 
-This\footnote{is a footnote}.
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\author[orcid=0000-0003-1010-8157,
+        inst={1,2},
+        footnote={Thanks to my supervisor for the support.},
+        onclick={https://www.mypersonalwebpage.com}
+       ]{Alice \surname{Accomplished}}
+\end{verbatim}
+
+\subsubsection*{The Affiliation Command}
+Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
+the (list of) authors using {\tt \textbackslash{}author}.
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
+{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
+\end{tabular}
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\affiliation[ror=05f950310,
+             onclick={http://www.kuleuven.be/english}
+            ]{KU Leuven}
+\end{verbatim}
+
+\section{Acknowledgements}
+Except for the metadata collection and options related to authors, title and affiliation this 
+class file is identical to the IACR Transactions class file (the iacrtrans class) written by Ga{\"e}tan Leurent.
 
 %%%% 8. BILBIOGRAPHY %%%%
-\bibliographystyle{iacrcc}
-\bibliography{cryptobib/abbrev3,cryptobib/crypto,biblio}
+%\bibliographystyle{iacrcc}
+%\bibliography{cryptobib/abbrev3,cryptobib/crypto}
 %%%% NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use bilbio.bib for additional references not in the cryptobib database.
