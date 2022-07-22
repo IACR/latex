@@ -340,7 +340,7 @@
   % Write out the author in the meta file.
   \immediate\write\meta{author:}%
   % name is indented by two spaces.
-  \immediate\write\meta{\IACRSS name: #2}%
+  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \ifstrempty{#1}{%
     \ifx\@author\@empty
       \gdef\@author{#2}%
@@ -390,10 +390,8 @@
 
 \renewcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax%
-  \ifnum\num@affil=1\relax
     \immediate\write\meta{affiliation:}%
-  \fi
-  \immediate\write\meta{\IACRSS name: #2}%
+  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   %  
   \ifx\@affiliation\@empty
     \gdef\@affiliation{#2}%

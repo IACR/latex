@@ -2,29 +2,30 @@
 
 ## 🔧 This is a work in progress 🔧
 
-This directory contains a LaTeX cls file for the new IACR
-Communications on Cryptology journal.  The user documentation is
-contained in example.tex, and this README currently holds only
-development details.
+This directory contains `iacrcc.cls` and `iacrcc.bst` for processing
+of articles submitted to the new IACR Communications on Cryptology
+journal.  The user documentation is contained in example.tex, and this
+README currently holds only development details. 
 
 The purpose of this style is to facilitate proper capture of author metadata
 for the publication editing workflow. Typically a LaTeX class is concerned with
 only the layout of the document, but we have added some additional requirements:
-1. when the user runs pdflatex on their document, it should produce a parsable text
-   file that contains structured metadata about the paper, including title, authors,
-   their affiliations, and the paper citations.
+1. when the user runs pdflatex/bibtex/pdflatex on their document, it
+   should produce a parsable text file that contains structured metadata about
+   the paper, including title, authors, their affiliations, and the paper citations.
 2. the author should only have to enter this metadata once, in properly formatted
    LaTeX macros that conform to the required cls.
 
 This LaTeX style is based on the previous [iacrtrans](https://github.com/Cryptosaurus/iacrtrans)
 class used to ToSC and TCHES. These may be unified in the future.
 
-While the file we generate appears to be `yaml`, it's not guaranteed
-to be parsable as a `yaml` file because of special characters like {
-or \ or ". For this reason we use a custom parser that looks only at
-the tags on the line to decide what the structure is. The format of
-the file is hierarchical, and is perhaps best illustrated with an
-example in which there are three authors show share three affiliations.
+We perhaps could have written the `.meta` file as `yaml`, but this is
+problematic because of special characters like { or \ or ". For this
+reason we use a custom parser that looks only at the tags on the line
+to decide what the structure is. The format of the file is
+hierarchical, and is perhaps best illustrated with an example in which
+there are three authors who share three affiliations on a paper with
+two references.
 
 ```
 title: How to break {RSA} digital signatures
@@ -41,26 +42,55 @@ author:
   inst: 1,3
   orcid: xxxx-yyyy-zzzz-wwww
   email: len@usc.edu
-affil:
+affililation:
   name: MIT
   ror: ljl2j543
-affil:
+affiliation:
   name: Weizmann Institute
-affil:
+affiliation:
   name: University of Southern California
   ror: 2342342xy
-citation:
+citation: article
   title: The best algorithm never exists
   authors: Alfred Alliant and David Dumbo
+  author: Alfred Alliant
+  surname: Alliant
+  author: David Dumbo
+  surname: Dumbo
+  journal: Journal of Craptology
   doi: 10.1007/2122_133
-citation:
+citation: book
   title: Is it funny if you have to explain it?
   authors: Ralph Bunch and Ida Lupino
+  author: Ralph Bunch
+  surname: Bunch
+  author: Ida Lupino
+  surname: Lupino
+  year: 1992
+  publisher: Marvel Comics
 ```
-The specification of metadata requirements is hopefully readily apparent
-from this example. The structure is designed to fulfill the requirements
-for consumers of metadata about papers, which is described in a
-[separate document](METADATA.md).
+The specification of metadata requirements is hopefully readily
+apparent from this example. In citations, authors are listed on one
+string, but then each author is listed separately along with their
+surname.  Due to the fact that LaTeX has trouble producing UTF-8,
+names are encoded using TeX codes for accents. The structure is
+designed to fulfill the requirements for consumers of metadata about
+papers, which is described in a [separate document](METADATA.md).
+
+## Production of metadata.
+
+Note that both `iacrcc.cls` and `iacrcc.bst` are required to be used,
+since they work together.  Authors supply their metadata in LaTeX
+macros using macros from `iacrcc.cls`. When the author runs `pdflatex
+main` on the file `main.tex`, it produces an output `main.meta` that
+contains the metadata above, but without the citation fields. When the
+author then runs `bibtex main` using `iacrcc.bst`, it produces a
+`main.bbl` file that contains extra LaTeX macros to write citation
+metadata. When the author runs `pdflatex main` a second time, it
+includes the `main.bbl` file to produce the bibliography, but now it
+also runs macros to write the citation metadata into `main.meta`. This
+is similar to how the `hyperref` package works, by writing a file
+`main.out` with bookmark commands.
 
 ## Related work
 

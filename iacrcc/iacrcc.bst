@@ -85,7 +85,7 @@ FUNCTION {init.state.consts}
   #3 'after.block :=
 }
 
-STRINGS { s t }
+STRINGS { s t surname fullname }
 
 FUNCTION {output.nonnull}
 { 's :=
@@ -303,45 +303,168 @@ FUNCTION {format.title}
   if$
 }
 
-%% This function generates a string to report metadata about the paper.
-FUNCTION {format.meta}
+INTEGERS { l }
+FUNCTION {string.length}
 {
-  title empty$
-  { "\iacrbib{}{" }
-  { "\iacrbib{" title * "}{" * }
+  #1 'l :=
+  {duplicate$ duplicate$ #1 l substring$ = not}
+    {l #1 + 'l :=}
+  while$
+  pop$ l
+}
+
+STRINGS { replace find text }
+INTEGERS { find_length }
+
+% usage: <string> "_" "\textunderscore" find.replace
+% FUNCTION {find.replace}
+% { 'replace :=
+%   'find :=
+%   'text :=
+%   find string.length 'find_length :=
+%   ""
+%     { text empty$ not }
+%     { text #1 find_length substring$ find =
+%         {
+%           replace *
+%           text #1 find_length + global.max$ substring$ 'text :=
+%         }
+%         { text #1 #1 substring$ *
+%           text #2 global.max$ substring$ 'text :=
+%         }
+%       if$
+%     }
+%   while$
+% }
+
+FUNCTION {meta.names}
+{'s :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    {  s nameptr "{ff }{vv }{ll}" format.name$ 'fullname :=
+      "\writemeta{author}{" fullname * "}" * write$ newline$
+      s nameptr "{vv }{ll}" format.name$ 'surname :=
+      "\writemeta{surname}{" surname * "}" * write$ newline$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+}
+
+% Output commands to write fields into the meta file.
+FUNCTION {meta.all}
+{
+  author empty$
+    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{}" * }
+    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{" * author * "}" * }
   if$
-    author empty$
-    { "}{" * }
-    { author * "}{" * }
-    if$
-    doi empty$
-    { "}" * }
-    { doi * "}" * }
-    if$
-}
-
-FUNCTION {comment.title}
-{
- title empty$
-    { "" }
-    { "%%TITLE:" title * }
- if$
-}
-
-FUNCTION {comment.doi}
-{
- doi empty$
-    { "" }
-    { "%%DOI:" doi * }
- if$
-}
-
-FUNCTION {comment.author}
-{
- author empty$
-    { "" }
-    { "%%AUTHORS:" author * }
- if$
+  write$ newline$
+  author missing$
+    { }
+    { author meta.names }
+  if$
+  address missing$
+    { }
+    { "\writemeta{address}{" address * "}" * write$ newline$ }
+  if$
+  booktitle missing$
+    { }
+    { "\writemeta{booktitle}{" booktitle * "}" * write$ newline$ }
+  if$
+  chapter missing$
+    { }
+    { "\writemeta{chapter}{" chapter * "}" * write$ newline$ }
+  if$
+  doi missing$
+    { }
+    { "\writemeta{doi}{" doi * "}" * write$ newline$ }
+  if$
+  eid missing$
+    { }
+    { "\writemeta{eid}{" eid * "}" * write$ newline$}
+  if$
+  edition missing$
+    { }
+    { "\writemeta{edition}{" edition * "}" * write$ newline$ }
+  if$
+  editor missing$
+    { }
+    { "\writemeta{editor}{" editor * "}" * write$ newline$ }
+  if$
+  howpublished missing$
+    { }
+    { "\writemeta{howpublished}{" howpublished * "}" * write$ newline$ }
+  if$
+  institution missing$
+    { }
+    { "\writemeta{institution}{" institution * "}" * write$ newline$ }
+  if$
+  isbn missing$
+    { }
+    { "\writemeta{isbn}{" isbn * "}" * write$ newline$ }
+  if$
+  issn missing$
+    { }
+    { "\writemeta{issn}{" issn * "}" * write$ newline$ }
+  if$
+  journal missing$
+    { }
+    { "\writemeta{journal}{" journal * "}" * write$ newline$ }
+  if$
+  key missing$
+    { }
+    { "\writemeta{key}{" key * "}" * write$ newline$ }
+  if$
+  month missing$
+    { }
+    { "\writemeta{month}{" month * "}" * write$ newline$ }
+  if$
+  note missing$
+    { }
+    { "\writemeta{note}{" note * "}" * write$ newline$ }
+  if$
+  number missing$
+    { }
+    { "\writemeta{number}{" number * "}" * write$ newline$ }
+  if$
+  organization missing$
+    { }
+    { "\writemeta{organization}{" organization * "}" * write$ newline$ }
+  if$
+  pages missing$
+    { }
+    { "\writemeta{pages}{" pages * "}" * write$ newline$ }
+  if$
+  publisher missing$
+    { }
+    { "\writemeta{publisher}{" publisher * "}" * write$ newline$ }
+  if$
+  school missing$
+    { }
+    { "\writemeta{school}{" school * "}" * write$ newline$ }
+  if$
+  series missing$
+    { }
+    { "\writemeta{series}{" series * "}" * write$ newline$ }
+  if$
+  title missing$
+    { }
+    { "\writemeta{title}{" title * "}" * write$ newline$ }
+  if$
+  url missing$
+    { }
+    { "\writemeta{url}{" url * "}" * write$ newline$ }
+  if$
+  volume missing$
+    { }
+    { "\writemeta{volume}{" volume * "}" * write$ newline$ }
+  if$
+  year missing$
+    { }
+    { "\writemeta{year}{" year * "}" * write$ newline$ }
+  if$
 }
 
 FUNCTION {format.full.names}
@@ -416,6 +539,7 @@ FUNCTION {make.full.names}
 
 FUNCTION {output.bibitem}
 { newline$
+  meta.all newline$
   "\bibitem[" write$
   label write$
   ")" make.full.names duplicate$ short.list =
@@ -426,11 +550,7 @@ FUNCTION {output.bibitem}
   cite$ write$
   "}" write$
   newline$
-  format.meta write$ newline$
   ""
-  comment.title write$ newline$
-  comment.doi write$ newline$
-  comment.author write$ newline$
   before.all 'output.state :=
 }
 
@@ -1453,16 +1573,27 @@ FUNCTION {begin.bib}
     'skip$
     { preamble$ write$ newline$ }
   if$
-    
   "\begin{thebibliography}{" number.label int.to.str$ * "}" *
   write$ newline$
-  "\providecommand{\iacrbib}[3]{\immediate\write\meta{citation:}%"
+  "\newcommand{\writemeta}[2]{%"
   write$ newline$
-  "\immediate\write\meta{\IACRSS title: #1}%"
+  "\ifstrempty{#2}{}{\immediate\write\meta{\IACRSS #1: \unexpanded{#2}}}}"
   write$ newline$
-  "\ifstrempty{#2}{}{\immediate\write\meta{\IACRSS authors: #2}}%"
+  "\newcommand{\iacrmetacite}[3]{\immediate\write\meta{citation: #1 #2}%"
   write$ newline$
-  "\ifstrempty{#3}{}{\immediate\write\meta{\IACRSS doi: #3}}}"
+  "\ifstrempty{#3}{}{\immediate\write\meta{\IACRSS authors: \detokenize{#3}}}}"
+  write$ newline$
+  "\newcommand{\iacrbib}[5]{\immediate\write\meta{citation:}%"
+  write$ newline$
+  "\immediate\write\meta{\IACRSS type: #1}%"
+  write$ newline$
+  "\immediate\write\meta{\IACRSS title: \detokenize{#2}}%"
+  write$ newline$
+  "\ifstrempty{#3}{}{\immediate\write\meta{\IACRSS authors: \detokenize{#3}}}%"
+  write$ newline$
+  "\ifstrempty{#4}{}{\immediate\write\meta{\IACRSS doi: #4}}"
+  write$ newline$
+  "\ifstrempty{#5}{}{\immediate\write\meta{\IACRSS journal: #5}}}"
   write$ newline$
   "\providecommand{\natexlab}[1]{#1}"
   write$ newline$
