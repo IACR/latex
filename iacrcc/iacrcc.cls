@@ -147,6 +147,7 @@
   \AtEndPreamble{
     \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
     \hypersetup{pdflang=en}
+    \hypersetup{urlcolor=cyan}
     \hypersetup{colorlinks=true,
       citecolor=black!70!green,
       linkcolor=black!70!red}
@@ -399,7 +400,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \renewcommand\surname[1]{^^J\IACRSS surname: ##1}%
   \immediate\write\meta{author:}%
   % name is indented by two spaces.
-  \immediate\write\meta{\IACRSS name: #2}%
+  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
   \ifstrempty{#1}{%
     \ifx\@author\@empty
@@ -445,10 +446,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax%
-  \ifnum\num@affil=1\relax
-    \immediate\write\meta{affiliation:}%
-  \fi
-  \immediate\write\meta{\IACRSS name: #2}%
+  \immediate\write\meta{affiliation:}%
+  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \IACR@affiliation@params@set@keys{#1}%%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
