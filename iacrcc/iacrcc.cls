@@ -42,11 +42,11 @@
 %% Title
 % \title[short]{Long title}
 %
-%%  Authors are listed individually in the \author tag, with a list of affiliations.
-% \author[inst={1,2}]{Alice Accomplished} (two affiliations)
-% \author[inst={1}]{Bob Badenuff} (a single affiliation)
+%%  Authors are listed individually in the \addauthor tag, with a list of affiliations.
+% \addauthor[inst={1,2}]{Alice Accomplished} (two affiliations)
+% \addauthor[inst={1}]{Bob Badenuff} (a single affiliation)
 % There are more optional arguments for the author. A full example is:
-% \author[inst={1,2},orcid=0000-0000-0000-0000,email=me@university.com,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
 %
 %%  Affiliations are listed as an array. One \affiliation per institution
 % \affiliation[ror=02t274463]{University of California, Santa Barbara}
@@ -285,7 +285,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\let\@thanks\@empty
   \global\let\@date\@empty
   \global\let\title\relax
-  \global\let\author\relax
   \global\let\date\relax
   \global\let\and\relax
   % Adjust header size for title page
@@ -346,54 +345,39 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \par
   \vskip 1.5em}
 
-\def\author{\@ifnextchar[{\IACR@@@author}{\IACR@@author}}
-\def\IACR@@@author[#1]#2{\authorrunning{#1}\gdef\@author{#2}}
-\def\IACR@@author#1{\gdef\@author{#1}}
-
 % This is for indentation in meta file. There must be a better way \_(--)_/
 \newcommand{\IACRSS}{\space\space}
 
-% Redefine the author command.
+\renewcommand\author[2][]{\ClassError{iacrcc}{%
+  Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
+}
+
+% Redefine the addauthor command.
 % The idea is that every author makes a separate call to this command.
 % This should look like:
-% \author[inst={1,2},orcid=0000-0000-0000-0000,email=me@university.com,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
 % Where the options in square brackets “[ ]”are optional and control the following:
 % * inst: superscripts which refer to the affiliations, in the example 
 %         Alice Accomplished has two affiliations (namely listed as the first and % second)
 % * orcid: the ORCID (Open Researcher and Contributor ID) of the author (see: https://orcid.org/)
-% * email: the email address of the author
 % * footnote: space for a footnote different from for example affiliation and funding 
 %             and not used for meta-data collection for indexing.
 
 \newcommand\surname[1]{#1}
 
-% Extra commands
-\def\email{\@ifnextchar[{\IACR@@email}{\IACR@email}}
-\if@loadhr
-\def\IACR@@email[#1]#2{\href{mailto:#1}{\nolinkurl{#2}}}
-\def\IACR@email#1{\href{mailto:#1}{\nolinkurl{#1}}}
-\else
-\RequirePackage{url}
-\def\IACR@@email[#1]#2{\url{#2}}
-\def\IACR@email#1{\url{#1}}
-\fi
-
-\renewcommand\author[2][]{%    
+\newcommand\addauthor[2][]{%    
+  % Some very basic checking if addauthor is used correctly
+  % Check if the name contains an "," this might be correct (e.g., Alice, Jr)
   \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
-      Do not put several authors in the same \string\author\space macro!}}{}%
+      Do not put several authors in the same \string\addauthor\space macro!}}{}%
+  % Affiliations should be defined *after* addauthor
   \ifnum\num@affil>0\relax
     \ClassError{iacrcc}{affiliations must follow authors}{}%
   \fi
-  %
-  % TODO: FIXME: somehow the tests below do not work
-  % Throw an error if the string " and " occurs in an author field
-  % Somehow the problem was the detokenize...
+  % Do not use " and " in your author name: this might indicate incorrect usage
+  % The usage of "\and" will not and throw an error.
   \IfSubStr{#2}{ and }{\ClassError{iacrcc}{%
-      Do not put several authors in the same \string\author\space macro!}{}}{}%   
-  % Throw an error if the string " \and " occurs in an author field
-  % This is still not working...
-  \IfSubStr{#2}{ \\and }{%
-    \ClassError{iacrcc}{Do not put several authors in the same \string\author\space macro!}{}}{}%   
+      Do not put several authors in the same \string\addauthor\space macro!}{}}{}%   
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
@@ -402,6 +386,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % name is indented by two spaces.
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
+  % Add the author names to @author
   \ifstrempty{#1}{%
     \ifx\@author\@empty
       \gdef\@author{#2}%
@@ -444,27 +429,34 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }%
 }
 
+\newcommand{\email}[2][\mailto]{%
+  \def\mailto{#2}%
+  , \href{mailto:#1}{\nolinkurl{#2}}%
+}
+
 \renewcommand\affiliation[2][]{%
+  % Do not write out the email
   \global\advance\num@affil by 1\relax%
   \immediate\write\meta{affiliation:}%
-  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
+  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%  
   \IACR@affiliation@params@set@keys{#1}%%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
+  %
   \ifx\@IACRror\@empty\else
     \immediate\write\meta{\IACRSS ror: \@IACRror}%
   \fi
   \ifx\@IACRonclick\@empty
     \ifx\@affiliation\@empty
-      \gdef\@affiliation{#2}%
+      \gdef\@affiliation{\unexpanded{#2}}%
     \else
-      \appto\@affiliation{\and#2}%
+      \appto\@affiliation{\and\unexpanded{#2}}%
     \fi
   \else
     \ifx\@affiliation\@empty
-      \edef\@affiliation{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+      \edef\@affiliation{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
     \else
-      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}}%
+      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}}%
     \fi
   \fi	
   \IACR@affiliation@params@clearkeys%
@@ -472,7 +464,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \if@anonymous
 \gdef\@author{Anonymous Submission to \publname}
-\renewcommand{\author}[2][]{}
+\renewcommand{\addauthor}[2][]{}
 \renewcommand{\authorrunning}[1]{}
 \renewcommand{\affiliation}[2][]{}
 \fi
