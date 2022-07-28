@@ -21,7 +21,7 @@
 \affiliation{Self}
 
 % Todo: the onclick does not work when \title is loaded before \author
-\title[short={IACR Communications in Cryptology Class},
+\title[running={The iacrcc class},
        onclick={https://github.com/IACR/latex},
        subtitle={LaTeX Class Documentation (v0.10)},
       ]
@@ -139,7 +139,7 @@ To place a footnote on the first page without a reference (e.g., to indicate thi
 There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt short} & A shorter running title displayed in the headers.\\
+{\tt running} & The running title displayed in the headers.\\
 {\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
 {\tt subtitle} & Provide a subtitle.\\
 \end{tabular}
@@ -147,7 +147,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\title[short={IACR Communications in Cryptology Class},
+\title[running={IACR Communications in Cryptology Class},
        onclick={https://github.com/IACR/latex},
        subtitle={A Template}
       ]{How to Use the IACR Communications in Cryptology Class}
@@ -437,25 +437,6 @@ More general information can be found in the following documents:
   and \texttt{amsthm} \href{ftp://ftp.ams.org/pub/tex/doc/amscls/amsthdoc.pdf}{documentation};
 %\item Documentation of the \LaTeX{} packages used in the class (see below).
 \end{itemize}
-
-\iffalse
-\subsection{Packages used}
-
-The class is based on the standard \texttt{article} class, and loads
-the following packages:
-\begin{itemize}
-\item \texttt{geometry}, \texttt{sectsty}, \texttt{fancyhdr},
-  \texttt{float}, \texttt{microtype}, \texttt{fontenc}, \texttt{lmodern}
-\item \texttt{amsmath}, \texttt{amssymb}, \texttt{amsthm}, \texttt{mathtools}
-\item \texttt{graphicx}
-\item \texttt{xkeyval}, \texttt{afterpage}
-\item \texttt{hyperref}, \texttt{hyperxmp}, \texttt{etoolbox}, \texttt{xcolor} (unless
-  the \texttt{[nohyperref]} option is used)
-\item \texttt{lineno} (in \texttt{[submission]} mode)
-\item \texttt{lastpage} (in \texttt{[final]} mode, unless disabled with \texttt{[nolastpage]})
-\item \texttt{floatrow,caption} (with option \texttt{[floatrow]})
-\end{itemize}
-\fi
 
 \section*{Thanks}
 % Keep this old Thanks list? If so extend!

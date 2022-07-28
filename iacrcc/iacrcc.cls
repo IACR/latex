@@ -38,7 +38,12 @@
 %%% HOWTO use this class
 %
 %% Title
-% \title[short]{Long title}
+% This should look like:
+% \title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={LaTeX Class Documentation}]{How to Use the IACR Communications in Cryptology Class}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% running: the running title displayed in the headers
+% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
 %
 %% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
 % The idea is that every author makes a separate call to this command.
@@ -240,7 +245,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \pgfkeys{/IACR-title/entities/.cd,
-  short/.initial=\@empty,
+  running/.initial=\@empty,
   onclick/.initial=\@empty,
   subtitle/.initial=\@empty,
   }
@@ -249,7 +254,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\IACR@title@params@get#1{%%
   \pgfkeysvalueof{/IACR-title/entities/#1}}
 \newcommand\IACR@title@params@clearkeys{%
-  \IACR@title@params@set@keys{short=\@empty,onclick=\@empty,subtitle=\@empty}%
+  \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
 
 % Title/Author/affiliations
@@ -309,22 +314,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 % Provide the title of the paper
-% This should look like:
-% \title[short={IACR Communications in Cryptology Class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% short: a shorter running title displayed in the headers
-% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
-% subtitle: provide a subtitle
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
-  \edef\@IACRshort{\IACR@title@params@get{short}}%
+  \edef\@IACRrunning{\IACR@title@params@get{running}}%
   \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
   \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
   \gdef\@plaintitle{#2}
-  \ifx\@IACRshort\@empty
+  \ifx\@IACRrunning\@empty
     \titlerunning{#2}%  
   \else
-    \titlerunning{\@IACRshort}%
+    \titlerunning{\@IACRrunning}%
   \fi
   \ifx\@IACRonclick\@empty
     \gdef\@title{#2}%
@@ -495,8 +494,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \renewcommand{\authorrunning}[1]{}
 \renewcommand{\affiliation}[2][]{}
 \fi
-
-\global\let\@title\@empty
 
 \newcommand{\inst}[1]{%
   \ifnum\num@authors=1\relax\else
