@@ -1,0 +1,147 @@
+% IACR Communications in Cryptology template file
+% This file shows how to use the iacrcc class to write a paper.
+
+%% Document mode
+% [preprint]      Preprint (no copyright info) -- default mode
+% [submission]    Anonymous submission
+% [notanonymous]  Keep author names in submission mode
+% [final]         Final version
+\documentclass{iacrcc}
+
+% Include LaTeX packages required by your paper
+% \usepackage{}
+
+% Define authors and affiliations
+% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={Thanks to my supervisor for the support.},onclick={https://www.mypersonalwebpage.com}]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% inst: a numerical list pointing to the index of the institutaion in the affiliation array.
+% orcid: create a small clickable orcid logo next to the authors name linking to the authors ORCID iD see: orcid.org.
+% footnote: create an author-specific footnote.
+% onclick: define what to do when clicking on the author name: e.g., can point to the academic webpage.
+\addauthor[orcid={0000-0003-1010-8157},inst={1},onclick={https://www.joppebos.com}]{Joppe W. \surname{Bos}}
+\addauthor[orcid={0000-0001-7890-5430},inst={2}]{Kevin S. \surname{McCurley}}
+
+% Affiliations are listed individually using the \affiliations command *after* the (list of) authors using \addauthor
+% This should look like:
+% \affiliation[ror=05f950310,onclick={http://www.kuleuven.be/english}]{KU Leuven}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% ror: provide the Research Organization Registry (ROR) indetifier for this affiliation (see: ror.org). This is used for meta-data collection only.
+% onclick: define what to do when clicking on the affiliation name: e.g., can point to the affiliation webpage.
+\affiliation[ror=02t274463,onclick={https://www.nxp.com}]{NXP Semiconductors\email{joppe.bos@nxp.com}}
+\affiliation{Self}
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+% \genericfootnote{This is the full version of our paper published at XX}
+
+% Provide the title of the paper
+% This should look like:
+\title[short={IACR Communications in Cryptology Class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% short: a shorter running title displayed in the headers
+% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
+
+\begin{document}
+
+\maketitle
+
+% TODO: authorrunning
+
+% Provide the keywords *before* the abstract
+\keywords{Template \and LaTeX \and IACR}
+
+% Provide the abstract of your paper
+\begin{abstract}
+This \LaTeX{} template will show you how to use the IACR Communications in Cryptology Class style file.
+Except for the metadata collection and options related to authors, title and affiliation this 
+class file is identical to the IACR Transactions class file (the iacrtrans class) written by Ga{\"e}tan Leurent.
+\end{abstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+
+\section{Title Page}
+To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper) 
+you can use the {\tt \textbackslash{}genericfootnote} command. 
+
+\subsubsection*{The AddAuthor Command}
+Authors are listed individually using the {\tt \textbackslash{}addauthor} command. 
+There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
+{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
+{\tt footnote} & Create an author-specific footnote.\\
+{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+\end{tabular}
+
+\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
+this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
+surnames which might be confusing. 
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\author[orcid=0000-0003-1010-8157,
+        inst={1,2},
+        footnote={Thanks to my supervisor for the support.},
+        onclick={https://www.mypersonalwebpage.com}
+       ]{Alice \surname{Accomplished}}
+\end{verbatim}
+
+\subsubsection*{The Affiliation Command}
+Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
+the (list of) authors using {\tt \textbackslash{}addauthor}.
+There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
+{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
+\end{tabular}
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\affiliation[ror=05f950310,
+             onclick={http://www.kuleuven.be/english}
+            ]{KU Leuven}
+\end{verbatim}
+
+\subsubsection*{The Title Command}
+The title is provided using {\tt \textbackslash{}title}.
+There are a number \emph{optional} options to {\tt \textbackslash{}title}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt short} & A shorter running title displayed in the headers.\\
+{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
+{\tt subtitle} & Provide a subtitle.\\
+\end{tabular}
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\title[short={IACR Communications in Cryptology Class},
+       onclick={https://github.com/IACR/latex},
+       subtitle={A Template}
+      ]{How to Use the IACR Communications in Cryptology Class}
+\end{verbatim}
+
+\section{Bibliography}
+Citing papers is done in the usual way using BibTex. 
+For example: the RSA paper~\cite{RSA78}.
+
+It is highly encouraged to use CyptoBib from \url{https://cryptobib.di.ens.fr}
+
+\bibliographystyle{iacrcc}
+\bibliography{template}
+
+% NOTES
+% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
+% - Use bilbio.bib for additional references not in the cryptobib database.
+%   If possible, take them from DBLP.
+
+\end{document}
