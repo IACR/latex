@@ -278,7 +278,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \AtEndDocument{\immediate\closeout\meta}
 
 \renewcommand\maketitle{\par
-  \immediate\write\meta{title: \@title}
+  \immediate\write\meta{title: \@plaintitle}
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -298,6 +298,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\let\title\relax
   \global\let\date\relax
   \global\let\and\relax
+  \global\let\email\relax
   % Adjust header size for title page
   \addtolength{\headheight}{\baselineskip}%
   \addtolength{\headsep}{-\baselineskip}%
@@ -305,6 +306,34 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \global\advance\headheight by -\baselineskip%
     \global\advance\headsep by \baselineskip%
   }%
+}
+
+% Provide the title of the paper
+% This should look like:
+% \title[short={IACR Communications in Cryptology Class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% short: a shorter running title displayed in the headers
+% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
+\renewcommand\title[2][]{%
+  \IACR@title@params@set@keys{#1}%
+  \edef\@IACRshort{\IACR@title@params@get{short}}%
+  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
+  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
+  \gdef\@plaintitle{#2}
+  \ifx\@IACRshort\@empty
+    \titlerunning{#2}%  
+  \else
+    \titlerunning{\@IACRshort}%
+  \fi
+  \ifx\@IACRonclick\@empty
+    \gdef\@title{#2}%
+  \else
+    \gdef\@title{\unexpanded{\href{\@IACRonclick}{\color{black}{#2}}}}%
+  \fi
+  \ifx\@IACRsubtitle\@empty\else
+    \gdef\@subtitle{\@IACRsubtitle}%
+  \fi
 }
 
 % Add support for a footnote without symbol on the front page
@@ -361,34 +390,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand\author[2][]{\ClassError{iacrcc}{%
   Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
-}
-
-% Provide the title of the paper
-% This should look like:
-% \title[short={IACR Communications in Cryptology Class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% short: a shorter running title displayed in the headers
-% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
-% subtitle: provide a subtitle
-
-\renewcommand\title[2][]{%
-  \IACR@title@params@set@keys{#1}%
-  \edef\@IACRshort{\IACR@title@params@get{short}}%
-  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
-  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
-  \ifx\@IACRshort\@empty
-    \titlerunning{#2}%  
-  \else
-    \titlerunning{\@IACRshort}%
-  \fi
-  \ifx\@IACRonclick\@empty
-    \gdef\@title{#2}%
-  \else
-    \gdef\@title{\unexpanded{\href{\@IACRonclick}{\color{black}{#2}}}}%
-  \fi
-  \ifx\@IACRsubtitle\@empty\else
-    \gdef\@subtitle{\@IACRsubtitle}%
-  \fi
 }
 
 \newcommand\surname[1]{#1}
@@ -463,7 +464,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand\affiliation[2][]{%
   % Do not write out the email
-  \global\advance\num@affil by 1\relax%
+  \global\advance\num@affil by 1\relax% 
   \immediate\write\meta{affiliation:}%
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%  
   \IACR@affiliation@params@set@keys{#1}%%
