@@ -28,9 +28,7 @@
 % [submission]    Anonymous submission
 % [notanonymous]  Keep author names in submission mode
 % [final]         Final version
-% [draft]
 %% Package options
-% [spthm]         Emulate llncs sptheorem and remove automatic \qed in proof
 % [floatrow]      Load floatrow package with correct captions
 % [nohyperref]    Disable automatic loading of hyperref
 % [nolastpage]    Disable automatic loading of lastpage
@@ -40,20 +38,29 @@
 %%% HOWTO use this class
 %
 %% Title
-% \title[short]{Long title}
+% This should look like:
+% \title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={LaTeX Class Documentation}]{How to Use the IACR Communications in Cryptology Class}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% running: the running title displayed in the headers
+% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
 %
-%%  Authors are listed individually in the \addauthor tag, with a list of affiliations.
-% \addauthor[inst={1,2}]{Alice Accomplished} (two affiliations)
-% \addauthor[inst={1}]{Bob Badenuff} (a single affiliation)
-% There are more optional arguments for the author. A full example is:
-% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+%% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,onclick={www.test.com},footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional and control the following:
+%  inst: a numerical list pointing to the index of the institutaion in the affiliation array.
+%  orcid: create a small clickable orcid logo next to the authors name linking to the authors ORCID iD see: orcid.org.
+%  footnote: create an author-specific footnote.
+%  onclick: define what to do when clicking on the author name: e.g.,~can point to the academic webpage.
 %
-%%  Affiliations are listed as an array. One \affiliation per institution
-% \affiliation[ror=02t274463]{University of California, Santa Barbara}
-% \affiliation{University of Second Choice}
-% where the optional ror provides a ror id (https://ror.org/)
-%% TODO: Sponsors are listed individually, and are referenced from the author by \sponsor
-% \sponsor{National Security Agency\grantid{666-2021}}
+%& Affiliations are listed individually using the \affiliations command *after* the (list of) authors using \addauthor
+% This should look like:
+% \affiliation[ror=05f950310,onclick={http://www.kuleuven.be/english}]{KU Leuven}
+% Where the options in square brackets “[ ]”are optional and control the following:
+%  ror: provide the Research Organization Registry (ROR) indetifier for this affiliation (see: ror.org). This is used for meta-data collection only.
+%  onclick: define what to do when clicking on the affiliation name: e.g., can point to the affiliation webpage.
 %
 % A footnote can be placed on the front page without a symbol / numbering using:
 % \genericfootnote{This is the full version of our paper published at XX}
@@ -65,7 +72,7 @@
 %% Warnings
 % - please don't use any \pagestyle or \thispagestyle command
 % - if you have proof with explicit \qed inside, you should either
-%   remove \qed symbols, replace them by \qedhere, or add option [spthm]
+%   remove \qed symbols or replace them by \qedhere
 
 % Common definitions
 \RequirePackage{xkeyval}
@@ -115,11 +122,7 @@
 \define@key{IACR}{final}[]{\PassOptionsToClass{\CurrentOption}{article}\@preprintfalse}
 \define@key{IACR}{preprint}[]{\@preprinttrue}      % Default
 \define@key{IACR}{submission}[]{\@submissiontrue\@anonymoustrue}
-\define@key{IACR}{draft}[]{\@preprinttrue\PassOptionsToClass{\CurrentOption}{article}}
 \define@key{IACR}{notanonymous}[]{\@anonymousfalse}
-\newif\if@spthm
-\@spthmfalse
-\define@key{IACR}{spthm}[]{\@spthmtrue}
 \newif\if@IACR@lastpage
 \@IACR@lastpagetrue
 \define@key{IACR}{nolastpage}[]{\@IACR@lastpagefalse}
@@ -241,6 +244,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty}%
 }
 
+\pgfkeys{/IACR-title/entities/.cd,
+  running/.initial=\@empty,
+  onclick/.initial=\@empty,
+  subtitle/.initial=\@empty,
+  }
+\def\IACR@title@params@set@keys#1{%%
+  \pgfkeys{/IACR-title/entities/.cd,#1}}
+\def\IACR@title@params@get#1{%%
+  \pgfkeysvalueof{/IACR-title/entities/#1}}
+\newcommand\IACR@title@params@clearkeys{%
+  \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
+}
+
 % Title/Author/affiliations
 \def\@affiliation{No institute given.}
 \newcommand{\affiliation}[1]{\gdef\@affiliation{#1}}
@@ -267,7 +283,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \AtEndDocument{\immediate\closeout\meta}
 
 \renewcommand\maketitle{\par
-  \immediate\write\meta{title: \@title}
+  \immediate\write\meta{title: \@plaintitle}
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -287,6 +303,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\let\title\relax
   \global\let\date\relax
   \global\let\and\relax
+  \global\let\email\relax
   % Adjust header size for title page
   \addtolength{\headheight}{\baselineskip}%
   \addtolength{\headsep}{-\baselineskip}%
@@ -294,6 +311,28 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \global\advance\headheight by -\baselineskip%
     \global\advance\headsep by \baselineskip%
   }%
+}
+
+% Provide the title of the paper
+\renewcommand\title[2][]{%
+  \IACR@title@params@set@keys{#1}%
+  \edef\@IACRrunning{\IACR@title@params@get{running}}%
+  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
+  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
+  \gdef\@plaintitle{#2}
+  \ifx\@IACRrunning\@empty
+    \titlerunning{#2}%  
+  \else
+    \titlerunning{\@IACRrunning}%
+  \fi
+  \ifx\@IACRonclick\@empty
+    \gdef\@title{#2}%
+  \else
+    \gdef\@title{\unexpanded{\href{\@IACRonclick}{\color{black}{#2}}}}%
+  \fi
+  \ifx\@IACRsubtitle\@empty\else
+    \gdef\@subtitle{\@IACRsubtitle}%
+  \fi
 }
 
 % Add support for a footnote without symbol on the front page
@@ -345,23 +384,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \par
   \vskip 1.5em}
 
-% This is for indentation in meta file. There must be a better way \_(--)_/
+% This is for indentation in meta file.
 \newcommand{\IACRSS}{\space\space}
 
 \renewcommand\author[2][]{\ClassError{iacrcc}{%
   Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
-
-% Redefine the addauthor command.
-% The idea is that every author makes a separate call to this command.
-% This should look like:
-% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% * inst: superscripts which refer to the affiliations, in the example 
-%         Alice Accomplished has two affiliations (namely listed as the first and % second)
-% * orcid: the ORCID (Open Researcher and Contributor ID) of the author (see: https://orcid.org/)
-% * footnote: space for a footnote different from for example affiliation and funding 
-%             and not used for meta-data collection for indexing.
 
 \newcommand\surname[1]{#1}
 
@@ -383,7 +411,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % Write out the author in the meta file.
   \renewcommand\surname[1]{^^J\IACRSS surname: ##1}%
   \immediate\write\meta{author:}%
-  % name is indented by two spaces.
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
   % Add the author names to @author
@@ -436,13 +463,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand\affiliation[2][]{%
   % Do not write out the email
-  \global\advance\num@affil by 1\relax%
+  \global\advance\num@affil by 1\relax% 
   \immediate\write\meta{affiliation:}%
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%  
   \IACR@affiliation@params@set@keys{#1}%%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
-  %
   \ifx\@IACRror\@empty\else
     \immediate\write\meta{\IACRSS ror: \@IACRror}%
   \fi
@@ -469,13 +495,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \renewcommand{\affiliation}[2][]{}
 \fi
 
-
-\def\title{\@ifnextchar[{\IACR@@@title}{\IACR@@title}}
-\def\IACR@@@title[#1]#2{\gdef\@title{#2}\titlerunning{#1}}
-\def\IACR@@title#1{\gdef\@title{#1}}
-
-\newcommand{\subtitle}[1]{\gdef\@subtitle{#1}}
-
 \newcommand{\inst}[1]{%
   \ifnum\num@authors=1\relax\else
     \ifnum\num@affil=1\relax\else
@@ -484,7 +503,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi}
   
 \def\fnmsep{\unskip$^,$}
-
 
 % Head/foot
 \RequirePackage{fancyhdr}
@@ -571,8 +589,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
-
-\def\subtitle#1{\gdef\@subtitle{#1}}
 
 %Abstract style, keywords
 \def\@IACR@keywords{No keywords given.}
@@ -735,35 +751,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newtheorem{case}{Case}
 
 \theoremstyle{plain}
-
-%Emulate LLNCS spnewtheorem
-\if@spthm
-\def\spnewtheorem{\@ifstar{\IACR@spstar}{\IACR@sp}}
-\def\IACR@spstar#1#2#3#4{%
-  \expandafter\def\csname th@#1\endcsname{\thm@headfont{#3}#4}\thm@style{#1}
-  \newtheorem*{#1}{#2}}
-\def\IACR@sp#1{\@ifnextchar[{\IACR@sp@b{#1}}{\IACR@sp@a{#1}}}
-\def\IACR@sp@a#1#2{%
-  \@ifnextchar[{\IACR@sp@ab{#1}{#2}}{\IACR@sp@aa{#1}{#2}}}
-\def\IACR@sp@ab#1#2[#3]#4#5{%
- \expandafter\def\csname th@#1\endcsname{\thm@headfont{#4}#5}\thm@style{#1}
-  \newtheorem{#1}{#2}[#3]}
-\def\IACR@sp@aa#1#2#3#4{%
- \expandafter\def\csname th@#1\endcsname{\thm@headfont{#3}#4}\thm@style{#1}
-  \newtheorem{#1}{#2}}
-\def\IACR@sp@b#1[#2]#3#4#5{%
- \expandafter\def\csname th@#1\endcsname{\thm@headfont{#4}#5}\thm@style{#1}
-  \newtheorem{#1}[#2]{#3}}
-\let\real@proof\proof
-\def\proof{\@ifnextchar[{\proof@sptm}{\proof@@sptm}}
-\def\proof@sptm[#1]{\real@proof[\proofname{} (#1)]}
-\def\proof@@sptm{\real@proof}
-\let\real@pushQED\pushQED
-\let\real@qed\qed
-\def\pushQED#1{\real@pushQED{\real@qed}}
-\let\qed\qedhere
-\fi
-\theoremstyle{plain} %back to default
 
 % Floats and captions
 \if@floatrow

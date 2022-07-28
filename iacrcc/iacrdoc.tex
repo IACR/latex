@@ -11,30 +11,27 @@
 % along with this software. If not, see
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-\documentclass[preprint]{iacrcc}
+\documentclass{iacrcc}
 \usepackage[utf8]{inputenc}
 
-%\author{Gaëtan Leurent\inst{1} \and Friedrich Wiemer\inst{2}}
-%\institute{Inria, Paris, France, \email{gaetan.leurent@inria.fr} \and
-%           Ruhr-Universität Bochum, Bochum, Germany, \email{friedrich.wiemer@rub.de}}
-%\title[\texttt{iacrtans} class documentation]{\publname}
-%\subtitle{\LaTeX{} Class Documentation (v. 0.92)}
+\addauthor[orcid={0000-0003-1010-8157},inst={1},onclick={https://www.joppebos.com}]{Joppe W. \surname{Bos}}
+\addauthor[orcid={0000-0001-7890-5430},inst={2}]{Kevin S. \surname{McCurley}}
 
-\title[IACR Communications in Cryptology Class]{How to Use the IACR Communications in Cryptology Class}
-\subtitle{\LaTeX{} Class Documentation (v. 0.10)}
-
-\author[orcid=0000-0003-1010-8157,inst={1,2},onclick={https://www.joppebos.com}]{Joppe W. \surname{Bos}}
-\author[inst={2},onclick={www.test.com}]{Kevin S. \surname{McCurley}}
-\affiliation[ror=02t274463,onclick={https://www.nxp.com}]{NXP Semiconductors}
+\affiliation[ror=02t274463,onclick={https://www.nxp.com}]{NXP Semiconductors\email{joppe.bos@nxp.com}}
 \affiliation{Self}
-% Should we list Gaëtan Leurent and Friedrich Wiemer as authors as well?
+
+% Todo: the onclick does not work when \title is loaded before \author
+\title[running={The iacrcc class},
+       onclick={https://github.com/IACR/latex},
+       subtitle={LaTeX Class Documentation (v0.10)},
+      ]
+      {How to Use the IACR Communications in Cryptology Class}
 
 \begin{document}
 
 \maketitle
 
-% use optional argument because the \LaTeX command breaks the PDF keywords
-\keywords[\publname, LaTeX]{\publname{} \and \LaTeX}
+\keywords{Template \and LaTeX \and IACR}
 
 \begin{abstract}
   This document is a quick introduction to the \LaTeX{} class for the
@@ -103,7 +100,7 @@ $\langle\text{institue}\rangle, \langle\text{city}\rangle,
 
 \subsection{Compilation issues}
 
-If your document doesn't compile with the \texttt{iacrtrans} class,
+If your document doesn't compile with the \texttt{iacrcc} class,
 you can try adding the \texttt{[nohyperref]} option.  This will
 disable some code in the class that is known to be fragile, in
 particular the generation of metadata.  If this fixes your compilation
@@ -139,16 +136,27 @@ The following commands are used to input informations for the title page.
 To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper).
 
 \paragraph{\texttt{\textbackslash title}} to define the title.
+There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 
-A shorter running title can be given as optional argument.
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt running} & The running title displayed in the headers.\\
+{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
+{\tt subtitle} & Provide a subtitle.\\
+\end{tabular}
 
-\paragraph{\texttt{\textbackslash subtitle}} to give an optional
-subtitle.
+An example using all the optional options would look like:
 
-\paragraph{\texttt{\textbackslash author}} to define the author list.
+\begin{verbatim}
+\title[running={IACR Communications in Cryptology Class},
+       onclick={https://github.com/IACR/latex},
+       subtitle={A Template}
+      ]{How to Use the IACR Communications in Cryptology Class}
+\end{verbatim}
+
+\paragraph{\texttt{\textbackslash addauthor}} to define the author list.
 
 Authors are listed individually using the {\tt \textbackslash{}author} command. 
-There are a number \emph{optional} options to {\tt \textbackslash{}author}:
+There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
@@ -171,11 +179,10 @@ An example using all the optional options would look like:
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
-% ToDo: shorter list of author names.
-
 \paragraph{\texttt{\textbackslash{}affiliations}}
 Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
-the (list of) author(s) using {\tt \textbackslash{}author}.
+the (list of) authors using {\tt \textbackslash{}addauthor}.
+There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
@@ -232,8 +239,8 @@ claim       &            &        \\
 \end{center}
 
 Note that the \texttt{proof} environment automatically adds a QED
-symbol at the end of the proof (unless you give option
-\texttt{[spthm]} to the \texttt{iacrtrans} class).  If the QED symbol
+symbol at the end of the proof.
+If the QED symbol
 is typeset at a wrong position, you can force its position with
 \verb+\qedhere+.
 
@@ -248,32 +255,14 @@ following class options:
 \item[\texttt{[final]}] for final papers
 \item[\texttt{[preprint]}] for preprints (without copyright info, default)
 \item[\texttt{[submission]}] for submissions (anonymous, with line numbers)
-\item[\texttt{[draft]}] is similar to preprint, but activates draft
-  mode for the underlying \texttt{article} class (which shows overfull hboxes), and other packages
-  (\emph{e.\,g.} \texttt{graphicx}, \texttt{hyperref}).
 \end{description}
 Some types supports further options:
 \begin{description}
-\item[\texttt{[journal=XXX]}] must be used for submissions and
-  final papers; allowed values are \texttt{tosc} and \texttt{tches},
-  to set the \texttt{publname} macro accordingly to the right journal
 \item[\texttt{[notanonymous]}] can be used in submission mode, when the
   call for paper requires non-anonymous submissions.
 \end{description}
 
 \subsection{Other Options}
-
-\paragraph{\texttt{[spthm]}}
-provides theorem environments that emulates
-\texttt{llncs} class's \texttt{sptheorem}:
-\begin{itemize}
-\item A \texttt{\textbackslash spnewtheorem} wrapper is provided
-  around \AmS{} \texttt{\textbackslash newtheorem}.  Note that the
-  styling options are ignored; you should use standard
-  \texttt{amsthm} commands for fine control.
-\item The \AmS{} \texttt{proof} environment will not automatically add a
-  QED symbol at the end of the proof.
-\end{itemize}
 
 \paragraph{\texttt{[floatrow]}}
 uses the \texttt{floatrow} package to customize floats rather than the
@@ -324,21 +313,11 @@ after all other packages.  If you need some packages to be loaded
 \emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
 explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
 
-% \paragraph{\texttt{[metada]}}
-% activates the automatic creation of PDF metadata.  This is
-% enabled automatically byin the \texttt{final} version, but it has been disabled by default
-% with other because the required sting manipulations are not very robust, and can
-% result in weird errors.  If you get errors with this option, you
-% should try to define a clean version of \texttt{author},
-% \texttt{title} and/or \texttt{keywords} as optionnal arguments to
-% these commands.
-
 \paragraph{\texttt{[nolastpage]}}
 disables the automatic loading the \texttt{lastpage} package in
 \texttt{[final]} mode.  When this option is enabled, the last page
 number must be set explicitly with
 \texttt{\textbackslash{}setlastpage}.
-
 
 \section{Typesetting the Bibliography}
 \label{sec:biblio}
@@ -357,7 +336,6 @@ from \url{http://www.dblp.org} or \url{https://cryptobib.di.ens.fr/}.
 We are still working on a good solution for the bibliography, and we
 expect to have more specific instructions when producing the final
 version of the papers, including a dedicated \BibTeX{} style.
-
 
 \section{Further instructions}
 
@@ -460,25 +438,6 @@ More general information can be found in the following documents:
 %\item Documentation of the \LaTeX{} packages used in the class (see below).
 \end{itemize}
 
-\iffalse
-\subsection{Packages used}
-
-The class is based on the standard \texttt{article} class, and loads
-the following packages:
-\begin{itemize}
-\item \texttt{geometry}, \texttt{sectsty}, \texttt{fancyhdr},
-  \texttt{float}, \texttt{microtype}, \texttt{fontenc}, \texttt{lmodern}
-\item \texttt{amsmath}, \texttt{amssymb}, \texttt{amsthm}, \texttt{mathtools}
-\item \texttt{graphicx}
-\item \texttt{xkeyval}, \texttt{afterpage}
-\item \texttt{hyperref}, \texttt{hyperxmp}, \texttt{etoolbox}, \texttt{xcolor} (unless
-  the \texttt{[nohyperref]} option is used)
-\item \texttt{lineno} (in \texttt{[submission]} mode)
-\item \texttt{lastpage} (in \texttt{[final]} mode, unless disabled with \texttt{[nolastpage]})
-\item \texttt{floatrow,caption} (with option \texttt{[floatrow]})
-\end{itemize}
-\fi
-
 \section*{Thanks}
 % Keep this old Thanks list? If so extend!
 We would like to thank people who helped design and improve the class:
@@ -489,38 +448,5 @@ Bart Preneel,
 Christian Rechberger,
 Tyge Tiessen,
 Jonas Wloka.
-
-\iffalse
-\section*{Changes}
-
-\begin{description}
-\item[v 0.21] First public version
-\item[v 0.22] Added documentations.
-              Minor tweaks in the class.
-\item[v 0.23] More documentation.
-              Removed some extra line-numbers with AMS environments in submission mode.
-              Make \verb+autoref+ capitalize sections.
-              Table caption are now above tables.
-              Rewritten running authors and running title.
-              Added PDF info (title, author, keyword).
-              Optional argument for \verb+\email+.
-              Added \texttt{floatrow} option.
-\item[v 0.24] Added CC licence text, and added XMP metadata.
-              Fixed some metadata transformations.
-\item[v 0.26] Added ISSN number and fixed a few bugs with spthm (thanks
-  to Marc Joye).
-\item[v 0.27] Added paragraph \emph{Helping the editor} in the documentation,
-              added \texttt{settings.tosc.tex}.
-\item[v 0.90] Moved to github, various fixes.
-              Added \texttt{journal} class option to switch between TCHES and ToSC.
-              Changed default mode to \texttt{preprint}.
-\item[v 0.91] Adding publication in the final version.
-              Added new class options: \texttt{notanonymous},
-              \texttt{xcolor=xxx}, \texttt{hyperref=xxx},
-              \texttt{nolastpage}.
-\item[v 0.92] Fixed hyperxmp issues.
-              Added template for authors.
-\end{description}
-\fi
 
 \end{document}
