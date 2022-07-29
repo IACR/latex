@@ -280,7 +280,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \AtEndDocument{\immediate\closeout\meta}
 
 \renewcommand\maketitle{\par
-  \immediate\write\meta{title: \@plaintitle}
+  \immediate\write\meta{title: \@plaintitle}%
+  \ifx\@subtitle\@empty\else
+    \immediate\write\meta{\IACRSS subtitle: \@subtitle}%
+  \fi
+  %  
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -452,7 +456,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \else
     \edef\@title{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
   \fi
-  \ifx\@IACRsubtitle\@empty\else
+  \ifx\@IACRsubtitle\@empty
+    \gdef\@subtitle{\@empty}%
+  \else
     \gdef\@subtitle{\@IACRsubtitle}%
   \fi
   \IACR@title@params@clearkeys%
@@ -464,7 +470,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \newcommand\affiliation[2][]{%
-  % Do not write out the email
   \global\advance\num@affil by 1\relax% 
   \immediate\write\meta{affiliation:}%
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%  
