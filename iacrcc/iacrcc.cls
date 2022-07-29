@@ -223,13 +223,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   orcid/.initial=\@empty,
   footnote/.initial=\@empty,
   onclick/.initial=\@empty,
+  running/.initial=\@empty,
   }
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,running=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
@@ -258,11 +259,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 % Title/Author/affiliations
-\def\@affiliation{No institute given.}
-\newcommand{\affiliation}[1]{\gdef\@affiliation{#1}}
-\newcommand{\authorrunning}[1]{\gdef\IACR@runningauthors{#1}}
-\newcommand{\titlerunning}[1]{\gdef\IACR@runningtitle{#1}}
-
+\global\let\IACR@runningauthors\@empty
 \global\let\@author\@empty
 \global\let\@affiliation\@empty
 
@@ -311,28 +308,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \global\advance\headheight by -\baselineskip%
     \global\advance\headsep by \baselineskip%
   }%
-}
-
-% Provide the title of the paper
-\renewcommand\title[2][]{%
-  \IACR@title@params@set@keys{#1}%
-  \edef\@IACRrunning{\IACR@title@params@get{running}}%
-  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
-  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
-  \gdef\@plaintitle{#2}
-  \ifx\@IACRrunning\@empty
-    \titlerunning{#2}%  
-  \else
-    \titlerunning{\@IACRrunning}%
-  \fi
-  \ifx\@IACRonclick\@empty
-    \gdef\@title{#2}%
-  \else
-    \gdef\@title{\unexpanded{\href{\@IACRonclick}{\color{black}{#2}}}}%
-  \fi
-  \ifx\@IACRsubtitle\@empty\else
-    \gdef\@subtitle{\@IACRsubtitle}%
-  \fi
 }
 
 % Add support for a footnote without symbol on the front page
@@ -409,51 +384,78 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
-  \renewcommand\surname[1]{^^J\IACRSS surname: ##1}%
   \immediate\write\meta{author:}%
   \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
-  % Add the author names to @author
-  \ifstrempty{#1}{%
-    \ifx\@author\@empty
-      \gdef\@author{#2}%
-    \else
-      \appto\@author{\and#2}%
-    \fi
-  }{%
-    \IACR@author@params@set@keys{#1}%
-    \immediate\write\meta{\IACRSS affil: \IACR@author@params@get{inst}}%
-    \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
-    \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
-	\edef\@IACRonclick{\IACR@author@params@get{onclick}}%
-	\edef\@IACRinst{\IACR@author@params@get{inst}}%
-	% Author name + optionally clickable
-	\ifx\@author\@empty
-      \ifx\@IACRonclick\@empty
-	    \def\@author{#2}%
-	  \else
-	    \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
-	  \fi
-    \else
-      \ifx\@IACRonclick\@empty
-	    \appto\@author{\and#2}%
-	  \else
-	    \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
-	  \fi
-    \fi
-    % Add the footnote text if present
-    \ifx\@IACRfootnote\@empty\else
-      \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-    \fi
-    \ifx\@IACRorcid\@empty\else
-      \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
-	  \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
-    \fi
-    \ifx\@IACRinst\@empty\else
-      \eappto\@author{\noexpand\inst{\@IACRinst}}%
-    \fi
-	\IACR@author@params@clearkeys%
-  }%
+  \IACR@author@params@set@keys{#1}%
+  \immediate\write\meta{\IACRSS affil: \IACR@author@params@get{inst}}%
+  \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
+  \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
+  \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
+  \edef\@IACRinst{\IACR@author@params@get{inst}}%
+  \edef\@IACRrunningauthor{\IACR@author@params@get{running}}%
+  % Author name + optionally clickable
+  \ifx\@author\@empty
+    \ifx\@IACRonclick\@empty
+	  \def\@author{#2}%
+	\else
+	  \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+	\fi
+  \else
+    \ifx\@IACRonclick\@empty
+	  \appto\@author{\and#2}%
+	\else
+	  \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+	\fi
+  \fi
+  % Add the footnote text if present
+  \ifx\@IACRfootnote\@empty\else
+    \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+  \fi
+  \ifx\@IACRorcid\@empty\else
+    \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
+    \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
+  \fi
+  \ifx\@IACRinst\@empty\else
+    \eappto\@author{\noexpand\inst{\@IACRinst}}%
+  \fi
+  \ifx\@IACRrunningauthor\@empty
+    \ifx\IACR@runningauthors\@empty
+	  \edef\IACR@runningauthors{#2}%
+	\else
+	  \eappto\IACR@runningauthors{, #2}%
+	\fi
+  \else
+    \ifx\IACR@runningauthors\@empty
+      \edef\IACR@runningauthors{\@IACRrunningauthor}%
+	\else
+	  \eappto\IACR@runningauthors{, \@IACRrunningauthor}%
+	\fi
+  \fi
+  \IACR@author@params@clearkeys%
+}
+
+% Provide the title of the paper
+\renewcommand\title[2][]{%
+  \IACR@title@params@set@keys{#1}%
+  \edef\@IACRrunning{\IACR@title@params@get{running}}%
+  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
+  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
+  \gdef\@plaintitle{#2}
+  \ifx\@IACRrunning\@empty
+    \gdef\IACR@runningtitle{#2}%
+  \else
+    \gdef\IACR@runningtitle{\@IACRrunning}%
+  \fi
+  \ifx\@IACRonclick\@empty
+    \edef\@title{#2}%
+  \else
+    \edef\@title{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+  \fi
+  \ifx\@IACRsubtitle\@empty\else
+    \gdef\@subtitle{\@IACRsubtitle}%
+  \fi
+  \IACR@title@params@clearkeys%
 }
 
 \newcommand{\email}[2][\mailto]{%
@@ -461,7 +463,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   , \href{mailto:#1}{\nolinkurl{#2}}%
 }
 
-\renewcommand\affiliation[2][]{%
+\newcommand\affiliation[2][]{%
   % Do not write out the email
   \global\advance\num@affil by 1\relax% 
   \immediate\write\meta{affiliation:}%
@@ -574,8 +576,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \@title%
   \fi}
 \fancyhead[LO]{%
-  \ifdefined\IACR@runningauthors\IACR@runningauthors%
-  \else%
+  \ifx\IACR@runningauthors\@empty
     \def\thanks##1{}%
     \def\inst##1{}%
     \def\fnmsep{}%
@@ -585,6 +586,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \def\and{\stepcounter{IACR@author@cnt}%
       \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces \else\unskip, \ignorespaces\fi}
     \@author%
+  \else
+    \IACR@runningauthors%
   \fi}
 
 \renewcommand{\markboth}[2]{}
@@ -641,11 +644,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \expandafter\zap@last\else
       ,\expandafter\zap@last@comma\fi%
       ##2,##3}
-    \ifdefined\IACR@runningauthors
-      \hypersetup{pdfauthor=\IACR@runningauthors}
-      \typeout{IACR@AUTHOR: \IACR@runningauthors}
-    \else
-      \protected@edef\@tmp{\expandafter\@author}
+    \ifx\IACR@runningauthors\@empty
+	  \protected@edef\@tmp{\expandafter\@author}
       \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
       \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
       \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
@@ -655,6 +655,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \typeout{IACR@AUTHOR: \@tmp}
         \hypersetup{pdfauthor=\@tmp}
       \fi
+	\else
+	  \hypersetup{pdfauthor=\IACR@runningauthors}
+      \typeout{IACR@AUTHOR: \IACR@runningauthors}
     \fi
     %% PDF title
     \ifdefined\IACR@runningtitle
@@ -827,4 +830,4 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
 \endinput
-%end of file iacrtrans.cls
+%end of file iacrcc.cls

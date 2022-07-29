@@ -11,6 +11,14 @@
 % Include LaTeX packages required by your paper
 % \usepackage{}
 
+% Provide the title of the paper
+% This should look like:
+\title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% running: the running title displayed in the headers
+% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
+
 % Define authors and affiliations
 % Authors are listed individually using the \addauthor tag followed by a list of affiliations.
 % The idea is that every author makes a separate call to this command.
@@ -21,8 +29,15 @@
 % orcid: create a small clickable orcid logo next to the authors name linking to the authors ORCID iD see: orcid.org.
 % footnote: create an author-specific footnote.
 % onclick: define what to do when clicking on the author name: e.g., can point to the academic webpage.
-\addauthor[orcid={0000-0003-1010-8157},inst={1},onclick={https://www.joppebos.com}]{Joppe W. \surname{Bos}}
-\addauthor[orcid={0000-0001-7890-5430},inst={2}]{Kevin S. \surname{McCurley}}
+\addauthor[orcid={0000-0003-1010-8157},
+           inst={1},
+           onclick={https://www.joppebos.com},
+           running={J. W. Bos}
+          ]{Joppe W. \surname{Bos}}
+\addauthor[orcid={0000-0001-7890-5430},
+           inst={2},
+           running={K. S. McCurley}
+          ]{Kevin S. \surname{McCurley}}
 
 % Affiliations are listed individually using the \affiliations command *after* the (list of) authors using \addauthor
 % This should look like:
@@ -30,25 +45,16 @@
 % Where the options in square brackets “[ ]”are optional and control the following:
 % ror: provide the Research Organization Registry (ROR) indetifier for this affiliation (see: ror.org). This is used for meta-data collection only.
 % onclick: define what to do when clicking on the affiliation name: e.g., can point to the affiliation webpage.
-\affiliation[ror=02t274463,onclick={https://www.nxp.com}]{NXP Semiconductors\email{joppe.bos@nxp.com}}
+\affiliation[ror=02t274463,
+             onclick={https://www.nxp.com}
+            ]{NXP Semiconductors\email{joppe.bos@nxp.com}}
 \affiliation{Self}
-
 % A footnote can be placed on the front page without a symbol / numbering using:
 % \genericfootnote{This is the full version of our paper published at XX}
-
-% Provide the title of the paper
-% This should look like:
-\title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% running: the running title displayed in the headers
-% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
-% subtitle: provide a subtitle
 
 \begin{document}
 
 \maketitle
-
-% TODO: authorrunning
 
 % Provide the keywords *before* the abstract
 \keywords{Template \and LaTeX \and IACR}
@@ -77,6 +83,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+{\tt running} & The running author name displayed in the headers.\\
 \end{tabular}
 
 \noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
@@ -86,10 +93,11 @@ surnames which might be confusing.
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\author[orcid=0000-0003-1010-8157,
+\author[orcid=0000-0000-0000-0000,
         inst={1,2},
         footnote={Thanks to my supervisor for the support.},
-        onclick={https://www.mypersonalwebpage.com}
+        onclick={https://www.mypersonalwebpage.com},
+        running={A. Accomplished}
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
