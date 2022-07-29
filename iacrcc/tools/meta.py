@@ -69,7 +69,7 @@ def _title_to_jats(node, title):
             ET.SubElement(title_node, 'jats:inline-formula').text = '$' + parts[i+1] + '$'
     return title_node
 
-def title_to_crossref(node, title):
+def title_to_crossref(node, elem_name, title):
     """Break title by $ and encode math parts as mml:math.
 
     This is intended to be inside the crossref XML schema. Note that the <title>
@@ -79,7 +79,7 @@ def title_to_crossref(node, title):
     "text" denotes text that is inside the element, and "tail" denotes any text that
     follows the element but before any other element.
       Parameters:
-        node: an xml.etree.ElementTree Element to attach 'title' element.
+        node: an xml.etree.ElementTree Element to attach elem_name element.
         title: the string with inline TeX from a title.
       Returns:
         an xml.etree.ElementTree.Element with title.
@@ -88,7 +88,7 @@ def title_to_crossref(node, title):
     TODO: develop some tests for this
     TODO: also break by \[ \] pairs, since $ is old-world.
     """
-    title_node = ET.SubElement(node, 'title')
+    title_node = ET.SubElement(node, elem_name)
     parts = title.split('$')
     first = 0
     if parts[0]:
@@ -320,6 +320,11 @@ def read_meta(metafile):
             elif line.startswith('title:'):
                 data['title'] = line[6:].strip()
                 line = f.readline().rstrip()
+                if line.startswith('  '):
+                    k,v = get_key_val(line)
+                    if k == 'subtitle':
+                        data['subtitle'] = v
+                        line = f.readline().rstrip()
             elif line.startswith('citation:'):
                 parts = line.split()
                 assert(len(parts) == 3)
@@ -467,9 +472,9 @@ def create_crossref(args, data):
                                             'publication_type': pub_type,
                                             'reference_distribution_opts': 'any'})
     titles = ET.SubElement(journal_article, 'titles')
-    title_to_crossref(titles, data['title'])
+    title_to_crossref(titles, 'title', data['title'])
     if 'subtitle' in data:
-        ET.SubElement(titles, 'subtitle').text = data['subtitle']
+        title_to_crossref(titles, 'subtitle', data['subtitle'])
     contributors = ET.SubElement(journal_article, 'contributors')
     for author in data['authors']:
         # Note: 'first' does not mean what you think it is. You can have multiple 'first'
