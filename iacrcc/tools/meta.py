@@ -17,6 +17,7 @@ from enum import IntEnum
 from pathlib import Path
 import pypandoc
 import json
+import re
 import sys
 from pylatexenc.latex2text import LatexNodes2Text
 from nameparser import HumanName
@@ -47,66 +48,81 @@ def get_key_val(line):
     return key, val
     
 
-def _title_to_jats(node, title):
-    """Break title by $ and encode math parts as jats:inline-formula.
+def title_to_jats(node, title):
+    """Attach article-title to element-citation node in JATS format. This is
+       used for XMP output.
 
-    This is intended to be inside the JATS article-title element.
       Parameters:
         node: an xml.etree.ElementTree Element to attach 'article-title' element.
-        title: the string with inline TeX from a title.
-      Returns:
-        an xml.etree.ElementTree.Element with article-title.
+        title: the string with mixed TeX content with text and inline math.
 
-    TODO: also break by \[ \] pairs, since $ is old-world.
+    TODO: switch XMP to use mathml (and add namespace for it).
     """
-    parts = title.split('$')
-    title_node = ET.SubElement(node, 'jats:article-title')
-    for i in range(0, len(parts), 2):
-        ET.SubElement(title_node, 'jats:roman').text = parts[i]
-        if i + 1 < len(parts):
-            # math_node = ET.fromstring(latex2mathml.converter.convert(parts[i+1]))
-            #title_node.append(math_node)
-            ET.SubElement(title_node, 'jats:inline-formula').text = '$' + parts[i+1] + '$'
-    return title_node
+    delims = ['$', '\\(', '\\)']
+    # This splits the string into parts by the delimiters $, \(, and \)
+    parts = re.split(r'([\\][()]|[$])',title)
+    inmath = False
+    encoded = '<article-title>'
+    for i in range(len(parts)):
+        if parts[i] in delims:
+            inmath = not inmath
+        else:
+            if inmath:
+                # for math, just the raw TeX.
+                # TODO: switch to mathml, since latex needs to be inside CDATA and
+                # ElementTree does not support CDATA.
+                #
+                encoded += '<tex-math>' + parts[i] + '</tex-math>'
+            else:
+                # for non-math, just character codes
+                encoded += decoder.latex_to_text(parts[i])
+    encoded += '</article-title>'
+    tnode = ET.fromstring(encoded)
+    node.append(tnode)
 
-def title_to_crossref(node, elem_name, title):
-    """Break title by $ and encode math parts as mml:math.
+def title_to_utf8(title):
+    """Very simple conversion of title to UTF-8. This doesn't handle superscripts and
+       subscripts, leaving them as ^ and _. Intended for citation titles in crossref."""
+    return decoder.latex_to_text(title)
 
-    This is intended to be inside the crossref XML schema. Note that the <title>
-    element may contain mixed content, namely both text and elements. The xml.etree
-    package has a rather unfriendly way to construct this because it has no notion
-    of a text node. Instead, an element has two text attributes of "text" and "tail".
-    "text" denotes text that is inside the element, and "tail" denotes any text that
-    follows the element but before any other element.
-      Parameters:
-        node: an xml.etree.ElementTree Element to attach elem_name element.
-        title: the string with inline TeX from a title.
-      Returns:
-        an xml.etree.ElementTree.Element with title.
+def title_to_crossref(elem_name, title):
+    """Convert titles to an Element with mathml for inline math. This is used for
+    crossref format.
 
-    TODO: crossref doesn't allow jats, so create MATHML using latex2mathml.
+    The conversion is tricky, because title may contain inline mathematics but it
+    may also contain TeX control characters in text mode. We split the string into
+    math and text pieces using a regular expression. Then we use latex2mathml to convert
+    the inline math and pylatenxnc to convert the text fragments.
+
+    Parameters:
+      elem_name: name for the root node
+      title: LaTeX string for title.
+    Returns:
+      string representation of xml for crossref, containing mathml.
     TODO: develop some tests for this
-    TODO: also break by \[ \] pairs, since $ is old-world.
     """
-    title_node = ET.SubElement(node, elem_name)
-    parts = title.split('$')
-    first = 0
-    if parts[0]:
-        # Then the string doesn't start with inline math.
-        first = 1
-        title_node.text = decoder.latex_to_text(parts[0])
-    # Now first points at the first inline math piece (if any)
-    for i in range(first, len(parts), 2):
-        math_node = ET.SubElement(title_node, 'jats:inline-formula')
-        math_node.text = '$' + parts[i] + '$'
-        if i + 1 < len(parts):
-            math_node.tail = decoder.latex_to_text(parts[i+1])
-    return title_node
+    delims = ['$', '\\(', '\\)']
+    # This splits the string into parts by the delimiters $, \(, and \)
+    parts = re.split(r'([\\][()]|[$])',title)
+    encoded = ''
+    inmath = False
+    for i in range(len(parts)):
+        if parts[i] in delims:
+            inmath = not inmath
+        else:
+            if inmath:
+                # for math
+                encoded += latex2mathml.converter.convert(parts[i])
+            else:
+                # for non-math, just character codes
+                encoded += decoder.latex_to_text(parts[i])
+    encoded = '<{}>{}</{}>'.format(elem_name, encoded, elem_name)
+    return encoded
 
 def _add_jats_ref(citation, reflist):
     """Used for adding a ref node in JATS format for citations."""
-    ref = ET.SubElement(reflist, 'jats:ref', attrib={'id': citation['id']})
-    cite_node = ET.SubElement(ref, 'jats:element-citation',
+    ref = ET.SubElement(reflist, 'ref', attrib={'id': citation['id']})
+    cite_node = ET.SubElement(ref, 'element-citation',
                               attrib={'publication-type': citation['type']})
     return cite_node
 
@@ -120,51 +136,50 @@ def add_jats_persons(cite_node, persons):
          nothing, but cite_node is appended to.
     """
     for person in persons:
-        person_node = ET.SubElement(cite_node, 'jats:person')
+        person_node = ET.SubElement(cite_node, 'person')
         humanname = HumanName(person['name'])
         given = ''
         if humanname.first:
             given = humanname.first
             if humanname.middle:
                 given += ' ' + humanname.middle
-            ET.SubElement(person_node, 'jats:given-names').text = given
+            ET.SubElement(person_node, 'given-names').text = given
         if humanname.last:
-            ET.SubElement(person_node, 'jats:surname').text = humanname.last
+            ET.SubElement(person_node, 'surname').text = humanname.last
         else:
-            ET.SubElement(person_node, 'jats:surname').text = person['name']
+            ET.SubElement(person_node, 'surname').text = person['name']
         
 def _report_error(level, msg):
-    """TODO: maybe use something else?"""
+    """TODO: switch to the logging package."""
     print('{}:{}'.format(level, msg))
     
 def add_jats_article(citation, reflist):
     """Process a dict with bibtex fields for an article.
        Parameters:
          citation: a dict that requires 'title', 'journal', and 'authorlist'
-         reflist: Element for 'jats:ref-list'
+         reflist: Element for 'ref-list'
        Returns:
          nothing, but reflist is appended to.
     """
     if 'title' in citation and 'journal' in citation and citation['authorlist']:
         cite_node = _add_jats_ref(citation, reflist)
-        nodes = _title_to_jats(cite_node, citation['title'])
-        title_node = ET.SubElement(cite_node, 'jats:article-title').append(nodes)
-        ET.SubElement(cite_node, 'jats:source').text = citation['journal']
+        title_to_jats(cite_node, citation['title'])
+        ET.SubElement(cite_node, 'source').text = citation['journal']
         add_jats_persons(cite_node, citation['authorlist'])
         if 'year' in citation:
-            ET.SubElement(cite_node, 'jats:year').text = citation['year']
+            ET.SubElement(cite_node, 'year').text = citation['year']
         if 'month' in citation:
-            ET.SubElement(cite_node, 'jats:month').text = citation['month']
+            ET.SubElement(cite_node, 'month').text = citation['month']
         if 'volume' in citation:
-            ET.SubElement(cite_node, 'jats:volume').text = citation['volume']
+            ET.SubElement(cite_node, 'volume').text = citation['volume']
         if 'issue' in citation:
-            ET.SubElement(cite_node, 'jats:issue').text = citation['issue']
+            ET.SubElement(cite_node, 'issue').text = citation['issue']
         if 'pages' in citation:
             # Just the first page
             parts = citation['pages'].split('-')
-            ET.SubElement(cite_node, 'jats:fpage').text = parts[0]
+            ET.SubElement(cite_node, 'fpage').text = parts[0]
         if 'note' in citation:
-            ET.SubElement(cite_node, 'jats:comment').text = citation['note']
+            ET.SubElement(cite_node, 'comment').text = citation['note']
     else:
         report_error('warning',
                      'Missing fields in article[{}]'.format(citation.get('key', '?')))
@@ -178,92 +193,91 @@ def add_jats_book(citation, reflist):
     """
     if 'title' in citation and 'year' in citation and 'publisher' in citation and (citation['authorlist'] or 'editors' in citation):
         cite_node = _add_jats_ref(citation, reflist)
-        ET.SubElement(cite_node, 'jats:source').text = decoder.latex_to_text(citation['title'])
-        ET.SubElement(cite_node, 'jats:year').text = citation['year']
-        ET.SubElement(cite_node, 'jats:publisher-name').text = citation['publisher']
+        ET.SubElement(cite_node, 'source').text = decoder.latex_to_text(citation['title'])
+        ET.SubElement(cite_node, 'year').text = citation['year']
+        ET.SubElement(cite_node, 'publisher-name').text = citation['publisher']
         if 'address' in citation:
-            ET.SubElement(cite_node, 'jats:publisher-loc').text = citation['address']
+            ET.SubElement(cite_node, 'publisher-loc').text = citation['address']
         if citation['authorlist']:
             add_jats_persons(cite_node, citation['authorlist'])
         else:
             add_jats_persons(cite_node, citation['editors'])
         if 'month' in citation:
-            ET.SubElement(cite_node, 'jats:month').text = citation['month']
+            ET.SubElement(cite_node, 'month').text = citation['month']
         if 'edition' in citation:
-            ET.SubElement(cite_node, 'jats:edition').text = citation['edition']
+            ET.SubElement(cite_node, 'edition').text = citation['edition']
         if 'note' in citation:
-            ET.SubElement(cite_node, 'jats:comment').text = citation['note']
+            ET.SubElement(cite_node, 'comment').text = citation['note']
     else:
         report_error('warning',
                      'Missing fields in book[{}]'.format(citation.get('key', '?')))
 
-def add_inproceedings(citation, reflist):
+def add_jats_inproceedings(citation, reflist):
     # title, booktitle, and authors are required. Should also have year
     if 'title' in citation and 'booktitle' in citation and citation['authorlist']:
         cite_node = _add_jats_ref(citation, reflist)
         #nodes = ET.fromstring(latex2mathml.converter.convert(citation['title']))
-        nodes = _title_to_jats(cite_node, citation['title'])
-        title_node = ET.SubElement(cite_node, 'jats:article-title').append(nodes)
-        ET.SubElement(cite_node, 'jats:source').text = citation['booktitle']
+        title_to_jats(cite_node, citation['title'])
+        ET.SubElement(cite_node, 'source').text = citation['booktitle']
         add_jats_persons(cite_node, citation['authorlist'])
         if 'year' in citation:
-            ET.SubElement(cite_node, 'jats:year').text = citation['year']
+            ET.SubElement(cite_node, 'year').text = citation['year']
         if 'month' in citation:
-            ET.SubElement(cite_node, 'jats:month').text = citation['month']
+            ET.SubElement(cite_node, 'month').text = citation['month']
         if 'series' in citation:
-            ET.SubElement(cite_node, 'jats:volume').text = citation['volume']
+            ET.SubElement(cite_node, 'volume').text = citation['volume']
         if 'pages' in citation:
             # Just the first page
             parts = citation['pages'].split('-')
-            ET.SubElement(cite_node, 'jats:fpage').text = parts[0]
+            ET.SubElement(cite_node, 'fpage').text = parts[0]
         if 'note' in citation:
-            ET.SubElement(cite_node, 'jats:comment').text = citation['note']
+            ET.SubElement(cite_node, 'comment').text = citation['note']
 
 def add_jats_generic(citation, reflist):
     """Add all nodes that we can that make sense."""
     cite_node = _add_jats_ref(citation, reflist)
     if 'title' in citation:
-        ET.SubElement(cite_node, 'jats:source').text = decoder.latex_to_text(citation['title'])
+        ET.SubElement(cite_node, 'source').text = decoder.latex_to_text(citation['title'])
     elif 'booktitle' in citation:
-        ET.SubElement(cite_node, 'jats:source').text = citation['booktitle']
+        ET.SubElement(cite_node, 'source').text = citation['booktitle']
     if citation['authorlist']:
-        add_jats_persons(cite_node, citation['jats:authorlist'])
+        add_jats_persons(cite_node, citation['authorlist'])
     elif 'editors' in citation:
         add_jats_persons(cite_node, citation['editors'])
     if 'year' in citation:
-        ET.SubElement(cite_node, 'jats:year').text = citation['year']
+        ET.SubElement(cite_node, 'year').text = citation['year']
     if 'month' in citation:
-        ET.SubElement(cite_node, 'jats:month').text = citation['month']
+        ET.SubElement(cite_node, 'month').text = citation['month']
     if 'volume' in citation:
-        ET.SubElement(cite_node, 'jats:volume').text = citation['volume']
+        ET.SubElement(cite_node, 'volume').text = citation['volume']
     if 'issue' in citation:
-        ET.SubElement(cite_node, 'jats:issue').text = citation['issue']
+        ET.SubElement(cite_node, 'issue').text = citation['issue']
     if 'pages' in citation:
         # Just the first page
         parts = citation['pages'].split('-')
-        ET.SubElement(cite_node, 'jats:fpage').text = parts[0]
+        ET.SubElement(cite_node, 'fpage').text = parts[0]
     if 'address' in citation:
-        ET.SubElement(cite_node, 'jats:publisher-loc').text = citation['address']
+        ET.SubElement(cite_node, 'publisher-loc').text = citation['address']
     if 'chapter' in citation:
-        ET.SubElement(cite_node, 'jats:chapter-title').text = citation['chapter']
+        ET.SubElement(cite_node, 'chapter-title').text = citation['chapter']
     if 'edition' in citation:
-        ET.SubElement(cite_node, 'jats:edition').text = citation['edition']
+        ET.SubElement(cite_node, 'edition').text = citation['edition']
     if 'howpublished' in citation:
-        ET.SubElement(cite_node, 'jats:comment').text = citation['howpublished']
+        ET.SubElement(cite_node, 'comment').text = citation['howpublished']
     if 'note' in citation:
-        ET.SubElement(cite_node, 'jats:comment').text = citation['note']
+        ET.SubElement(cite_node, 'comment').text = citation['note']
     if 'publisher' in citation:
-        ET.SubElement(cite_node, 'jats:publisher-name').text = citation['publisher']
+        ET.SubElement(cite_node, 'publisher-name').text = citation['publisher']
     elif 'organization' in citation:
-        ET.SubElement(cite_node, 'jats:publisher-name').text = citation['organization']
+        ET.SubElement(cite_node, 'publisher-name').text = citation['organization']
     elif 'school' in citation:
-        ET.SubElement(cite_node, 'jats:publisher-name').text = citation['school']
+        ET.SubElement(cite_node, 'publisher-name').text = citation['school']
     if 'address' in citation:
-        ET.SubElement(cite_node, 'jats:publisher-loc').text = citation['address']
+        ET.SubElement(cite_node, 'publisher-loc').text = citation['address']
     if 'pages' in citation:
         # Just the first page
         parts = citation['pages'].split('-')
-        ET.SubElement(cite_node, 'jats:fpage').text = parts[0]
+        ET.SubElement(cite_node, 'fpage').text = parts[0]
          
 
 def _crossref_batch_info():
@@ -316,7 +330,6 @@ def read_meta(metafile):
                     k,v = get_key_val(line)
                     affiliation[k] = decoder.latex_to_text(v)
                     line = f.readline().rstrip()
-            # TODO: also check for subtitle.
             elif line.startswith('title:'):
                 data['title'] = line[6:].strip()
                 line = f.readline().rstrip()
@@ -371,6 +384,8 @@ def add_citation_node(citation_list, citation):
       TODO: insert more elements to comply with schema.
     """
     if 'doi' in citation:
+        # used to create string titles.
+        dummy_node = ET.Element('junk')
         # for now we only add them if there is a DOI.
         cite_node = ET.SubElement(citation_list, 'citation',
                                   attrib={'key': citation['id']})
@@ -390,7 +405,7 @@ def add_citation_node(citation_list, citation):
             if 'journal' in citation:
                 ET.SubElement(cite_node, 'journal_title').text = citation['journal']
             if 'title' in citation:
-                ET.SubElement(cite_node, 'article_title').text = citation['title']
+                ET.SubElement(cite_node, 'article_title').text = title_to_utf8(citation['title'])
             if 'volume' in citation:
                 ET.SubElement(cite_node, 'volume').text = citation['volume']
             if 'number' in citation:
@@ -412,17 +427,11 @@ def add_citation_node(citation_list, citation):
                 ET.SubElement(cite_node, 'issue').text = citation['number']
             if 'pages' in citation:
                 ET.SubElement(cite_node, 'first_page').text = citation['pages'].split('-')[0]
-            if 'year' in citation:
-                # yes, it's called cYear.
-                ET.SubElement(cite_node, 'cYear').text = citation['year']
         elif citation['type'] == 'book':
             if 'isbn' in citation:
                 ET.SubElement(cite_node, 'isbn').text = citation['isbn']
             if 'title' in citation:
                 ET.SubElement(cite_node, 'volume_title').text = citation['title']
-            if 'year' in citation:
-                # yes, it's called cYear.
-                ET.SubElement(cite_node, 'cYear').text = citation['year']
         else: # generic type, like misc or inbook or manual or techreport
             if 'title' in citation:
                 ET.SubElement(cite_node, 'article_title').text = citation['title']
@@ -433,14 +442,14 @@ def create_crossref(args, data):
        See https://data.crossref.org/reports/help/schema_doc/5.3.1/index.html
        and https://gitlab.com/crossref/schema/-/blob/master/best-practice-examples/journal.article5.3.0.xml
     """
-    root = ET.Element('doi_batch', attrib={
-        'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-        'xsi:schemaLocation': 'http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd',
-        'xmlns': 'http://www.crossref.org/schema/5.3.1',
-        'xmlns:jats': 'http://www.ncbi.nlm.nih.gov/JATS1',
-        'xmlns:fr': 'http://www.crossref.org/fundref.xsd',
-        'xmlns:mml': 'http://www.w3.org/1998/Math/MathML',
-        'version': '5.3.1'})
+    # Note: latex2mathml uses no namespace prefix, so we have to add this.
+    ET.register_namespace('m', 'http://www.w3.org/1998/Math/MathML')
+    ET.register_namespace('jats', 'http://www.ncbi.nlm.nih.gov/JATS1')
+    root = ET.Element('doi_batch', attrib={'xmlns': 'http://www.crossref.org/schema/5.3.1',
+                                           'xsi:schemaLocation': 'http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd',
+                                           'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                                           'xmlns:fr': 'http://www.crossref.org/fundref.xsd',
+                                           'version': '5.3.1'})
     head = ET.SubElement(root, 'head')
     batch_id, ts = _crossref_batch_info()
     if args.crossref_batch_id:
@@ -465,16 +474,16 @@ def create_crossref(args, data):
     ET.SubElement(archive_locations, 'archive', attrib={'name': 'Internet Archive'})
     # TODO: insert doi_data for journal (not journal_article?)
     pub_type = 'bibliographic_record'
-    # TODO: once we start reporting abstract, swith to this:
+    # TODO: once we start reporting abstract, switch to this:
     # pub_type = 'abstract_only' if args.abstract else 'bibliographic_record'
     journal_article = ET.SubElement(journal, 'journal_article',
                                     attrib={'language': 'en',
                                             'publication_type': pub_type,
                                             'reference_distribution_opts': 'any'})
     titles = ET.SubElement(journal_article, 'titles')
-    title_to_crossref(titles, 'title', data['title'])
+    titles.append(ET.fromstring(title_to_crossref('title', data['title'])))
     if 'subtitle' in data:
-        title_to_crossref(titles, 'subtitle', data['subtitle'])
+        titles.append(ET.fromstring(title_to_crossref('subtitle', data['subtitle'])))
     contributors = ET.SubElement(journal_article, 'contributors')
     for author in data['authors']:
         # Note: 'first' does not mean what you think it is. You can have multiple 'first'
@@ -506,7 +515,7 @@ def create_crossref(args, data):
                                     ror = 'https://ror.org/' + ror
                                 ET.SubElement(institution_node, 'institution_id',
                                               attrib={'type': 'ror'}).text = ror
-    # TODO: handle abstracts in JATS format
+    # TODO: figure out how to encode abstracts?
     # if 'abstract' in data:
     #        abstract_node = ET.SubElement(journal_article, 'abstract')
     #        ET.SubElement(abstract_node, 'jats:p', attrib={'xml:lang': 'en'}).text = data['abstract']
@@ -518,7 +527,6 @@ def create_crossref(args, data):
     ET.SubElement(date_node, 'year').text = str(today.year)
 
     # TODO: check mime_type, and make sure we are assigning to an existing web page.
-    # We append .pdf to get the PDF file.
     doi_data = ET.SubElement(journal_article, 'doi_data')
     ET.SubElement(doi_data, 'doi').text = args.doi
     ET.SubElement(doi_data, 'resource', attrib={'content_version': 'vor',
@@ -579,11 +587,13 @@ def main():
         create_crossref(args, data)
         
     if args.citations:
-        root = ET.Element('x:xmpmetadata', attrib={'xmlns:x':'adobe:ns:meta'})
-        root.insert(1, ET.Comment('This contains citations in the JATS 1.1d schema'))
-        rdf = ET.SubElement(root, 'rdf:RDF', attrib={'xmlns:jats': 'http://www.ncbi.nlm.nih.gov/JATS1'})
-        reflist = ET.SubElement(rdf, 'jats:ref-list')
-        reftitle = ET.SubElement(reflist, 'jats:title')
+        # This prints an XMP file to the location args.citations.
+        root = ET.Element('x:xmpmetadata', attrib={'xmlns:x':'adobe:ns:meta/'})
+        tree = ET.ElementTree(root)
+        root.insert(1, ET.Comment('This contains citations in the JATS 1.2 schema'))
+        rdf = ET.SubElement(root, 'rdf:RDF', attrib={'xmlns': 'http://www.ncbi.nlm.nih.gov/JATS1'})
+        reflist = ET.SubElement(rdf, 'ref-list')
+        reftitle = ET.SubElement(reflist, 'title')
         reftitle.text = 'Bibliography'
         for citation in data['citations']:
             if citation['type'] == 'article':
@@ -594,9 +604,8 @@ def main():
                 add_jats_inproceedings(citation, reflist)
             else:
                 add_jats_generic(citation, reflist)
-        xmp_file = Path(args.citations)
-        xmp_file.write_text(ET.tostring(root, encoding='unicode'), encoding='utf-8')
+        tree.write(args.citations, encoding='UTF-8', xml_declaration=False)
 
-        
+
 if __name__ == "__main__":
     main()
