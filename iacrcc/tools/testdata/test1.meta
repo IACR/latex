@@ -15,7 +15,7 @@ affiliation:
   name: University of Antartica
 affiliation:
   name: Bo{\u g}azi{\c c}i University
-title: Thoughts about "binary" functions on $GF(p)$ by Fester Bestertester
+title: Thoughts about "binary" functions on $GF(p)$ by Fester Bestertester with $O(m^3)$ running time
 citation: misc AES
   howpublished: National Institute of Standards and Technology (NIST), {FIPS PUB} 197, {U.S.} Department of Commerce
   key: AES
