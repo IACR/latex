@@ -606,6 +606,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\IACR@@keywords#1{\gdef\@IACR@keywords{#1}}
 
 \renewenvironment{abstract}{%
+  \def\and{,\space}\edef\@writekeywords{\@IACR@keywords}%
+  \immediate\write\meta{keywords: \@writekeywords}%
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}}
   {\smallskip\par\textbf{\textsf{Keywords:}}
