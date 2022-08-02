@@ -223,14 +223,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   orcid/.initial=\@empty,
   footnote/.initial=\@empty,
   onclick/.initial=\@empty,
-  running/.initial=\@empty,
   }
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,running=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
@@ -240,7 +239,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   street/.initial=\@empty,
   city/.initial=\@empty,
   state/.initial=\@empty,
-  zip/.initial=\@empty,
+  postcode/.initial=\@empty,
   country/.initial=\@empty,
   }
 \def\IACR@affiliation@params@set@keys#1{%%
@@ -248,7 +247,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\IACR@affiliation@params@get#1{%%
   \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
 \newcommand\IACR@affiliation@params@clearkeys{%
-  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,zip=\@empty,country=\@empty}%
+  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,postcode=\@empty,country=\@empty}%
 }
 
 \pgfkeys{/IACR-title/entities/.cd,
@@ -403,7 +402,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
   \edef\@IACRinst{\IACR@author@params@get{inst}}%
-  \edef\@IACRrunningauthor{\IACR@author@params@get{running}}%
   % Author name + optionally clickable
   \ifx\@author\@empty
     \ifx\@IACRonclick\@empty
@@ -428,19 +426,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \ifx\@IACRinst\@empty\else
     \eappto\@author{\noexpand\inst{\@IACRinst}}%
-  \fi
-  \ifx\@IACRrunningauthor\@empty
-    \ifx\IACR@runningauthors\@empty
-	  \edef\IACR@runningauthors{#2}%
-	\else
-	  \eappto\IACR@runningauthors{, #2}%
-	\fi
-  \else
-    \ifx\IACR@runningauthors\@empty
-      \edef\IACR@runningauthors{\@IACRrunningauthor}%
-	\else
-	  \eappto\IACR@runningauthors{, \@IACRrunningauthor}%
-	\fi
   \fi
   \IACR@author@params@clearkeys%
 }
@@ -486,7 +471,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \edef\@IACRstreet{\IACR@affiliation@params@get{street}}%
   \edef\@IACRcity{\IACR@affiliation@params@get{city}}%
   \edef\@IACRstate{\IACR@affiliation@params@get{state}}%
-  \edef\@IACRzip{\IACR@affiliation@params@get{zip}}%
+  \edef\@IACRpostcode{\IACR@affiliation@params@get{postcode}}%
   \edef\@IACRcountry{\IACR@affiliation@params@get{country}}%
   \ifx\@IACRror\@empty\else
     \immediate\write\meta{\IACRSS ror: \@IACRror}%
@@ -503,8 +488,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@IACRstate\@empty\else
     \immediate\write\meta{\IACRSS state: \@IACRstate}%
   \fi
-  \ifx\@IACRzip\@empty\else
-    \immediate\write\meta{\IACRSS zip: \@IACRzip}%
+  \ifx\@IACRpostcode\@empty\else
+    \immediate\write\meta{\IACRSS postcode: \@IACRpostcode}%
   \fi
   \ifx\@IACRcountry\@empty\else
     \immediate\write\meta{\IACRSS country: \@IACRcountry}%
