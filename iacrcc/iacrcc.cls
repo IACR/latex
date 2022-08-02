@@ -236,13 +236,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \pgfkeys{/IACR-affiliation/entities/.cd,
   ror/.initial=\@empty,
   onclick/.initial=\@empty,
+  department/.initial=\@empty,
+  street/.initial=\@empty,
+  city/.initial=\@empty,
+  state/.initial=\@empty,
+  zip/.initial=\@empty,
+  country/.initial=\@empty,
   }
 \def\IACR@affiliation@params@set@keys#1{%%
   \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
 \def\IACR@affiliation@params@get#1{%%
   \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
 \newcommand\IACR@affiliation@params@clearkeys{%
-  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty}%
+  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,zip=\@empty,country=\@empty}%
 }
 
 \pgfkeys{/IACR-title/entities/.cd,
@@ -476,8 +482,32 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@affiliation@params@set@keys{#1}%%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
+  \edef\@IACRdepartment{\IACR@affiliation@params@get{department}}%
+  \edef\@IACRstreet{\IACR@affiliation@params@get{street}}%
+  \edef\@IACRcity{\IACR@affiliation@params@get{city}}%
+  \edef\@IACRstate{\IACR@affiliation@params@get{state}}%
+  \edef\@IACRzip{\IACR@affiliation@params@get{zip}}%
+  \edef\@IACRcountry{\IACR@affiliation@params@get{country}}%
   \ifx\@IACRror\@empty\else
     \immediate\write\meta{\IACRSS ror: \@IACRror}%
+  \fi  
+  \ifx\@IACRdepartment\@empty\else
+    \immediate\write\meta{\IACRSS department: \@IACRdepartment}%
+  \fi
+  \ifx\@IACRstreet\@empty\else
+    \immediate\write\meta{\IACRSS street: \@IACRstreet}%
+  \fi
+  \ifx\@IACRcity\@empty\else
+    \immediate\write\meta{\IACRSS city: \@IACRcity}%
+  \fi
+  \ifx\@IACRstate\@empty\else
+    \immediate\write\meta{\IACRSS state: \@IACRstate}%
+  \fi
+  \ifx\@IACRzip\@empty\else
+    \immediate\write\meta{\IACRSS zip: \@IACRzip}%
+  \fi
+  \ifx\@IACRcountry\@empty\else
+    \immediate\write\meta{\IACRSS country: \@IACRcountry}%
   \fi
   \ifx\@IACRonclick\@empty
     \ifx\@affiliation\@empty

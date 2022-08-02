@@ -13,42 +13,79 @@
 
 % Provide the title of the paper
 % This should look like:
-\title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={A Template}]{How to Use the IACR Communications in Cryptology Class}
+\title[running  = {The iacrcc class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
+      ]{How to Use the IACR Communications in Cryptology Class}
 % Where the options in square brackets “[ ]”are optional and control the following:
 % running: the running title displayed in the headers
-% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% onclick: define what to do when clicking on the title. 
+%          This could be used to point to a webpage associated with this paper. 
 % subtitle: provide a subtitle
 
 % Define authors and affiliations
 % Authors are listed individually using the \addauthor tag followed by a list of affiliations.
 % The idea is that every author makes a separate call to this command.
 % This should look like:
-% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,footnote={Thanks to my supervisor for the support.},onclick={https://www.mypersonalwebpage.com}]{Alice Accomplished}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% inst: a numerical list pointing to the index of the institutaion in the affiliation array.
-% orcid: create a small clickable orcid logo next to the authors name linking to the authors ORCID iD see: orcid.org.
+% \addauthor[inst      = {1,2},
+%            orcid     = 0000-0000-0000-0000,
+%            footnote  = {Thanks to my supervisor for the support.},
+%            onclick   = {https://www.mypersonalwebpage.com}
+%           ]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional 
+% and control the following:
+% inst:     a numerical list pointing to the index of the institutaion 
+%           in the affiliation array.
+% orcid:    create a small clickable orcid logo next to the authors name 
+%           linking to the authors ORCID iD see: orcid.org.
 % footnote: create an author-specific footnote.
-% onclick: define what to do when clicking on the author name: e.g., can point to the academic webpage.
-\addauthor[orcid={0000-0003-1010-8157},
-           inst={1},
-           onclick={https://www.joppebos.com},
-           running={J. W. Bos}
+% onclick:  define what to do when clicking on the author name: 
+%           e.g., can point to the academic webpage.
+\addauthor[orcid   = {0000-0003-1010-8157},
+           inst    = {1},
+           onclick = {https://www.joppebos.com},
+           running = {J. W. Bos}
           ]{Joppe W. \surname{Bos}}
-\addauthor[orcid={0000-0001-7890-5430},
-           inst={2},
-           running={K. S. McCurley}
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           running = {K. S. McCurley}
           ]{Kevin S. \surname{McCurley}}
 
-% Affiliations are listed individually using the \affiliations command *after* the (list of) authors using \addauthor
-% This should look like:
-% \affiliation[ror=05f950310,onclick={http://www.kuleuven.be/english}]{KU Leuven}
-% Where the options in square brackets “[ ]”are optional and control the following:
-% ror: provide the Research Organization Registry (ROR) indetifier for this affiliation (see: ror.org). This is used for meta-data collection only.
-% onclick: define what to do when clicking on the affiliation name: e.g., can point to the affiliation webpage.
-\affiliation[ror=031v4g827,
-             onclick={https://www.nxp.com}
+% Affiliations are listed individually using the \affiliations command 
+% *after* the (list of) authors using \addauthor
+% This should look like (full example):
+% \affiliation[ror        = 05f950310,
+%              onclick    = {http://www.kuleuven.be/english},
+%              department = {Computer Security and Industrial Cryptography},              
+%              street     = {Kasteelpark Arenberg 10, box 2452},
+%              city       = {Leuven},
+%              state      = {Vlaams-Brabant},
+%              zip        = {3001},
+%              country    = {Belgium}
+%             ]{KU Leuven}
+% Where the options in square brackets “[ ]”are optional and control 
+% the following (optional information is mainly used for meta-data collection):
+% ror:        provide the Research Organization Registry (ROR) indetifier 
+%             for this affiliation (see: ror.org). This is used for meta-data 
+%             collection only.
+% onclick:    define what to do when clicking on the affiliation name: 
+%             e.g., can point to the affiliation webpage.
+% department: department or suborganization name
+% street:     street address
+% city:       city name
+% state:      state or province name
+% zip:        zip or postal code
+% country:    country name
+
+\affiliation[ror     = 031v4g827,
+             onclick = {https://www.nxp.com},
+             street  = {Interleuvenlaan 80},
+             city    = {Leuven},
+             zip     = {3001},
+             country = {Belgium}
             ]{NXP Semiconductors\email{joppe.bos@nxp.com}}
 \affiliation{Self}
+
 % A footnote can be placed on the front page without a symbol / numbering using:
 % \genericfootnote{This is the full version of our paper published at XX}
 
@@ -93,11 +130,11 @@ surnames which might be confusing.
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\author[orcid=0000-0000-0000-0000,
-        inst={1,2},
-        footnote={Thanks to my supervisor for the support.},
-        onclick={https://www.mypersonalwebpage.com},
-        running={A. Accomplished}
+\author[orcid    = 0000-0000-0000-0000,
+        inst     = {1,2},
+        footnote = {Thanks to my supervisor for the support.},
+        onclick  = {https://www.mypersonalwebpage.com},
+        running  = {A. Accomplished}
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
@@ -109,16 +146,28 @@ There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
 {\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
+{\tt  department} & Department or suborganization name.\\
+{\tt  street} & Street address.\\
+{\tt  city} & City name.\\
+{\tt  state} & State or province name.\\
+{\tt  zip} & Zip or postal code.\\
+{\tt  country} & Country name.\\
 \end{tabular}
 
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\affiliation[ror=05f950310,
-             onclick={http://www.kuleuven.be/english}
+\affiliation[ror        = 05f950310,
+             onclick    = {http://www.kuleuven.be/english},
+             department = {Computer Security and Industrial Cryptography},              
+             street     = {Kasteelpark Arenberg 10, box 2452},
+             city       = {Leuven},
+             state      = {Vlaams-Brabant},
+             zip        = {3001},
+             country    = {Belgium}
             ]{KU Leuven}
 \end{verbatim}
-
+            
 \subsubsection*{The Title Command}
 The title is provided using {\tt \textbackslash{}title}.
 There are a number \emph{optional} options to {\tt \textbackslash{}title}:
@@ -132,9 +181,9 @@ There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\title[running={The iacrcc class},
-       onclick={https://github.com/IACR/latex},
-       subtitle={A Template}
+\title[running  = {The iacrcc class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
       ]{How to Use the IACR Communications in Cryptology Class}
 \end{verbatim}
 
