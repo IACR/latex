@@ -23,19 +23,17 @@
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
            onclick = {https://www.joppebos.com},
-           running = {J. W. Bos}
           ]{Joppe W. \surname{Bos}}
 \addauthor[orcid   = {0000-0001-7890-5430},
            inst    = {2},
-           running = {K. S. McCurley}
           ]{Kevin S. \surname{McCurley}}
 
-\affiliation[ror     = 031v4g827,
-             onclick = {https://www.nxp.com},
-             street  = {Interleuvenlaan 80},
-             city    = {Leuven},
-             zip     = {3001},
-             country = {Belgium}
+\affiliation[ror      = 031v4g827,
+             onclick  = {https://www.nxp.com},
+             street   = {Interleuvenlaan 80},
+             city     = {Leuven},
+             postcode = {3001},
+             country  = {Belgium}
             ]{NXP Semiconductors\email{joppe.bos@nxp.com}}
 \affiliation{Self}
 
@@ -175,7 +173,6 @@ There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
-{\tt running} & The running author name displayed in the headers.\\
 \end{tabular}
 
 \noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
@@ -189,7 +186,6 @@ An example using all the optional options would look like:
         inst     = {1,2},
         footnote = {Thanks to my supervisor for the support.},
         onclick  = {https://www.mypersonalwebpage.com},
-        running  = {A. Accomplished}
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
@@ -205,7 +201,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
 {\tt  street} & Street address.\\
 {\tt  city} & City name.\\
 {\tt  state} & State or province name.\\
-{\tt  zip} & Zip or postal code.\\
+{\tt  postcode} & zip or postal code.\\
 {\tt  country} & Country name.\\
 \end{tabular}
 
@@ -218,7 +214,7 @@ An example using all the optional options would look like:
              street     = {Kasteelpark Arenberg 10, box 2452},
              city       = {Leuven},
              state      = {Vlaams-Brabant},
-             zip        = {3001},
+             postcode   = {3001},
              country    = {Belgium}
             ]{KU Leuven}
 \end{verbatim}           
