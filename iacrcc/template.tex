@@ -6,7 +6,7 @@
 % [submission]    Anonymous submission
 % [notanonymous]  Keep author names in submission mode
 % [final]         Final version
-\documentclass{iacrcc}
+\documentclass[final]{iacrcc}
 
 % Include LaTeX packages required by your paper
 % \usepackage{}
@@ -41,12 +41,17 @@
 % footnote: create an author-specific footnote.
 % onclick:  define what to do when clicking on the author name: 
 %           e.g., can point to the academic webpage.
-\addauthor[orcid   = {0000-0003-1010-8157},
-           inst    = {1},
-           onclick = {https://www.joppebos.com},
+% email:    define the e-mail address of this author.
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+           footnote = {This is an example footnote.},
+           email    = {joppe.bos@nxp.com}
           ]{Joppe W. \surname{Bos}}
+
 \addauthor[orcid   = {0000-0001-7890-5430},
            inst    = {2},
+           email   = {mccurley@digicrime.com},
           ]{Kevin S. \surname{McCurley}}
 
 % Affiliations are listed individually using the \affiliations command 
@@ -81,11 +86,11 @@
              city    = {Leuven},
              postcode= {3001},
              country = {Belgium}
-            ]{NXP Semiconductors\email{joppe.bos@nxp.com}}
+            ]{NXP Semiconductors}
 \affiliation{Self}
 
 % A footnote can be placed on the front page without a symbol / numbering using:
-% \genericfootnote{This is the full version of our paper published at XX}
+%\genericfootnote{This is the full version of our paper published at XX}
 
 \begin{document}
 
@@ -118,6 +123,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+{\tt email} & Define the e-mail address of this author.\\
 \end{tabular}
 
 \noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
@@ -127,10 +133,11 @@ surnames which might be confusing.
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\author[orcid    = 0000-0000-0000-0000,
-        inst     = {1,2},
-        footnote = {Thanks to my supervisor for the support.},
-        onclick  = {https://www.mypersonalwebpage.com}
+\addauthor[orcid    = 0000-0000-0000-0000,
+           inst     = {1,2},
+           footnote = {Thanks to my supervisor for the support.},
+           onclick  = {https://www.mypersonalwebpage.com},
+           email    = {alice@accomplsihed.com},
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 

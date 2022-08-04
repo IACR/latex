@@ -38,29 +38,62 @@
 %%% HOWTO use this class
 %
 %% Title
+% Provide the title of the paper
 % This should look like:
-% \title[running={The iacrcc class},onclick={https://github.com/IACR/latex},subtitle={LaTeX Class Documentation}]{How to Use the IACR Communications in Cryptology Class}
+%\title[running  = {The iacrcc class},
+%       onclick  = {https://github.com/IACR/latex},
+%       subtitle = {A Template}
+%      ]{How to Use the IACR Communications in Cryptology Class}
 % Where the options in square brackets “[ ]”are optional and control the following:
 % running: the running title displayed in the headers
-% onclick: define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. 
+% onclick: define what to do when clicking on the title. 
+%          This could be used to point to a webpage associated with this paper. 
 % subtitle: provide a subtitle
 %
 %% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
 % The idea is that every author makes a separate call to this command.
 % This should look like:
-% \addauthor[inst={1,2},orcid=0000-0000-0000-0000,onclick={www.test.com},footnote={I would like to thanks my mom for the support.}]{Alice Accomplished}
-% Where the options in square brackets “[ ]”are optional and control the following:
-%  inst: a numerical list pointing to the index of the institutaion in the affiliation array.
-%  orcid: create a small clickable orcid logo next to the authors name linking to the authors ORCID iD see: orcid.org.
-%  footnote: create an author-specific footnote.
-%  onclick: define what to do when clicking on the author name: e.g.,~can point to the academic webpage.
+% \addauthor[inst      = {1,2},
+%            orcid     = 0000-0000-0000-0000,
+%            footnote  = {Thanks to my supervisor for the support.},
+%            onclick   = {https://www.mypersonalwebpage.com}
+%           ]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional 
+% and control the following:
+% inst:     a numerical list pointing to the index of the institutaion 
+%           in the affiliation array.
+% orcid:    create a small clickable orcid logo next to the authors name 
+%           linking to the authors ORCID iD see: orcid.org.
+% footnote: create an author-specific footnote.
+% onclick:  define what to do when clicking on the author name: 
+%           e.g., can point to the academic webpage.
+% email:    define the e-mail address of this author.
 %
-%& Affiliations are listed individually using the \affiliations command *after* the (list of) authors using \addauthor
-% This should look like:
-% \affiliation[ror=05f950310,onclick={http://www.kuleuven.be/english}]{KU Leuven}
-% Where the options in square brackets “[ ]”are optional and control the following:
-%  ror: provide the Research Organization Registry (ROR) indetifier for this affiliation (see: ror.org). This is used for meta-data collection only.
-%  onclick: define what to do when clicking on the affiliation name: e.g., can point to the affiliation webpage.
+% Affiliations are listed individually using the \affiliations command 
+% *after* the (list of) authors using \addauthor
+% This should look like (full example):
+% \affiliation[ror        = 05f950310,
+%              onclick    = {http://www.kuleuven.be/english},
+%              department = {Computer Security and Industrial Cryptography},              
+%              street     = {Kasteelpark Arenberg 10, box 2452},
+%              city       = {Leuven},
+%              state      = {Vlaams-Brabant},
+%              postcode   = {3001},
+%              country    = {Belgium}
+%             ]{KU Leuven}
+% Where the options in square brackets “[ ]”are optional and control 
+% the following (optional information is mainly used for meta-data collection):
+% ror:        provide the Research Organization Registry (ROR) indetifier 
+%             for this affiliation (see: ror.org). This is used for meta-data 
+%             collection only.
+% onclick:    define what to do when clicking on the affiliation name: 
+%             e.g., can point to the affiliation webpage.
+% department: department or suborganization name
+% street:     street address
+% city:       city name
+% state:      state or province name
+% postcode:   zip or postal code
+% country:    country name
 %
 % A footnote can be placed on the front page without a symbol / numbering using:
 % \genericfootnote{This is the full version of our paper published at XX}
@@ -223,13 +256,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   orcid/.initial=\@empty,
   footnote/.initial=\@empty,
   onclick/.initial=\@empty,
+  email/.initial=\@empty,
   }
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,email=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
@@ -289,7 +323,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@subtitle\@empty\else
     \immediate\write\meta{\IACRSS subtitle: \@subtitle}%
   \fi
-  %  
+  \ifx\@genericfootnote\@empty\else
+    \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
+  \fi
+  \ifx\@displayemails\@empty\else
+    \renewcommand\thefootnote{}\footnotetext{\@displayemails}%
+  \fi
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -309,7 +348,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\let\title\relax
   \global\let\date\relax
   \global\let\and\relax
-  \global\let\email\relax
   % Adjust header size for title page
   \addtolength{\headheight}{\baselineskip}%
   \addtolength{\headsep}{-\baselineskip}%
@@ -320,8 +358,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 % Add support for a footnote without symbol on the front page
-\gdef\@genericfootnote{\@empty}
-\newcommand\genericfootnote[1]{\gdef\@genericfootnote{\renewcommand\thefootnote{}\footnotetext{#1}}}
+\global\let\@genericfootnote\@empty
+\global\let\@displayemails\@empty
+
+\newcommand\genericfootnote[1]{
+  \gdef\@genericfootnote{#1}%
+}
 
 \def\@maketitle{%
   % Count authors and affiliations
@@ -339,7 +381,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \begin{center}%
   \let \footnote \thanks
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
-      {\LARGE \bfseries\sffamily\boldmath \@title\@genericfootnote\par}
+      {\LARGE \bfseries\sffamily\boldmath \@title\par}
     \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi}%
     \vskip 1.5em%
     {\large
@@ -402,6 +444,18 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
   \edef\@IACRinst{\IACR@author@params@get{inst}}%
+  \edef\@IACRemail{\IACR@author@params@get{email}}%
+  % Create the unlabeled footnote consisting of:
+  % First the provided footnote (if any) and next
+  % the provided e-mail addresses
+  \ifx\@IACRemail\@empty\else
+    \ifx\@displayemails\@empty
+	  \edef\@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
+    \else
+      \eappto\@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
+    \fi
+	\immediate\write\meta{\IACRSS email: \@IACRemail}%
+  \fi	
   % Author name + optionally clickable
   \ifx\@author\@empty
     \ifx\@IACRonclick\@empty
@@ -453,11 +507,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \gdef\@subtitle{\@IACRsubtitle}%
   \fi
   \IACR@title@params@clearkeys%
-}
-
-\newcommand{\email}[2][\mailto]{%
-  \def\mailto{#2}%
-  , \href{mailto:#1}{\nolinkurl{#2}}%
 }
 
 \newcommand\affiliation[2][]{%
@@ -657,6 +706,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
       \hypersetup{pdfkeywords=\@tmp}
     \fi
+	% Bug: for some reason the code below in \iffalse causes errors when using multiple > 3 authors.
+	\iffalse
     %% PDF author
     \def\zap@one##1,##2{##1}
     \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
@@ -710,6 +761,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         }}
       \fi
     \fi
+  \fi
   \fi
 }
 
