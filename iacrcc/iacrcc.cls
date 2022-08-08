@@ -669,12 +669,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\IACR@@@keywords[#1]#2{\gdef\@IACR@PDFkeywords{#1}\gdef\@IACR@keywords{#2}}
 \def\IACR@@keywords#1{\gdef\@IACR@keywords{#1}}
 
+\RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 \renewenvironment{abstract}{%
   \def\and{,\space}\edef\@writekeywords{\@IACR@keywords}%
   \immediate\write\meta{keywords: \@writekeywords}%
   \small\quotation\setlength{\parindent}{0pt}\noindent
-  \textbf{\textsf{Abstract.}}}
-  {\smallskip\par\textbf{\textsf{Keywords:}}
+  \textbf{\textsf{Abstract.}}
+  \VerbatimOut{\jobname.abstract}}{
+  \endVerbatimOut
+  \input{\jobname.abstract}
+  \smallskip\par\textbf{\textsf{Keywords:}}
     \def\and{\unskip\space\textperiodcentered\space\ignorespaces}\@IACR@keywords
   \endquotation%
   \if@loadhr

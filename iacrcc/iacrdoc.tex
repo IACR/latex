@@ -54,8 +54,8 @@
 
 \section*{Introduction}
 
-The \texttt{iacrcc} \LaTeX{} class is used by the new 
-IACR Journal titled ``IACR Communications on Cryptology''.
+The \texttt{iacrcc} \LaTeX{} class and \texttt{iacrcc.bst} bibligraphy
+style are used by the new IACR Journal titled ``IACR Communications on Cryptology''.
 The class is based on standard \LaTeX{} classes and packages
 (mainly the \texttt{article} class with \texttt{amsmath}), and should be
 similar in use to the \texttt{llncs} class used for Springer's
@@ -68,6 +68,24 @@ The class is still in development and feedback and comments are welcome.
 The latest version can be found on the Github page of the project:
 \url{https://github.com/XXX}, feel free to open
 tickets for issues or to submit pull requests.
+
+\textbf{NOTE:} one goal of the \texttt{iacrcc.cls} and
+\texttt{iacrcc.bst} files is to produce machine-readable metadata in
+separate files. This is used in the production steps of the journal,
+but should not cause any problems for the author.  Users of
+\LaTeX\ will already be used to seeing this with the \texttt{.log},
+\texttt{.aux}, \texttt{.bbl}, \texttt{.blg}, \texttt{.toc}, and \texttt{.out} files
+produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
+\texttt{hyperref} package.  If your main \LaTeX\ file is called
+\texttt{main.tex}, then the extra files that are produced are:
+\begin{itemize}
+\item \texttt{main.meta} is a flat text file containing all metadata from the paper.
+  When you run \texttt{pdflatex} on \texttt{main.tex}, it will produce the metadata
+  from \texttt{main.tex}, and when you run \texttt{bibtex} and \texttt{pdflatex} again,
+  it will append the citation data from bibtex into the \texttt{main.meta} file as well.
+\item \texttt{main.abstract} is a file that contains the contents of the abstract
+  for the paper.
+\end{itemize}
 
 \section{\textcolor{red!70!black}{FAQ}: Frequently Asked Questions}
 
