@@ -8,6 +8,12 @@
 % [final]         Final version
 \documentclass[final]{iacrcc}
 
+% When the *final* document mode is used
+% the authors need to provide a supported license.
+% In all other modes this information is ignored.
+% The currently provided ones are { CC-by }
+\license{CC-by}
+
 % Include LaTeX packages required by your paper
 % \usepackage{}
 
@@ -197,6 +203,16 @@ An example using all the optional options would look like:
        onclick  = {https://github.com/IACR/latex},
        subtitle = {A Template}
       ]{How to Use the IACR Communications in Cryptology Class}
+\end{verbatim}
+
+\subsubsection*{The License Command}
+When the ``final'' document mode is used the author needs to provide a supported license.
+In all other modes this information is ignored.
+The currently provided set of licences are \mbox{\{ CC-by \}}.
+An example would look like:
+
+\begin{verbatim}
+\license{CC-by}
 \end{verbatim}
 
 \section{Bibliography}

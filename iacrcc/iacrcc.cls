@@ -297,6 +297,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
 
+\pgfkeys{/IACR-license-CC-by/entities/.cd,
+  file/.initial={CC-by},
+  text/.initial={Creative Commons License CC-BY 4.0.},
+  url/.initial={http://creativecommons.org/licenses/by/4.0/},
+  }
+\def\IACR@license-CC-by@params@get#1{%%
+  \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
+
+
+
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
 \global\let\@author\@empty
@@ -450,25 +460,25 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % the provided e-mail addresses
   \ifx\@IACRemail\@empty\else
     \ifx\@displayemails\@empty
-	  \edef\@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
+      \edef\@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
     \else
       \eappto\@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
     \fi
-	\immediate\write\meta{\IACRSS email: \@IACRemail}%
-  \fi	
+    \immediate\write\meta{\IACRSS email: \@IACRemail}%
+  \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
     \ifx\@IACRonclick\@empty
-	  \def\@author{#2}%
-	\else
-	  \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
-	\fi
+      \def\@author{#2}%
+    \else
+      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+    \fi
   \else
     \ifx\@IACRonclick\@empty
-	  \appto\@author{\and#2}%
-	\else
-	  \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
-	\fi
+      \appto\@author{\and#2}%
+    \else
+      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+    \fi
   \fi
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
@@ -555,7 +565,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \else
       \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}}%
     \fi
-  \fi	
+  \fi
   \IACR@affiliation@params@clearkeys%
 }
 
@@ -596,12 +606,29 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi%!preprint
 \fi%!submission
 
+\global\let\@IACR@License\@empty%
+\newcommand\license[1]{
+  \gdef\@IACR@License{#1}%
+}
+
 \fancypagestyle{title}{%
 \fancyhf{} % clear all header and footer fields
 \if@submission
 \else
   \if@preprint
   \else
+    \ifx\@IACR@License\@empty
+      \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
+    \else
+      \def\@IACR@CCby{CC-by}%
+      \ifx\@IACR@License\@IACR@CCby%
+        \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
+        \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
+        \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
+      \else
+        \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+      \fi
+    \fi
     \fancyhead[L]{%
       \small%
       \publname{}\\
@@ -611,19 +638,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \fancyfoot[L]{%
       \small%
       Licensed under %
-      \if@loadhr{\href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons License CC-BY 4.0.}}%
-      \else{Creative Commons License CC-BY 4.0.}%
+      \if@loadhr{\href{\@IACRLicenseUrl}{\@IACRLicenseText}}%
+      \else{\@IACRLicenseText}%
       \fi%
       \hfill{}%
-      \includegraphics[clip,height=2ex]{CC-by}\\[.1em]%
+      \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
       \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
       \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
       \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
       \if@IACR@Published Published: \IACR@Published \fi%
     }%
     \if@loadhr
-      \hypersetup{pdfcopyright={Licensed under Creative Commons License CC-BY 4.0.}}
-      \hypersetup{pdflicenseurl={http://creativecommons.org/licenses/by/4.0/}}
+      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
+      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
     \fi
   \fi%!preprint
@@ -710,8 +737,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
       \hypersetup{pdfkeywords=\@tmp}
     \fi
-	% Bug: for some reason the code below in \iffalse causes errors when using multiple > 3 authors.
-	\iffalse
+    % Bug: for some reason the code below in \iffalse causes errors when using multiple > 3 authors.
+    \iffalse
     %% PDF author
     \def\zap@one##1,##2{##1}
     \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
@@ -722,7 +749,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       ,\expandafter\zap@last@comma\fi%
       ##2,##3}
     \ifx\IACR@runningauthors\@empty
-	  \protected@edef\@tmp{\expandafter\@author}
+      \protected@edef\@tmp{\expandafter\@author}
       \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
       \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
       \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
@@ -732,8 +759,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \typeout{IACR@AUTHOR: \@tmp}
         \hypersetup{pdfauthor=\@tmp}
       \fi
-	\else
-	  \hypersetup{pdfauthor=\IACR@runningauthors}
+    \else
+      \hypersetup{pdfauthor=\IACR@runningauthors}
       \typeout{IACR@AUTHOR: \IACR@runningauthors}
     \fi
     %% PDF title
