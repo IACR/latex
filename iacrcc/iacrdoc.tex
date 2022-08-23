@@ -13,7 +13,7 @@
 
 \documentclass{iacrcc}
 \usepackage[utf8]{inputenc}
-
+\usepackage{todonotes}
 \title[running  = {The iacrcc class},
        onclick  = {https://github.com/IACR/latex},
        subtitle = {LaTeX Class Documentation (v0.10)},
@@ -67,7 +67,7 @@ written by Ga{\"e}tan Leurent and Friedrich Wiemer.
 The class is still in development and feedback and comments are welcome.
 The latest version can be found on the Github page of the project:
 \url{https://github.com/XXX}, feel free to open
-tickets for issues or to submit pull requests.
+issues or to submit pull requests.
 
 \textbf{NOTE:} one goal of the \texttt{iacrcc.cls} and
 \texttt{iacrcc.bst} files is to produce machine-readable metadata in
@@ -89,6 +89,7 @@ produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
 
 \section{\textcolor{red!70!black}{FAQ}: Frequently Asked Questions}
 
+\todo[noline]{K: change iacrtrans to iacrcc}
 \iffalse
 \subsection{Converting \texttt{llncs} papers to \texttt{iacrtrans} for submission}
 
@@ -100,15 +101,16 @@ in most cases (for the submission version):
     \verb+\documentclass[journal=XXX,submission,spthm]{iacrtrans}+,
     where \verb+XXX+ is either \verb+tosc+, or \verb+tches+;
 \item Replace \verb+\bibliographystyle{splncs03}+ with
-  \verb+\bibliographystyle{alpha}+;
+  \verb+\bibliographystyle{iacrcc}+ or add
+  \verb+\documentclass[biblatex]{iacrcc}+ to use the \texttt{biblatex}
+  package. See also \autoref{sec:biblio} for information about how to
+  typeset the bibliography.
 \item Add a \verb+\keywords{}+ command before the abstract, with
   keywords separated by \verb+\and+;
 \item Remove commands that might override the class style, such as
   \verb+\pagestyle{...}+ or \verb+\thispagestyle{...}+,
   change of margins (\emph{e.\,g.}  with the \texttt{geometry} package),
   change of fonts, \ldots
-\item See also \autoref{sec:biblio} for information about how to
-  typeset the bibliography.
 \end{enumerate}
 \fi
 
@@ -377,13 +379,19 @@ number must be set explicitly with
 Having good bibliographic references is very important for the
 visibility of the journal.  Since we don't have a commercial editor,
 authors need to make sure themselves that references are standardized
-and clean.  We strongly encourage authors to use \BibTeX{} for the
-bibliograpy, using bibliographic data
+and clean.  We strongly encourage authors to use bibliographic data
 from \url{http://www.dblp.org} or \url{https://cryptobib.di.ens.fr/}.
+All references should have DOIs if at all possible.
 
-We are still working on a good solution for the bibliography, and we
-expect to have more specific instructions when producing the final
-version of the papers, including a dedicated \BibTeX{} style.
+The author may use either \BibTeX\ or \texttt{biblatex}. If the author
+uses \BibTeX\ then they should use \verb+\bibliographystyle{iacrcc}+.
+If they use \texttt{biblatex}, then this is done using
+\verb+\documentclass[biblatex]{iacrcc}+ instead of \verb+\usepackage{biblatex}+;
+the latter will generate an error because the \texttt{iacrcc.cls} file
+loads \texttt{biblatex} with a specific style.
+
+Here are some example citations: the RSA paper~\cite{RSA78}, the AES
+standard\cite{AES-FIPS}, and \cite{DBLP:conf/crypto/Kocher96}.
 
 \section{Further instructions}
 
@@ -497,4 +505,7 @@ Christian Rechberger,
 Tyge Tiessen,
 Jonas Wloka.
 
+\bibliographystyle{iacrcc}
+\renewcommand{\refname}{Sample References}
+\bibliography{biblio}
 \end{document}

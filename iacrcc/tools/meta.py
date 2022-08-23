@@ -338,6 +338,9 @@ def read_meta(metafile):
                     if k == 'subtitle':
                         data['subtitle'] = v
                         line = f.readline().rstrip()
+            elif line.startswith('keywords:'):
+                data['keywords'] = line[9:].strip()
+                line = f.readline().rstrip()
             elif line.startswith('citation:'):
                 parts = line.split()
                 assert(len(parts) == 3)

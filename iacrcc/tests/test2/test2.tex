@@ -6,7 +6,7 @@
 % [submission]    Anonymous submission
 % [notanonymous]  Keep author names in submission mode
 % [final]         Final version
-\documentclass[final]{iacrcc}
+\documentclass[final,biblatex]{iacrcc}
 
 % When the *final* document mode is used
 % the authors need to provide a supported license.
@@ -98,6 +98,7 @@
 % A footnote can be placed on the front page without a symbol / numbering using:
 %\genericfootnote{This is the full version of our paper published at XX}
 
+\addbibresource{test2.bib}
 \begin{document}
 
 \maketitle
@@ -217,14 +218,12 @@ An example would look like:
 
 \section{Bibliography}
 Citing papers is done in the usual way using BibTeX or \texttt{biblatex}
-commands. For example: the RSA paper~\cite{RSA78}.
+commands. For example: the RSA paper~\cite{RSA78}, \cite{sample},
+\cite{DBLP:journals/joc/ChillottiGGI20}, \cite{latexproject,fancynames} and \cite{DBLP:conf/crypto/Kocher96}.
 
 It is highly encouraged to use CyptoBib from \url{https://cryptobib.di.ens.fr}
 
-% This sample uses bibtex rather than biblatex.
-\bibliographystyle{iacrcc}
-\bibliography{template}
-
+\printbibliography
 % NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use bilbio.bib for additional references not in the cryptobib database.
