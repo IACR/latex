@@ -34,6 +34,7 @@
 % [nolastpage]    Disable automatic loading of lastpage
 % [xcolor=xxx]    Pass xxx to xcolor package
 % [hyperref=xxx]  Pass xxx to hyperref package
+% [biblatex]      Use the biblatex package instead of bibtex.
 %
 %%% HOWTO use this class
 %
@@ -143,6 +144,9 @@
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
 \define@key{IACR}{nohyperref}[]{\@loadhrfalse}
+\newif\if@optbiblatex
+\@optbiblatexfalse
+\define@key{IACR}{biblatex}[]{\@optbiblatextrue}
 \newif\if@floatrow
 \@floatrowfalse
 \define@key{IACR}{floatrow}[]{\@floatrowtrue}
@@ -588,6 +592,95 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Head/foot
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
+
+% if the author decides to use biblatex, then we pass options for the style to enforce
+% consistent look and feel.
+\if@optbiblatex
+  \typeout{biblatex options may not be changed with \@backslashchar usepackage}
+  \RequirePackage[backend=biber,style=alphabetic,maxbibnames=4]{biblatex}[2019/12/01]
+  % We use a sourcemap to copy certain fields to the side so we can
+  % include them in the .meta file. biblatex makes it hard to recover
+  % some fields intact such as AUTHOR, EDITOR, PUBLISHER, LOCATION, and
+  % PAGES. biber is able to parse these, but they get rewritten in a way
+  % that is inconvenient to copy them to the .meta file. There may
+  % be a better way to do this, but biblatex is complicated.
+  \DeclareSourcemap{
+    \maps[datatype=bibtex,overwrite=true]{
+      \map{% copy author to usera
+        \step[fieldsource=author,]
+        \step[fieldset=usera,origfieldval,append]
+      }
+      \map[overwrite]{% copy editor to userb
+        \step[fieldsource=editor,]
+        \step[fieldset=userb,origfieldval,append]
+      }
+      \map[overwrite]{% copy institution to userc
+        \step[fieldsource=institution,]
+        \step[fieldset=userc,origfieldval,append]
+      }
+      \map[overwrite]{% copy publisher to userd
+        \step[fieldsource=publisher,]
+        \step[fieldset=userd,origfieldval,append]
+      }
+      \map[overwrite]{% copy location to usere
+        \step[fieldsource=location,]
+        \step[fieldset=usere,origfieldval,append]
+      }
+      \map[overwrite]{% copy organization to userf
+        \step[fieldsource=organization,]
+        \step[fieldset=userf,origfieldval,append]
+      }
+      \map[overwrite]{% copy pages to verba
+        \step[fieldsource=pages,]
+        \step[fieldset=verba,origfieldval,append]
+      }
+      \map[overwrite]{% copy date to verbb
+        \step[fieldsource=date,]
+        \step[fieldset=verbb,origfieldval,append]
+      }
+    }
+  }
+  \AtEndPreamble{
+    \newcommand{\writemeta}[2]{%
+       \edef\@metaval{#2}\ifstrempty{\@metaval}{}{\immediate\write\meta{\IACRSS #1: \@metaval}}}
+    \AtEveryBibitem{
+      \immediate\write\meta{citation: \thefield{entrytype} \thefield{entrykey}}
+      \iffieldundef{title}{}{\writemeta{title}{\thefield{title}}}
+      \iffieldundef{subtitle}{}{\immediate\write\meta{\IACRSS subtitle: \thefield{subtitle}}}
+      \iffieldundef{booktitle}{}{\writemeta{booktitle}{\thefield{booktitle}}}
+      \iffieldundef{journaltitle}{}{\writemeta{journal}{\thefield{journaltitle}}}
+      \iffieldundef{edition}{}{\writemeta{edition}{\thefield{edition}}}
+      \iffieldundef{volume}{}{\writemeta{volume}{\thefield{volume}}}
+      \iffieldundef{number}{}{\writemeta{number}{\thefield{number}}}
+      \iffieldundef{issue}{}{\writemeta{issue}{\thefield{issue}}}
+      \iffieldundef{series}{}{\writemeta{series}{\thefield{series}}}
+      \iffieldundef{chapter}{}{\writemeta{chapter}{\thefield{chapter}}}
+      \iffieldundef{year}{}{\writemeta{year}{\thefield{year}}}
+      \iffieldundef{month}{}{\writemeta{month}{\thefield{month}}}
+      \iffieldundef{note}{}{\writemeta{note}{\thefield{note}}}
+      \iffieldundef{usera}{}{\writemeta{authors}{\thefield{usera}}}
+      \iffieldundef{userb}{}{\writemeta{editors}{\thefield{userb}}}
+      \iffieldundef{userc}{}{\writemeta{institution}{\thefield{userc}}}
+      \iffieldundef{userd}{}{\writemeta{publisher}{\thefield{userd}}}
+      \iffieldundef{usere}{}{\writemeta{address}{\thefield{usere}}}
+      \iffieldundef{userf}{}{\writemeta{organization}{\thefield{userf}}}
+      \iffieldundef{verba}{}{\writemeta{pages}{\thefield{verba}}}
+      \iffieldundef{verbb}{}{\writemeta{date}{\thefield{verbb}}}
+      \iffieldundef{urlraw}{}{\writemeta{url}{\thefield{urlraw}}}
+      % unused. This escapes things like \
+      % \iffieldundef{url}{}{\immediate\write\meta{\IACRSS url: \thefield{url}}}
+      \iffieldundef{doi}{}{\writemeta{doi}{\thefield{doi}}}
+      \iffieldundef{isbn}{}{\writemeta{isbn}{\thefield{isbn}}}
+      \iffieldundef{issn}{}{\writemeta{issn}{\thefield{issn}}}
+      \iffieldundef{keywords}{}{\writemeta{keywords}{\thefield{keywords}}}
+      \iffieldundef{howpublished}{}{\writemeta{howpublished}{\thefield{howpublished}}}
+      % TODO: maybe include eprint, eprintclass, eprinttype
+    }
+  }
+  \else % did not invoke \documentclass[biblatex]{iacrcc}
+  \AtBeginDocument{
+    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}}
+\fi%!biblatex
 
 \if@submission
 \else
