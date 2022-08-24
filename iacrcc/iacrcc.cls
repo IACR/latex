@@ -30,8 +30,6 @@
 % [final]         Final version
 %% Package options
 % [floatrow]      Load floatrow package with correct captions
-% [nohyperref]    Disable automatic loading of hyperref
-% [nolastpage]    Disable automatic loading of lastpage
 % [xcolor=xxx]    Pass xxx to xcolor package
 % [hyperref=xxx]  Pass xxx to hyperref package
 % [biblatex]      Use the biblatex package instead of bibtex.
@@ -114,7 +112,7 @@
 \def\IACR@vol{0}
 \def\IACR@no{0}
 \def\IACR@fp{1}
-\def\IACR@lp{\if@loadhr\pageref*{LastPage}\else\pageref{LastPage}\fi}
+\def\IACR@lp{\pageref*{LastPage}}
 \def\IACR@ISSN{XXXX-XXXX}
 \def\IACR@DOI{XXXXXXXX}
 \def\IACR@Received{20XX-XX-XX}
@@ -139,11 +137,8 @@
 \newcommand{\setPublished}[1]{\@IACR@Publishedtrue\def\IACR@Published{#1}}
 
 % Options
-\newif\if@loadhr
-\@loadhrtrue
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
-\define@key{IACR}{nohyperref}[]{\@loadhrfalse}
 \newif\if@optbiblatex
 \@optbiblatexfalse
 \define@key{IACR}{biblatex}[]{\@optbiblatextrue}
@@ -160,9 +155,6 @@
 \define@key{IACR}{preprint}[]{\@preprinttrue}      % Default
 \define@key{IACR}{submission}[]{\@submissiontrue\@anonymoustrue}
 \define@key{IACR}{notanonymous}[]{\@anonymousfalse}
-\newif\if@IACR@lastpage
-\@IACR@lastpagetrue
-\define@key{IACR}{nolastpage}[]{\@IACR@lastpagefalse}
 
 \define@key{IACR}{xcolor}{\PassOptionsToPackage{#1}{xcolor}}
 \define@key{IACR}{hyperref}{\PassOptionsToPackage{#1}{hyperref}}
@@ -174,34 +166,32 @@
 \LoadClass[10pt,twoside]{article}[2007/10/19]
 
 % Hyperref must be loaded last, but before other AtEndPreamble hooks
-\if@loadhr
-  \RequirePackage{xcolor}
-  \RequirePackage{etoolbox}
-  % Make robust some counters that are made fragile by `calc` needed for orcidlink
-  \robustify\setcounter
-  \robustify\addtocounter
-  \robustify\setlength
-  \robustify\addtolength
-  \RequirePackage{xstring} % for IfSubStr
+\RequirePackage{xcolor}
+\RequirePackage{etoolbox}
+% Make robust some counters that are made fragile by `calc` needed for orcidlink
+\robustify\setcounter
+\robustify\addtocounter
+\robustify\setlength
+\robustify\addtolength
+\RequirePackage{xstring}% for IfSubStr
   
-  \AtEndPreamble{
-    \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
-    \hypersetup{pdflang=en}
-    \hypersetup{urlcolor=cyan}
-    \hypersetup{colorlinks=true,
-      citecolor=black!70!green,
-      linkcolor=black!70!red}
-    % Disable latexdiff commands in PDF links
-    \pdfstringdefDisableCommands{%
-      \def\DIFadd#1{#1}%
-      \def\DIFdel#1{}%
-    }
-    % Old versions of hyperxmp do not support DOI
-    \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+\AtEndPreamble{
+  \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
+  \hypersetup{pdflang=en}
+  \hypersetup{urlcolor=cyan}
+  \hypersetup{colorlinks=true,
+    citecolor=black!70!green,
+    linkcolor=black!70!red}
+  % Disable latexdiff commands in PDF links
+  \pdfstringdefDisableCommands{%
+    \def\DIFadd#1{#1}%
+    \def\DIFdel#1{}%
   }
-  \RequirePackage{hyperxmp} % hyperxmp 5.x has issues with AtEndPreamble
-  \setcounter{tocdepth}{2}
-\fi
+  % Old versions of hyperxmp do not support DOI
+  \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+}
+\RequirePackage{hyperxmp} % hyperxmp 5.x has issues with AtEndPreamble
+\setcounter{tocdepth}{2}
 
 % Geometry
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
@@ -308,8 +298,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
 \def\IACR@license-CC-by@params@get#1{%%
   \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
-
-
 
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
@@ -690,13 +678,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \else
     % recent versions of hyperxmp load totpages, which conflicts with lastpage
     \@ifpackageloaded{totpages}{
-      \def\IACR@lp{\if@loadhr\pageref*{TotPages}\else\pageref{TotPages}\fi}
+      \def\IACR@lp{\pageref*{TotPages}}
     }{
-      \if@IACR@lastpage
-        \RequirePackage{lastpage}
-      \else
-        \typeout{IACR Trans: not loading lastpage, please use \@backslashchar setlastpage}
-      \fi%!lastpage
+      \RequirePackage{lastpage}
     }
   \fi%!preprint
 \fi%!submission
@@ -728,14 +712,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \small%
       \publname{}\\
       ISSN~\IACR@ISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
-      \if@loadhr{\href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}}\else{DOI:\IACR@DOI}\fi%
+      \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
     }
     \fancyfoot[L]{%
       \small%
       Licensed under %
-      \if@loadhr{\href{\@IACRLicenseUrl}{\@IACRLicenseText}}%
-      \else{\@IACRLicenseText}%
-      \fi%
+      \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
       \hfill{}%
       \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
       \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
@@ -743,11 +725,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
       \if@IACR@Published Published: \IACR@Published \fi%
     }%
-    \if@loadhr
-      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
-      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
-      \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
-    \fi
+    \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
+    \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
+    \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
   \fi%!preprint
 \fi%!submission
 
@@ -810,91 +790,88 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \smallskip\par\textbf{\textsf{Keywords:}}
     \def\and{\unskip\space\textperiodcentered\space\ignorespaces}\@IACR@keywords
   \endquotation%
-  \if@loadhr
-    %% PDF keywords
-    \def\and{, }%
-    \def\thanks##1{}%
-    \def\footnote##1{}%
-    \def\inst##1{}%
-    \def\fnmsep{}%
-    \def\\{}%
-    \def\zap@first@space ##1{##1}
-    \def\insert@last@space##1,##2{%
-      ##1%
-      \ifx##2\@empty\space\else, \expandafter\insert@last@space##2\fi}
-    \def\zap@comma@space##1 ,##2{%
-      ##1%
-      \ifx##2\@empty\else, \expandafter\zap@comma@space##2\fi}
-    \def\zap@dbl@space##1 ##2{%
-      ##1%
-      \ifx##2\@empty\else\space\expandafter\zap@dbl@space##2\fi}
-    \ifdefined\@IACR@PDFkeywords
-      \hypersetup{pdfkeywords=\@IACR@PDFkeywords}
-    \else
-      \protected@edef\@tmp{\expandafter\@IACR@keywords}
-      \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-      \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
-      \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-      \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
+  %% PDF keywords
+  \def\and{, }%
+  \def\thanks##1{}%
+  \def\footnote##1{}%
+  \def\inst##1{}%
+  \def\fnmsep{}%
+  \def\\{}%
+  \def\zap@first@space ##1{##1}
+  \def\insert@last@space##1,##2{%
+    ##1%
+    \ifx##2\@empty\space\else, \expandafter\insert@last@space##2\fi}
+  \def\zap@comma@space##1 ,##2{%
+    ##1%
+    \ifx##2\@empty\else, \expandafter\zap@comma@space##2\fi}
+  \def\zap@dbl@space##1 ##2{%
+    ##1%
+    \ifx##2\@empty\else\space\expandafter\zap@dbl@space##2\fi}
+  \ifdefined\@IACR@PDFkeywords
+    \hypersetup{pdfkeywords=\@IACR@PDFkeywords}
+  \else
+    \protected@edef\@tmp{\expandafter\@IACR@keywords}
+    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
+    \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
+    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
+    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
+    \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
+    \hypersetup{pdfkeywords=\@tmp}
+  \fi
+  %% PDF author
+  \def\zap@one##1,##2{##1}
+  \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
+  \def\zap@last@comma##1,##2,##3{%
+    ##1%
+    \ifx##3\@empty%
+    \expandafter\zap@last\else
+    ,\expandafter\zap@last@comma\fi%
+    ##2,##3}
+  \ifx\IACR@runningauthors\@empty
+    \protected@edef\@tmp{\expandafter\@author}
+    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
+    \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
+    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
+    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
+    \ifx\@tmp\empty\else
       \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-      \hypersetup{pdfkeywords=\@tmp}
+      \typeout{IACR@AUTHOR: \@tmp}
+      \hypersetup{pdfauthor=\@tmp}
     \fi
-    %% PDF author
-    \def\zap@one##1,##2{##1}
-    \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
-    \def\zap@last@comma##1,##2,##3{%
-      ##1%
-      \ifx##3\@empty%
-      \expandafter\zap@last\else
-      ,\expandafter\zap@last@comma\fi%
-      ##2,##3}
-    \ifx\IACR@runningauthors\@empty
-      \protected@edef\@tmp{\expandafter\@author}
-      \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-      \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
-      \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-      \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
-      \ifx\@tmp\empty\else
-        \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-        \typeout{IACR@AUTHOR: \@tmp}
-        \hypersetup{pdfauthor=\@tmp}
-      \fi
-    \else
-      \hypersetup{pdfauthor=\IACR@runningauthors}
-      \typeout{IACR@AUTHOR: \IACR@runningauthors}
+  \else
+    \hypersetup{pdfauthor=\IACR@runningauthors}
+    \typeout{IACR@AUTHOR: \IACR@runningauthors}
+  \fi
+  %% PDF title
+  \ifdefined\IACR@runningtitle
+    \hypersetup{pdftitle=\IACR@runningtitle}
+    \typeout{IACR@TITLE: \IACR@runningtitle^^J}
+  \else
+    \protected@edef\@tmp{\expandafter\@title}
+    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
+    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
+    \ifx\@tmp\empty\else
+      \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
+      \hypersetup{pdftitle=\@tmp}
+      \typeout{IACR@TITLE: \@tmp^^J}
     \fi
-    %% PDF title
-    \ifdefined\IACR@runningtitle
-      \hypersetup{pdftitle=\IACR@runningtitle}
-      \typeout{IACR@TITLE: \IACR@runningtitle^^J}
-    \else
-      \protected@edef\@tmp{\expandafter\@title}
-      \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-      \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
-      \ifx\@tmp\empty\else
-        \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-        \hypersetup{pdftitle=\@tmp}
-        \typeout{IACR@TITLE: \@tmp^^J}
-      \fi
-    \fi
-    % PDF metadata
-    \if@submission\else
-      \if@preprint\else
-        \if@hyperxmp@doi{
-          \hypersetup{%
-            pdfdoi=\IACR@DOI,%
-            pdfissn=\IACR@ISSN,%
-            pdfpubtype=journal,%
-            pdfpublication=\publname,%
-            pdfvolumenum=\IACR@vol,%
-            pdfissuenum=\IACR@no,%
-            pdfpagerange={\IACR@fp-\IACR@lp},%
-        }}
-      \fi
+  \fi
+  % PDF metadata
+  \if@submission\else
+    \if@preprint\else
+      \if@hyperxmp@doi{
+        \hypersetup{%
+          pdfdoi=\IACR@DOI,%
+          pdfissn=\IACR@ISSN,%
+          pdfpubtype=journal,%
+          pdfpublication=\publname,%
+          pdfvolumenum=\IACR@vol,%
+          pdfissuenum=\IACR@no,%
+          pdfpagerange={\IACR@fp-\IACR@lp},%
+      }}
     \fi
   \fi
 }
-
 
 % autoref: capitals for Sections, and adding Algorithm
 \def\equationautorefname{Equation}%
@@ -987,14 +964,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Line # for submission
 \newcommand\linenomathWithnumbersforAMS{%
   \ifLineNumbers
-%%  \ifx\@@par\@@@par\else
     \ifnum\interlinepenalty>-\linenopenaltypar
       \global\holdinginserts\thr@@
       \advance\interlinepenalty \linenopenalty
      \ifhmode                                   % v4.3
       \advance\predisplaypenalty \linenopenalty
      \fi
-%%      \advance\postdisplaypenalty \linenopenalty
       \advance\interdisplaylinepenalty \linenopenalty
     \fi
   \fi
