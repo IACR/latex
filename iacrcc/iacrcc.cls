@@ -484,7 +484,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \else
       \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
     \fi
-    \appto\IACR@runningauthors{\and#2}%
+    \appto\IACR@runningauthors{,\space#2}%
   \fi
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
