@@ -477,12 +477,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \else
       \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
     \fi
+    \def\IACR@runningauthors{#2}%
   \else
     \ifx\@IACRonclick\@empty
       \appto\@author{\and#2}%
     \else
       \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
     \fi
+    \appto\IACR@runningauthors{\and#2}%
   \fi
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
@@ -837,8 +839,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
       \hypersetup{pdfkeywords=\@tmp}
     \fi
-    % Bug: for some reason the code below in \iffalse causes errors when using multiple > 3 authors.
-    \iffalse
     %% PDF author
     \def\zap@one##1,##2{##1}
     \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
@@ -892,7 +892,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         }}
       \fi
     \fi
-  \fi
   \fi
 }
 
