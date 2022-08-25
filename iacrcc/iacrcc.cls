@@ -389,24 +389,24 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     {\large
       \lineskip .5em%
         \if@anonymous
-        Anonymous Submission
+          Anonymous Submission
         \else
-        \setcounter{IACR@author@cnt}{1}%
-        \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
-          \stepcounter{IACR@author@cnt}%
-          \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
-        \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
-        \vskip 1em\par
-        \small
-        \setcounter{IACR@author@cnt}{1}%        
-        % When there is only one author with one or more affiliations
-        % do not display the affiliation counter
-        \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
-        \ifnum\num@authors=1\relax\else
-          \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
-        \fi
-        \@affiliation
-        \fi
+          \setcounter{IACR@author@cnt}{1}%
+          \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
+            \stepcounter{IACR@author@cnt}%
+            \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
+          \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
+          \vskip 1em\par
+          \small
+          \setcounter{IACR@author@cnt}{1}%        
+          % When there is only one author with one or more affiliations
+          % do not display the affiliation counter
+          \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
+          \ifnum\num@authors=1\relax\else
+            \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
+          \fi
+          \@affiliation
+        \fi%!anonymous
       }%
   \end{center}%
   \par
@@ -564,10 +564,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \if@anonymous
-\gdef\@author{Anonymous Submission to \publname}
-\renewcommand{\addauthor}[2][]{}
-\renewcommand{\authorrunning}[1]{}
-\renewcommand{\affiliation}[2][]{}
+  \gdef\@author{Anonymous Submission to \publname}%
+  \gdef\IACR@runningauthors{}
+  \renewcommand{\addauthor}[2][]{}%
+  \renewcommand{\affiliation}[2][]{}%
 \fi
 
 \newcommand{\inst}[1]{%
@@ -672,8 +672,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}}
 \fi%!biblatex
 
-\if@submission
-\else
+\if@submission\else
   \if@preprint
   \else
     % recent versions of hyperxmp load totpages, which conflicts with lastpage
@@ -692,10 +691,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \fancypagestyle{title}{%
 \fancyhf{} % clear all header and footer fields
-\if@submission
-\else
-  \if@preprint
-  \else
+\if@submission\else
+  \if@preprint\else
     \ifx\@IACR@License\@empty
       \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
     \else
@@ -737,15 +734,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \fancyhf{}
 \fancyhead[RO,LE]{\thepage}
-\fancyhead[RE]{%
-  \ifdefined\IACR@runningtitle\IACR@runningtitle%
-  \else%
-    \def\thanks##1{}%
-    \def\fnmsep{}%
-    \def\\{}%
-    \def\footnote##1{}%
-    \@title%
-  \fi}
+\fancyhead[RE]{\IACR@runningtitle}%
 \fancyhead[LO]{%
   \ifx\IACR@runningauthors\@empty
     \def\thanks##1{}%
@@ -843,19 +832,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \typeout{IACR@AUTHOR: \IACR@runningauthors}
   \fi
   %% PDF title
-  \ifdefined\IACR@runningtitle
-    \hypersetup{pdftitle=\IACR@runningtitle}
-    \typeout{IACR@TITLE: \IACR@runningtitle^^J}
-  \else
-    \protected@edef\@tmp{\expandafter\@title}
-    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
-    \ifx\@tmp\empty\else
-      \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-      \hypersetup{pdftitle=\@tmp}
-      \typeout{IACR@TITLE: \@tmp^^J}
-    \fi
-  \fi
+  \hypersetup{pdftitle=\IACR@runningtitle}
+  \typeout{IACR@TITLE: \IACR@runningtitle^^J}
   % PDF metadata
   \if@submission\else
     \if@preprint\else
@@ -869,8 +847,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
           pdfissuenum=\IACR@no,%
           pdfpagerange={\IACR@fp-\IACR@lp},%
       }}
-    \fi
-  \fi
+      \fi%!hyperxmp@doi
+    \fi%!preprint
+  \fi%!submission
 }
 
 % autoref: capitals for Sections, and adding Algorithm
@@ -977,30 +956,30 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
 
 \if@submission
-\RequirePackage[mathlines]{lineno}
-\RequirePackage{xcolor}
-\linenumbers
-\def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
+  \RequirePackage[mathlines]{lineno}
+  \RequirePackage{xcolor}
+  \linenumbers
+  \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
 
-% Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
-\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
-  \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
-  \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
-  \renewenvironment{#1}%
-     {\linenomathWithnumbersforAMS\csname old#1\endcsname}%
-     {\csname oldend#1\endcsname\endlinenomath}}%
-\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
-  \patchAmsMathEnvironmentForLineno{#1}%
-  \patchAmsMathEnvironmentForLineno{#1*}}%
-\AtBeginDocument{%
-\patchAmsMathEnvironmentForLineno{equation*}%
-\patchBothAmsMathEnvironmentsForLineno{align}%
-\patchBothAmsMathEnvironmentsForLineno{flalign}%
-\patchBothAmsMathEnvironmentsForLineno{alignat}%
-\patchBothAmsMathEnvironmentsForLineno{gather}%
-\patchBothAmsMathEnvironmentsForLineno{multline}%
-}
-\fi
+  % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
+  \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+    \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+    \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+    \renewenvironment{#1}%
+       {\linenomathWithnumbersforAMS\csname old#1\endcsname}%
+       {\csname oldend#1\endcsname\endlinenomath}}%
+  \newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+    \patchAmsMathEnvironmentForLineno{#1}%
+    \patchAmsMathEnvironmentForLineno{#1*}}%
+  \AtBeginDocument{%
+  \patchAmsMathEnvironmentForLineno{equation*}%
+  \patchBothAmsMathEnvironmentsForLineno{align}%
+  \patchBothAmsMathEnvironmentsForLineno{flalign}%
+  \patchBothAmsMathEnvironmentsForLineno{alignat}%
+  \patchBothAmsMathEnvironmentsForLineno{gather}%
+  \patchBothAmsMathEnvironmentsForLineno{multline}%
+  }
+\fi%!submission
 
 % Microtype
 \RequirePackage{microtype}
