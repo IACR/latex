@@ -499,7 +499,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \gdef\IACR@runningtitle{#2}%
   \else
     \gdef\IACR@runningtitle{\@IACRrunning}%
-  \fi
+  \fi  
   \ifx\@IACRonclick\@empty
     \edef\@title{#2}%
   \else
@@ -832,8 +832,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \typeout{IACR@AUTHOR: \IACR@runningauthors}
   \fi
   %% PDF title
-  \hypersetup{pdftitle=\IACR@runningtitle}
-  \typeout{IACR@TITLE: \IACR@runningtitle^^J}
+  \hypersetup{pdftitle=\@plaintitle}
+  \typeout{IACR@TITLE: \@plaintitle^^J}
   % PDF metadata
   \if@submission\else
     \if@preprint\else
