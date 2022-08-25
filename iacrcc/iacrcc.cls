@@ -594,6 +594,18 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % PAGES. biber is able to parse these, but they get rewritten in a way
   % that is inconvenient to copy them to the .meta file. There may
   % be a better way to do this, but biblatex is complicated.
+  \DeclareNameFormat{author}{%
+    \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
+    \usebibmacro{name:andothers}%
+    {\renewcommand{\bibnamedelima}{ }\renewcommand{\bibnamedelimi}{ }%
+      \immediate\write\meta{\IACRSS author: \expanded{\namepartgiven} \expanded{\namepartfamily}}}
+    \immediate\write\meta{\IACRSS surname: \expanded{\namepartfamily}}%
+    \let\@fullname\relax%
+    \if\namepartprefix{\gappto\@fullname\namepartprefix\space}{}\fi%
+    \if\namepartgiven{\gappto\@fullname\namepartgiven\space}{}\fi%
+    \if\namepartfamily{\gappto\@fullname\namepartfamily}{}\fi%
+    \if\namepartsuffix{\gappto\@fullname\space\namepartsuffix}{}\fi%
+  }
   \DeclareSourcemap{
     \maps[datatype=bibtex,overwrite=true]{
       \map{% copy author to usera
@@ -631,12 +643,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     }
   }
   \AtEndPreamble{
+    % TODO: this does not handle ~ properly. Maybe other primitives?
     \newcommand{\writemeta}[2]{%
-       \edef\@metaval{#2}\ifstrempty{\@metaval}{}{\immediate\write\meta{\IACRSS #1: \@metaval}}}
+      \ifstrempty{\@metaval}{}{\immediate\write\meta{\IACRSS #1: #2}}}
     \AtEveryBibitem{
       \immediate\write\meta{citation: \thefield{entrytype} \thefield{entrykey}}
       \iffieldundef{title}{}{\writemeta{title}{\thefield{title}}}
-      \iffieldundef{subtitle}{}{\immediate\write\meta{\IACRSS subtitle: \thefield{subtitle}}}
+      \iffieldundef{subtitle}{}{\writemeta{subtitle}{\thefield{subtitle}}}
       \iffieldundef{booktitle}{}{\writemeta{booktitle}{\thefield{booktitle}}}
       \iffieldundef{journaltitle}{}{\writemeta{journal}{\thefield{journaltitle}}}
       \iffieldundef{edition}{}{\writemeta{edition}{\thefield{edition}}}
