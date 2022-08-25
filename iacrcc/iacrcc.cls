@@ -1,5 +1,5 @@
 \def\fileversion{0.1}
-\def\filedate{2021/09/15}
+\def\filedate{2022/08/25}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications on Cryptology v\fileversion\space ***^^J}
@@ -107,6 +107,8 @@
 %   remove \qed symbols or replace them by \qedhere
 
 % Common definitions
+% xkeyval is an extension of the keyval package and offers additional macros
+% for setting keys and declaring and setting class or package options.
 \RequirePackage{xkeyval}
 \def\publname{IACR Communications on Cryptology}
 \def\IACR@vol{0}
@@ -165,16 +167,25 @@
 % article class with a4paper
 \LoadClass[10pt,twoside]{article}[2007/10/19]
 
-% Hyperref must be loaded last, but before other AtEndPreamble hooks
+% xcolor starts from the basic facilities of the color package, 
+% and provides easy driver-independent access to several kinds 
+% of color tints, shades, tones, and mixes of arbitrary colors. I
 \RequirePackage{xcolor}
+
+% etoolbox is a toolbox of programming facilities geared primarily 
+% towards LaTeX class and package authors.
 \RequirePackage{etoolbox}
-% Make robust some counters that are made fragile by `calc` needed for orcidlink
-\robustify\setcounter
-\robustify\addtocounter
-\robustify\setlength
-\robustify\addtolength
-\RequirePackage{xstring}% for IfSubStr
-  
+
+% xstring provides macros for manipulating strings - testing a string’s 
+% contents, extracting substrings, substitution of substrings and providing
+% numbers such as string length, position of, or number of recurrences of, 
+% a substring.
+% Required for IfSubStr
+\RequirePackage{xstring}
+
+% The hyperref package is used to handle cross-referencing commands in 
+% LaTeX to produce hypertext links in the document. 
+% Hyperref must be loaded last, but before other AtEndPreamble hooks  
 \AtEndPreamble{
   \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
   \hypersetup{pdflang=en}
@@ -190,18 +201,33 @@
   % Old versions of hyperxmp do not support DOI
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
 }
+
+% XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
+% for embedding document metadata within the document itself.
 \RequirePackage{hyperxmp} % hyperxmp 5.x has issues with AtEndPreamble
 \setcounter{tocdepth}{2}
 
 % Geometry
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
+
+% afterpage implements a command that causes the commands specified 
+% in its argument to be expanded after the current page is output
 \RequirePackage{afterpage}
+
 % Title fonts: bf+sf
+% The secsty package to help change the style of any or all of LaTeX's 
+% sectional headers in the article, book, or report classes.
 \RequirePackage{sectsty}
 \allsectionsfont{\sffamily\boldmath}
 % Also for descriptions
 \renewcommand*\descriptionlabel[1]{\hspace\labelsep
                                    \normalfont\bfseries\sffamily\boldmath #1}
+
+% Make some counters robust that are made fragile by `calc` needed for orcidlink
+\robustify\setcounter
+\robustify\addtocounter
+\robustify\setlength
+\robustify\addtolength
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This copies over definition of the orcidlink from the orcidlink style file
@@ -242,7 +268,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % End of macros for orcidlink
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Add support for keys
+% pgfkeys is a flexible key management system
 \RequirePackage{pgfkeys}
 
 \pgfkeys{/IACR-author/entities/.cd,
@@ -312,7 +338,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \newwrite\meta
 \immediate\openout\meta=\jobname.meta
-\RequirePackage{pgfplots}
 \newcount\num@authors
 \num@authors=0\relax
 \newcount\num@affil
@@ -359,10 +384,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }%
 }
 
-% Add support for a footnote without symbol on the front page
-\global\let\@genericfootnote\@empty
+% Add support to display provided e-mail addresses 
+% in the footnote of the front page
 \global\let\@displayemails\@empty
 
+% Add support for a footnote without symbol on the front page
+\global\let\@genericfootnote\@empty
 \newcommand\genericfootnote[1]{
   \gdef\@genericfootnote{#1}%
 }
@@ -415,6 +442,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % This is for indentation in meta file.
 \newcommand{\IACRSS}{\space\space}
 
+% We do not support \author, use \addauthor instead
 \renewcommand\author[2][]{\ClassError{iacrcc}{%
   Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
@@ -680,9 +708,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       % TODO: maybe include eprint, eprintclass, eprinttype
     }
   }
-  \else % did not invoke \documentclass[biblatex]{iacrcc}
+\else % did not invoke \documentclass[biblatex]{iacrcc}
   \AtBeginDocument{
-    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}}
+    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}%
+  }
 \fi%!biblatex
 
 \if@submission\else
@@ -703,65 +732,63 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \fancypagestyle{title}{%
-\fancyhf{} % clear all header and footer fields
-\if@submission\else
-  \if@preprint\else
-    \ifx\@IACR@License\@empty
-      \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
-    \else
-      \def\@IACR@CCby{CC-by}%
-      \ifx\@IACR@License\@IACR@CCby%
-        \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
-        \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
-        \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
+  \fancyhf{} % clear all header and footer fields
+  \if@submission\else
+    \if@preprint\else
+      \ifx\@IACR@License\@empty
+        \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
       \else
-        \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+        \def\@IACR@CCby{CC-by}%
+        \ifx\@IACR@License\@IACR@CCby%
+          \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
+          \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
+          \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
+        \else
+          \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+        \fi
       \fi
-    \fi
-    \fancyhead[L]{%
-      \small%
-      \publname{}\\
-      ISSN~\IACR@ISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
-      \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
-    }
-    \fancyfoot[L]{%
-      \small%
-      Licensed under %
-      \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
-      \hfill{}%
-      \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
-      \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
-      \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
-      \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
-      \if@IACR@Published Published: \IACR@Published \fi%
-    }%
-    \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
-    \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
-    \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
-  \fi%!preprint
-\fi%!submission
-
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
+      \fancyhead[L]{%
+        \small%
+        \publname{}\\
+        ISSN~\IACR@ISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
+        \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
+      }
+      \fancyfoot[L]{%
+        \small%
+        Licensed under %
+        \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
+        \hfill{}%
+        \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
+        \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
+        \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
+        \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
+        \if@IACR@Published Published: \IACR@Published \fi%
+      }%
+      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
+      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
+      \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
+    \fi%!preprint
+  \fi%!submission
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
 }%fancypagestyle
 
 \fancyhf{}
 \fancyhead[RO,LE]{\thepage}
 \fancyhead[RE]{\IACR@runningtitle}%
 \fancyhead[LO]{%
-  \ifx\IACR@runningauthors\@empty
+  \if@anonymous
     \def\thanks##1{}%
     \def\inst##1{}%
     \def\fnmsep{}%
     \def\\{}%
     \def\footnote##1{}%
     \setcounter{IACR@author@cnt}{1}%
-    \def\and{\stepcounter{IACR@author@cnt}%
-      \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces \else\unskip, \ignorespaces\fi}
     \@author%
   \else
     \IACR@runningauthors%
-  \fi}
+  \fi%!anonymous
+}
 
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
@@ -829,21 +856,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \expandafter\zap@last\else
     ,\expandafter\zap@last@comma\fi%
     ##2,##3}
-  \ifx\IACR@runningauthors\@empty
-    \protected@edef\@tmp{\expandafter\@author}
-    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-    \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
-    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
-    \ifx\@tmp\empty\else
-      \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-      \typeout{IACR@AUTHOR: \@tmp}
-      \hypersetup{pdfauthor=\@tmp}
-    \fi
+  \if@anonymous
+    \typeout{IACR@AUTHOR: \@author}
+    \hypersetup{pdfauthor=\@author}
   \else
     \hypersetup{pdfauthor=\IACR@runningauthors}
     \typeout{IACR@AUTHOR: \IACR@runningauthors}
-  \fi
+  \fi%!anonymous
   %% PDF title
   \hypersetup{pdftitle=\@plaintitle}
   \typeout{IACR@TITLE: \@plaintitle^^J}
@@ -860,7 +879,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
           pdfissuenum=\IACR@no,%
           pdfpagerange={\IACR@fp-\IACR@lp},%
       }}
-      \fi%!hyperxmp@doi
+      \fi%hyperxmp@doi
     \fi%!preprint
   \fi%!submission
 }
@@ -930,27 +949,28 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % Floats and captions
 \if@floatrow
-\RequirePackage{floatrow}
-\floatsetup[table]{style=Plaintop}
-\RequirePackage{caption}
-\captionsetup{labelfont={sf,bf}}
+  \RequirePackage{floatrow}
+  \floatsetup[table]{style=Plaintop}
+  \RequirePackage{caption}
+  \captionsetup{labelfont={sf,bf}}
 \else
-\RequirePackage{float}
-\newcommand\fs@iacrabove{%
-  % Swap \abovecaptionskip and \belowcaptionskip
-  \addtolength\abovecaptionskip{-\belowcaptionskip}
-  \addtolength\belowcaptionskip{\abovecaptionskip}
-  \addtolength\abovecaptionskip{-\belowcaptionskip}
-  \setlength\abovecaptionskip{-\abovecaptionskip}
-  \fs@plaintop%
-  \def\@fs@cfont{\sffamily\bfseries}}
-\newcommand\fs@iacrbelow{%
-  \fs@plain%
-  \def\@fs@cfont{\sffamily\bfseries}}
-\floatstyle{iacrabove}
-\restylefloat{table}
-\floatstyle{iacrbelow}
-\restylefloat{figure}
+  \RequirePackage{float}
+  \newcommand\fs@iacrabove{%
+    % Swap \abovecaptionskip and \belowcaptionskip
+    \addtolength\abovecaptionskip{-\belowcaptionskip}
+    \addtolength\belowcaptionskip{\abovecaptionskip}
+    \addtolength\abovecaptionskip{-\belowcaptionskip}
+    \setlength\abovecaptionskip{-\abovecaptionskip}
+    \fs@plaintop%
+    \def\@fs@cfont{\sffamily\bfseries}}
+  \newcommand\fs@iacrbelow{%
+    \fs@plain%
+    \def\@fs@cfont{\sffamily\bfseries}
+  }
+  \floatstyle{iacrabove}
+  \restylefloat{table}
+  \floatstyle{iacrbelow}
+  \restylefloat{figure}
 \fi
 
 % Line # for submission
@@ -966,11 +986,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \fi
   \fi
   \ignorespaces
-  }
+}
 
 \if@submission
   \RequirePackage[mathlines]{lineno}
-  \RequirePackage{xcolor}
   \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
 
@@ -992,7 +1011,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \patchBothAmsMathEnvironmentsForLineno{gather}%
   \patchBothAmsMathEnvironmentsForLineno{multline}%
   }
-\fi%!submission
+\fi%submission
 
 % Microtype
 \RequirePackage{microtype}
