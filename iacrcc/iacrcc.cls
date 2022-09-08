@@ -1,5 +1,5 @@
 \def\fileversion{0.1}
-\def\filedate{2022/08/25}
+\def\filedate{2022/09/04}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications on Cryptology v\fileversion\space ***^^J}
@@ -107,6 +107,7 @@
 %   remove \qed symbols or replace them by \qedhere
 
 % Common definitions
+\RequirePackage{expl3} % used for text_purify on metadata.
 % xkeyval is an extension of the keyval package and offers additional macros
 % for setting keys and declaring and setting class or package options.
 \RequirePackage{xkeyval}
@@ -345,10 +346,26 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \AtEndDocument{\immediate\closeout\meta}
 
+% latex3 syntax used for writing text to the .meta file. This requires
+% a TeX distribution from 2020 or later.
+\ExplSyntaxOn
+\ifdefined\text_purify
+\else
+\ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
+\fi
+\cs_new:Npn\@writemeta#1{
+  \ifdefined\text_purify
+  \immediate\write\meta{\text_purify:n #1}
+  \else
+  \immediate\write\meta{#1}
+  \fi
+}
+\ExplSyntaxOff
+
 \renewcommand\maketitle{\par
-  \immediate\write\meta{title: \@plaintitle}%
+  \@writemeta{title: \@plaintitle}%
   \ifx\@subtitle\@empty\else
-    \immediate\write\meta{\IACRSS subtitle: \@subtitle}%
+    \@writemeta{\IACRSS subtitle: \@subtitle}
   \fi
   \ifx\@genericfootnote\@empty\else
     \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
@@ -465,11 +482,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
-  \immediate\write\meta{author:}%
-  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%
+  \@writemeta{author:}%
+  \@writemeta{\IACRSS name: #2}%
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
-  \immediate\write\meta{\IACRSS affil: \IACR@author@params@get{inst}}%
+  \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
   \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
@@ -484,7 +501,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \else
       \eappto\@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
     \fi
-    \immediate\write\meta{\IACRSS email: \@IACRemail}%
+    \@writemeta{\IACRSS email: \@IACRemail}%
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
@@ -508,7 +525,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
-    \immediate\write\meta{\IACRSS orcid: \@IACRorcid}%
+    \@writemeta{\IACRSS orcid: \@IACRorcid}%
   \fi
   \ifx\@IACRinst\@empty\else
     \eappto\@author{\noexpand\inst{\@IACRinst}}%
@@ -543,8 +560,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \newcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax% 
-  \immediate\write\meta{affiliation:}%
-  \immediate\write\meta{\IACRSS name: \unexpanded{#2}}%  
+  \@writemeta{affiliation:}%
+  \@writemeta{\IACRSS name: \unexpanded{#2}}%
   \IACR@affiliation@params@set@keys{#1}%%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
@@ -555,25 +572,25 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \edef\@IACRpostcode{\IACR@affiliation@params@get{postcode}}%
   \edef\@IACRcountry{\IACR@affiliation@params@get{country}}%
   \ifx\@IACRror\@empty\else
-    \immediate\write\meta{\IACRSS ror: \@IACRror}%
+    \@writemeta{\IACRSS ror: \@IACRror}%
   \fi  
   \ifx\@IACRdepartment\@empty\else
-    \immediate\write\meta{\IACRSS department: \@IACRdepartment}%
+    \@writemeta{\IACRSS department: \@IACRdepartment}%
   \fi
   \ifx\@IACRstreet\@empty\else
-    \immediate\write\meta{\IACRSS street: \@IACRstreet}%
+    \@writemeta{\IACRSS street: \@IACRstreet}%
   \fi
   \ifx\@IACRcity\@empty\else
-    \immediate\write\meta{\IACRSS city: \@IACRcity}%
+    \@writemeta{\IACRSS city: \@IACRcity}%
   \fi
   \ifx\@IACRstate\@empty\else
-    \immediate\write\meta{\IACRSS state: \@IACRstate}%
+    \@writemeta{\IACRSS state: \@IACRstate}%
   \fi
   \ifx\@IACRpostcode\@empty\else
-    \immediate\write\meta{\IACRSS postcode: \@IACRpostcode}%
+    \@writemeta{\IACRSS postcode: \@IACRpostcode}%
   \fi
   \ifx\@IACRcountry\@empty\else
-    \immediate\write\meta{\IACRSS country: \@IACRcountry}%
+    \@writemeta{\IACRSS country: \@IACRcountry}%
   \fi
   \ifx\@IACRonclick\@empty
     \ifx\@affiliation\@empty
@@ -626,13 +643,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
     \usebibmacro{name:andothers}%
     {\renewcommand{\bibnamedelima}{ }\renewcommand{\bibnamedelimi}{ }%
-      \immediate\write\meta{\IACRSS author: \expanded{\namepartgiven} \expanded{\namepartfamily}}}
-    \immediate\write\meta{\IACRSS surname: \expanded{\namepartfamily}}%
-    \let\@fullname\relax%
-    \if\namepartprefix{\gappto\@fullname\namepartprefix\space}{}\fi%
-    \if\namepartgiven{\gappto\@fullname\namepartgiven\space}{}\fi%
-    \if\namepartfamily{\gappto\@fullname\namepartfamily}{}\fi%
-    \if\namepartsuffix{\gappto\@fullname\space\namepartsuffix}{}\fi%
+      \@writemeta{\IACRSS author: \expanded{\namepartgiven\ifdefvoid{\namepartprefix}{}{ \namepartprefix } \namepartfamily\ifdefvoid{\namepartsuffix}{}{, \namepartsuffix}}}%
+      \@writemeta{\IACRSS surname:\ifdefvoid{\namepartprefix}{}{ \namepartprefix} \namepartfamily}}
   }
   \DeclareSourcemap{
     \maps[datatype=bibtex,overwrite=true]{
@@ -672,45 +684,45 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
   \AtEndPreamble{
     % TODO: this does not handle ~ properly. Maybe other primitives?
-    \newcommand{\writemeta}[2]{%
-      \ifstrempty{\@metaval}{}{\immediate\write\meta{\IACRSS #1: #2}}}
+    \newcommand{\@writemkv}[2]{%
+      \ifstrempty{\@metaval}{}{\@writemeta{\IACRSS #1: #2}}}
     \AtEveryBibitem{
-      \immediate\write\meta{citation: \thefield{entrytype} \thefield{entrykey}}
-      \iffieldundef{title}{}{\writemeta{title}{\thefield{title}}}
-      \iffieldundef{subtitle}{}{\writemeta{subtitle}{\thefield{subtitle}}}
-      \iffieldundef{booktitle}{}{\writemeta{booktitle}{\thefield{booktitle}}}
-      \iffieldundef{journaltitle}{}{\writemeta{journal}{\thefield{journaltitle}}}
-      \iffieldundef{edition}{}{\writemeta{edition}{\thefield{edition}}}
-      \iffieldundef{volume}{}{\writemeta{volume}{\thefield{volume}}}
-      \iffieldundef{number}{}{\writemeta{number}{\thefield{number}}}
-      \iffieldundef{issue}{}{\writemeta{issue}{\thefield{issue}}}
-      \iffieldundef{series}{}{\writemeta{series}{\thefield{series}}}
-      \iffieldundef{chapter}{}{\writemeta{chapter}{\thefield{chapter}}}
-      \iffieldundef{year}{}{\writemeta{year}{\thefield{year}}}
-      \iffieldundef{month}{}{\writemeta{month}{\thefield{month}}}
-      \iffieldundef{note}{}{\writemeta{note}{\thefield{note}}}
-      \iffieldundef{usera}{}{\writemeta{authors}{\thefield{usera}}}
-      \iffieldundef{userb}{}{\writemeta{editors}{\thefield{userb}}}
-      \iffieldundef{userc}{}{\writemeta{institution}{\thefield{userc}}}
-      \iffieldundef{userd}{}{\writemeta{publisher}{\thefield{userd}}}
-      \iffieldundef{usere}{}{\writemeta{address}{\thefield{usere}}}
-      \iffieldundef{userf}{}{\writemeta{organization}{\thefield{userf}}}
-      \iffieldundef{verba}{}{\writemeta{pages}{\thefield{verba}}}
-      \iffieldundef{verbb}{}{\writemeta{date}{\thefield{verbb}}}
-      \iffieldundef{urlraw}{}{\writemeta{url}{\thefield{urlraw}}}
+      \@writemeta{citation: \strfield{entrytype} \strfield{entrykey}}
+      \iffieldundef{title}{}{\@writemkv{title}{\strfield{title}}}
+      \iffieldundef{subtitle}{}{\@writemkv{subtitle}{\strfield{subtitle}}}
+      \iffieldundef{booktitle}{}{\@writemkv{booktitle}{\strfield{booktitle}}}
+      \iffieldundef{journaltitle}{}{\@writemkv{journal}{\strfield{journaltitle}}}
+      \iffieldundef{edition}{}{\@writemkv{edition}{\strfield{edition}}}
+      \iffieldundef{volume}{}{\@writemkv{volume}{\strfield{volume}}}
+      \iffieldundef{number}{}{\@writemkv{number}{\strfield{number}}}
+      \iffieldundef{issue}{}{\@writemkv{issue}{\strfield{issue}}}
+      \iffieldundef{series}{}{\@writemkv{series}{\strfield{series}}}
+      \iffieldundef{chapter}{}{\@writemkv{chapter}{\strfield{chapter}}}
+      \iffieldundef{year}{}{\@writemkv{year}{\strfield{year}}}
+      \iffieldundef{month}{}{\@writemkv{month}{\strfield{month}}}
+      \iffieldundef{note}{}{\@writemkv{note}{\strfield{note}}}
+      \iffieldundef{usera}{}{\@writemkv{authors}{\strfield{usera}}}
+      \iffieldundef{userb}{}{\@writemkv{editors}{\strfield{userb}}}
+      \iffieldundef{userc}{}{\@writemkv{institution}{\strfield{userc}}}
+      \iffieldundef{userd}{}{\@writemkv{publisher}{\strfield{userd}}}
+      \iffieldundef{usere}{}{\@writemkv{address}{\strfield{usere}}}
+      \iffieldundef{userf}{}{\@writemkv{organization}{\strfield{userf}}}
+      \iffieldundef{verba}{}{\@writemkv{pages}{\strfield{verba}}}
+      \iffieldundef{verbb}{}{\@writemkv{date}{\strfield{verbb}}}
+      \iffieldundef{urlraw}{}{\@writemkv{url}{\strfield{urlraw}}}
       % unused. This escapes things like \
-      % \iffieldundef{url}{}{\immediate\write\meta{\IACRSS url: \thefield{url}}}
-      \iffieldundef{doi}{}{\writemeta{doi}{\thefield{doi}}}
-      \iffieldundef{isbn}{}{\writemeta{isbn}{\thefield{isbn}}}
-      \iffieldundef{issn}{}{\writemeta{issn}{\thefield{issn}}}
-      \iffieldundef{keywords}{}{\writemeta{keywords}{\thefield{keywords}}}
-      \iffieldundef{howpublished}{}{\writemeta{howpublished}{\thefield{howpublished}}}
+      % \iffieldundef{url}{}{\@writemeta{\IACRSS url: \strfield{url}}}
+      \iffieldundef{doi}{}{\@writemkv{doi}{\strfield{doi}}}
+      \iffieldundef{isbn}{}{\@writemkv{isbn}{\strfield{isbn}}}
+      \iffieldundef{issn}{}{\@writemkv{issn}{\strfield{issn}}}
+      \iffieldundef{keywords}{}{\@writemkv{keywords}{\strfield{keywords}}}
+      \iffieldundef{howpublished}{}{\@writemkv{howpublished}{\strfield{howpublished}}}
       % TODO: maybe include eprint, eprintclass, eprinttype
     }
   }
 \else % did not invoke \documentclass[biblatex]{iacrcc}
   \AtBeginDocument{
-    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}%
+    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}
   }
 \fi%!biblatex
 
@@ -724,7 +736,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \RequirePackage{lastpage}
     }
   \fi%!preprint
-\fi%!submission
+\fi%submission
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
@@ -810,7 +822,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 \renewenvironment{abstract}{%
   \def\and{,\space}\edef\@writekeywords{\@IACR@keywords}%
-  \immediate\write\meta{keywords: \@IACR@print@keywords}%
+  \@writemeta{keywords: \@IACR@print@keywords}%
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
   \VerbatimOut{\jobname.abstract}}{
