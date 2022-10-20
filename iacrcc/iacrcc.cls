@@ -319,7 +319,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \pgfkeys{/IACR-license-CC-by/entities/.cd,
-  file/.initial={CC-by},
+  file/.initial={CC-by.png},
   text/.initial={Creative Commons License CC-BY 4.0.},
   url/.initial={http://creativecommons.org/licenses/by/4.0/},
   }
@@ -806,6 +806,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \pagestyle{fancy}
 
 %Abstract style, keywords
+\global\let\@IACR@print@keywords\@empty
 \def\@IACR@keywords{No keywords given.}
 
 \def\keywords{\@ifnextchar[{\IACR@@@keywords}{\IACR@@keywords}}
