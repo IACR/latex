@@ -349,12 +349,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % latex3 syntax used for writing text to the .meta file. This requires
 % a TeX distribution from 2020 or later.
 \ExplSyntaxOn
-\ifdefined\text_purify
+\ifdefined\text_purify:n
 \else
 \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
 \fi
 \cs_new:Npn\@writemeta#1{
-  \ifdefined\text_purify
+  \ifdefined\text_purify:n
   \immediate\write\meta{\text_purify:n #1}
   \else
   \immediate\write\meta{#1}
@@ -1030,7 +1030,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{microtype}
 
 % Fonts
-\RequirePackage[T1]{fontenc}
 \RequirePackage{lmodern}
 \endinput
 %end of file iacrcc.cls
