@@ -341,7 +341,20 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcount\num@affil
 \num@affil=0\relax
 
-\AtEndDocument{\immediate\closeout\meta}
+\AtEndDocument{
+  \immediate\closeout\meta%
+  % Check if either \title, \addauthor or \affiliation were redefined
+  % Throw an error if so, these are needed for meta-data collection
+  \ifx\store@addauthor\addauthor\else
+    \ClassError{iacrcc}{The \string\addauthor\space macro seems to be redefined.}{}%
+  \fi
+  \ifx\store@title\title\else
+    \ClassError{iacrcc}{The \string\title\space macro seems to be redefined.}{}%
+  \fi
+  \ifx\store@affiliation\affiliation\else
+    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined.}{}%
+  \fi
+}
 
 % latex3 syntax used for writing text to the .meta file. This requires
 % a TeX distribution from 2020 or later.
@@ -386,7 +399,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\let\@maketitle\relax
   \global\let\@thanks\@empty
   \global\let\@date\@empty
-  \global\let\title\relax
   \global\let\date\relax
   \global\let\and\relax
   % Adjust header size for title page
@@ -530,6 +542,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@author@params@clearkeys%
 }
 
+\let\store@addauthor\addauthor  % Save macro away
+
 % Provide the title of the paper
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
@@ -554,6 +568,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \IACR@title@params@clearkeys%
 }
+
+\let\store@title\title  % Save macro away
 
 \newcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax% 
@@ -604,6 +620,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \IACR@affiliation@params@clearkeys%
 }
+
+\let\store@affiliation\affiliation  % Save macro away
 
 \if@anonymous
   \gdef\@author{Anonymous Submission to \publname}%
