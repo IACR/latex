@@ -158,6 +158,14 @@
 % article class
 \LoadClass[10pt,twoside]{article}[2007/10/19]
 
+% iftex: Am I running under pdfTEX, XETEX or LuaTEX?
+\RequirePackage{iftex}
+
+\ifluatex
+  % Fixes for mathematics-related LuaLATEX issues
+  \RequirePackage{lualatex-math}
+\fi
+
 % xcolor starts from the basic facilities of the color package, 
 % and provides easy driver-independent access to several kinds 
 % of color tints, shades, tones, and mixes of arbitrary colors. I
