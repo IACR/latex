@@ -322,14 +322,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
 
-\pgfkeys{/IACR-license-CC-by/entities/.cd,
-  file/.initial={CC-by.png},
-  text/.initial={Creative Commons License CC-BY 4.0.},
-  url/.initial={http://creativecommons.org/licenses/by/4.0/},
-  }
-\def\IACR@license-CC-by@params@get#1{%%
-  \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
-
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
 \global\let\@author\@empty
@@ -351,16 +343,23 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \AtEndDocument{
   \immediate\closeout\meta%
-  % Check if either \title, \addauthor or \affiliation were redefined
+  % Check if either \title, \addauthor or \affiliation macros were redefined
+  % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
   \ifx\store@addauthor\addauthor\else
-    \ClassError{iacrcc}{The \string\addauthor\space macro seems to be redefined.}{}%
+    \ClassError{iacrcc}{The \string\addauthor\space macro seems to be redefined}{}%
   \fi
   \ifx\store@title\title\else
-    \ClassError{iacrcc}{The \string\title\space macro seems to be redefined.}{}%
+    \ClassError{iacrcc}{The \string\title\space macro seems to be redefined}{}%
   \fi
   \ifx\store@affiliation\affiliation\else
-    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined.}{}%
+    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined}{}%
+  \fi
+  \ifx\store@font\familydefault\else
+    \ClassError{iacrcc}{The \string\familydefault\space macro seems to be redefined}{}%
+  \fi
+  \ifx\store@paperwidth\paperwidth\else
+    \ClassError{iacrcc}{The \string\paperwidth\space macro seems to be redefined}{}%
   \fi
 }
 
@@ -771,6 +770,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
   \gdef\@IACR@License{#1}%
+  \def\@IACR@CCby{CC-by}%
+  \ifx\@IACR@License\@IACR@CCby%
+    % DocLicense: Support for putting documents under a license
+    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}%
+  \else
+    \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+  \fi
 }
 
 \fancypagestyle{title}{%
@@ -779,15 +785,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \if@preprint\else
       \ifx\@IACR@License\@empty
         \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
-      \else
-        \def\@IACR@CCby{CC-by}%
-        \ifx\@IACR@License\@IACR@CCby%
-          \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
-          \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
-          \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
-        \else
-          \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
-        \fi
       \fi
       \fancyhead[L]{%
         \small%
@@ -797,17 +794,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }
       \fancyfoot[L]{%
         \small%
-        Licensed under %
-        \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
+        \doclicenseText%
         \hfill{}%
-        \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
+        \doclicenseImage[imagewidth=5em]\\[.1em]%
         \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
         \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
-      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
-      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
+      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+      \hypersetup{pdflicenseurl={\doclicenseURL}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
     \fi%!preprint
   \fi%!submission
@@ -1066,5 +1062,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % The Latin Modern family of fonts consists of 72 text fonts and 20 mathematics fonts
 \RequirePackage{lmodern}
+
+% Store the default font family used
+\let\store@font\familydefault%
+
+% Store the paper width
+\let\store@paperwidth\paperwidth%
+
 \endinput
 %end of file iacrcc.cls
