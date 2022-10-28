@@ -6,7 +6,13 @@
 % [submission]    Anonymous submission
 % [notanonymous]  Keep author names in submission mode
 % [final]         Final version
-\documentclass[final]{iacrcc}
+%% Package options
+% [floatrow]      Load floatrow package with correct captions
+% [xcolor=xxx]    Pass xxx to xcolor package
+% [hyperref=xxx]  Pass xxx to hyperref package
+% [biblatex]      Use the biblatex package instead of bibtex.
+%\documentclass[final]{iacrcc}
+\documentclass[preprint]{iacrcc}
 
 % When the *final* document mode is used
 % the authors need to provide a supported license.
@@ -23,7 +29,7 @@
        onclick  = {https://github.com/IACR/latex},
        subtitle = {A Template}
       ]{How to Use the IACR Communications in Cryptology Class}
-% Where the options in square brackets “[ ]”are optional and control the following:
+% Where the options in square brackets “[ ]” are optional and control the following:
 % running: the running title displayed in the headers
 % onclick: define what to do when clicking on the title. 
 %          This could be used to point to a webpage associated with this paper. 
@@ -38,9 +44,9 @@
 %            footnote  = {Thanks to my supervisor for the support.},
 %            onclick   = {https://www.mypersonalwebpage.com}
 %           ]{Alice Accomplished}
-% Where the options in square brackets “[ ]”are optional 
+% Where the options in square brackets “[ ]” are optional 
 % and control the following:
-% inst:     a numerical list pointing to the index of the institutaion 
+% inst:     a numerical list pointing to the index of the institution 
 %           in the affiliation array.
 % orcid:    create a small clickable orcid logo next to the authors name 
 %           linking to the authors ORCID iD see: orcid.org.
@@ -72,9 +78,9 @@
 %              postcode   = {3001},
 %              country    = {Belgium}
 %             ]{KU Leuven}
-% Where the options in square brackets “[ ]”are optional and control 
+% Where the options in square brackets “[ ]” are optional and control 
 % the following (optional information is mainly used for meta-data collection):
-% ror:        provide the Research Organization Registry (ROR) indetifier 
+% ror:        provide the Research Organization Registry (ROR) identifier 
 %             for this affiliation (see: ror.org). This is used for meta-data 
 %             collection only.
 % onclick:    define what to do when clicking on the affiliation name: 
@@ -103,6 +109,7 @@
 \maketitle
 
 % Provide the keywords *before* the abstract
+% This is optional
 \keywords{Template \and LaTeX \and IACR}
 
 % Provide the abstract of your paper
@@ -126,6 +133,31 @@ but please avoid using macros that you define yourself in the abstract.
 This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
 
 \section{Title Page}
+In order to use the IACR Communications in Cryptology Class style file use:
+\begin{verbatim}
+\documentclass{iacrcc}
+\end{verbatim}
+There are a number \emph{optional} options to iacrcc:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt preprint} &  Preprint (no copyright info) -- This is the default mode.\\
+{\tt submission} & Anonymous submission.\\
+{\tt notanonymous} & Keep author names in submission mode.\\
+{\tt final} & Final version.\\
+\multicolumn{2}{c}{Package options}\\
+{\tt floatrow} & Load floatrow package with correct captions.\\
+{\tt xcolor=xxx} & Pass xxx to xcolor package.\\
+{\tt hyperref=xxx} & Pass xxx to hyperref package.\\
+{\tt biblatex} & Use the biblatex package instead of bibtex.
+\end{tabular}
+
+%% Document mode
+% [notanonymous]  Keep author names in submission mode
+% [final]         Final version
+%% Package options
+% [floatrow]      Load floatrow package with correct captions
+
+\subsubsection*{Generic footnote}
 To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper) 
 you can use the {\tt \textbackslash{}genericfootnote} command. 
 
