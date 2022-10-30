@@ -128,7 +128,6 @@
 \newcommand{\setRevised}[1]{\@IACR@Revisedtrue\def\IACR@Revised{#1}}
 \newcommand{\setAccepted}[1]{\@IACR@Acceptedtrue\def\IACR@Accepted{#1}}
 \newcommand{\setPublished}[1]{\@IACR@Publishedtrue\def\IACR@Published{#1}}
-
 % Options
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
@@ -199,6 +198,9 @@
   }
   % Old versions of hyperxmp do not support DOI
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+  \RequirePackage{filehook}
+  % This is used when the paper is compiled for the last time before publication.
+  \InputIfFileExists{\jobname.iacrmetadata}{\typeout{^^J      Read IACR metadata file   ^^J}}{}
 }
 
 % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
@@ -321,6 +323,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\IACR@title@params@clearkeys{%
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
+
+\pgfkeys{/IACR-license-CC-by/entities/.cd,
+  file/.initial={CC-by.png},
+  text/.initial={Creative Commons License CC-BY 4.0.},
+  url/.initial={http://creativecommons.org/licenses/by/4.0/},
+  }
+\def\IACR@license-CC-by@params@get#1{%%
+  \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
 
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
@@ -770,13 +780,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
   \gdef\@IACR@License{#1}%
-  \def\@IACR@CCby{CC-by}%
-  \ifx\@IACR@License\@IACR@CCby%
-    % DocLicense: Support for putting documents under a license
-    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}%
-  \else
-    \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
-  \fi
 }
 
 \fancypagestyle{title}{%
@@ -785,6 +788,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \if@preprint\else
       \ifx\@IACR@License\@empty
         \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
+      \else
+        \def\@IACR@CCby{CC-by}%
+        \ifx\@IACR@License\@IACR@CCby%
+          \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
+          \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
+          \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
+        \else
+          \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+        \fi
       \fi
       \fancyhead[L]{%
         \small%
@@ -794,16 +806,17 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }
       \fancyfoot[L]{%
         \small%
-        \doclicenseText%
+        Licensed under %
+        \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
         \hfill{}%
-        \doclicenseImage[imagewidth=5em]\\[.1em]%
+        \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
         \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
         \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
-      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
-      \hypersetup{pdflicenseurl={\doclicenseURL}}
+      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
+      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
     \fi%!preprint
   \fi%!submission
