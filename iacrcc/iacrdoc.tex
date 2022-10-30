@@ -1,6 +1,5 @@
-% IACR Transactions CLASS DOCUMENTATION
-% Written by Gaetan Leurent gaetan.leurent@inria.fr (2016-2018)
-% Extended by Joppe W. Bos and Kevin S. McCurley (2022)
+% IACR Communications in Cryptology Class Documentation
+% by Joppe W. Bos and Kevin S. McCurley (2022)
 %
 % To the extent possible under law, the author(s) have dedicated all
 % copyright and related and neighboring rights to this software to the
@@ -12,8 +11,7 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
-\usepackage[utf8]{inputenc}
-\usepackage{todonotes}
+
 \title[running  = {The iacrcc class},
        onclick  = {https://github.com/IACR/latex},
        subtitle = {LaTeX Class Documentation (v0.10)},
@@ -55,19 +53,21 @@
 \section*{Introduction}
 
 The \texttt{iacrcc} \LaTeX{} class and \texttt{iacrcc.bst} bibligraphy
-style are used by the new IACR Journal titled ``IACR Communications on Cryptology''.
+style are used by the new IACR Journal titled ``IACR Communications in Cryptology''.
 The class is based on standard \LaTeX{} classes and packages
-(mainly the \texttt{article} class with \texttt{amsmath}), and should be
-similar in use to the \texttt{llncs} class used for Springer's
-proceedings. 
-Except for the metadata collection and options related to authors, title and affiliation this 
-class file is identical to the IACR Transactions class file (the \texttt{iacrtans} class v. 0.92) 
+(mainly the \texttt{article} class with \texttt{amsmath}).
+Except for the metadata collection and options related to authors, title and affiliation(s) this 
+class file very close to the IACR Transactions class file (the \texttt{iacrtans} class v. 0.92) 
 written by Ga{\"e}tan Leurent and Friedrich Wiemer.
 
 The class is still in development and feedback and comments are welcome.
 The latest version can be found on the Github page of the project:
 \url{https://github.com/XXX}, feel free to open
 issues or to submit pull requests.
+There is a \texttt{template.tex} file included with this class, to use
+as a starting point for writing a paper.  The \LaTeX{} source of this
+documentation can also be used as a more advanced example, but please
+make sure to remove any unnecessary code.
 
 \textbf{NOTE:} one goal of the \texttt{iacrcc.cls} and
 \texttt{iacrcc.bst} files is to produce machine-readable metadata in
@@ -87,239 +87,34 @@ produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
   for the paper.
 \end{itemize}
 
-\section{\textcolor{red!70!black}{FAQ}: Frequently Asked Questions}
+\section{Invocation and usage}
 
-\todo[noline]{K: change iacrtrans to iacrcc}
-\iffalse
-\subsection{Converting \texttt{llncs} papers to \texttt{iacrtrans} for submission}
-
-If you have a paper typeset with the \texttt{llncs} class, conversion
-should be relatively easy.  The following steps should be sufficient
-in most cases (for the submission version):
-\begin{enumerate}
-\item Replace \verb+\documentclass{llncs}+ with\\
-    \verb+\documentclass[journal=XXX,submission,spthm]{iacrtrans}+,
-    where \verb+XXX+ is either \verb+tosc+, or \verb+tches+;
-\item Replace \verb+\bibliographystyle{splncs03}+ with
-  \verb+\bibliographystyle{iacrcc}+ or add
-  \verb+\documentclass[biblatex]{iacrcc}+ to use the \texttt{biblatex}
-  package. See also \autoref{sec:biblio} for information about how to
-  typeset the bibliography.
-\item Add a \verb+\keywords{}+ command before the abstract, with
-  keywords separated by \verb+\and+;
-\item Remove commands that might override the class style, such as
-  \verb+\pagestyle{...}+ or \verb+\thispagestyle{...}+,
-  change of margins (\emph{e.\,g.}  with the \texttt{geometry} package),
-  change of fonts, \ldots
-\end{enumerate}
-\fi
-
-\subsection{Template file}
-
-There is a \texttt{template.tex} file included with this class, to use
-as a starting point for writing a paper.  The \LaTeX{} source of this
-documentation can also be used as a more advanced example, but please
-make sure to remove any unnecessary code.
-
-\subsection{Preparing the final version}
-
-Before submitting your final version, please make sure that it compiles
-properly with the \texttt{[final]} option (see the next subsection in
-case of issues), and check that the author names and affiliation are
-correct.  In particular, each affiliation MUST be of the form
-$\langle\text{institue}\rangle, \langle\text{city}\rangle,
-\langle\text{country}\rangle$.
-
-\subsection{Compilation issues}
-
-If your document doesn't compile with the \texttt{iacrcc} class,
-you can try adding the \texttt{[nohyperref]} option.  This will
-disable some code in the class that is known to be fragile, in
-particular the generation of metadata.  If this fixes your compilation
-problems, please try to define a clean version of \texttt{author}, \texttt{institute},
-\texttt{title} and/or \texttt{keywords} as optional arguments to
-these commands (in particular, remove \LaTeX{} macros, and write
-everything on a single line), and see if you document now compiles
-without the \texttt{[nohyperref]} option.
-
-\subsection{Line number issues}
-
-In submission mode, the class adds line numbers to help reviewers refer
-to specific elements.  Unfortunately, the code that does this is rather
-fragile, and some constructions break the line numbering.  In
-particular, old-style equations with \verb+$$...$$+ are known to cause
-issues, please use \verb+\[...\]+ instead\footnote{For more background
-  on \texttt{\$\$...\$\$} and \texttt{\textbackslash[...\textbackslash]},
-  see \url{https://tex.stackexchange.com/questions/503/why-is-preferable-to}}.
-
-If you find other cases where line numbering is broken, please open a
-ticket on github, and we will try to find a solution when possible.
-As a quick workaround, you can wrap the offending environment with
-\verb+\begin{linenomath}+ / \verb+\end{linenomath}+ (this will do
-nothing in preprint or final mode when line numbers are deactivated).
-
-\section{Main Commands}
-
-\subsection{Title page}
-
-The following commands are used to input informations for the title page.
-
-\paragraph{\texttt{\textbackslash{}genericfootnote}}
-To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper).
-
-\paragraph{\texttt{\textbackslash title}} to define the title.
-There are a number \emph{optional} options to {\tt \textbackslash{}title}:
+To use this class, put in the preamble of your document
+\begin{verbatim}
+\documentclass[⟨options⟩]{iacrcc}
+\end{verbatim}
+There are several \emph{optional} options corresponding to the type of the document 
+and its general appearance.
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt running} & The running title displayed in the headers.\\
-{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
-{\tt subtitle} & Provide a subtitle.\\
+{\tt preprint} &  Preprint (no copyright info) -- This is the default mode.\\
+{\tt submission} & Anonymous submission with line numbers.\\
+{\tt notanonymous} & Keep author names in submission mode when the
+call for paper requires non-anonymous submissions.\\
+{\tt final} & Final version.\\
+\multicolumn{2}{c}{\textbf{Package options}}\\
+{\tt floatrow} & Load floatrow package with correct captions.\\
+{\tt xcolor=xxx} & Pass xxx to xcolor package.\\
+{\tt hyperref=xxx} & Pass xxx to hyperref package.\\
+{\tt biblatex} & Use the biblatex package instead of bibtex.
 \end{tabular}
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\title[running  = {IACR Communications in Cryptology Class},
-       onclick  = {https://github.com/IACR/latex},
-       subtitle = {A Template}
-      ]{How to Use the IACR Communications in Cryptology Class}
-\end{verbatim}
-
-\paragraph{\texttt{\textbackslash addauthor}} to define the author list.
-
-Authors are listed individually using the {\tt \textbackslash{}author} command. 
-There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
-{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
-{\tt footnote} & Create an author-specific footnote.\\
-{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
-{\tt email} & Define the e-mail address of this author.\\
-\end{tabular}
-
-\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
-this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
-surnames which might be confusing. 
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\author[orcid    = 0000-0000-0000-0000,
-        inst     = {1,2},
-        footnote = {Thanks to my supervisor for the support.},
-        onclick  = {https://www.mypersonalwebpage.com},
-        email    = {alice@accomplsihed.com},
-       ]{Alice \surname{Accomplished}}
-\end{verbatim}
-
-\paragraph{\texttt{\textbackslash{}affiliations}}
-Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
-the (list of) authors using {\tt \textbackslash{}addauthor}.
-There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
-{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
-{\tt  department} & Department or suborganization name.\\
-{\tt  street} & Street address.\\
-{\tt  city} & City name.\\
-{\tt  state} & State or province name.\\
-{\tt  postcode} & zip or postal code.\\
-{\tt  country} & Country name.\\
-\end{tabular}
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\affiliation[ror        = 05f950310,
-             onclick    = {http://www.kuleuven.be/english},
-             department = {Computer Security and Industrial Cryptography},              
-             street     = {Kasteelpark Arenberg 10, box 2452},
-             city       = {Leuven},
-             state      = {Vlaams-Brabant},
-             postcode   = {3001},
-             country    = {Belgium}
-            ]{KU Leuven}
-\end{verbatim}           
-
-\paragraph{\texttt{\textbackslash license}}
-When the ``final'' document mode is used the author needs to provide a supported license.
-In all other modes this information is ignored.
-The currently provided set of licences are \mbox{\{ CC-by \}}.
-An example would look like:
-
-\begin{verbatim}
-\license{CC-by}
-\end{verbatim}
-
-\paragraph{\texttt{\textbackslash keywords}} to give a list of
-keywords.
-
-Individual keywords should be separated by the \verb+\and+ macro.
-
-If there are fragile commands in the keywords, use the optional argument
-to give a text-only version of the keywords; this will be used for the
-PDF metadata.
-
-\paragraph{\texttt{\textbackslash maketitle}} is used to actually
-typeset the title.
-
-\paragraph{The \texttt{abstract} environment} should be used to typeset the abstract.
-
-Note that the keywords should be given before starting the abstract environment.
-
-
-\subsection{Theorems}
-
-The \texttt{iacrtrans} class uses the \AmS{} packages to typeset
-math.  In particular, it loads the \texttt{amsthm} package, and
-predefines the following environments:
-\begin{center}
-  \ttfamily
-\begin{tabular}{l@{\hspace{1cm}}l@{\hspace{1cm}}l}
-theorem     & definition & remark \\
-proposition & example    & note   \\
-problem     & exercise   & case   \\
-lemma       & property   &        \\
-conjecture  & question   &        \\
-corollary   & solution   &        \\
-claim       &            &        \\
-\end{tabular}
-\end{center}
-
-Note that the \texttt{proof} environment automatically adds a QED
-symbol at the end of the proof.
-If the QED symbol
-is typeset at a wrong position, you can force its position with
-\verb+\qedhere+.
-
-\section{Class options}
-\label{sec:options}
-
-\subsection{Publication type}
-
-The class supports four publication types, selected with the
-following class options:
-\begin{description}
-\item[\texttt{[final]}] for final papers
-\item[\texttt{[preprint]}] for preprints (without copyright info, default)
-\item[\texttt{[submission]}] for submissions (anonymous, with line numbers)
-\end{description}
-Some types supports further options:
-\begin{description}
-\item[\texttt{[notanonymous]}] can be used in submission mode, when the
-  call for paper requires non-anonymous submissions.
-\end{description}
-
-\subsection{Other Options}
 
 \paragraph{\texttt{[floatrow]}}
 uses the \texttt{floatrow} package to customize floats rather than the
 plain \texttt{float} package.  In particular, this allows to typeset
 floats side by side as shown in this example:
 \begin{verbatim}
-\documentclass[floatrow]{iacrtrans}
+\documentclass[floatrow]{iacrcc}
 \usepackage[demo]{graphicx}
 \begin{document}
 
@@ -346,28 +141,150 @@ passes $\langle\text{\emph{list of options}}\rangle$ to the
 you have to use this mechanism to pass options at load time; for instance
 use \texttt{xcolor=svgnames} to load SVG color names.
 
-
 \paragraph{\texttt{[hyperref=$\langle\text{\emph{list of options}}\rangle$]}}
 passes $\langle\text{\emph{list of options}}\rangle$ to the
 \texttt{hyperref} package.  Alternatively, you can load
 \texttt{hyperref} yourself with the required options and the class will
 detect that it already loaded.
 
-\paragraph{\texttt{[nohyperref]}}
-disables the automatic loading of
-\texttt{hyperref}.  Use this is if your document fails to compile with
-\texttt{hyperref} for some reason.
-
-The \texttt{iacrtrans} class automatically loads \texttt{hyperref}
+The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded
 \emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
-explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
+explicitly at the correct position.
 
-\paragraph{\texttt{[nolastpage]}}
-disables the automatic loading the \texttt{lastpage} package in
-\texttt{[final]} mode.  When this option is enabled, the last page
-number must be set explicitly with
-\texttt{\textbackslash{}setlastpage}.
+\paragraph{\texttt{[biblatex]}} uses the biblatex package instead of bibtex.
+
+\subsection{Macros which control the title page}
+
+The following commands are used to input informations for the title page.
+
+\paragraph{\texttt{\textbackslash{}genericfootnote\{footnotetext\}}}
+To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper).
+This is an optional macro.
+
+\paragraph{\texttt{\textbackslash title[option=\{xxx\}]\{title\}}} to define the title.
+There are a number \emph{optional} options to {\tt \textbackslash{}title}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt running} & The running title displayed in the headers.\\
+{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
+{\tt subtitle} & Provide a subtitle.\\
+\end{tabular}
+
+\noindent An example using all the optional options would look like:
+
+\begin{verbatim}
+\title[running  = {IACR Communications in Cryptology Class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
+      ]{How to Use the IACR Communications in Cryptology Class}
+\end{verbatim}
+
+\paragraph{\texttt{\textbackslash addauthor[option=\{xxx\}]\{authorname\}}} to define the author list.
+
+Authors are listed individually using the {\tt \textbackslash{}author} command. 
+There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
+{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
+{\tt footnote} & Create an author-specific footnote.\\
+{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+{\tt email} & Define the e-mail address of this author.\\
+\end{tabular}
+
+\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
+this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
+surnames which might be confusing. 
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\author[orcid    = 0000-0000-0000-0000,
+        inst     = {1,2},
+        footnote = {Thanks to my supervisor for the support.},
+        onclick  = {https://www.mypersonalwebpage.com},
+        email    = {alice@accomplished.com},
+       ]{Alice \surname{Accomplished}}
+\end{verbatim}
+
+\paragraph{\texttt{\textbackslash{}affiliations[option=\{xxx\}]\{affiliation\}}}
+Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
+the (list of) authors using {\tt \textbackslash{}addauthor}.
+There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
+{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
+{\tt  department} & Department or suborganization name.\\
+{\tt  street} & Street address.\\
+{\tt  city} & City name.\\
+{\tt  state} & State or province name.\\
+{\tt  postcode} & zip or postal code.\\
+{\tt  country} & Country name.\\
+\end{tabular}
+
+\noindent An example using all the optional options would look like:
+
+\begin{verbatim}
+\affiliation[ror        = 05f950310,
+             onclick    = {http://www.kuleuven.be/english},
+             department = {Computer Security and Industrial Cryptography},              
+             street     = {Kasteelpark Arenberg 10, box 2452},
+             city       = {Leuven},
+             state      = {Vlaams-Brabant},
+             postcode   = {3001},
+             country    = {Belgium}
+            ]{KU Leuven}
+\end{verbatim}           
+
+\paragraph{\texttt{\textbackslash license\{license\}}}
+When the ``final'' document mode is used the author needs to provide a supported license.
+In all other modes this information is not required and when provided ignored.
+The currently provided set of licences are \mbox{\{ CC-by \}}.
+An example would look like:
+
+\begin{verbatim}
+\license{CC-by}
+\end{verbatim}
+
+\paragraph{\texttt{\textbackslash keywords\{keyword1 \textbackslash{}and keyword2\}}} to give a list of
+keywords.
+Individual keywords should be separated by the \verb+\and+ macro.
+This is an optional macro.
+
+\paragraph{\texttt{\textbackslash maketitle}} is used to actually
+typeset the title.
+
+\paragraph{The \texttt{abstract} environment} should be used to typeset the abstract.
+
+Note that the keywords should be given before starting the abstract environment.
+
+\subsection{Theorems}
+
+The \texttt{iacrcc} class uses the \AmS{} packages to typeset
+math.  In particular, it loads the \texttt{amsthm} package, and
+predefines the following environments:
+\begin{center}
+  \ttfamily
+\begin{tabular}{l@{\hspace{1cm}}l@{\hspace{1cm}}l}
+theorem     & definition & remark \\
+proposition & example    & note   \\
+problem     & exercise   & case   \\
+lemma       & property   &        \\
+conjecture  & question   &        \\
+corollary   & solution   &        \\
+claim       &            &        \\
+\end{tabular}
+\end{center}
+
+Note that the \texttt{proof} environment automatically adds a QED
+symbol at the end of the proof.
+If the QED symbol
+is typeset at a wrong position, you can force its position with
+\verb+\qedhere+.
+
+% JWB: Editing until here 
 
 \section{Typesetting the Bibliography}
 \label{sec:biblio}
