@@ -1044,11 +1044,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ignorespaces
 }
 
-\AtBeginDocument{
-  % make sure that TU is the default encoding for unicode.
-  % Other encodings may be used temporarily within the file.
-  \usepackage[TU]{fontenc}
-}
 \if@submission
   % lineno: Line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
