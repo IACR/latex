@@ -132,6 +132,10 @@
 % Options
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
+% The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
+% \IACR@Published, and \IACR@DOI.
+\InputIfFileExists{\jobname.iacrmetadata}{
+  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\@hyperxmp@doitrue\typeout{Inserted DOI into PDF}}{}
 \newif\if@optbiblatex
 \@optbiblatexfalse
 \define@key{IACR}{biblatex}[]{\@optbiblatextrue}
@@ -210,9 +214,6 @@
   }
   % Old versions of hyperxmp do not support DOI
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
-  \RequirePackage{filehook}
-  % This is used when the paper is compiled for the last time before publication.
-  \InputIfFileExists{\jobname.iacrmetadata}{\typeout{^^J      Read IACR metadata file   ^^J}}{}
 }
 
 % Check the character encoding. lualatex and unicode are required for final versions.
@@ -407,6 +408,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\store@paperwidth\paperwidth\else
     \ClassError{iacrcc}{The \string\paperwidth\space macro seems to be redefined}{}%
   \fi
+  % final version requires abstract.
+  \ifcsstring{@IACRversion}{final}{
+    \IfFileExists{\jobname.abstract}{}{\ClassError{iacrcc}{An abstract with abstract environment is required}{}}
+  }{}
 }
 
 % latex3 syntax used for writing text to the .meta file. This requires
@@ -426,6 +431,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \ExplSyntaxOff
 
 \renewcommand\maketitle{\par
+  \@writemeta{version: \@IACRversion}
   \@writemeta{title: \@plaintitle}%
   \ifx\@subtitle\@empty\else
     \@writemeta{\IACRSS subtitle: \@subtitle}
