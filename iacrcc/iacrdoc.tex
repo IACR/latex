@@ -1,6 +1,7 @@
-% IACR Transactions CLASS DOCUMENTATION
-% Written by Gaetan Leurent gaetan.leurent@inria.fr (2016-2018)
-% Extended by Joppe W. Bos and Kevin S. McCurley (2022)
+% IACR Communications CLASS DOCUMENTATION
+% Written by Joppe W. Bos and Kevin S. McCurley (2022),
+% based on prior work on the iacrtrans class by
+% Gaetan Leurent gaetan.leurent@inria.fr (2016-2018)
 %
 % To the extent possible under law, the author(s) have dedicated all
 % copyright and related and neighboring rights to this software to the
@@ -55,14 +56,15 @@
 \section*{Introduction}
 
 The \texttt{iacrcc} \LaTeX{} class and \texttt{iacrcc.bst} bibligraphy
-style are used by the new IACR Journal titled ``IACR Communications on Cryptology''.
-The class is based on standard \LaTeX{} classes and packages
-(mainly the \texttt{article} class with \texttt{amsmath}), and should be
-similar in use to the \texttt{llncs} class used for Springer's
-proceedings. 
-Except for the metadata collection and options related to authors, title and affiliation this 
-class file is identical to the IACR Transactions class file (the \texttt{iacrtans} class v. 0.92) 
-written by Ga{\"e}tan Leurent and Friedrich Wiemer.
+style are used by the new IACR Journal titled ``IACR Communications in
+Cryptology''.  The biggest difference between this class and other
+classes you may have used is the way in which metadata is supplied
+(e.g., author information). One goal is to minimize the amount of
+human effort required to process final versions of a paper, so that
+we can reduce the cost of open access publishing.  Some of
+the stylistic choices were inspired by IACR Transactions class file (the
+\texttt{iacrtans} class v. 0.92) written by Ga{\"e}tan Leurent and
+Friedrich Wiemer.
 
 The class is still in development and feedback and comments are welcome.
 The latest version can be found on the Github page of the project:
@@ -89,17 +91,15 @@ produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
 
 \section{\textcolor{red!70!black}{FAQ}: Frequently Asked Questions}
 
-\todo[noline]{K: change iacrtrans to iacrcc}
 \iffalse
-\subsection{Converting \texttt{llncs} papers to \texttt{iacrtrans} for submission}
+\subsection{Converting \texttt{llncs} papers to \texttt{iacrcc} for submission}
 
 If you have a paper typeset with the \texttt{llncs} class, conversion
 should be relatively easy.  The following steps should be sufficient
 in most cases (for the submission version):
 \begin{enumerate}
 \item Replace \verb+\documentclass{llncs}+ with\\
-    \verb+\documentclass[journal=XXX,submission,spthm]{iacrtrans}+,
-    where \verb+XXX+ is either \verb+tosc+, or \verb+tches+;
+    \verb+\documentclass[version=submission]{iacrcc}+;
 \item Replace \verb+\bibliographystyle{splncs03}+ with
   \verb+\bibliographystyle{iacrcc}+ or add
   \verb+\documentclass[biblatex]{iacrcc}+ to use the \texttt{biblatex}
@@ -124,10 +124,11 @@ make sure to remove any unnecessary code.
 \subsection{Preparing the final version}
 
 Before submitting your final version, please make sure that it compiles
-properly with the \texttt{[final]} option (see the next subsection in
+properly using \texttt{lualatex} with the \texttt{[version=final]} option
+(see the next subsection in
 case of issues), and check that the author names and affiliation are
 correct.  In particular, each affiliation MUST be of the form
-$\langle\text{institue}\rangle, \langle\text{city}\rangle,
+$\langle\text{institute}\rangle, \langle\text{city}\rangle,
 \langle\text{country}\rangle$.
 
 \subsection{Compilation issues}
@@ -272,7 +273,7 @@ Note that the keywords should be given before starting the abstract environment.
 
 \subsection{Theorems}
 
-The \texttt{iacrtrans} class uses the \AmS{} packages to typeset
+The \texttt{iacrcc} class uses the \AmS{} packages to typeset
 math.  In particular, it loads the \texttt{amsthm} package, and
 predefines the following environments:
 \begin{center}
@@ -302,9 +303,9 @@ is typeset at a wrong position, you can force its position with
 The class supports four publication types, selected with the
 following class options:
 \begin{description}
-\item[\texttt{[final]}] for final papers
-\item[\texttt{[preprint]}] for preprints (without copyright info, default)
-\item[\texttt{[submission]}] for submissions (anonymous, with line numbers)
+\item[\texttt{[version=final]}] for final papers
+\item[\texttt{[version=preprint]}] for preprints (without copyright info, default)
+\item[\texttt{[version=submission]}] for submissions (anonymous, with line numbers)
 \end{description}
 Some types supports further options:
 \begin{description}
@@ -315,11 +316,12 @@ Some types supports further options:
 \subsection{Other Options}
 
 \paragraph{\texttt{[floatrow]}}
+\todo[noline]{K: consider removing floatrow. We may want it}
 uses the \texttt{floatrow} package to customize floats rather than the
 plain \texttt{float} package.  In particular, this allows to typeset
 floats side by side as shown in this example:
 \begin{verbatim}
-\documentclass[floatrow]{iacrtrans}
+\documentclass[floatrow]{iacrcc}
 \usepackage[demo]{graphicx}
 \begin{document}
 
@@ -341,6 +343,7 @@ you can ask each figure to take its natural space instead with
 \texttt{floatrow} documentation.
 
 \paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
+\todo[noline]{K: consider removing xcolor. We may want it}
 passes $\langle\text{\emph{list of options}}\rangle$ to the
 \texttt{xcolor} package.  Since \texttt{xcolor} is loaded by the class,
 you have to use this mechanism to pass options at load time; for instance
@@ -358,7 +361,7 @@ disables the automatic loading of
 \texttt{hyperref}.  Use this is if your document fails to compile with
 \texttt{hyperref} for some reason.
 
-The \texttt{iacrtrans} class automatically loads \texttt{hyperref}
+The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded
 \emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
 explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
