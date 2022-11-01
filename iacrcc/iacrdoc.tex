@@ -13,8 +13,7 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
-\usepackage[utf8]{inputenc}
-\usepackage{todonotes}
+
 \title[running  = {The iacrcc class},
        onclick  = {https://github.com/IACR/latex},
        subtitle = {LaTeX Class Documentation (v0.10)},
@@ -70,6 +69,10 @@ The class is still in development and feedback and comments are welcome.
 The latest version can be found on the Github page of the project:
 \url{https://github.com/XXX}, feel free to open
 issues or to submit pull requests.
+There is a \texttt{template.tex} file included with this class, to use
+as a starting point for writing a paper.  The \LaTeX{} source of this
+documentation can also be used as a more advanced example, but please
+make sure to remove any unnecessary code.
 
 \textbf{NOTE:} one goal of the \texttt{iacrcc.cls} and
 \texttt{iacrcc.bst} files is to produce machine-readable metadata in
@@ -89,39 +92,27 @@ produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
   for the paper.
 \end{itemize}
 
-\section{\textcolor{red!70!black}{FAQ}: Frequently Asked Questions}
+\section{Invocation and usage}
 
-\iffalse
-\subsection{Converting \texttt{llncs} papers to \texttt{iacrcc} for submission}
+To use this class, put in the preamble of your document
+\begin{verbatim}
+\documentclass[⟨options⟩]{iacrcc}
+\end{verbatim}
+There are several \emph{optional} options corresponding to the type of the document 
+and its general appearance.
 
-If you have a paper typeset with the \texttt{llncs} class, conversion
-should be relatively easy.  The following steps should be sufficient
-in most cases (for the submission version):
-\begin{enumerate}
-\item Replace \verb+\documentclass{llncs}+ with\\
-    \verb+\documentclass[version=submission]{iacrcc}+;
-\item Replace \verb+\bibliographystyle{splncs03}+ with
-  \verb+\bibliographystyle{iacrcc}+ or add
-  \verb+\documentclass[biblatex]{iacrcc}+ to use the \texttt{biblatex}
-  package. See also \autoref{sec:biblio} for information about how to
-  typeset the bibliography.
-\item Add a \verb+\keywords{}+ command before the abstract, with
-  keywords separated by \verb+\and+;
-\item Remove commands that might override the class style, such as
-  \verb+\pagestyle{...}+ or \verb+\thispagestyle{...}+,
-  change of margins (\emph{e.\,g.}  with the \texttt{geometry} package),
-  change of fonts, \ldots
-\end{enumerate}
-\fi
-
-\subsection{Template file}
-
-There is a \texttt{template.tex} file included with this class, to use
-as a starting point for writing a paper.  The \LaTeX{} source of this
-documentation can also be used as a more advanced example, but please
-make sure to remove any unnecessary code.
-
-\subsection{Preparing the final version}
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt preprint} &  Preprint (no copyright info) -- This is the default mode.\\
+{\tt submission} & Anonymous submission with line numbers.\\
+{\tt notanonymous} & Keep author names in submission mode when the
+call for paper requires non-anonymous submissions.\\
+{\tt final} & Final version.\\
+\multicolumn{2}{c}{\textbf{Package options}}\\
+{\tt floatrow} & Load floatrow package with correct captions.\\
+{\tt xcolor=xxx} & Pass xxx to xcolor package.\\
+{\tt hyperref=xxx} & Pass xxx to hyperref package.\\
+{\tt biblatex} & Use the biblatex package instead of bibtex.
+\end{tabular}
 
 Before submitting your final version, please make sure that it compiles
 properly using \texttt{lualatex} with the \texttt{[version=final]} option
@@ -131,44 +122,51 @@ correct.  In particular, each affiliation MUST be of the form
 $\langle\text{institute}\rangle, \langle\text{city}\rangle,
 \langle\text{country}\rangle$.
 
-\subsection{Compilation issues}
+\begin{figure}
+  \begin{floatrow}
+    \ffigbox{\includegraphics[width=0.4\textwidth]{1.png}}
+    {\caption{This is caption 1.}}
+    \ffigbox{\includegraphics[width=0.4\textwidth]{2.png}}
+    {\caption{This is caption 2.}}
+  \end{floatrow}
+\end{figure}
 
-If your document doesn't compile with the \texttt{iacrcc} class,
-you can try adding the \texttt{[nohyperref]} option.  This will
-disable some code in the class that is known to be fragile, in
-particular the generation of metadata.  If this fixes your compilation
-problems, please try to define a clean version of \texttt{author}, \texttt{institute},
-\texttt{title} and/or \texttt{keywords} as optional arguments to
-these commands (in particular, remove \LaTeX{} macros, and write
-everything on a single line), and see if you document now compiles
-without the \texttt{[nohyperref]} option.
+\end{document}
+\end{verbatim}
 
-\subsection{Line number issues}
+The row will be divided equally according to the number of figures, but
+you can ask each figure to take its natural space instead with
+\verb+\ffigbox[\FBwidth]+.  For more advanced use, see the
+\texttt{floatrow} documentation.
 
-In submission mode, the class adds line numbers to help reviewers refer
-to specific elements.  Unfortunately, the code that does this is rather
-fragile, and some constructions break the line numbering.  In
-particular, old-style equations with \verb+$$...$$+ are known to cause
-issues, please use \verb+\[...\]+ instead\footnote{For more background
-  on \texttt{\$\$...\$\$} and \texttt{\textbackslash[...\textbackslash]},
-  see \url{https://tex.stackexchange.com/questions/503/why-is-preferable-to}}.
+\paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
+passes $\langle\text{\emph{list of options}}\rangle$ to the
+\texttt{xcolor} package.  Since \texttt{xcolor} is loaded by the class,
+you have to use this mechanism to pass options at load time; for instance
+use \texttt{xcolor=svgnames} to load SVG color names.
 
-If you find other cases where line numbering is broken, please open a
-ticket on github, and we will try to find a solution when possible.
-As a quick workaround, you can wrap the offending environment with
-\verb+\begin{linenomath}+ / \verb+\end{linenomath}+ (this will do
-nothing in preprint or final mode when line numbers are deactivated).
+\paragraph{\texttt{[hyperref=$\langle\text{\emph{list of options}}\rangle$]}}
+passes $\langle\text{\emph{list of options}}\rangle$ to the
+\texttt{hyperref} package.  Alternatively, you can load
+\texttt{hyperref} yourself with the required options and the class will
+detect that it already loaded.
 
-\section{Main Commands}
+The \texttt{iacrcc} class automatically loads \texttt{hyperref}
+after all other packages.  If you need some packages to be loaded
+\emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
+explicitly at the correct position.
 
-\subsection{Title page}
+\paragraph{\texttt{[biblatex]}} uses the biblatex package instead of bibtex.
+
+\subsection{Macros to add title and author information}
 
 The following commands are used to input informations for the title page.
 
-\paragraph{\texttt{\textbackslash{}genericfootnote}}
+\paragraph{\texttt{\textbackslash{}genericfootnote\{footnotetext\}}}
 To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper).
+This is an optional macro.
 
-\paragraph{\texttt{\textbackslash title}} to define the title.
+\paragraph{\texttt{\textbackslash title[option=\{xxx\}]\{title\}}} to define the title.
 There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
@@ -177,7 +175,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 {\tt subtitle} & Provide a subtitle.\\
 \end{tabular}
 
-An example using all the optional options would look like:
+\noindent An example using all the optional options would look like:
 
 \begin{verbatim}
 \title[running  = {IACR Communications in Cryptology Class},
@@ -186,7 +184,7 @@ An example using all the optional options would look like:
       ]{How to Use the IACR Communications in Cryptology Class}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash addauthor}} to define the author list.
+\paragraph{\texttt{\textbackslash addauthor[option=\{xxx\}]\{authorname\}}} to define the author list.
 
 Authors are listed individually using the {\tt \textbackslash{}author} command. 
 There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
@@ -210,11 +208,11 @@ An example using all the optional options would look like:
         inst     = {1,2},
         footnote = {Thanks to my supervisor for the support.},
         onclick  = {https://www.mypersonalwebpage.com},
-        email    = {alice@accomplsihed.com},
+        email    = {alice@accomplished.com},
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash{}affiliations}}
+\paragraph{\texttt{\textbackslash{}affiliations[option=\{xxx\}]\{affiliation\}}}
 Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
 the (list of) authors using {\tt \textbackslash{}addauthor}.
 There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
@@ -230,7 +228,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
 {\tt  country} & Country name.\\
 \end{tabular}
 
-An example using all the optional options would look like:
+\noindent An example using all the optional options would look like:
 
 \begin{verbatim}
 \affiliation[ror        = 05f950310,
@@ -244,9 +242,9 @@ An example using all the optional options would look like:
             ]{KU Leuven}
 \end{verbatim}           
 
-\paragraph{\texttt{\textbackslash license}}
+\paragraph{\texttt{\textbackslash license\{license\}}}
 When the ``final'' document mode is used the author needs to provide a supported license.
-In all other modes this information is ignored.
+In all other modes this information is not required and when provided ignored.
 The currently provided set of licences are \mbox{\{ CC-by \}}.
 An example would look like:
 
@@ -254,14 +252,10 @@ An example would look like:
 \license{CC-by}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash keywords}} to give a list of
+\paragraph{\texttt{\textbackslash keywords\{keyword1 \textbackslash{}and keyword2\}}} to give a list of
 keywords.
-
 Individual keywords should be separated by the \verb+\and+ macro.
-
-If there are fragile commands in the keywords, use the optional argument
-to give a text-only version of the keywords; this will be used for the
-PDF metadata.
+This is an optional macro.
 
 \paragraph{\texttt{\textbackslash maketitle}} is used to actually
 typeset the title.
@@ -269,7 +263,6 @@ typeset the title.
 \paragraph{The \texttt{abstract} environment} should be used to typeset the abstract.
 
 Note that the keywords should be given before starting the abstract environment.
-
 
 \subsection{Theorems}
 
