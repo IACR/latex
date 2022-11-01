@@ -1,11 +1,12 @@
+TEXFILES = main.tex test3.bib
 
-all: test3.pdf
+all: main.pdf
 
-test3.pdf: $(TEXFILES)
-	lualatex test3
-	biber test3
-	lualatex test3
-	lualatex test3
+main.pdf: $(TEXFILES)
+	lualatex main
+	biber main
+	lualatex main
+	lualatex main
 
 clean:
-	rm test3.pdf test3.blg test3.aux test3.log test3.bbl test3.out test3.meta test3.run.xml test3.bcf
+	rm main.pdf main.blg main.aux main.log main.bbl main.out main.meta main.run.xml main.bcf main.fdb_latexmk main.fls main.dvi

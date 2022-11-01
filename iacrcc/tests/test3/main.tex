@@ -1,11 +1,17 @@
 \documentclass[biblatex]{iacrcc}
 
 \title{Another example with biblatex}
+\addauthor[orcid    = {0000-0002-0599-0192},
+           onclick  = {https://www.theonion.com/},
+           footnote = {This is an example footnote.},
+           email    = {nobody@example.com}
+          ]{Fester \surname{Bestertester}}
 \usepackage{xcolor}
 \addbibresource{biblatex-examples.bib}
 \addbibresource{test3.bib}
 
 \begin{document}
+\maketitle
 First we cite \cite{sample} and \cite{noemph}.
 Then we cite things from \texttt{biblatex-examples.bib}: 
 \cite{kowalik}

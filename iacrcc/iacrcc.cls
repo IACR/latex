@@ -24,17 +24,20 @@
 %%% Class options:
 %
 %% Document mode
-% [preprint]      Preprint (no copyright info) -- default mode
-% [submission]    Anonymous submission
+% [version=xxx] where xxx is preprint, submission, or final. The default is preprint.
+%               version=submission puts line numbers into the document and makes it
+%               anonymous (which can be overridden).
+%               version=final is for submitting the final version. This requires a license
+%               to be specified and must be compiled with lualatex.
 % [notanonymous]  Keep author names in submission mode
-% [final]         Final version
 %% Package options
 % [floatrow]      Load floatrow package with correct captions
 % [xcolor=xxx]    Pass xxx to xcolor package
 % [hyperref=xxx]  Pass xxx to hyperref package
-% [biblatex]      Use the biblatex package instead of bibtex.
+% [biblatex]      Use the biblatex package instead of bibtex. Note that options
+%                 may not be passed to biblatex at this time.
 %
-%%% HOWTO use this class
+%%% HOWTO use this class. See the companion iacrdoc.tex for a better guide.
 %
 %% Title
 % Provide the title of the paper, this should look like:
@@ -101,7 +104,7 @@
 % xkeyval is an extension of the keyval package and offers additional macros
 % for setting keys and declaring and setting class or package options.
 \RequirePackage{xkeyval}
-\def\publname{IACR Communications on Cryptology}
+\def\publname{IACR Communications in Cryptology}
 \def\IACR@vol{0}
 \def\IACR@no{0}
 \def\IACR@fp{1}
@@ -116,18 +119,15 @@
 \newif\if@IACR@Revised \@IACR@Revisedfalse
 \newif\if@IACR@Accepted \@IACR@Acceptedfalse
 \newif\if@IACR@Published \@IACR@Publishedfalse
+% etoolbox is a toolbox of programming facilities geared primarily
+% towards LaTeX class and package authors.
+\RequirePackage{etoolbox}
 
 \newcommand{\setfirstpage}[1]{\def\IACR@fp{#1}\setcounter{page}{#1}}
 \newcommand{\setlastpage}[1]{\def\IACR@lp{#1}}
 \newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
 \newcommand{\setnumber}[1]{\def\IACR@no{#1}}
 \newcommand{\setISSN}[1]{\def\IACR@ISSN{#1}}
-\newcommand{\setDOI}[1]{\def\IACR@DOI{#1}}
-
-\newcommand{\setReceived}[1]{\@IACR@Receivedtrue\def\IACR@Received{#1}}
-\newcommand{\setRevised}[1]{\@IACR@Revisedtrue\def\IACR@Revised{#1}}
-\newcommand{\setAccepted}[1]{\@IACR@Acceptedtrue\def\IACR@Accepted{#1}}
-\newcommand{\setPublished}[1]{\@IACR@Publishedtrue\def\IACR@Published{#1}}
 
 % Options
 \newif\if@hyperxmp@doi
@@ -138,22 +138,37 @@
 \newif\if@floatrow
 \@floatrowfalse
 \define@key{IACR}{floatrow}[]{\@floatrowtrue}
-\newif\if@submission
-\@submissionfalse
+% version=submission will set anonymous to true, but it can be
+% overridden with the notanonymous option for the class.
 \newif\if@anonymous
 \@anonymousfalse
-\newif\if@preprint
-\@preprinttrue
-\define@key{IACR}{final}[]{\PassOptionsToClass{\CurrentOption}{article}\@preprintfalse}
-\define@key{IACR}{preprint}[]{\@preprinttrue}      % Default
-\define@key{IACR}{submission}[]{\@submissiontrue\@anonymoustrue}
-\define@key{IACR}{notanonymous}[]{\@anonymousfalse}
-
+% This maybe be used to override \@anonymous
+\newif\if@notanonymous
+\@notanonymousfalse
+\define@key{IACR}{notanonymous}[]{\@notanonymoustrue}
+\newcommand{\@IACRversion}{preprint}
+\define@choicekey{IACR}{version}[\@IACRversion]{preprint,submission,final}[preprint]{}
 \define@key{IACR}{xcolor}{\PassOptionsToPackage{#1}{xcolor}}
 \define@key{IACR}{hyperref}{\PassOptionsToPackage{#1}{hyperref}}
-
-\DeclareOptionX*{\PassOptionsToClass{\CurrentOption}{article}}
+% TODO: figure out how to prohibit passing twocolumn and landscape to article.
+%\DeclareOptionX*{
+%  \typeout{passing \CurrentOption to article}\PassOptionsToClass{\CurrentOption}{article}
+%}
+\DeclareOptionX*{}
 \ProcessOptionsX<IACR>\relax
+\typeout{Compiling version=\@IACRversion}
+\ifcsstring{@IACRversion}{submission}{
+  \if@notanonymous\@anonymousfalse
+  \typeout{Disabling anonymity}
+  \else
+  \@anonymoustrue
+  \typeout{Setting to anonymous}
+  \fi
+}{}
+\ifcsstring{@IACRversion}{final}{
+  % This disabled boxes for overfull hboxes.
+  \PassOptionsToClass{final}{article}
+}{}
 
 % article class
 \LoadClass[10pt,twoside]{article}[2007/10/19]
@@ -170,10 +185,6 @@
 % and provides easy driver-independent access to several kinds 
 % of color tints, shades, tones, and mixes of arbitrary colors. I
 \RequirePackage{xcolor}
-
-% etoolbox is a toolbox of programming facilities geared primarily 
-% towards LaTeX class and package authors.
-\RequirePackage{etoolbox}
 
 % xstring provides macros for manipulating strings - testing a string’s 
 % contents, extracting substrings, substitution of substrings and providing
@@ -199,6 +210,33 @@
   }
   % Old versions of hyperxmp do not support DOI
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+  \RequirePackage{filehook}
+  % This is used when the paper is compiled for the last time before publication.
+  \InputIfFileExists{\jobname.iacrmetadata}{\typeout{^^J      Read IACR metadata file   ^^J}}{}
+}
+
+% Check the character encoding. lualatex and unicode are required for final versions.
+% We allow pdflatex to be used for preprint and submission modes, because it is faster
+% than lualatex.
+\ifcsstring{encodingdefault}{TU}{}{ % not unicode
+  \ifcsstring{@IACRversion}{final}{
+    \ifluatex
+      \ClassError{iacrcc}{^^JThe font encoding \encodingdefault is not supported.
+      Do not use the fontenc package, and use only unicode fonts.}{}
+    \else
+      \ClassError{iacrcc}{^^Jfinal versions must be compiled with lualatex.^^J}{}
+    \fi
+  }{%
+    \ifluatex
+      \ClassError{iacrcc}{^^JThe font encoding \encodingdefault is not supported.\MessageBreak
+        Do not use the fontenc package, and use only unicode fonts.}{}
+       \usepackage[TU]{fontenc}
+     \else
+      \ClassWarning{iacrcc}{^^J This package is intended to be used with lualatex\MessageBreak
+        because pdflatex does not support unicode output.^^J}{}
+    \fi
+    % set the default encoding to TU.
+  }
 }
 
 % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
@@ -321,6 +359,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\IACR@title@params@clearkeys{%
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
+
+\pgfkeys{/IACR-license-CC-by/entities/.cd,
+  file/.initial={CC-by.png},
+  text/.initial={Creative Commons License CC-BY 4.0.},
+  url/.initial={http://creativecommons.org/licenses/by/4.0/},
+  }
+\def\IACR@license-CC-by@params@get#1{%%
+  \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
 
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
@@ -755,36 +801,35 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
 \fi%!biblatex
 
-\if@submission\else
-  \if@preprint
-  \else
-    % recent versions of hyperxmp load totpages, which conflicts with lastpage
+\ifcsstring{@IACRversion}{final}{
+  % recent versions of hyperxmp load totpages, which conflicts with lastpage
     \@ifpackageloaded{totpages}{
       \def\IACR@lp{\pageref*{TotPages}}
     }{
       \RequirePackage{lastpage}
     }
-  \fi%!preprint
-\fi%submission
+}{}
+
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
   \gdef\@IACR@License{#1}%
-  \def\@IACR@CCby{CC-by}%
-  \ifx\@IACR@License\@IACR@CCby%
-    % DocLicense: Support for putting documents under a license
-    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}%
-  \else
-    \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
-  \fi
 }
 
 \fancypagestyle{title}{%
   \fancyhf{} % clear all header and footer fields
-  \if@submission\else
-    \if@preprint\else
+  \ifcsstring{@IACRversion}{final}{
       \ifx\@IACR@License\@empty
-        \ClassError{iacrcc}{Please provide a license when using the *final* option.}{}%
+        \ClassError{iacrcc}{Please specify a license when using version=final.}{}%
+      \else
+        \def\@IACR@CCby{CC-by}%
+        \ifx\@IACR@License\@IACR@CCby%
+          \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
+          \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
+          \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
+        \else
+          \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
+        \fi
       \fi
       \fancyhead[L]{%
         \small%
@@ -794,19 +839,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }
       \fancyfoot[L]{%
         \small%
-        \doclicenseText%
+        Licensed under %
+        \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
         \hfill{}%
-        \doclicenseImage[imagewidth=5em]\\[.1em]%
+        \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
         \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
         \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
-      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
-      \hypersetup{pdflicenseurl={\doclicenseURL}}
+      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
+      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
-    \fi%!preprint
-  \fi%!submission
+  }{} % final
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
 }%fancypagestyle
@@ -898,31 +943,26 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     ,\expandafter\zap@last@comma\fi%
     ##2,##3}
   \if@anonymous
-    \typeout{IACR@AUTHOR: \@author}
-    \hypersetup{pdfauthor=\@author}
+    \hypersetup{pdfauthor={hidden for submission}}
   \else
     \hypersetup{pdfauthor=\IACR@runningauthors}
-    \typeout{IACR@AUTHOR: \IACR@runningauthors}
   \fi%!anonymous
   %% PDF title
   \hypersetup{pdftitle=\@plaintitle}
-  \typeout{IACR@TITLE: \@plaintitle^^J}
   % PDF metadata
-  \if@submission\else
-    \if@preprint\else
-      \if@hyperxmp@doi{
-        \hypersetup{%
-          pdfdoi=\IACR@DOI,%
-          pdfissn=\IACR@ISSN,%
-          pdfpubtype=journal,%
-          pdfpublication=\publname,%
-          pdfvolumenum=\IACR@vol,%
-          pdfissuenum=\IACR@no,%
-          pdfpagerange={\IACR@fp-\IACR@lp},%
-      }}
-      \fi%hyperxmp@doi
-    \fi%!preprint
-  \fi%!submission
+  \ifcsstring{@IACRversion}{final}{
+    \if@hyperxmp@doi{
+      \hypersetup{%
+        pdfdoi=\IACR@DOI,%
+        pdfissn=\IACR@ISSN,%
+        pdfpubtype=journal,%
+        pdfpublication=\publname,%
+        pdfvolumenum=\IACR@vol,%
+        pdfissuenum=\IACR@no,%
+        pdfpagerange={\IACR@fp-\IACR@lp},%
+    }}
+    \fi%hyperxmp@doi
+  }{} % final
 }
 
 % autoref: capitals for Sections, and adding Algorithm
@@ -1031,7 +1071,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ignorespaces
 }
 
-\if@submission
+\ifcsstring{@IACRversion}{submission}{
   % lineno: Line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
   \linenumbers
@@ -1055,7 +1095,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \patchBothAmsMathEnvironmentsForLineno{gather}%
   \patchBothAmsMathEnvironmentsForLineno{multline}%
   }
-\fi%submission
+}{} %submission
 
 % Microtype: Subliminal refinements towards typographical perfection
 \RequirePackage{microtype}
