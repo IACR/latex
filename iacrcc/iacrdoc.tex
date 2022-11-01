@@ -14,6 +14,8 @@
 
 \documentclass{iacrcc}
 
+\usepackage{todonotes}
+
 \title[running  = {The iacrcc class},
        onclick  = {https://github.com/IACR/latex},
        subtitle = {LaTeX Class Documentation (v0.10)},
@@ -94,50 +96,56 @@ produced by \texttt{pdflatex}, \texttt{bibtex}, and use of the
 
 \section{Invocation and usage}
 
-To use this class, put in the preamble of your document
-\begin{verbatim}
-\documentclass[⟨options⟩]{iacrcc}
-\end{verbatim}
-There are several \emph{optional} options corresponding to the type of the document 
-and its general appearance.
+The class supports four publication types, selected with the
+following class options:
+\begin{description}
+\item[\texttt{[version=final]}] for final papers
+\item[\texttt{[version=preprint]}] for preprints (without copyright info, default)
+\item[\texttt{[version=submission]}] for submissions (anonymous, with line numbers)
+\end{description}
+Some types supports further options:
+\begin{description}
+\item[\texttt{[notanonymous]}] can be used in submission mode, when the
+  call for paper requires non-anonymous submissions.
+\end{description}
 
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt preprint} &  Preprint (no copyright info) -- This is the default mode.\\
-{\tt submission} & Anonymous submission with line numbers.\\
-{\tt notanonymous} & Keep author names in submission mode when the
-call for paper requires non-anonymous submissions.\\
-{\tt final} & Final version.\\
-\multicolumn{2}{c}{\textbf{Package options}}\\
-{\tt floatrow} & Load floatrow package with correct captions.\\
-{\tt xcolor=xxx} & Pass xxx to xcolor package.\\
-{\tt hyperref=xxx} & Pass xxx to hyperref package.\\
-{\tt biblatex} & Use the biblatex package instead of bibtex.
-\end{tabular}
+\subsection{Other Options}
+
+\paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
+\todo[noline]{K: consider removing xcolor. We may want it}
+passes $\langle\text{\emph{list of options}}\rangle$ to the
+\texttt{xcolor} package.  Since \texttt{xcolor} is loaded by the class,
+you have to use this mechanism to pass options at load time; for instance
+use \texttt{xcolor=svgnames} to load SVG color names.
+
+\paragraph{\texttt{[hyperref=$\langle\text{\emph{list of options}}\rangle$]}}
+passes $\langle\text{\emph{list of options}}\rangle$ to the
+\texttt{hyperref} package.  Alternatively, you can load
+\texttt{hyperref} yourself with the required options and the class will
+detect that it already loaded.
+
+\paragraph{\texttt{[nohyperref]}}
+disables the automatic loading of
+\texttt{hyperref}.  Use this is if your document fails to compile with
+\texttt{hyperref} for some reason.
+
+The \texttt{iacrcc} class automatically loads \texttt{hyperref}
+after all other packages.  If you need some packages to be loaded
+\emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
+explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
+
+\paragraph{\texttt{[nolastpage]}}
+disables the automatic loading the \texttt{lastpage} package in
+\texttt{[final]} mode.  When this option is enabled, the last page
+number must be set explicitly with
+\texttt{\textbackslash{}setlastpage}.
 
 Before submitting your final version, please make sure that it compiles
 properly using \texttt{lualatex} with the \texttt{[version=final]} option
-(see the next subsection in
-case of issues), and check that the author names and affiliation are
+and check that the author names and affiliation are
 correct.  In particular, each affiliation MUST be of the form
 $\langle\text{institute}\rangle, \langle\text{city}\rangle,
 \langle\text{country}\rangle$.
-
-\begin{figure}
-  \begin{floatrow}
-    \ffigbox{\includegraphics[width=0.4\textwidth]{1.png}}
-    {\caption{This is caption 1.}}
-    \ffigbox{\includegraphics[width=0.4\textwidth]{2.png}}
-    {\caption{This is caption 2.}}
-  \end{floatrow}
-\end{figure}
-
-\end{document}
-\end{verbatim}
-
-The row will be divided equally according to the number of figures, but
-you can ask each figure to take its natural space instead with
-\verb+\ffigbox[\FBwidth]+.  For more advanced use, see the
-\texttt{floatrow} documentation.
 
 \paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
 passes $\langle\text{\emph{list of options}}\rangle$ to the
@@ -287,83 +295,6 @@ symbol at the end of the proof.
 If the QED symbol
 is typeset at a wrong position, you can force its position with
 \verb+\qedhere+.
-
-\section{Class options}
-\label{sec:options}
-
-\subsection{Publication type}
-
-The class supports four publication types, selected with the
-following class options:
-\begin{description}
-\item[\texttt{[version=final]}] for final papers
-\item[\texttt{[version=preprint]}] for preprints (without copyright info, default)
-\item[\texttt{[version=submission]}] for submissions (anonymous, with line numbers)
-\end{description}
-Some types supports further options:
-\begin{description}
-\item[\texttt{[notanonymous]}] can be used in submission mode, when the
-  call for paper requires non-anonymous submissions.
-\end{description}
-
-\subsection{Other Options}
-
-\paragraph{\texttt{[floatrow]}}
-\todo[noline]{K: consider removing floatrow. We may want it}
-uses the \texttt{floatrow} package to customize floats rather than the
-plain \texttt{float} package.  In particular, this allows to typeset
-floats side by side as shown in this example:
-\begin{verbatim}
-\documentclass[floatrow]{iacrcc}
-\usepackage[demo]{graphicx}
-\begin{document}
-
-\begin{figure}
-  \begin{floatrow}
-    \ffigbox{\includegraphics[width=0.4\textwidth]{1.png}}
-    {\caption{This is caption 1.}}
-    \ffigbox{\includegraphics[width=0.4\textwidth]{2.png}}
-    {\caption{This is caption 2.}}
-  \end{floatrow}
-\end{figure}
-
-\end{document}
-\end{verbatim}
-
-The row will be divided equally according to the number of figures, but
-you can ask each figure to take its natural space instead with
-\verb+\ffigbox[\FBwidth]+.  For more advanced use, see the
-\texttt{floatrow} documentation.
-
-\paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
-\todo[noline]{K: consider removing xcolor. We may want it}
-passes $\langle\text{\emph{list of options}}\rangle$ to the
-\texttt{xcolor} package.  Since \texttt{xcolor} is loaded by the class,
-you have to use this mechanism to pass options at load time; for instance
-use \texttt{xcolor=svgnames} to load SVG color names.
-
-
-\paragraph{\texttt{[hyperref=$\langle\text{\emph{list of options}}\rangle$]}}
-passes $\langle\text{\emph{list of options}}\rangle$ to the
-\texttt{hyperref} package.  Alternatively, you can load
-\texttt{hyperref} yourself with the required options and the class will
-detect that it already loaded.
-
-\paragraph{\texttt{[nohyperref]}}
-disables the automatic loading of
-\texttt{hyperref}.  Use this is if your document fails to compile with
-\texttt{hyperref} for some reason.
-
-The \texttt{iacrcc} class automatically loads \texttt{hyperref}
-after all other packages.  If you need some packages to be loaded
-\emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
-explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
-
-\paragraph{\texttt{[nolastpage]}}
-disables the automatic loading the \texttt{lastpage} package in
-\texttt{[final]} mode.  When this option is enabled, the last page
-number must be set explicitly with
-\texttt{\textbackslash{}setlastpage}.
 
 \section{Typesetting the Bibliography}
 \label{sec:biblio}
