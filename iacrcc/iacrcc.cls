@@ -434,8 +434,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@genericfootnote\@empty\else
     \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
   \fi
-  \ifx\@displayemails\@empty\else
-    \renewcommand\thefootnote{}\footnotetext{\@displayemails}%
+  \ifx\IACR@displayemails\@empty\else
+    \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
   \fi
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
@@ -466,7 +466,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % Add support to display provided e-mail addresses 
 % in the footnote of the front page
-\global\let\@displayemails\@empty
+\global\let\IACR@displayemails\@empty
 
 % Add support for a footnote without symbol on the front page
 \global\let\@genericfootnote\@empty
@@ -559,10 +559,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % First the provided footnote (if any) and next
   % the provided e-mail addresses
   \ifx\@IACRemail\@empty\else
-    \ifx\@displayemails\@empty
-      \edef\@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
+    \ifx\IACR@displayemails\@empty
+      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
     \else
-      \eappto\@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
+      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
     \fi
     \@writemeta{\IACRSS email: \@IACRemail}%
   \fi

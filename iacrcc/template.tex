@@ -2,17 +2,19 @@
 % This file shows how to use the iacrcc class to write a paper.
 
 %% Document mode
-% [preprint]      Preprint (no copyright info) -- default mode
-% [submission]    Anonymous submission
+% [version=xxx] where xxx is preprint, submission, or final. The default is preprint.
+%               version=submission puts line numbers into the document and makes it
+%               anonymous (which can be overridden).
+%               version=final is for submitting the final version. This requires a license
+%               to be specified and must be compiled with lualatex.
 % [notanonymous]  Keep author names in submission mode
-% [final]         Final version
 %% Package options
 % [floatrow]      Load floatrow package with correct captions
 % [xcolor=xxx]    Pass xxx to xcolor package
 % [hyperref=xxx]  Pass xxx to hyperref package
-% [biblatex]      Use the biblatex package instead of bibtex.
-%\documentclass[final]{iacrcc}
-\documentclass[preprint]{iacrcc}
+% [biblatex]      Use the biblatex package instead of bibtex. Note that options
+%                 may not be passed to biblatex at this time.
+\documentclass[version=preprint]{iacrcc}
 
 % When the *final* document mode is used
 % the authors need to provide a supported license.
@@ -114,132 +116,13 @@
 
 % Provide the abstract of your paper
 \begin{abstract}
-This \LaTeX{} template will show you how to use the IACR
-Communications in Cryptology Class style file.  Except for the
-metadata collection and options related to authors, title and
-affiliation this class file is identical to the IACR Transactions
-class file (the iacrtrans class) written by Ga{\"e}tan Leurent.
-
-NOTE: Your abstract may contain inline mathematics: \(\alpha=b\) and $b=\delta$
-as well as displayed mathematics:
-\[
-  \alpha = \delta
-  \]
-but please avoid using macros that you define yourself in the abstract.
+Abstract goed here.
 \end{abstract}
 
 % The content of the paper starts here
 \section{Introduction}
 This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
-
-\section{Title Page}
-In order to use the IACR Communications in Cryptology Class style file use:
-\begin{verbatim}
-\documentclass{iacrcc}
-\end{verbatim}
-There are a number \emph{optional} options to iacrcc:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt preprint} &  Preprint (no copyright info) -- This is the default mode.\\
-{\tt submission} & Anonymous submission.\\
-{\tt notanonymous} & Keep author names in submission mode.\\
-{\tt final} & Final version.\\
-\multicolumn{2}{c}{Package options}\\
-{\tt floatrow} & Load floatrow package with correct captions.\\
-{\tt xcolor=xxx} & Pass xxx to xcolor package.\\
-{\tt hyperref=xxx} & Pass xxx to hyperref package.\\
-{\tt biblatex} & Use the biblatex package instead of bibtex.
-\end{tabular}
-
-\subsubsection*{Generic footnote}
-To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper) 
-you can use the {\tt \textbackslash{}genericfootnote} command. 
-
-\subsubsection*{The AddAuthor Command}
-Authors are listed individually using the {\tt \textbackslash{}addauthor} command. 
-There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
-{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
-{\tt footnote} & Create an author-specific footnote.\\
-{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
-{\tt email} & Define the e-mail address of this author.\\
-\end{tabular}
-
-\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
-this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
-surnames which might be confusing. 
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\addauthor[orcid    = 0000-0000-0000-0000,
-           inst     = {1,2},
-           footnote = {Thanks to my supervisor for the support.},
-           onclick  = {https://www.mypersonalwebpage.com},
-           email    = {alice@accomplsihed.com},
-       ]{Alice \surname{Accomplished}}
-\end{verbatim}
-
-\subsubsection*{The Affiliation Command}
-Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
-the (list of) authors using {\tt \textbackslash{}addauthor}.
-There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
-{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
-{\tt  department} & Department or suborganization name.\\
-{\tt  street} & Street address.\\
-{\tt  city} & City name.\\
-{\tt  state} & State or province name.\\
-{\tt  postcode} & zip or postal code.\\
-{\tt  country} & Country name.\\
-\end{tabular}
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\affiliation[ror        = 05f950310,
-             onclick    = {http://www.kuleuven.be/english},
-             department = {Computer Security and Industrial Cryptography},              
-             street     = {Kasteelpark Arenberg 10, box 2452},
-             city       = {Leuven},
-             state      = {Vlaams-Brabant},
-             postcode   = {3001},
-             country    = {Belgium}
-            ]{KU Leuven}
-\end{verbatim}
-            
-\subsubsection*{The Title Command}
-The title is provided using {\tt \textbackslash{}title}.
-There are a number \emph{optional} options to {\tt \textbackslash{}title}:
-
-\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
-{\tt running} & The running title displayed in the headers.\\
-{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
-{\tt subtitle} & Provide a subtitle.\\
-\end{tabular}
-
-An example using all the optional options would look like:
-
-\begin{verbatim}
-\title[running  = {The iacrcc class},
-       onclick  = {https://github.com/IACR/latex},
-       subtitle = {A Template}
-      ]{How to Use the IACR Communications in Cryptology Class}
-\end{verbatim}
-
-\subsubsection*{The License Command}
-When the ``final'' document mode is used the author needs to provide a supported license.
-In all other modes this information is ignored.
-The currently provided set of licences are \mbox{\{ CC-by \}}.
-An example would look like:
-
-\begin{verbatim}
-\license{CC-by}
-\end{verbatim}
+See the ``How to Use the IACR Communications in Cryptology Class'' for more details.
 
 \section{Bibliography}
 Citing papers is done in the usual way using BibTeX or \texttt{biblatex}
