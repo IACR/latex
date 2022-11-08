@@ -104,6 +104,7 @@
 % xkeyval is an extension of the keyval package and offers additional macros
 % for setting keys and declaring and setting class or package options.
 \RequirePackage{xkeyval}
+
 \def\publname{IACR Communications in Cryptology}
 \def\IACR@vol{0}
 \def\IACR@no{0}
@@ -172,6 +173,27 @@
   \PassOptionsToClass{final}{article}
 }{}
 
+% xstring provides macros for manipulating strings - testing a string’s 
+% contents, extracting substrings, substitution of substrings and providing
+% numbers such as string length, position of, or number of recurrences of, 
+% a substring.
+% Required for IfSubStr
+\RequirePackage{xstring}
+
+% Options containing an equality sign are deleted from the original list by
+% the xkeyval package from the \@classoptionslist macro.
+% Remove allowed options and check if this macro is empty.
+\ifx\@classoptionslist\@empty\else
+  \edef\store@classoptionslist{\@classoptionslist}%
+  \StrDel{\store@classoptionslist}{floatrow}[\store@classoptionslist]%
+  \StrDel{\store@classoptionslist}{biblatex}[\store@classoptionslist]%
+  \StrDel{\store@classoptionslist}{,}[\store@classoptionslist]%
+  \StrDel{\store@classoptionslist}{ }[\store@classoptionslist]%
+  \ifx\store@classoptionslist\@empty\else
+    \ClassError{iacrcc}{^^JInvalid options passed to iacrcc: \store@classoptionslist}{}%
+  \fi
+\fi
+
 % article class
 \LoadClass[10pt,twoside]{article}[2007/10/19]
 
@@ -187,13 +209,6 @@
 % and provides easy driver-independent access to several kinds 
 % of color tints, shades, tones, and mixes of arbitrary colors. I
 \RequirePackage{xcolor}
-
-% xstring provides macros for manipulating strings - testing a string’s 
-% contents, extracting substrings, substitution of substrings and providing
-% numbers such as string length, position of, or number of recurrences of, 
-% a substring.
-% Required for IfSubStr
-\RequirePackage{xstring}
 
 % The hyperref package is used to handle cross-referencing commands in 
 % LaTeX to produce hypertext links in the document. 
