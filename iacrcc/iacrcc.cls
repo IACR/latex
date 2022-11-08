@@ -1125,5 +1125,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Store the paper width
 \let\store@paperwidth\paperwidth%
 
+\bibliographystyle{iacrcc}%
+
 \endinput
 %end of file iacrcc.cls
