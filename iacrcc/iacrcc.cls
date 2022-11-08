@@ -123,8 +123,6 @@
 % towards LaTeX class and package authors.
 \RequirePackage{etoolbox}
 
-\newcommand{\setfirstpage}[1]{\def\IACR@fp{#1}\setcounter{page}{#1}}
-\newcommand{\setlastpage}[1]{\def\IACR@lp{#1}}
 \newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
 \newcommand{\setnumber}[1]{\def\IACR@no{#1}}
 \newcommand{\setISSN}[1]{\def\IACR@ISSN{#1}}
