@@ -930,22 +930,20 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \global\let\@IACR@print@keywords\@empty
 \def\@IACR@keywords{No keywords given.}
 
-\def\keywords{\@ifnextchar[{\IACR@@@keywords}{\IACR@@keywords}}
-\def\IACR@@@keywords[#1]#2{
-  \gdef\@IACR@PDFkeywords{#1}%
+\newcommand{\keywords}[2][\@empty]{
   \gdef\@IACR@keywords{#2}%
-  \gdef\@IACR@print@keywords{\unexpanded{#2}}%
-}
-\def\IACR@@keywords#1{%
-  \gdef\@IACR@keywords{#1}%
-  \gdef\@IACR@print@keywords{\unexpanded{#1}}%
+  \ifx##1\@empty
+    \gdef\@IACR@print@keywords{\unexpanded{#2}}%
+  \else
+    \gdef\@IACR@PDFkeywords{#1}%
+    \gdef\@IACR@print@keywords{#1}%
+  \fi
 }
 
 % Sophisticated verbatim text
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 
 \renewenvironment{abstract}{%
-  \def\and{,\space}\edef\@writekeywords{\@IACR@keywords}%
   \@writemeta{keywords: \@IACR@print@keywords}%
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
