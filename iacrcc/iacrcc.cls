@@ -329,7 +329,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   footnote/.initial=\@empty,
   onclick/.initial=\@empty,
   email/.initial=\@empty,
-  }
+}
 \def\IACR@author@params@set@keys#1{%%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
@@ -347,7 +347,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   state/.initial=\@empty,
   postcode/.initial=\@empty,
   country/.initial=\@empty,
-  }
+}
 \def\IACR@affiliation@params@set@keys#1{%%
   \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
 \def\IACR@affiliation@params@get#1{%%
@@ -360,7 +360,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   running/.initial=\@empty,
   onclick/.initial=\@empty,
   subtitle/.initial=\@empty,
-  }
+}
 \def\IACR@title@params@set@keys#1{%%
   \pgfkeys{/IACR-title/entities/.cd,#1}}
 \def\IACR@title@params@get#1{%%
@@ -373,9 +373,23 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   file/.initial={CC-by.png},
   text/.initial={Creative Commons License CC-BY 4.0.},
   url/.initial={http://creativecommons.org/licenses/by/4.0/},
-  }
+}
 \def\IACR@license-CC-by@params@get#1{%%
   \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
+
+\pgfkeys{/IACR-funding/entities/.cd,
+  name/.initial=\@empty,
+  country/.initial=\@empty,
+  grantid/.initial=\@empty,
+  crossref/.initial=\@empty,
+}
+\def\IACR@funding@params@set@keys#1{%%
+  \pgfkeys{/IACR-funding/entities/.cd,#1}}
+\def\IACR@funding@params@get#1{%%
+  \pgfkeysvalueof{/IACR-funding/entities/#1}}
+\newcommand\IACR@funding@params@clearkeys{%
+  \IACR@funding@params@set@keys{name=\@empty,country=\@empty,grantid=\@empty,crossref=\@empty}%
+}
 
 % Title/Author/affiliations
 \global\let\IACR@runningauthors\@empty
@@ -610,6 +624,28 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \let\store@addauthor\addauthor  % Save macro away
+
+% Define the \addfunding macro to capture funding meta-data
+\newcommand{\addfunding}[1][]{%
+  \IACR@funding@params@set@keys{#1}%
+  \edef\@IACR@funding@name{\IACR@funding@params@get{name}}%
+  \edef\@IACR@funding@country{\IACR@funding@params@get{country}}%
+  \edef\@IACR@funding@grantid{\IACR@funding@params@get{grantid}}%
+  \edef\@IACR@funding@crossref{\IACR@funding@params@get{crossref}}%
+  \@writemeta{funding:}%
+  \ifx\@IACR@funding@name\@empty\else
+    \@writemeta{\IACRSS name: \@IACR@funding@name}%
+  \fi
+  \ifx\@IACR@funding@country\@empty\else
+    \@writemeta{\IACRSS country: \@IACR@funding@country}%
+  \fi
+  \ifx\@IACR@funding@grantid\@empty\else
+    \@writemeta{\IACRSS grantid: \@IACR@funding@grantid}%
+  \fi
+  \ifx\@IACR@funding@crossref\@empty\else
+    \@writemeta{\IACRSS crossref: \@IACR@funding@crossref}%
+  \fi  
+}
 
 % Provide the title of the paper
 \renewcommand\title[2][]{%
