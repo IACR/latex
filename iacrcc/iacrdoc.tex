@@ -45,7 +45,7 @@
 
 \maketitle
 
-\keywords{Template \and LaTeX \and IACR}
+\keywords{Template, LaTeX, IACR}
 
 \begin{abstract}
   This document is a quick introduction to the \LaTeX{} class for the
@@ -175,7 +175,7 @@ To place a footnote on the first page without a reference (e.g., to indicate thi
 This is an optional macro.
 
 \paragraph{\texttt{\textbackslash title[option=\{xxx\}]\{title\}}} to define the title.
-There are a number \emph{optional} options to {\tt \textbackslash{}title}:
+There are a number of \emph{optional} options:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt running} & The running title displayed in the headers.\\
@@ -183,7 +183,9 @@ There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 {\tt subtitle} & Provide a subtitle.\\
 \end{tabular}
 
-\noindent An example using all the optional options would look like:
+\noindent  Do not use author-defined macros in arguments to
+\texttt{\textbackslash title}. An example using all the optional
+options would look like:
 
 \begin{verbatim}
 \title[running  = {IACR Communications in Cryptology Class},
@@ -195,7 +197,7 @@ There are a number \emph{optional} options to {\tt \textbackslash{}title}:
 \paragraph{\texttt{\textbackslash addauthor[option=\{xxx\}]\{authorname\}}} to define the author list.
 
 Authors are listed individually using the {\tt \textbackslash{}author} command. 
-There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
+There are a number of \emph{optional} options to {\tt \textbackslash{}addauthor}:
 
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
@@ -212,7 +214,7 @@ surnames which might be confusing.
 An example using all the optional options would look like:
 
 \begin{verbatim}
-\author[orcid    = 0000-0000-0000-0000,
+\addauthor[orcid    = 0000-0000-0000-0000,
         inst     = {1,2},
         footnote = {Thanks to my supervisor for the support.},
         onclick  = {https://www.mypersonalwebpage.com},
@@ -220,7 +222,7 @@ An example using all the optional options would look like:
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash{}affiliations[option=\{xxx\}]\{affiliation\}}}
+\paragraph{\texttt{\textbackslash{}affiliation[option=\{xxx\}]\{affiliation\}}}
 Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
 the (list of) authors using {\tt \textbackslash{}addauthor}.
 There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
@@ -260,17 +262,21 @@ An example would look like:
 \license{CC-by}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash keywords\{keyword1 \textbackslash{}and keyword2\}}} to give a list of
-keywords.
-Individual keywords should be separated by the \verb+\and+ macro.
-This is an optional macro.
+\paragraph{\texttt{\textbackslash keywords\{keyword1, keyword2\}}} to give a list of
+keywords. This is an optional macro.  Individual keywords should be
+separated by commas. If the argument to \texttt{\textbackslash keywords}
+contains math or macros, then you must supply an additional set of
+text-only keywords; for example:
+\begin{quotation}
+\texttt{\textbackslash keywords[arithmetic on Z]\{arithmetic on \$\textbackslash mathbb\{Z\}\$\}}
+\end{quotation}
 
 \paragraph{\texttt{\textbackslash maketitle}} is used to actually
 typeset the title.
 
 \paragraph{The \texttt{abstract} environment} should be used to typeset the abstract.
-
-Note that the keywords should be given before starting the abstract environment.
+Do not use author-defined macros within the abstract.  Note that the
+keywords should be given before starting the abstract environment.
 
 \subsection{Theorems}
 

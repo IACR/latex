@@ -926,17 +926,49 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
 
-%Abstract style, keywords
-\global\let\@IACR@print@keywords\@empty
-\def\@IACR@keywords{No keywords given.}
+% Abstract style, keywords
+\global\let\@IACR@text@keywords\@empty
+\def\@IACR@keywords{}
+%%%%%%%%%%%%%%%%%%%%%%%
+% Macro \ifnotstring is used to check if an argument is just a string.
+% We use it for \keywords but can be useful for other metadata.
+\ExplSyntaxOn
+\prg_generate_conditional_variant:Nnn \tl_if_eq:nn { e } { T,F,TF }
+\cs_new_protected:Npn \onlystring:nn #1#2
+   {
+     \tl_if_eq:enTF { \text_purify:n { #1 } } { #1 }
+      {% It's ok, do nothing.
+      }
+      {% raise an error
+        % \PackageError{isstring}{#2 ^^J(#1)}{}
+        #2
+      }
+ }
+% Usage: \ifnotstring{I'm not text $\mathbb{a}$ so}{execute this}
+\NewDocumentCommand{\ifnotstring}{mm}{\onlystring:nn{#1}{#2}}
+\ExplSyntaxOff
+
+% Keywords are separated by commas. We store two different internal
+% macros for keywords; one allows math and one is plain text.
+% If the author use macros or math in their keywords, then they
+% require an optional argument:
+% \keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit impulse}
+
+% \@IACR@keywords may contain mathematics for display in LaTeX.
+% \@IACR@text@keywords is the plain text version used for PDF and metadata.
 
 \newcommand{\keywords}[2][\@empty]{
   \gdef\@IACR@keywords{#2}%
-  \ifx##1\@empty
-    \gdef\@IACR@print@keywords{\unexpanded{#2}}%
+  \ifx#1\@empty
+    \ifnotstring{#2}{%
+      \ClassError{iacrcc}{%
+        ^^J Optional plaintext keyword argument required if keywords contain macros ^^J}}
+  \gdef\@IACR@text@keywords{#2}%
   \else
-    \gdef\@IACR@PDFkeywords{#1}%
-    \gdef\@IACR@print@keywords{#1}%
+    \ifnotstring{#1}{%
+      \ClassError{iacrcc}{%
+        ^^J Optional argument to keywords may not contain macros ^^J}}
+      \gdef\@IACR@text@keywords{#1}%
   \fi
 }
 
@@ -944,14 +976,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 
 \renewenvironment{abstract}{%
-  \@writemeta{keywords: \@IACR@print@keywords}%
+  \@writemeta{keywords: \@IACR@text@keywords}%
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
   \VerbatimOut{\jobname.abstract}}{
   \endVerbatimOut
   \input{\jobname.abstract}
+  \ifx\@IACR@text@keywords\@empty
+  \else
   \smallskip\par\textbf{\textsf{Keywords:}}
-    \def\and{\unskip\space\textperiodcentered\space\ignorespaces}\@IACR@keywords
+  % Replace comma by a centered period.
+  \def\@textkeywords{\@IACR@text@keywords}
+  \StrSubstitute{\@textkeywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
+  \fi
   \endquotation%
   %% PDF keywords
   \def\and{, }%
@@ -970,16 +1007,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \def\zap@dbl@space##1 ##2{%
     ##1%
     \ifx##2\@empty\else\space\expandafter\zap@dbl@space##2\fi}
-  \ifdefined\@IACR@PDFkeywords
-    \hypersetup{pdfkeywords=\@IACR@PDFkeywords}
+  \ifx\@IACR@text@keywords\@empty
   \else
-    \protected@edef\@tmp{\expandafter\@IACR@keywords}
-    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-    \protected@edef\@tmp{\expandafter\zap@comma@space\@tmp ,\@empty}
-    \protected@edef\@tmp{\expandafter\insert@last@space\@tmp,\@empty}
-    \protected@edef\@tmp{\expandafter\zap@dbl@space\@tmp \@empty}
-    \protected@edef\@tmp{\expandafter\zap@first@space \@tmp}
-    \hypersetup{pdfkeywords=\@tmp}
+    \hypersetup{pdfkeywords={\@IACR@text@keywords}}
   \fi
   %% PDF author
   \def\zap@one##1,##2{##1}
@@ -993,10 +1023,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
-    \hypersetup{pdfauthor=\IACR@runningauthors}
+    \hypersetup{pdfauthor={\IACR@runningauthors}}
   \fi%!anonymous
   %% PDF title
-  \hypersetup{pdftitle=\@plaintitle}
+  \hypersetup{pdftitle={\@plaintitle}}
   % PDF metadata
   \ifcsstring{@IACRversion}{final}{
     \if@hyperxmp@doi{
@@ -1004,9 +1034,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         pdfdoi=\IACR@DOI,%
         pdfissn=\IACR@ISSN,%
         pdfpubtype=journal,%
-        pdfpublication=\publname,%
-        pdfvolumenum=\IACR@vol,%
-        pdfissuenum=\IACR@no,%
+        pdfpublication={\publname},%
+        pdfvolumenum={\IACR@vol},%
+        pdfissuenum={\IACR@no},%
         pdfpagerange={\IACR@fp-\IACR@lp},%
     }}
     \fi%hyperxmp@doi
