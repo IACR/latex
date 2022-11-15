@@ -378,17 +378,17 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
 
 \pgfkeys{/IACR-funding/entities/.cd,
-  name/.initial=\@empty,
   country/.initial=\@empty,
   grantid/.initial=\@empty,
-  crossref/.initial=\@empty,
+  fundref/.initial=\@empty,
+  ror/.initial=\@empty,
 }
 \def\IACR@funding@params@set@keys#1{%%
   \pgfkeys{/IACR-funding/entities/.cd,#1}}
 \def\IACR@funding@params@get#1{%%
   \pgfkeysvalueof{/IACR-funding/entities/#1}}
 \newcommand\IACR@funding@params@clearkeys{%
-  \IACR@funding@params@set@keys{name=\@empty,country=\@empty,grantid=\@empty,crossref=\@empty}%
+  \IACR@funding@params@set@keys{country=\@empty,grantid=\@empty,fundref=\@empty,ror=\@empty}%
 }
 
 % Title/Author/affiliations
@@ -626,24 +626,26 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \let\store@addauthor\addauthor  % Save macro away
 
 % Define the \addfunding macro to capture funding meta-data
-\newcommand{\addfunding}[1][]{%
+\newcommand{\addfunding}[2][\@empty]{%
   \IACR@funding@params@set@keys{#1}%
-  \edef\@IACR@funding@name{\IACR@funding@params@get{name}}%
+  \edef\@IACR@funding@name{#2}%
   \edef\@IACR@funding@country{\IACR@funding@params@get{country}}%
   \edef\@IACR@funding@grantid{\IACR@funding@params@get{grantid}}%
-  \edef\@IACR@funding@crossref{\IACR@funding@params@get{crossref}}%
+  \edef\@IACR@funding@fundref{\IACR@funding@params@get{fundref}}%
+  \edef\@IACR@funding@ror{\IACR@funding@params@get{ror}}%
   \@writemeta{funding:}%
-  \ifx\@IACR@funding@name\@empty\else
-    \@writemeta{\IACRSS name: \@IACR@funding@name}%
-  \fi
+  \@writemeta{\IACRSS name: \@IACR@funding@name}%
   \ifx\@IACR@funding@country\@empty\else
     \@writemeta{\IACRSS country: \@IACR@funding@country}%
   \fi
   \ifx\@IACR@funding@grantid\@empty\else
     \@writemeta{\IACRSS grantid: \@IACR@funding@grantid}%
   \fi
-  \ifx\@IACR@funding@crossref\@empty\else
-    \@writemeta{\IACRSS crossref: \@IACR@funding@crossref}%
+  \ifx\@IACR@funding@fundref\@empty\else
+    \@writemeta{\IACRSS fundref: \@IACR@funding@fundref}%
+  \fi  
+  \ifx\@IACR@funding@ror\@empty\else
+    \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
   \fi  
 }
 
@@ -678,7 +680,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \global\advance\num@affil by 1\relax% 
   \@writemeta{affiliation:}%
   \@writemeta{\IACRSS name: \unexpanded{#2}}%
-  \IACR@affiliation@params@set@keys{#1}%%
+  \IACR@affiliation@params@set@keys{#1}%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
   \edef\@IACRdepartment{\IACR@affiliation@params@get{department}}%
