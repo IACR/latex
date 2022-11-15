@@ -982,31 +982,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \VerbatimOut{\jobname.abstract}}{
   \endVerbatimOut
   \input{\jobname.abstract}
-  \ifx\@IACR@text@keywords\@empty
+  \ifx\@IACR@keywords\@empty
   \else
   \smallskip\par\textbf{\textsf{Keywords:}}
   % Replace comma by a centered period.
-  \def\@textkeywords{\@IACR@text@keywords}
-  \StrSubstitute{\@textkeywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
+  \expandarg\StrSubstitute{\@IACR@keywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
   \fi
   \endquotation%
   %% PDF keywords
-  \def\and{, }%
-  \def\thanks##1{}%
-  \def\footnote##1{}%
-  \def\inst##1{}%
-  \def\fnmsep{}%
-  \def\\{}%
-  \def\zap@first@space ##1{##1}
-  \def\insert@last@space##1,##2{%
-    ##1%
-    \ifx##2\@empty\space\else, \expandafter\insert@last@space##2\fi}
-  \def\zap@comma@space##1 ,##2{%
-    ##1%
-    \ifx##2\@empty\else, \expandafter\zap@comma@space##2\fi}
-  \def\zap@dbl@space##1 ##2{%
-    ##1%
-    \ifx##2\@empty\else\space\expandafter\zap@dbl@space##2\fi}
   \ifx\@IACR@text@keywords\@empty
   \else
     \hypersetup{pdfkeywords={\@IACR@text@keywords}}
@@ -1042,6 +1025,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \fi%hyperxmp@doi
   }{} % final
 }
+
 
 % autoref: capitals for Sections, and adding Algorithm
 \def\equationautorefname{Equation}%
