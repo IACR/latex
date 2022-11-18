@@ -227,6 +227,7 @@
   }
   % Old versions of hyperxmp do not support DOI
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+  \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
 }
 
 % Check the character encoding. lualatex and unicode are required for final versions.
@@ -1172,8 +1173,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % Store the paper width
 \let\store@paperwidth\paperwidth%
-
-\bibliographystyle{iacrcc}%
 
 \endinput
 %end of file iacrcc.cls
