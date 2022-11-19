@@ -129,6 +129,7 @@
 \newcommand{\setISSN}[1]{\def\IACR@ISSN{#1}}
 
 % Options
+% only required for old hyperxmp.
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
@@ -216,7 +217,7 @@
 \AtEndPreamble{
   \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
   \hypersetup{pdflang=en}
-  \hypersetup{urlcolor=cyan}
+  \hypersetup{urlcolor=blue}
   \hypersetup{colorlinks=true,
     citecolor=black!70!green,
     linkcolor=black!70!red}
@@ -225,8 +226,8 @@
     \def\DIFadd#1{#1}%
     \def\DIFdel#1{}%
   }
-  % Old versions of hyperxmp do not support DOI
-  \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue\hypersetup{keeppdfinfo=true}}{}
+  % Old versions of hyperxmp do not support DOI TODO: move to require newer version.
+  \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
 }
 
@@ -369,14 +370,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\IACR@title@params@clearkeys{%
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
-
-\pgfkeys{/IACR-license-CC-by/entities/.cd,
-  file/.initial={CC-by.png},
-  text/.initial={Creative Commons License CC-BY 4.0.},
-  url/.initial={http://creativecommons.org/licenses/by/4.0/},
-}
-\def\IACR@license-CC-by@params@get#1{%%
-  \pgfkeysvalueof{/IACR-license-CC-by/entities/#1}}
 
 \pgfkeys{/IACR-funding/entities/.cd,
   country/.initial=\@empty,
@@ -760,6 +753,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % consistent look and feel.
 \if@optbiblatex
   \typeout{biblatex options may not be changed with \@backslashchar usepackage}
+  \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   \RequirePackage[backend=biber,style=alphabetic,maxbibnames=4]{biblatex}[2019/12/01]
   % We use a sourcemap to copy certain fields to the side so we can
   % include them in the .meta file. biblatex makes it hard to recover
@@ -867,6 +861,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
   \gdef\@IACR@License{#1}%
+  \def\@IACR@CCby{CC-by}%
+  \ifx\@IACR@License\@IACR@CCby%
+    % DocLicense: support for putting documents under a license.
+    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}
+  \else
+    \ClassError{iacrcc}{Invalid license: must be { CC-by }.}{}%
+  \fi
 }
 
 \fancypagestyle{title}{%
@@ -874,15 +875,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifcsstring{@IACRversion}{final}{
       \ifx\@IACR@License\@empty
         \ClassError{iacrcc}{Please specify a license when using version=final.}{}%
-      \else
-        \def\@IACR@CCby{CC-by}%
-        \ifx\@IACR@License\@IACR@CCby%
-          \edef\@IACRLicenseFile{\IACR@license-CC-by@params@get{file}}%
-          \edef\@IACRLicenseText{\IACR@license-CC-by@params@get{text}}%
-          \edef\@IACRLicenseUrl{\IACR@license-CC-by@params@get{url}}%
-        \else
-          \ClassError{iacrcc}{Invalid license: \@IACR@License. Please provide one of { CC-by }.}{}%
-        \fi
       \fi
       \fancyhead[L]{%
         \small%
@@ -892,17 +884,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }
       \fancyfoot[L]{%
         \small%
-        Licensed under %
-        \href{\@IACRLicenseUrl}{\@IACRLicenseText}%
+        \doclicenseText%
         \hfill{}%
-        \includegraphics[clip,height=2ex]{\@IACRLicenseFile}\\[.1em]%
+        \doclicenseImage[imagewidth=4em]\\[.1em]%
         \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
         \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
-      \hypersetup{pdfcopyright={Licensed under \@IACRLicenseText}}
-      \hypersetup{pdflicenseurl={\@IACRLicenseUrl}}
+      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+      \hypersetup{pdflicenseurl={\doclicenseURL}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
   }{} % final
   \renewcommand{\headrulewidth}{0pt}
