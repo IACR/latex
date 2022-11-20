@@ -435,22 +435,26 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \ExplSyntaxOn
 \ifdefined\text_purify:n
 \else
-\ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
+  \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
 \fi
 \cs_new:Npn\@writemeta#1{
   \ifdefined\text_purify:n
-  \immediate\write\meta{\text_purify:n #1}
+    \immediate\write\meta{\text_purify:n #1}%
   \else
-  \immediate\write\meta{#1}
+    \immediate\write\meta{#1}%
   \fi
 }
 \ExplSyntaxOff
+
+\let\storeprotect\protect
 
 \renewcommand\maketitle{\par
   \@writemeta{version: \@IACRversion}
   \@writemeta{title: \@plaintitle}%
   \ifx\@subtitle\@empty\else
+    \let\protect\@unexpandable@protect
     \@writemeta{\IACRSS subtitle: \@subtitle}
+	\let\protect\storeprotect
   \fi
   \ifx\@genericfootnote\@empty\else
     \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
@@ -509,10 +513,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \null
   \vskip 2em%
   \begin{center}%
-  \let \footnote \thanks
+    \let \footnote \thanks
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
       {\LARGE \bfseries\sffamily\boldmath \@title\par}
-    \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi}%
+    \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi
+	}%
     \vskip 1.5em%
     {\large
       \lineskip .5em%
@@ -567,7 +572,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   %
   % Write out the author in the meta file.
   \@writemeta{author:}%
-  \@writemeta{\IACRSS name: #2}%
+  \@writemeta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
@@ -581,31 +586,31 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % the provided e-mail addresses
   \ifx\@IACRemail\@empty\else
     \ifx\IACR@displayemails\@empty
-      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(#2)}%
+      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(\unexpanded{#2})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(#2)}%
+      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{#2})}%
     \fi
     \@writemeta{\IACRSS email: \@IACRemail}%
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
     \ifx\@IACRonclick\@empty
-      \def\@author{#2}%
+      \def\@author{\unexpanded{#2}}%
     \else
-      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
     \fi
     \def\IACR@runningauthors{#2}%
   \else
     \ifx\@IACRonclick\@empty
-      \appto\@author{\and#2}%
+      \appto\@author{\and\unexpanded{#2}}%
     \else
-      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
     \fi
-    \appto\IACR@runningauthors{,\space#2}%
+    \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
   \fi
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
-    \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+	\eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
@@ -642,13 +647,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
   \fi  
 }
-
+ 
 % Provide the title of the paper
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
   \edef\@IACRrunning{\IACR@title@params@get{running}}%
   \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
+  \let\protect\@unexpandable@protect
   \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
+  \let\protect\storeprotect
   \gdef\@plaintitle{#2}
   \ifx\@IACRrunning\@empty
     \gdef\IACR@runningtitle{#2}%
@@ -665,7 +672,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \else
     \gdef\@subtitle{\@IACRsubtitle}%
   \fi
-  \IACR@title@params@clearkeys%
 }
 
 \let\store@title\title  % Save macro away
