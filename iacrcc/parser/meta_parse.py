@@ -2,7 +2,10 @@
 Library for handling output meta file from compiling latex.
 """
 
+import argparse
+import json
 from nameparser import HumanName
+from pathlib import Path
 from pylatexenc.latex2text import LatexNodes2Text
 
 def get_key_val(line):
@@ -120,3 +123,13 @@ def parse_meta(metastr):
             raise Exception('unexpected line {}'.format(line))
     return data
 
+if __name__ == '__main__':
+    argparser = argparse.ArgumentParser(description='Parse a meta file')
+    argparser.add_argument('--input_file',
+                           required=True,
+                           help='meta file to parse')
+    args = argparser.parse_args()
+    metafile = Path(args.input_file)
+    mstr = metafile.read_text(encoding='UTF-8')
+    metadata = parse_meta(mstr)
+    print(json.dumps(metadata, indent=2))
