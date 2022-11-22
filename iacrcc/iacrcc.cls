@@ -577,7 +577,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@author@params@set@keys{#1}%
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
+  \let\protect\@unexpandable@protect
   \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
+  \let\protect\storeprotect  
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
   \edef\@IACRinst{\IACR@author@params@get{inst}}%
   \edef\@IACRemail{\IACR@author@params@get{email}}%
@@ -610,7 +612,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
+    \let\protect\@unexpandable@protect
 	\eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+    \let\protect\storeprotect      
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
@@ -627,13 +631,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Define the \addfunding macro to capture funding meta-data
 \newcommand{\addfunding}[2][\@empty]{%
   \IACR@funding@params@set@keys{#1}%
-  \edef\@IACR@funding@name{#2}%
+  \edef\@IACR@funding@name{\unexpanded{#2}}%
   \edef\@IACR@funding@country{\IACR@funding@params@get{country}}%
   \edef\@IACR@funding@grantid{\IACR@funding@params@get{grantid}}%
   \edef\@IACR@funding@fundref{\IACR@funding@params@get{fundref}}%
   \edef\@IACR@funding@ror{\IACR@funding@params@get{ror}}%
   \@writemeta{funding:}%
+  \let\protect\@unexpandable@protect
   \@writemeta{\IACRSS name: \@IACR@funding@name}%
+  \let\protect\storeprotect
   \ifx\@IACR@funding@country\@empty\else
     \@writemeta{\IACRSS country: \@IACR@funding@country}%
   \fi
@@ -651,21 +657,21 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Provide the title of the paper
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
-  \edef\@IACRrunning{\IACR@title@params@get{running}}%
-  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
   \let\protect\@unexpandable@protect
+  \edef\@IACRrunning{\IACR@title@params@get{running}}%
   \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
-  \let\protect\storeprotect
-  \gdef\@plaintitle{#2}
+  \let\protect\storeprotect      
+  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
+  \gdef\@plaintitle{\unexpanded{#2}}
   \ifx\@IACRrunning\@empty
-    \gdef\IACR@runningtitle{#2}%
+    \gdef\IACR@runningtitle{\unexpanded{#2}}%
   \else
     \gdef\IACR@runningtitle{\@IACRrunning}%
   \fi  
   \ifx\@IACRonclick\@empty
-    \edef\@title{#2}%
+    \edef\@title{\unexpanded{#2}}%
   \else
-    \edef\@title{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{#2}}}%
+    \edef\@title{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
   \fi
   \ifx\@IACRsubtitle\@empty
     \gdef\@subtitle{\@empty}%
