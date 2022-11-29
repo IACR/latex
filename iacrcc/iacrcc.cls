@@ -191,7 +191,11 @@
   \StrDel{\store@classoptionslist}{,}[\store@classoptionslist]%
   \StrDel{\store@classoptionslist}{ }[\store@classoptionslist]%
   \ifx\store@classoptionslist\@empty\else
-    \ClassError{iacrcc}{^^JInvalid options passed to iacrcc: \store@classoptionslist}{}%
+    \ClassError{iacrcc}{
+      ^^J%
+      Invalid options passed to iacrcc: \store@classoptionslist%
+      ^^J%
+    }{}%
   \fi
 \fi
 
@@ -237,7 +241,11 @@
 % Suggested by David Carlisle to eliminate nastiness from the fontenc package.
 \AtBeginDocument{
   \ifx\Umathchar\undefined\else
-  \ClassWarning{iacrcc}{You should not use fontenc. Please use lualatex with unicode fonts.}{}
+  \ClassWarning{iacrcc}{%
+    ^^J%
+    You should not use fontenc. Please use lualatex with unicode fonts%
+    ^^J%
+  }{}%
   \def\encodingdefault{TU}%
  \fontencoding{TU}\selectfont
  \fi
@@ -246,8 +254,18 @@
 \ifluatex
 \else
   \ifcsstring{@IACRversion}{final}{
-    \ClassError{iacrcc}{^^Jfinal versions must be compiled with lualatex.^^J}{}}{%
-    \ClassWarning{iacrcc}{^^J This package is intended to be used with lualatex^^J}{}}
+    \ClassError{iacrcc}{%
+      ^^J%
+      final versions must be compiled with lualatex%
+      ^^J%
+    }{}%
+  }{%
+    \ClassWarning{iacrcc}{%
+      ^^J%
+      this package is intended to be used with lualatex%
+      ^^J%
+    }{}%
+  }%
 \fi
 
 % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
@@ -403,6 +421,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \num@authors=0\relax
 \newcount\num@affil
 \num@affil=0\relax
+\newcount\num@email
+\num@email=0\relax
 
 \AtEndDocument{
   \immediate\closeout\meta%
@@ -410,24 +430,50 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
   \ifx\store@addauthor\addauthor\else
-    \ClassError{iacrcc}{The \string\addauthor\space macro seems to be redefined}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      The \string\addauthor\space macro seems to be redefined%
+      ^^J%
+    }{}%
   \fi
   \ifx\store@title\title\else
-    \ClassError{iacrcc}{The \string\title\space macro seems to be redefined}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      The \string\title\space macro seems to be redefined%
+      ^^J%
+    }{}%
   \fi
   \ifx\store@affiliation\affiliation\else
-    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      The \string\affiliation\space macro seems to be redefined%
+      ^^J%
+    }{}%
   \fi
   \ifx\store@font\familydefault\else
-    \ClassError{iacrcc}{The \string\familydefault\space macro seems to be redefined}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      The \string\familydefault\space macro seems to be redefined%
+      ^^J%
+    }{}%
   \fi
   \ifx\store@paperwidth\paperwidth\else
-    \ClassError{iacrcc}{The \string\paperwidth\space macro seems to be redefined}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      The \string\paperwidth\space macro seems to be redefined%
+      ^^J%
+    }{}%
   \fi
   % final version requires abstract.
-  \ifcsstring{@IACRversion}{final}{
-    \IfFileExists{\jobname.abstract}{}{\ClassError{iacrcc}{An abstract with abstract environment is required}{}}
-  }{}
+  \ifcsstring{@IACRversion}{final}{%
+    \IfFileExists{\jobname.abstract}{}{%
+      \ClassError{iacrcc}{%
+        ^^J%
+        An abstract with abstract environment is required%
+        ^^J%
+      }{}%
+    }%
+  }{}%
 }
 
 % latex3 syntax used for writing text to the .meta file. This requires
@@ -454,7 +500,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@subtitle\@empty\else
     \let\protect\@unexpandable@protect
     \@writemeta{\IACRSS subtitle: \@subtitle}
-	\let\protect\storeprotect
+    \let\protect\storeprotect
   \fi
   \ifx\@genericfootnote\@empty\else
     \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
@@ -462,6 +508,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\IACR@displayemails\@empty\else
     \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
   \fi
+  \ifcsstring{@IACRversion}{final}{
+    % When we produce the final version we need at least one e-mail address  
+    \ifnum\num@email<1\relax
+      \ClassError{iacrcc}{%
+        ^^J%
+        Provide at least one e-mail address for the final version%
+        ^^J%
+      }{}%
+    \fi
+  }{}%
   \begingroup
     \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
     \long\def\@makefntext##1{\parindent 1em\noindent
@@ -517,7 +573,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
       {\LARGE \bfseries\sffamily\boldmath \@title\par}
     \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi
-	}%
+    }%
     \vskip 1.5em%
     {\large
       \lineskip .5em%
@@ -543,14 +599,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }%
   \end{center}%
   \par
-  \vskip 1.5em}
+  \vskip 1.5em%
+}
 
 % This is for indentation in meta file.
 \newcommand{\IACRSS}{\space\space}
 
 % We do not support \author, use \addauthor instead
-\renewcommand\author[2][]{\ClassError{iacrcc}{%
-  Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
+\renewcommand\author[2][]{
+  \ClassError{iacrcc}{%
+    ^^J%
+    Do not use the \string\author\space macro: use the \string\addauthor\space macro instead%
+    ^^J%
+  }{}%
 }
 
 \newcommand\surname[1]{#1}
@@ -558,16 +619,30 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\addauthor[2][]{%    
   % Some very basic checking if addauthor is used correctly
   % Check if the name contains an "," this might be correct (e.g., Alice, Jr)
-  \IfSubStr{\detokenize{#2}}{,}{\ClassWarning{iacrcc}{%
-      Do not put several authors in the same \string\addauthor\space macro!}}{}%
+  \IfSubStr{\detokenize{#2}}{,}{%
+    \ClassWarning{iacrcc}{%
+      ^^J%
+      Do not put several authors in the same \string\addauthor\space macro%
+      ^^J%
+    }%
+  }{}%
   % Affiliations should be defined *after* addauthor
   \ifnum\num@affil>0\relax
-    \ClassError{iacrcc}{affiliations must follow authors}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      Affiliations must follow authors%
+      ^^J%
+    }{}%
   \fi
   % Do not use " and " in your author name: this might indicate incorrect usage
   % The usage of "\and" will not and throw an error.
-  \IfSubStr{#2}{ and }{\ClassError{iacrcc}{%
-      Do not put several authors in the same \string\addauthor\space macro!}{}}{}%   
+  \IfSubStr{#2}{ and }{%
+    \ClassError{iacrcc}{%
+      ^^J%
+      Do not put several authors in the same \string\addauthor\space macro%
+      ^^J%
+    }{}%
+  }{}%   
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
@@ -593,6 +668,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{#2})}%
     \fi
     \@writemeta{\IACRSS email: \@IACRemail}%
+    \global\advance\num@email by 1\relax% 
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
@@ -613,7 +689,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % Add the footnote text if present
   \ifx\@IACRfootnote\@empty\else
     \let\protect\@unexpandable@protect
-	\eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
+    \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
     \let\protect\storeprotect      
   \fi
   \ifx\@IACRorcid\@empty\else
@@ -713,7 +789,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@IACRpostcode\@empty\else
     \@writemeta{\IACRSS postcode: \@IACRpostcode}%
   \fi
-  \ifx\@IACRcountry\@empty\else
+  \ifx\@IACRcountry\@empty
+    \ifcsstring{@IACRversion}{final}{
+      \ClassError{iacrcc}{%
+        ^^J%
+        Specify a country for each affiliation for the final version%
+        ^^J%
+      }{}%
+    }{}
+  \else
     \@writemeta{\IACRSS country: \@IACRcountry}%
   \fi
   \ifx\@IACRonclick\@empty
@@ -855,8 +939,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     }
   }
 \else % did not invoke \documentclass[biblatex]{iacrcc}
-  \AtBeginDocument{
-    \@ifpackageloaded{biblatex}{\ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}}
+  \AtBeginDocument{%
+    \@ifpackageloaded{biblatex}{%
+      \ClassError{iacrcc}{%
+        ^^J%
+        biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}
+        ^^J%
+      }%
+    }%
   }
 \fi%!biblatex
 
@@ -878,7 +968,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     % DocLicense: support for putting documents under a license.
     \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}
   \else
-    \ClassError{iacrcc}{Invalid license: must be { CC-by }.}{}%
+    \ClassError{iacrcc}{%
+      ^^J%
+      Invalid license: must be { CC-by }%
+      ^^J%
+    }{}%
   \fi
 }
 
@@ -886,7 +980,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fancyhf{} % clear all header and footer fields
   \ifcsstring{@IACRversion}{final}{
       \ifx\@IACR@License\@empty
-        \ClassError{iacrcc}{Please specify a license when using version=final.}{}%
+        \ClassError{iacrcc}{%
+          ^^J%
+          Please specify a license when using version=final%
+          ^^J%
+        }{}%
       \fi
       \fancyhead[L]{%
         \small%
@@ -968,13 +1066,21 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx#1\@empty
     \ifnotstring{#2}{%
       \ClassError{iacrcc}{%
-        ^^J Optional plaintext keyword argument required if keywords contain macros ^^J}}
-  \gdef\@IACR@text@keywords{#2}%
+        ^^J%
+        Optional plaintext keyword argument required if keywords contain macros%
+        ^^J%
+      }%
+    }%
+    \gdef\@IACR@text@keywords{#2}%
   \else
     \ifnotstring{#1}{%
       \ClassError{iacrcc}{%
-        ^^J Optional argument to keywords may not contain macros ^^J}}
-      \gdef\@IACR@text@keywords{#1}%
+        ^^J%
+        Optional argument to keywords may not contain macros
+        ^^J%
+      }%
+    }%
+    \gdef\@IACR@text@keywords{#1}%
   \fi
 }
 
