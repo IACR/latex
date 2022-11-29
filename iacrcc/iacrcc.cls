@@ -100,16 +100,19 @@
 % \genericfootnote{This is the full version of our paper published at XX}
 
 % Common definitions
+
+% expl3: wrapper package for experimental LaTeX3
 \RequirePackage{expl3} % used for text_purify on metadata.
-% xkeyval is an extension of the keyval package and offers additional macros
-% for setting keys and declaring and setting class or package options.
+
+% xkeyval: extension of the keyval package
+%          This offers additional macros for setting keys and 
+%          declaring and setting class or package options.
 \RequirePackage{xkeyval}
 
 \def\publname{IACR Communications in Cryptology}
 \def\IACR@vol{0}
 \def\IACR@no{0}
 \def\IACR@fp{1}
-\def\IACR@lp{\pageref*{LastPage}}
 \def\IACR@ISSN{XXXX-XXXX}
 \def\IACR@DOI{XXXXXXXX}
 \def\IACR@Received{20XX-XX-XX}
@@ -120,8 +123,9 @@
 \newif\if@IACR@Revised \@IACR@Revisedfalse
 \newif\if@IACR@Accepted \@IACR@Acceptedfalse
 \newif\if@IACR@Published \@IACR@Publishedfalse
-% etoolbox is a toolbox of programming facilities geared primarily
-% towards LaTeX class and package authors.
+
+% etoolbox: is a toolbox of programming facilities geared primarily
+%           towards LaTeX class and package authors.
 \RequirePackage{etoolbox}
 
 \newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
@@ -174,12 +178,11 @@
   \PassOptionsToClass{final}{article}
 }{}
 
-% xstring provides macros for manipulating strings - testing a string’s 
-% contents, extracting substrings, substitution of substrings and providing
-% numbers such as string length, position of, or number of recurrences of, 
-% a substring.
-% Required for IfSubStr
-\RequirePackage{xstring}
+% xstring: provides macros for manipulating strings - testing a string’s 
+%          contents, extracting substrings, substitution of substrings and
+%          providing numbers such as string length, position of, or number
+%          of recurrences of, a substring.
+\RequirePackage{xstring} % Required for IfSubStr
 
 % Options containing an equality sign are deleted from the original list by
 % the xkeyval package from the \@classoptionslist macro.
@@ -198,17 +201,17 @@
 % article class
 \LoadClass[10pt,twoside]{article}[2007/10/19]
 
-% iftex: Am I running under pdfTEX, XETEX or LuaTEX?
+% iftex: am I running under pdfTEX, XETEX or LuaTEX?
 \RequirePackage{iftex}
 
 \ifluatex
-  % Fixes for mathematics-related LuaLATEX issues
+  % lualatex-math: fixes for mathematics-related LuaLATEX issues
   \RequirePackage{lualatex-math}
 \fi
 
-% xcolor starts from the basic facilities of the color package, 
-% and provides easy driver-independent access to several kinds 
-% of color tints, shades, tones, and mixes of arbitrary colors. I
+% xcolor: starts from the basic facilities of the color package, 
+%         and provides easy driver-independent access to several kinds 
+%         of color tints, shades, tones, and mixes of arbitrary colors. I
 \RequirePackage{xcolor}
 
 % The hyperref package is used to handle cross-referencing commands in 
@@ -255,19 +258,15 @@
 \RequirePackage{hyperxmp} % hyperxmp 5.x has issues with AtEndPreamble
 \setcounter{tocdepth}{2}
 
-% Geometry
+% Geometry: flexible and complete interface to document dimensions
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
 
-% afterpage implements a command that causes the commands specified 
-% in its argument to be expanded after the current page is output
+% afterpage: execute command after the next page break
 \RequirePackage{afterpage}
 
-% Title fonts: bf+sf
-% The secsty package to help change the style of any or all of LaTeX's 
-% sectional headers in the article, book, or report classes.
+% secsty: control sectional headers
 \RequirePackage{sectsty}
 \allsectionsfont{\sffamily\boldmath}
-% Also for descriptions
 \renewcommand*\descriptionlabel[1]{\hspace\labelsep
                                    \normalfont\bfseries\sffamily\boldmath #1}
 
@@ -285,6 +284,7 @@
 % by by Leo C. Stein which in turn is a package around Milo's code on TeX.SE,
 % see https://tex.stackexchange.com/a/445583/34063
 
+% tikz: create PostScript and PDF graphics in TEX
 \RequirePackage{tikz}
 \ProcessOptions\relax
 \usetikzlibrary{svg.path}
@@ -319,10 +319,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % End of macros for orcidlink
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% pgfkeys is a flexible key management system
-% The package provides a flexible key management system, whose keys are 
-% arranged in a tree-like structure; key values may be functions as well 
-% as strings or numbers.
+% pgfkeys: a flexible key management system
 \RequirePackage{pgfkeys}
 
 \pgfkeys{/IACR-author/entities/.cd,
@@ -750,22 +747,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   
 \def\fnmsep{\unskip$^,$}
 
-% Head/foot
-% The fancyhdr package provides extensive facilities, both for constructing 
-% headers and footers, and for controlling their use.
+% fancyhdr: extensive control of page headers and footers in LATEX2ε
 \RequirePackage{fancyhdr}
 
-% The graphicx package builds upon the graphics package, providing a key-value
-% interface for optional arguments to the \includegraphics command. 
-% This interface provides facilities that go far beyond what the graphics 
-% package offers on its own.
+% graphicx: enhanced support for graphics
 \RequirePackage{graphicx}
 
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
 \if@optbiblatex
   \typeout{biblatex options may not be changed with \@backslashchar usepackage}
+  % csquotes: context sensitive quotation facilities
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
+  % biblatex: sophisticated Bibliographies in LaTeX
   \RequirePackage[backend=biber,style=alphabetic,maxbibnames=4]{biblatex}[2019/12/01]
   % We use a sourcemap to copy certain fields to the side so we can
   % include them in the .meta file. biblatex makes it hard to recover
@@ -861,12 +855,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \fi%!biblatex
 
 \ifcsstring{@IACRversion}{final}{
-  % recent versions of hyperxmp load totpages, which conflicts with lastpage
-    \@ifpackageloaded{totpages}{
-      \def\IACR@lp{\pageref*{TotPages}}
-    }{
-      \RequirePackage{lastpage}
-    }
+  % totpages: count pages in a document, and report last page number
+  \RequirePackage{totpages}
+  \def\IACR@lp{\pageref*{TotPages}}%
 }{}
 
 
@@ -875,7 +866,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \gdef\@IACR@License{#1}%
   \def\@IACR@CCby{CC-by}%
   \ifx\@IACR@License\@IACR@CCby%
-    % DocLicense: support for putting documents under a license.
+    % doclicense: support for putting documents under a license.
     \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}
   \else
     \ClassError{iacrcc}{Invalid license: must be { CC-by }.}{}%
@@ -978,7 +969,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
 }
 
-% Sophisticated verbatim text
+% fancyvrb: sophisticated verbatim text
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 
 \renewenvironment{abstract}{%
@@ -1070,9 +1061,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\caseautorefname{Case}
 
 % amsmath: AMS mathematical facilities for LATEX
-% amssymb: Defines all the symbols found in the AMS symbol fonts
-% amsthm: Typesetting theorems (AMS style)
+% amssymb: defines all the symbols found in the AMS symbol fonts
+% amsthm: typesetting theorems (AMS style)
 \RequirePackage{amsmath,amssymb,amsthm}
+% mathtools: mathematical tools to use with amsmath
 \RequirePackage{mathtools}
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -1100,11 +1092,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % Floats and captions
 \if@floatrow
+  % floatrow: modifying the layout of floats
   \RequirePackage{floatrow}
   \floatsetup[table]{style=Plaintop}
+  % caption: customising captions in floating environments
   \RequirePackage{caption}
   \captionsetup{labelfont={sf,bf}}
 \else
+  % float: improved interface for floating objects
   \RequirePackage{float}
   \newcommand\fs@iacrabove{%
     % Swap \abovecaptionskip and \belowcaptionskip
@@ -1140,7 +1135,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 \ifcsstring{@IACRversion}{submission}{
-  % lineno: Line numbers on paragraphs
+  % lineno: line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
   \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
@@ -1165,10 +1160,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
 }{} %submission
 
-% Microtype: Subliminal refinements towards typographical perfection
+% microtype: subliminal refinements towards typographical perfection
 \RequirePackage{microtype}
 
-% The Latin Modern family of fonts consists of 72 text fonts and 20 mathematics fonts
+% lmodern: latin modern fonts in outline formats
 \RequirePackage{lmodern}
 
 % Store the default font family used
