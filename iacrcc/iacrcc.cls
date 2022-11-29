@@ -1269,8 +1269,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % microtype: subliminal refinements towards typographical perfection
 \RequirePackage{microtype}
 
-% lmodern: latin modern fonts in outline formats
+% We load lmodern to get latin modern fonts but only in pdflatex.
+% Lualatex already uses latin modern for text and cm for math.
+\ifpdftex
 \RequirePackage{lmodern}
+\fi
 
 % Store the default font family used
 \let\store@font\familydefault%
