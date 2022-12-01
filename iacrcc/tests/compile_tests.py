@@ -41,6 +41,15 @@ def test1_test():
     assert 'meta' in res
     meta = meta_parse.parse_meta(res['meta'])
     assert meta['title'] == "Thoughts about \"binary\" functions on $GF(p)$ by Fester Bestertester\\ at 30\u00b0C"
+    assert len(meta['authors']) == 3
+    assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
+    assert meta['authors'][0]['affiliations'] == ['1','2']
+    assert meta['authors'][1]['email'] == 'bad@example.com'
+    assert meta['authors'][2]['name'] == 'Tancrède Lepoint'
+    assert meta['affiliations'][0]['ror'] == '02t274463'
+    assert meta['affiliations'][2]['name'] == 'Boğaziçi University'
+    assert meta['affiliations'][2]['country'] == 'Turkey'
+    assert meta['version'] == 'final'
     # should fail with pdflatex.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode != 0
@@ -50,10 +59,31 @@ def test2_test():
     # should pass with lualatex.
     res = run_engine('-pdflua', path.iterdir())
     assert res['proc'].returncode == 0
+    meta = meta_parse.parse_meta(res['meta'])
+    assert meta['authors'][0]['name'] == 'Joppe W. Bos'
+    assert meta['authors'][0]['email'] == 'joppe.bos@nxp.com'
+    assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
+    assert meta['authors'][0]['affiliations'] == ['1']
+    assert meta['authors'][1]['name'] == 'Kevin S. McCurley'
+    assert meta['authors'][1]['email'] == 'test2@digicrime.com'
+    assert meta['authors'][1]['orcid'] == '0000-0001-7890-5430'
+    assert meta['authors'][1]['affiliations'] == ['2']
+    affil = meta['affiliations'][0]
+    assert affil['name'] == 'NXP Semiconductors'
+    assert affil['ror'] == '031v4g827'
+    assert affil['street'] == 'Interleuvenlaan 80'
+    assert affil['city'] == 'Leuven'
+    assert affil['postcode'] == '3001'
+    assert affil['country'] == 'Belgium'
+    assert len(meta['keywords']) == 3
+    assert meta['keywords'][0] == 'Template'
+    assert meta['keywords'][1] == 'LaTeX'
+    assert meta['keywords'][2] == 'IACR'
+    assert meta['version'] == 'final'
     # should pass with pdflatex.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode != 0
-            
+
 def test3_test():
     path = Path('test3')
     # should pass with lualatex.
