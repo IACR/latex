@@ -493,7 +493,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \renewcommand\maketitle{\par
   \@writemeta{version: \@IACRversion}
+  \let\protect\@unexpandable@protect
   \@writemeta{title: \@plaintitle}%
+  \let\protect\storeprotect
   \ifx\@subtitle\@empty\else
     \let\protect\@unexpandable@protect
     \@writemeta{\IACRSS subtitle: \@subtitle}
@@ -644,14 +646,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   %
   % Write out the author in the meta file.
   \@writemeta{author:}%
-  \@writemeta{\IACRSS name: \unexpanded{#2}}%
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
-  \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
-  \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
   \let\protect\@unexpandable@protect
   \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
-  \let\protect\storeprotect  
+  \@writemeta{\IACRSS name: #2}%
+  \let\protect\storeprotect
+  \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
+  \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
   \edef\@IACRinst{\IACR@author@params@get{inst}}%
   \edef\@IACRemail{\IACR@author@params@get{email}}%
@@ -733,9 +735,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \let\protect\@unexpandable@protect
   \edef\@IACRrunning{\IACR@title@params@get{running}}%
   \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
+  \edef\@plaintitle{#2}
   \let\protect\storeprotect      
   \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
-  \gdef\@plaintitle{\unexpanded{#2}}
   \ifx\@IACRrunning\@empty
     \gdef\IACR@runningtitle{\unexpanded{#2}}%
   \else
@@ -758,7 +760,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax% 
   \@writemeta{affiliation:}%
-  \@writemeta{\IACRSS name: \unexpanded{#2}}%
+  \let\protect\@unexpandable@protect
+  \@writemeta{\IACRSS name: #2}%
+  \let\protect\storeprotect  
   \IACR@affiliation@params@set@keys{#1}%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
