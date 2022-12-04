@@ -1431,11 +1431,11 @@ FUNCTION {begin.bib}
   % iacr begin
   "\newcommand{\writemeta}[2]{%"
   write$ newline$
-  "\ifstrempty{#2}{}{\immediate\write\meta{\IACRSS #1: \unexpanded{#2}}}}"
+  "\ifstrempty{#2}{}{\immediate\write\iacrmeta{\IACRSS #1: \unexpanded{#2}}}}"
   write$ newline$
-  "\newcommand{\iacrmetacite}[3]{\immediate\write\meta{citation: #1 #2}%"
+  "\newcommand{\iacrmetacite}[3]{\immediate\write\iacrmeta{citation: #1 #2}%"
   write$ newline$
-  "\ifstrempty{#3}{}{\immediate\write\meta{\IACRSS authors: \detokenize{#3}}}}"
+  "\ifstrempty{#3}{}{\immediate\write\iacrmeta{\IACRSS authors: \detokenize{#3}}}}"
   write$ newline$
   % iacr end
   "\begin{thebibliography}{"  longest.label  * "}" * write$ newline$
