@@ -502,10 +502,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \let\protect\storeprotect
   \fi
   \ifx\@genericfootnote\@empty\else
-    \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
+    \begingroup
+      \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
+    \endgroup
   \fi
   \ifx\IACR@displayemails\@empty\else
-    \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
+    \begingroup
+      \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
+    \endgroup
   \fi
   \ifcsstring{@IACRversion}{final}{
     % When we produce the final version we need at least one e-mail address  
