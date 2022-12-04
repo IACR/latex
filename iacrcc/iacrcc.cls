@@ -412,8 +412,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\IACR@author@last{0}
 
 % Meta information is written out in [jobname].meta
-\newwrite\meta
-\immediate\openout\meta=\jobname.meta
+\newwrite\iacrmeta
+\immediate\openout\iacrmeta=\jobname.meta
 \newcount\num@authors
 \num@authors=0\relax
 \newcount\num@affil
@@ -422,7 +422,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \num@email=0\relax
 
 \AtEndDocument{
-  \immediate\closeout\meta%
+  \immediate\closeout\iacrmeta%
   % Check if either \title, \addauthor or \affiliation macros were redefined
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
@@ -482,9 +482,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \fi
 \cs_new:Npn\@writemeta#1{
   \ifdefined\text_purify:n
-    \immediate\write\meta{\text_purify:n #1}%
+    \immediate\write\iacrmeta{\text_purify:n #1}%
   \else
-    \immediate\write\meta{#1}%
+    \immediate\write\iacrmeta{#1}%
   \fi
 }
 \ExplSyntaxOff
