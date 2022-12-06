@@ -60,9 +60,9 @@ def test2_test():
     res = run_engine('-pdflua', path.iterdir())
     assert res['proc'].returncode == 0
     meta = meta_parse.parse_meta(res['meta'])
-    assert meta['title'] == 'How to Use the IACR Communications in Cryptology Class'
+    assert meta['title'] == 'How to Use the IACR Communications in Cryptology Cl\\r {a}ss'
     assert meta['subtitle'] == 'A Template'
-    assert meta['authors'][0]['name'] == 'Joppe W. Bos'
+    assert meta['authors'][0]['name'] == 'Joppe W. Bös'
     assert meta['authors'][0]['email'] == 'joppe.bos@nxp.com'
     assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
     assert meta['authors'][0]['affiliations'] == ['1']
@@ -71,7 +71,7 @@ def test2_test():
     assert meta['authors'][1]['orcid'] == '0000-0001-7890-5430'
     assert meta['authors'][1]['affiliations'] == ['2']
     affil = meta['affiliations'][0]
-    assert affil['name'] == 'NXP Semïcönductors'
+    assert affil['name'] == 'NXP Sěmïcöndúctørs'
     assert affil['ror'] == '031v4g827'
     assert affil['street'] == 'Interleuvenlaan 80'
     assert affil['city'] == 'Leuven'
