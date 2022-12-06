@@ -136,6 +136,9 @@
 % only required for old hyperxmp.
 \newif\if@hyperxmp@doi
 \@hyperxmp@doifalse
+% doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+\newif\if@doclicense@LongTextForHyperref
+\@doclicense@LongTextForHyperreffalse
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
 % \IACR@Published, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
@@ -235,6 +238,8 @@
   }
   % Old versions of hyperxmp do not support DOI TODO: move to require newer version.
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue}{}
+  % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+  \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
   % When pdflatex is used load TU fonts using fonenc (if not loaded)
   \ifpdf
@@ -1005,13 +1010,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
-      \@ifpackageloaded{hyperxmp}{%
-        % The following options are only defined when the hyperxmp package was loaded.
-        \hypersetup{%
-          pdfcopyright={\doclicenseLongTextForHyperref},
-          pdflicenseurl={\doclicenseURL},
-        }
-      }{}
+      \if@doclicense@LongTextForHyperref
+        \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+      \fi
+      \hypersetup{pdflicenseurl={\doclicenseURL}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
   }{} % final
   \renewcommand{\headrulewidth}{0pt}
