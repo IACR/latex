@@ -241,6 +241,10 @@
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
+  % When pdflatex is used load TU fonts using fonenc (if not loaded)
+  \ifpdf
+    \@ifpackageloaded{fontenc}{}{\RequirePackage[TU]{fontenc}}
+  \fi
 }
 
 % Check the character encoding. lualatex and unicode are required for final versions.
@@ -249,14 +253,14 @@
 % Suggested by David Carlisle to eliminate nastiness from the fontenc package.
 \AtBeginDocument{
   \ifx\Umathchar\undefined\else
-  \ClassWarning{iacrcc}{%
-    ^^J%
-    You should not use fontenc. Please use lualatex with unicode fonts%
-    ^^J%
-  }{}%
-  \def\encodingdefault{TU}%
- \fontencoding{TU}\selectfont
- \fi
+    \ClassWarning{iacrcc}{%
+      ^^J%
+      You should not use fontenc. Please use lualatex with unicode fonts%
+      ^^J%
+    }{}%
+    \def\encodingdefault{TU}%
+    \fontencoding{TU}\selectfont
+  \fi
 }
 
 \ifluatex

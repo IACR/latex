@@ -20,14 +20,14 @@ def run_engine(eng, filelist):
         tmpdir = Path(tmpdirpath)
         for f in tmpdir.iterdir():
             ending = str(f).split('.')[-1]
-            if ending in ['aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'sty', 'xmpdata', 'meta']:
+            if ending in ['abstract', 'aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'sty', 'xmpdata', 'meta', 'bcf', 'xml']:
                 f.unlink()
         try:
             os.chdir(tmpdir)
             proc = subprocess.run(['latexmk', '-g', eng, 'main'], capture_output=True)
             data = {'proc': proc}
             metafile = Path('main.meta')
-            if metafile.is_file():
+            if metafile.is_file() and eng == '-pdflua':
                 data['meta'] = metafile.read_text(encoding='UTF-8')
             return data
         finally:
@@ -71,7 +71,7 @@ def test2_test():
     assert meta['authors'][1]['orcid'] == '0000-0001-7890-5430'
     assert meta['authors'][1]['affiliations'] == ['2']
     affil = meta['affiliations'][0]
-    assert affil['name'] == 'NXP Semiconductors'
+    assert affil['name'] == 'NXP Semïcönductors'
     assert affil['ror'] == '031v4g827'
     assert affil['street'] == 'Interleuvenlaan 80'
     assert affil['city'] == 'Leuven'
@@ -81,10 +81,10 @@ def test2_test():
     assert meta['keywords'][0] == 'Template'
     assert meta['keywords'][1] == 'LaTeX'
     assert meta['keywords'][2] == 'IACR'
-    assert meta['version'] == 'final'
+    assert meta['version'] == 'preprint'
     # should pass with pdflatex.
     res = run_engine('-pdf', path.iterdir())
-    assert res['proc'].returncode != 0
+    assert res['proc'].returncode == 0
 
 def test3_test():
     path = Path('test3')
@@ -94,4 +94,19 @@ def test3_test():
     # should pass with pdflatex.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode != 0
-            
+
+# Negative test.
+# Test a final version without an e-mail address provided
+# --> This should fail.
+def test4_test():
+    path = Path('test4')
+    res = run_engine('-pdflua', path.iterdir())
+    assert res['proc'].returncode != 0
+
+# Negative test.
+# Test a final version without a license provided
+# --> This should fail.
+def test5_test():
+    path = Path('test5')
+    res = run_engine('-pdflua', path.iterdir())
+    assert res['proc'].returncode != 0

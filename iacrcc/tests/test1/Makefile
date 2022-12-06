@@ -7,6 +7,7 @@ test1.pdf: $(TEXFILES)
 	lualatex main
 
 clean:
-	rm main.pdf main.blg main.aux main.log main.bbl main.out main.meta main.abstract
+	rm -f main.pdf main.blg main.aux main.log main.bbl main.out main.meta main.run.xml main.bcf main.abstract main.fdb_latexmk main.fls main.dvi
+
 
 

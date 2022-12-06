@@ -1,10 +1,8 @@
-TEXFILES = main.tex test3.bib
+TEXFILES=main.tex test4.bib
 
-all: main.pdf
-
-main.pdf: $(TEXFILES)
+test1.pdf: $(TEXFILES)
 	lualatex main
-	biber main
+	bibtex main
 	lualatex main
 	lualatex main
 
