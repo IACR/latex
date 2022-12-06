@@ -241,9 +241,9 @@
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
-  % When pdflatex is used load TU fonts using fonenc (if not loaded)
-  \ifpdf
-    \@ifpackageloaded{fontenc}{}{\RequirePackage[TU]{fontenc}}
+  % When pdflatex is used load TU fonts using fontenc
+  \ifpdftex
+    \RequirePackage[TU]{fontenc}
   \fi
 }
 
