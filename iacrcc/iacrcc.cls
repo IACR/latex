@@ -251,13 +251,16 @@
 % We allow pdflatex to be used for preprint and submission modes, because it is faster
 % than lualatex.
 % Suggested by David Carlisle to eliminate nastiness from the fontenc package.
+% Checking for Umathcode is equivalent to checking for a unicode engine.
+% See https://github.com/latex3/latex2e/issues/279
 \AtBeginDocument{
-  \ifx\Umathchar\undefined\else
+  \ifx\Umathcode\undefined
     \ClassWarning{iacrcc}{%
       ^^J%
       You should not use fontenc. Please use lualatex with unicode fonts%
       ^^J%
     }{}%
+  \else
     \def\encodingdefault{TU}%
     \fontencoding{TU}\selectfont
   \fi
