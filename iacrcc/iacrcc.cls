@@ -864,13 +864,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % csquotes: context sensitive quotation facilities
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   % biblatex: sophisticated Bibliographies in LaTeX
-  \RequirePackage[backend=biber,style=alphabetic,maxbibnames=4]{biblatex}[2019/12/01]
-  % We use a sourcemap to copy certain fields to the side so we can
-  % include them in the .meta file. biblatex makes it hard to recover
-  % some fields intact such as AUTHOR, EDITOR, PUBLISHER, LOCATION, and
-  % PAGES. biber is able to parse these, but they get rewritten in a way
-  % that is inconvenient to copy them to the .meta file. There may
-  % be a better way to do this, but biblatex is complicated.
+  \RequirePackage[backend=biber,style=alphabetic,maxcitenames=4,maxbibnames=20]{biblatex}[2019/12/01]
   \DeclareNameFormat{author}{%
     \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
     \usebibmacro{name:andothers}%
@@ -878,6 +872,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \@writemeta{\IACRSS author: \expanded{\namepartgiven\ifdefvoid{\namepartprefix}{}{ \namepartprefix } \namepartfamily\ifdefvoid{\namepartsuffix}{}{, \namepartsuffix}}}%
       \@writemeta{\IACRSS surname:\ifdefvoid{\namepartprefix}{}{ \namepartprefix} \namepartfamily}}
   }
+  % We use a sourcemap to copy certain fields to the side so we can
+  % include them in the .meta file. biblatex makes it hard to recover
+  % some fields intact such as AUTHOR, EDITOR, PUBLISHER, LOCATION, and
+  % PAGES. biber is able to parse these, but they get rewritten in a way
+  % that is inconvenient to copy them to the .meta file. There may
+  % be a better way to do this, but biblatex is complicated.
   \DeclareSourcemap{
     \maps[datatype=bibtex,overwrite=true]{
       \map{% copy author to usera

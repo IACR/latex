@@ -27,7 +27,7 @@ def parse_meta(metastr):
     # TODO: define a JSON schema for this file, or return a pydantic object.
     """
     # This is used to decode lines with TeX character macros like \'e.
-    decoder = LatexNodes2Text()
+    decoder = LatexNodes2Text(math_mode='with-delimiters', keep_braced_groups=False)
     data = {'authors': [],
             'affiliations': [],
             'citations': []}
@@ -75,7 +75,7 @@ def parse_meta(metastr):
             data['version'] = line[8:].strip()
             index += 1
         elif line.startswith('title:'):
-            data['title'] = line[6:].strip() # decoder.latex_to_text(line[6:].strip())
+            data['title'] = decoder.latex_to_text(line[6:].strip())
             index += 1
             if index < numlines and lines[index].startswith('  '):
                 k,v = get_key_val(lines[index])

@@ -40,7 +40,7 @@ def test1_test():
     assert res['proc'].returncode == 0
     assert 'meta' in res
     meta = meta_parse.parse_meta(res['meta'])
-    assert meta['title'] == "Thoughts about \"binary\" functions on $GF(p)$ by Fester Bestertester\\ at 30\u00b0C"
+    assert meta['title'] == "Thoughts about \"binary\" functions on $GF(p)$ by Fester Bestertester at 30\u00b0C"
     assert len(meta['authors']) == 3
     assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
     assert meta['authors'][0]['affiliations'] == ['1','2']
@@ -50,7 +50,7 @@ def test1_test():
     assert meta['affiliations'][2]['name'] == 'Boğaziçi University'
     assert meta['affiliations'][2]['country'] == 'Turkey'
     assert meta['version'] == 'final'
-    # should fail with pdflatex.
+    # should fail with pdflatex because it has version=final.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode != 0
 
@@ -60,7 +60,7 @@ def test2_test():
     res = run_engine('-pdflua', path.iterdir())
     assert res['proc'].returncode == 0
     meta = meta_parse.parse_meta(res['meta'])
-    assert meta['title'] == 'How to Use the IACR Communications in Cryptology Cl\\r {a}ss'
+    assert meta['title'] == 'How to Use the IACR Communications in Cryptology Clåss'
     assert meta['subtitle'] == 'A Template'
     assert meta['authors'][0]['name'] == 'Joppe W. Bös'
     assert meta['authors'][0]['email'] == 'joppe.bos@nxp.com'
@@ -82,7 +82,16 @@ def test2_test():
     assert meta['keywords'][1] == 'LaTeX'
     assert meta['keywords'][2] == 'IACR'
     assert meta['version'] == 'preprint'
-    # should pass with pdflatex.
+    assert len(meta['citations']) == 6
+    citation = meta['citations'][0]
+    assert citation['id'] == 'fancynames'
+    assert citation['title'] == 'Something about mathematics $x^n+y^n=z^n$ when $n=2$'
+    assert len(citation['authorlist']) == 6
+    assert citation['authorlist'][0]['name'] == 'Jeroen von Bücher'
+    assert citation['authorlist'][0]['surname'] == 'von Bücher'
+    assert citation['authorlist'][2]['name'] == 'Öznur Küçükkubaş'
+    citation = meta['citations'][3]['doi'] == '10.1007/3-540-68697-5_9'
+    # should at least compile with pdflatex.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode == 0
 
@@ -91,7 +100,14 @@ def test3_test():
     # should pass with lualatex.
     res = run_engine('-pdflua', path.iterdir())
     assert res['proc'].returncode == 0
-    # should pass with pdflatex.
+    meta = meta_parse.parse_meta(res['meta'])
+    assert len(meta['citations']) == 79
+    citation = meta['citations'][1]
+    assert citation['title'] == 'Effect of immobilization on catalytic characteristics of saturated {Pd-N}-heterocyclic carbenes in {Mizoroki-Heck} reactions'
+    assert len(citation['authorlist']) == 7
+    authorlist = citation['authorlist']
+    assert authorlist[0]['name'] == 'Özge Aksın'
+    # should fail to compile with pdflatex since it has version=final.
     res = run_engine('-pdf', path.iterdir())
     assert res['proc'].returncode != 0
 
