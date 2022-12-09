@@ -24,7 +24,7 @@ def run_engine(eng, filelist):
                 f.unlink()
         try:
             os.chdir(tmpdir)
-            proc = subprocess.run(['latexmk', '-g', eng, 'main'], capture_output=True)
+            proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode' '-g', eng, 'main'], capture_output=True)
             data = {'proc': proc}
             metafile = Path('main.meta')
             if metafile.is_file() and eng == '-pdflua':
@@ -125,4 +125,107 @@ def test4_test():
 def test5_test():
     path = Path('test5')
     res = run_engine('-pdflua', path.iterdir())
+    assert res['proc'].returncode != 0
+
+# This is used for test6 in which we generate an output file main.output
+# using with \write under different conditions. We don't try to parse this
+# as metadata, and main.meta will not be created.
+def get_output(eng, main_file):
+    cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        shutil.copy(main_file, tmpdirpath)
+        tmpdir = Path(tmpdirpath)
+        try:
+            os.chdir(tmpdir)
+            proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode' '-g', eng, 'main'], capture_output=True)
+            data = {'proc': proc}
+            data['log'] = Path('main.log').read_text(encoding='UTF-8')
+            outputfile = Path('main.output')
+            if outputfile.is_file():
+                try:
+                    data['bytes'] = outputfile.read_bytes()
+                except Exception as e:
+                    data['error'] = str(e)
+            return data
+        except Exception as e:
+            return {'error': str(e)}
+        finally:
+            os.chdir(cwd)
+
+def test6_test():
+    """no fontenc and no fontspec."""
+    res = get_output('-pdflua', Path('test6/main.tex'))
+    assert res['proc'].returncode == 0
+    output = res['bytes'].decode('utf-8', 'strict').splitlines()
+    assert len(output) == 9
+    assert output[0] == 'Insertstuff.'
+    assert output[1] == 'With space:Insert\\ stuff.'
+    assert output[2] == 'With braces:Insert{} stuff.'
+    assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+    assert output[4] == 'accented: å ü \\TU\\DJ '
+    assert output[5] == 'With math $\\alpha $'
+    assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$'
+    assert output[7] == 'å and Š ü \\TU\\i \\TU\\DJ '
+    assert output[8] == 'Puret:å and Š ü ıĐ'
+
+def test7_test():
+    # with fontenc and pdflatex, we get malformed output.
+    res = get_output('-pdf', Path('test7/main.tex'))
+    assert res['proc'].returncode == 0
+    # The output file is not UTF-8
+    with pytest.raises(Exception):
+        res['bytes'].decode('utf-8', 'strict')
+    output = res['bytes'].decode('iso_8859_1').splitlines()
+    assert len(output) == 9
+    assert output[0] == 'Insertstuff.'
+    assert output[1] == 'With space:Insert\\ stuff.'
+    assert output[2] == 'With braces:Insert{} stuff.'
+    assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+    assert output[4] == 'accented: å ü \\T1\\DJ ' # note encoding
+    assert output[5] == 'With math $\\alpha $'
+    print(output[6])
+    assert output[6] == 'Puret:Ä\x80Ä\x81 Ä\x92Ä\x93 ÄªÄ« Å\x8cÅ\x8d ÅªÅ« È²È³ Ã¼ alpha with $a=b$'
+    assert output[7] == 'å and Å  ü \\T1\\i \\T1\\DJ ' # note bad encoding
+    b = ':'.join(hex(ord(char)) for char in output[8][:15])
+    assert b == '0x50:0x75:0x72:0x65:0x74:0x3a:0xc3:0xa5:0x20:0x61:0x6e:0x64:0x20:0xc5:0xa0'
+    #              P   u    r    e    t    :    Ã     ¥   sp   a    n    d    sp   Å    nbsp
+    assert output[8][:15] == 'Puret:Ã¥ and Å\xa0'
+    assert hex(ord(output[8][-1])) == '0x90' # control character at the end.
+
+def test8_test():
+    """fontenc and lualatex will at least not be bad encoding."""
+    res = get_output('-pdflua', Path('test8/main.tex'))
+    assert res['proc'].returncode == 0
+    output = res['bytes'].decode('utf-8', 'strict').splitlines()
+    assert len(output) == 9
+    assert output[0] == 'Insertstuff.'
+    assert output[1] == 'With space:Insert\\ stuff.'
+    assert output[2] == 'With braces:Insert{} stuff.'
+    assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+    assert output[4] == 'accented: å ü \\TU\\DJ ' # note encoding
+    assert output[5] == 'With math $\\alpha $' # extra space in math after macro \alpha
+    assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$' # gobble space after Pure
+    assert output[7] == 'å and Š ü \\TU\\i \\TU\\DJ ' # T1 encoding
+    assert output[8] == 'Puret:å and Š ü ıĐ'
+
+def test9_test():
+    """fontspec and lualatex will at least not be bad encoding."""
+    res = get_output('-pdflua', Path('test9/main.tex'))
+    assert res['proc'].returncode == 0
+    output = res['bytes'].decode('utf-8', 'strict').splitlines()
+    assert len(output) == 9
+    assert output[0] == 'Insertstuff.'
+    assert output[1] == 'With space:Insert\\ stuff.'
+    assert output[2] == 'With braces:Insert{} stuff.'
+    assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+    assert output[4] == 'accented: å ü \\TU\\DJ ' # note encoding
+    assert output[5] == 'With math $\\alpha $' # extra space in math after macro \alpha
+    assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$' # gobble space after Pure
+    assert output[7] == 'å and Š ü \\TU\\i \\TU\\DJ ' # T1 encoding
+    assert output[8] == 'Puret:å and Š ü ıĐ'
+    # MISSING CHARACTERS IN PDF!
+    assert 'Missing character: There is no Ȳ (U+0232) in font [lmroman10-regular]:+tlig;!' in res['log']
+    assert 'Missing character: There is no ȳ' in res['log']
+    # FAILS with pdflatex
+    res = get_output('-pdf', Path('test9/main.tex'))
     assert res['proc'].returncode != 0
