@@ -131,6 +131,8 @@
 \newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
 \newcommand{\setnumber}[1]{\def\IACR@no{#1}}
 \newcommand{\setISSN}[1]{\def\IACR@ISSN{#1}}
+% See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
+\tracinglostchars=3
 
 % Options
 % only required for old hyperxmp.

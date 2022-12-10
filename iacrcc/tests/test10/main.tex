@@ -2,19 +2,20 @@
 \usepackage{iftex}
 \usepackage{expl3}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifluatex
 \usepackage{fontspec}
+\usepackage{lmodern}
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% This will cause lualatex to fail:
+\tracinglostchars=3
 
 \begin{document}
 
 UTF-8 input: Ââ Êê Îî Ôô Ŵŵ Ŷŷ Ïï Ăă Ĕĕ Ĭĭ Ŏŏ Ŭŭ Āā Ēē Īī Ōō Ūū Ȳȳ ü
 
 Accented characters: \=Y\=y \r{a} \"u \i\ \DJ.
-Unicode in math:
-\[
-ȳ=Ē
-\]
+
 \ExplSyntaxOn
 \newcommand\justtext[1]{Pure t: \text_purify:n{#1}}
 \ExplSyntaxOff
@@ -30,7 +31,6 @@ Unicode in math:
 \immediate\write\afile{\justtext{Āā Ēē Īī Ōō Ūū Ȳȳ \"u \textbf{alpha}} with $a=b$}
 \immediate\write\afile{\r{a} and Š \"u \i \DJ}
 \immediate\write\afile{\justtext{\r{a} and Š \"u \i \DJ}}
-\immediate\write\afile{Unicode math $ȳ=Ē$}
 \immediate\closeout\afile
 
 \end{document}

@@ -213,7 +213,7 @@ def test9_test():
     res = get_output('-pdflua', Path('test9/main.tex'))
     assert res['proc'].returncode == 0
     output = res['bytes'].decode('utf-8', 'strict').splitlines()
-    assert len(output) == 9
+    assert len(output) == 10
     assert output[0] == 'Insertstuff.'
     assert output[1] == 'With space:Insert\\ stuff.'
     assert output[2] == 'With braces:Insert{} stuff.'
@@ -226,6 +226,14 @@ def test9_test():
     # MISSING CHARACTERS IN PDF!
     assert 'Missing character: There is no Ȳ (U+0232) in font [lmroman10-regular]:+tlig;!' in res['log']
     assert 'Missing character: There is no ȳ' in res['log']
+    assert output[9] == 'Unicode math $ȳ=Ē$'
     # FAILS with pdflatex
     res = get_output('-pdf', Path('test9/main.tex'))
+    assert res['proc'].returncode != 0
+
+def test10_test():
+    """test of \tracinglostchars=3 to catch something not defined."""
+    res = get_output('-pdflua', Path('test10/main.tex'))
+    assert res['proc'].returncode != 0
+    res = get_output('-pdf', Path('test10/main.tex'))
     assert res['proc'].returncode != 0
