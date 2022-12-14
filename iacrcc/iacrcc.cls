@@ -505,60 +505,62 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \let\storeprotect\protect
 
-\renewcommand\maketitle{\par
-  \@writemeta{version: \@IACRversion}
-  \let\protect\@unexpandable@protect
-  \@writemeta{title: \@plaintitle}%
-  \let\protect\storeprotect
-  \ifx\@subtitle\@empty\else
+ \AtBeginDocument{%
+  \renewcommand\maketitle{\par
+    \@writemeta{version: \@IACRversion}
     \let\protect\@unexpandable@protect
-    \@writemeta{\IACRSS subtitle: \@subtitle}
+    \@writemeta{title: \@plaintitle}%
     \let\protect\storeprotect
-  \fi
-  \ifx\@genericfootnote\@empty\else
-    \begingroup
-      \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
-    \endgroup
-  \fi
-  \ifx\IACR@displayemails\@empty\else
-    \begingroup
-      \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
-    \endgroup
-  \fi
-  \ifcsstring{@IACRversion}{final}{
-    % When we produce the final version we need at least one e-mail address  
-    \ifnum\num@email<1\relax
-      \ClassError{iacrcc}{%
-        ^^J%
-        Provide at least one e-mail address for the final version%
-        ^^J%
-      }{}%
+    \ifx\@subtitle\@empty\else
+      \let\protect\@unexpandable@protect
+      \@writemeta{\IACRSS subtitle: \@subtitle}
+      \let\protect\storeprotect
     \fi
-  }{}%
-  \begingroup
-    \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
-    \long\def\@makefntext##1{\parindent 1em\noindent
-            \hb@xt@1.8em{%
-                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
-    \newpage
-    \global\@topnum\z@   % Prevents figures from going at top of page.
-    \@maketitle
-    \thispagestyle{title}\@thanks
-  \endgroup
-  \setcounter{footnote}{0}%
-  \global\let\thanks\relax
-  \global\let\maketitle\relax
-  \global\let\@maketitle\relax
-  \global\let\@thanks\@empty
-  \global\let\@date\@empty
-  \global\let\date\relax
-  \global\let\and\relax
-  % Adjust header size for title page
-  \addtolength{\headheight}{\baselineskip}%
-  \addtolength{\headsep}{-\baselineskip}%
-  \afterpage{%
-    \global\advance\headheight by -\baselineskip%
-    \global\advance\headsep by \baselineskip%
+    \ifx\@genericfootnote\@empty\else
+      \begingroup
+        \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
+      \endgroup
+    \fi
+    \ifx\IACR@displayemails\@empty\else
+      \begingroup
+        \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
+      \endgroup
+    \fi
+    \ifcsstring{@IACRversion}{final}{
+      % When we produce the final version we need at least one e-mail address  
+      \ifnum\num@email<1\relax
+        \ClassError{iacrcc}{%
+          ^^J%
+          Provide at least one e-mail address for the final version%
+          ^^J%
+        }{}%
+      \fi
+    }{}%
+    \begingroup
+      \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+      \long\def\@makefntext##1{\parindent 1em\noindent
+              \hb@xt@1.8em{%
+                  \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+      \newpage
+      \global\@topnum\z@   % Prevents figures from going at top of page.
+      \@maketitle
+      \thispagestyle{title}\@thanks
+    \endgroup
+    \setcounter{footnote}{0}%
+    \global\let\thanks\relax
+    \global\let\maketitle\relax
+    \global\let\@maketitle\relax
+    \global\let\@thanks\@empty
+    \global\let\@date\@empty
+    \global\let\date\relax
+    \global\let\and\relax
+    % Adjust header size for title page
+    \addtolength{\headheight}{\baselineskip}%
+    \addtolength{\headsep}{-\baselineskip}%
+    \afterpage{%
+      \global\advance\headheight by -\baselineskip%
+      \global\advance\headsep by \baselineskip%
+    }%
   }%
 }
 
