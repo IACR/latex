@@ -258,6 +258,6 @@ def test11_test():
     assert meta['funders'][1]['ror'] == '042c84f31'
     assert meta['funders'][1]['country'] == 'United States'
     assert meta['funders'][2]['name'] == 'National Fantasy Foundation'
-    assert meta['funders'][2]['fundref'] == '1241171'
+    assert meta['funders'][2]['fundref'] == '517622'
     assert meta['funders'][2]['grantid'] == '57821-3'
     assert 'country' not in meta['funders'][2]
