@@ -237,3 +237,27 @@ def test10_test():
     assert res['proc'].returncode != 0
     res = get_output('-pdf', Path('test10/main.tex'))
     assert res['proc'].returncode != 0
+
+def test11_test():
+    path = Path('test11')
+    # should pass with lualatex.
+    res = run_engine('-pdflua', path.iterdir())
+    assert res['proc'].returncode == 0
+    meta = meta_parse.parse_meta(res['meta'])
+    assert meta['title'] == 'How not to use the IACR Communications in Cryptology Clåss'
+    print(json.dumps(meta,indent=2))
+    assert len(meta['keywords']) == 2
+    assert meta['keywords'][0] == 'Dirac delta function'
+    assert meta['keywords'][1] == 'unit impulse'
+    assert len(meta['funders']) == 3
+    assert meta['funders'][0]['name'] == 'Horizon 2020 Framework Programme'
+    assert meta['funders'][0]['grantid'] == '5211-2'
+    assert meta['funders'][0]['fundref'] == '1241171'
+    assert meta['funders'][0]['country'] == 'Elbonia'
+    assert meta['funders'][1]['name'] == 'Just another foundation'
+    assert meta['funders'][1]['ror'] == '042c84f31'
+    assert meta['funders'][1]['country'] == 'United States'
+    assert meta['funders'][2]['name'] == 'National Fantasy Foundation'
+    assert meta['funders'][2]['fundref'] == '1241171'
+    assert meta['funders'][2]['grantid'] == '57821-3'
+    assert 'country' not in meta['funders'][2]

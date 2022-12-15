@@ -747,6 +747,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifx\@IACR@funding@ror\@empty\else
     \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
   \fi  
+  \IACR@funding@params@clearkeys%
 }
  
 % Provide the title of the paper

@@ -30,6 +30,7 @@ def parse_meta(metastr):
     decoder = LatexNodes2Text(math_mode='with-delimiters', keep_braced_groups=False)
     data = {'authors': [],
             'affiliations': [],
+            'funders': [],
             'citations': []}
 
     lines = metastr.splitlines()
@@ -70,6 +71,14 @@ def parse_meta(metastr):
             while index < numlines and lines[index].startswith('  '): # associated with affiliation
                 k,v = get_key_val(lines[index])
                 affiliation[k] = decoder.latex_to_text(v)
+                index += 1
+        elif line.startswith('funding:'):
+            funder = {}
+            data['funders'].append(funder)
+            index += 1
+            while index < numlines and lines[index].startswith('  '):
+                k,v = get_key_val(lines[index])
+                funder[k] = decoder.latex_to_text(v)
                 index += 1
         elif line.startswith('version:'):
             data['version'] = line[8:].strip()
