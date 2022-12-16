@@ -1043,8 +1043,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \pagestyle{fancy}
 
 % Abstract style, keywords
-\global\let\@IACR@text@keywords\@empty
-\def\@IACR@keywords{}
+\global\let\IACR@text@keywords\@empty
+\def\IACR@keywords{}
 %%%%%%%%%%%%%%%%%%%%%%%
 % Macro \ifnotstring is used to check if an argument is just a string.
 % We use it for \keywords but can be useful for other metadata.
@@ -1070,11 +1070,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % require an optional argument:
 % \keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit impulse}
 
-% \@IACR@keywords may contain mathematics for display in LaTeX.
-% \@IACR@text@keywords is the plain text version used for PDF and metadata.
+% \IACR@keywords may contain mathematics for display in LaTeX.
+% \IACR@text@keywords is the plain text version used for PDF and metadata.
 
 \newcommand{\keywords}[2][\@empty]{
-  \gdef\@IACR@keywords{#2}%
+  \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
     \ifnotstring{#2}{%
       \ClassError{iacrcc}{%
@@ -1083,7 +1083,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         ^^J%
       }%
     }%
-    \gdef\@IACR@text@keywords{#2}%
+    \gdef\IACR@text@keywords{#2}%
   \else
     \ifnotstring{#1}{%
       \ClassError{iacrcc}{%
@@ -1092,7 +1092,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         ^^J%
       }%
     }%
-    \gdef\@IACR@text@keywords{#1}%
+    \gdef\IACR@text@keywords{#1}%
   \fi
 }
 
@@ -1100,33 +1100,36 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 
 \renewenvironment{abstract}{%
-  \@writemeta{keywords: \@IACR@text@keywords}%
+  \ifx\IACR@text@keywords\@empty\else
+    \@writemeta{keywords: \IACR@text@keywords}%
+  \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
   \VerbatimOut{\jobname.abstract}}{
   \endVerbatimOut
   \input{\jobname.abstract}
-  \ifx\@IACR@keywords\@empty
-  \else
-  \smallskip\par\textbf{\textsf{Keywords:}}
-  % Replace comma by a centered period.
-  \expandarg\StrSubstitute{\@IACR@keywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
+  \ifx\IACR@keywords\@empty\else
+    \smallskip\par\textbf{\textsf{Keywords:}}
+    % Replace comma by a centered period.
+    \expandarg\StrSubstitute{\IACR@keywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
   \fi
   \endquotation%
   %% PDF keywords
-  \ifx\@IACR@text@keywords\@empty
-  \else
-    \hypersetup{pdfkeywords={\@IACR@text@keywords}}
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords={\IACR@text@keywords}}
   \fi
   %% PDF author
   \def\zap@one##1,##2{##1}
   \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
   \def\zap@last@comma##1,##2,##3{%
     ##1%
-    \ifx##3\@empty%
-    \expandafter\zap@last\else
-    ,\expandafter\zap@last@comma\fi%
-    ##2,##3}
+    \ifx##3\@empty
+      \expandafter\zap@last
+    \else
+      ,\expandafter\zap@last@comma
+    \fi
+    ##2,##3
+  }%
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
@@ -1145,7 +1148,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         pdfvolumenum={\IACR@vol},%
         pdfissuenum={\IACR@no},%
         pdfpagerange={\IACR@fp-\IACR@lp},%
-    }}
+      }
+    }
     \fi%hyperxmp@doi
   }{} % final
 }
