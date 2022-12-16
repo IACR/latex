@@ -507,13 +507,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
  \AtBeginDocument{%
   \renewcommand\maketitle{\par
-    \@writemeta{version: \@IACRversion}
+    \@writemeta{version: \@IACRversion}%
     \let\protect\@unexpandable@protect
     \@writemeta{title: \@plaintitle}%
     \let\protect\storeprotect
-    \ifx\@subtitle\@empty\else
+    \if\IACR@title@subtitle\@empty\else
       \let\protect\@unexpandable@protect
-      \@writemeta{\IACRSS subtitle: \@subtitle}
+      \@writemeta{\IACRSS subtitle: \IACR@title@subtitle}%
       \let\protect\storeprotect
     \fi
     \ifx\@genericfootnote\@empty\else
@@ -591,7 +591,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \let \footnote \thanks
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
       {\LARGE \bfseries\sffamily\boldmath \@title\par}
-    \ifdefined\@subtitle\vskip .5em{\large\sffamily\bfseries\@subtitle\par}\fi
+    \ifdefined\IACR@title@subtitle@defined\vskip .5em{\large\sffamily\bfseries\IACR@title@subtitle\par}\fi
     }%
     \vskip 1.5em%
     {\large
@@ -750,29 +750,23 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@funding@params@clearkeys%
 }
  
-% Provide the title of the paper
+% Provide the title of the paper with its various options
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
-  \let\protect\@unexpandable@protect
-  \edef\@IACRrunning{\IACR@title@params@get{running}}%
-  \edef\@IACRsubtitle{\IACR@title@params@get{subtitle}}%
-  \edef\@plaintitle{#2}
-  \let\protect\storeprotect      
-  \edef\@IACRonclick{\IACR@title@params@get{onclick}}%
-  \ifx\@IACRrunning\@empty
-    \gdef\IACR@runningtitle{\unexpanded{#2}}%
+  \gdef\@plaintitle{#2}%
+  \pgfkeysgetvalue{/IACR-title/entities/running}{\IACR@title@running}%
+  \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\IACR@title@subtitle}%
+  \pgfkeysgetvalue{/IACR-title/entities/onclick}{\IACR@title@onclick}%
+  \if\relax\IACR@title@onclick\relax
+    \gdef\@title{\@plaintitle}%
   \else
-    \gdef\IACR@runningtitle{\@IACRrunning}%
-  \fi  
-  \ifx\@IACRonclick\@empty
-    \edef\@title{\unexpanded{#2}}%
-  \else
-    \edef\@title{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
+    \gdef\@title{\href{\IACR@title@onclick}{\color{black}{\@plaintitle}}}%
   \fi
-  \ifx\@IACRsubtitle\@empty
-    \gdef\@subtitle{\@empty}%
-  \else
-    \gdef\@subtitle{\@IACRsubtitle}%
+  \if\relax\IACR@title@running\relax
+    \gdef\IACR@title@running{\@plaintitle}%
+  \fi
+  \if\IACR@title@subtitle\@empty\else
+    \gdef\IACR@title@subtitle@defined{}%
   \fi
 }
 
@@ -1030,7 +1024,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \fancyhf{}
 \fancyhead[RO,LE]{\thepage}
-\fancyhead[RE]{\IACR@runningtitle}%
+\fancyhead[RE]{\IACR@title@running}%
 \fancyhead[LO]{%
   \if@anonymous
     \def\thanks##1{}%
