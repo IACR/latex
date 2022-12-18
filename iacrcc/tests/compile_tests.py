@@ -24,7 +24,7 @@ def run_engine(eng, filelist):
                 f.unlink()
         try:
             os.chdir(tmpdir)
-            proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode' '-g', eng, 'main'], capture_output=True)
+            proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode', '-g', eng, 'main'], capture_output=True)
             data = {'proc': proc}
             metafile = Path('main.meta')
             if metafile.is_file() and eng == '-pdflua':
@@ -261,3 +261,11 @@ def test11_test():
     assert meta['funders'][2]['fundref'] == '517622'
     assert meta['funders'][2]['grantid'] == '57821-3'
     assert 'country' not in meta['funders'][2]
+
+def test12_test():
+    path = Path('test12')
+    # should pass with lualatex.
+    res = run_engine('-pdflua', path.iterdir())
+    assert res['proc'].returncode == 0
+    meta = meta_parse.parse_meta(res['meta'])
+    assert meta['title'] == 'An example that is not anonymous'
