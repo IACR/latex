@@ -196,6 +196,7 @@
   \edef\store@classoptionslist{\@classoptionslist}%
   \StrDel{\store@classoptionslist}{floatrow}[\store@classoptionslist]%
   \StrDel{\store@classoptionslist}{biblatex}[\store@classoptionslist]%
+  \StrDel{\store@classoptionslist}{notanonymous}[\store@classoptionslist]%
   \StrDel{\store@classoptionslist}{,}[\store@classoptionslist]%
   \StrDel{\store@classoptionslist}{ }[\store@classoptionslist]%
   \ifx\store@classoptionslist\@empty\else
