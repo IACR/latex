@@ -1,0 +1,3 @@
+pdfplumber
+pytest
+python-xmp-toolkit
