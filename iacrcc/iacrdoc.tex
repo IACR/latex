@@ -16,8 +16,8 @@
 \usepackage{todonotes}
 
 \title[running  = {The iacrcc class},
-       onclick  = {https://github.com/IACR/latex},
-       subtitle = {LaTeX Class Documentation (v0.10)},
+       onclick  = {https://publish.iacr.org/iacrcc},
+       subtitle = {LaTeX Class Documentation (v0.2)},
       ]
       {How to Use the IACR Communications in Cryptology Class}
 
@@ -97,18 +97,18 @@ unnecessary code.
   separate files. Users of \LaTeX\ will already be used to seeing this
   with the \texttt{.log}, \texttt{.aux}, \texttt{.bbl}, \texttt{.blg},
   \texttt{.toc}, and \texttt{.out} files produced by \texttt{bibtex}
-  and the \texttt{hyperref} package.  If your main \LaTeX\ file is
-  called \texttt{main.tex}, then the extra files that are produced
-  are:
+  and the \texttt{hyperref} package.  You need not be concerned about
+  these, but if your main \LaTeX\ file is called \texttt{main.tex},
+  then the extra files that are produced are:
 \begin{itemize}
-\item \texttt{main.meta} is a flat text file containing all metadata
+\item a flat text file \texttt{main.meta} containing all metadata
   from the paper.  When you run \texttt{lualatex} on
   \texttt{main.tex}, it will produce the metadata from
   \texttt{main.tex}, and when you run \texttt{bibtex} and
   \texttt{lualatex} again, it will append the citation data from
   bibtex into the \texttt{main.meta} file as well.
-\item \texttt{main.abstract} is a file that contains the contents of
-  the abstract for the paper.
+\item a file \texttt{main.abstract} that contains
+  the contents of the abstract for the paper.
 \end{itemize}
 \end{itemize}
 \section{Invocation and usage}
@@ -117,7 +117,7 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
 \begin{description}
 \item[\texttt{[version=preprint]}] for preprints (without copyright info, default)
 \item[\texttt{[version=submission]}] for submissions (anonymous, with
-  line numbers).  if desired, this can be combined with
+  line numbers).  If desired, this can be combined with
   \texttt{[notanonymous]} if the call for papers requires
   non-anonymous submissions.
 \item[\texttt{[version=final]}] for final papers. This must be
@@ -127,7 +127,8 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
   \texttt{biblatex} to \texttt{bibtex}. Note that we do not support options to be
   passed to biblatex, as they may conflict with the style of the journal.
 \item[\texttt{[floatrow]}] load the \texttt{floatrow} package. This is useful
-  when you have fancy figures or tables.
+  when you have fancy figures or tables. In either case, \texttt{iacrcc}
+  will customize how tables and figures are laid out.
 \end{description}
 
 Before submitting your final version, please make sure that it compiles
@@ -135,41 +136,14 @@ properly using \texttt{lualatex} with the \texttt{[version=final]} option
 and check that the author names and affiliation are
 correct.
 
-\subsection{Other Options}
-There are a few other options to control how packages work, but authors should never
-need these. Use with caution.
-
-\paragraph{\texttt{[xcolor=$\langle\text{\emph{list of options}}\rangle$]}}
-\todo[inline]{K: I think we should remove this. For one thing, it can
-  interfere with PDF/A. Second, authors can screw up things like the
-  backend color driver being specified as pdftex. I looked at tosc and tches papers
-  from 2020-22, and found no real use of this in iacrtrans. I just don't think
-  we need it, so we should let someone ask for it and give a good
-  reason.}  passes $\langle\text{\emph{list of options}}\rangle$ to
-the \texttt{xcolor} package.  Since \texttt{xcolor} is loaded by the
-class, you have to use this mechanism to pass options at load time;
-for instance use \texttt{xcolor=svgnames} to load SVG color names. Do
-not use this unless you absolutely know what you are doing.
-
-\paragraph{\texttt{[hyperref=$\langle\text{\emph{list of options}}\rangle$]}}
-\todo[inline]{K: I also think we should remove the hyperref
-  options. It gives authors a lot of opportunity to screw things up. I
-  looked at tches and tosc papers from 2020-2022 and found only a
-  couple of people who used this:
-  \texttt{[backref=true]},\texttt{[hidelinks=true]}, and
-  \texttt{[pagebackref=false,bookmarks=false]}. None of these make sense for us, and I don't
-  want everyone to have different colors for things.}  passes
-$\langle\text{\emph{list of options}}\rangle$ to the \texttt{hyperref}
-package.  Alternatively, you can load \texttt{hyperref} yourself with
-the required options and the class will detect that it already loaded.
-
 The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded
 \emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
-explicitly at the correct position, but not use the \texttt{[nohyperref]} option.
+explicitly at the correct position.
 
-\subsection{Macros to add title and author information}
+\section{Macros to add title and author information}
 
+\subsection{Title}
 A title is added using the \verb+\title+ macro, but with a few other options:
 \begin{center}
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
@@ -189,19 +163,27 @@ options would look like:
       ]{How to Use the IACR Communications in Cryptology Class}
 \end{verbatim}
 
+\subsection{Footnotes}
+You may use \texttt{\textbackslash{}genericfootnote\{footnotetext\}}
+to place a footnote on the first page without a reference. This is
+useful to indicate this is a full / extended version of a published
+paper, or to indicate funding relationships for the authors.  This is
+an optional macro that may be repeated for multiple footnotes. See
+below for footnotes associated with an author's name.
+
+\subsection{Authors}
 Author information is entered using the \verb+\addauthor+,
 \verb+\affiliation+, and \verb+\addfunding+ macros. Authors are asked
 to enter this information in a structured way so that we can provide
 it to indexing agencies. The \verb+\author+ macro is disabled.
 
-\paragraph{\texttt{\textbackslash addauthor[option=\{xxx\}]\{authorname\}}}
 Authors are listed individually using the {\tt \textbackslash{}addauthor} command. 
 There are a number of \emph{optional} options to {\tt \textbackslash{}addauthor}:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt inst} & A numerical list of indices specifying an institution in the affiliation
     array (see below).\\
-{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
+{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID ID (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt onclick} & provide a URL to visit when clicking on the author name: e.g.,~can
 point to the academic webpage.\\
@@ -223,7 +205,7 @@ the the first and second affiliations that are entered with
 \verb+\affiliation+
 
 \begin{verbatim}
-\addauthor[orcid    = 0000-0000-0000-0000,
+\addauthor[orcid = 0000-0000-0000-0000,
         inst     = {1,2},
         footnote = {Thanks to my supervisor for the support.},
         onclick  = {https://www.mypersonalwebpage.com},
@@ -231,7 +213,7 @@ the the first and second affiliations that are entered with
        ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash{}affiliation[option=\{xxx\}]\{affiliation\}}}
+\subsection{Affiliations}
 Affiliations are listed individually using the {\tt
   \textbackslash{}affiliation} command \emph{after} the last author
 has been added using {\tt \textbackslash{}addauthor}.  There are a number
@@ -268,9 +250,10 @@ options would look like:
             ]{KU Leuven}
 \end{verbatim}           
 
-\paragraph{\texttt{\textbackslash addfunding[option={xxx}]\{agency name\}}}
-Authors should list funding information in order to make sure that funding agencies
-can find papers published under their sponsorship. An example is:
+\subsection{Funding information}
+Authors should use the \texttt{\textbackslash addfunding} macro to
+make sure that funding agencies can find papers published under their
+sponsorship. An example is:
 \begin{verbatim}
 \addfunding[fundref = 100000001
             grantid = {CNS-1237235},
@@ -300,7 +283,14 @@ The complete list of options for \texttt{\textbackslash addfunding} is:
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
 help you find \texttt{fundref} and \texttt{ror} identifiers.
 
-\paragraph{\texttt{\textbackslash license\{license\}}}
+Note that the document class does not automatically create footnotes
+or an acknowledgements section to identify funding - it only collects
+the metadata for indexing. If you wish to include such visible
+annotations, you can use \texttt{\textbackslash genericfootnote} or
+the \texttt{footnote} option on \texttt{\textbackslash addauthor}, or
+add a separate acknowledgements section.
+
+\subsection{License}
 When the \texttt{version=final} document mode is used, the author needs
 to provide a supported license.  In all other modes this information
 is not required and when provided ignored.  At present the only
@@ -310,27 +300,22 @@ acceptable license is \texttt{CC-by}.  An example would look like:
 \license{CC-by}
 \end{verbatim}
 
-\paragraph{\texttt{\textbackslash keywords\{keyword1, keyword2\}}} to give a list of
-keywords. This is an optional macro.  Individual keywords should be
-separated by commas. If the argument to \texttt{\textbackslash keywords}
+\subsection{Keywords}
+Use \texttt{\textbackslash keywords\{keyword1, keyword2\}} to give a
+list of keywords or key phrases. This is an optional macro that should
+appear before the abstract.  Individual keywords should be separated
+by commas. If the argument to \texttt{\textbackslash keywords}
 contains math or macros, then you must supply an additional set of
 text-only keywords; for example:
 
-
 \texttt{\textbackslash keywords[rings, arithmetic on Z]\{rings, arithmetic on \$\textbackslash mathbb\{Z\}\$\}}
 
-\paragraph{\texttt{\textbackslash maketitle}} is used to actually
-typeset the title.
-
-\paragraph{\texttt{\textbackslash{}genericfootnote\{footnotetext\}}}
-To place a footnote on the first page without a reference (e.g., to
-indicate this is a full / extended version of a published paper).
-This is an optional macro.
-
-\paragraph{The \texttt{abstract} environment} Abstracts are entered with
-the \texttt{abstract} environment as usual, but do not use
-author-defined macros within the abstract.  Note that the keywords
-should be given before starting the abstract environment.
+\subsection{Abstract}
+Abstracts are entered with the \texttt{abstract} environment as usual,
+but do not use author-defined macros within the abstract.  Note that
+the keywords should be given before starting the abstract
+environment. The \texttt{iacrcc} will automatically produce a file
+\texttt{.abstract} that contains the contents of the abstract.
 
 \subsection{Theorems}
 
@@ -370,9 +355,9 @@ and clean.  We strongly encourage authors to use bibliographic data
 from \url{http://www.dblp.org} or \url{https://cryptobib.di.ens.fr/}.
 All references should have DOIs if at all possible.
 
-The author may use either \BibTeX\ or \texttt{biblatex}. If the author
-uses \BibTeX, then the \texttt{iacrcc} class will load the
-\verb+\bibliographystyle{iacrcc}+ style.  If they use
+You may use either \BibTeX\ or \texttt{biblatex}. If you
+use \BibTeX, then the \texttt{iacrcc} class will load the
+\verb+\bibliographystyle{iacrcc}+ style.  If you use
 \texttt{biblatex}, then this is done using
 \verb+\documentclass[biblatex]{iacrcc}+ instead of
 \verb+\usepackage{biblatex}+; the latter will generate an error
@@ -380,33 +365,18 @@ because the \texttt{iacrcc.cls} file loads \texttt{biblatex} with a
 specific style.
 
 Here are some example citations: the RSA paper~\cite{RSA78}, the AES
-standard\cite{AES-FIPS}, and \cite{DBLP:conf/crypto/Kocher96}.
+standard~\cite{AES-FIPS}, and \cite{DBLP:conf/crypto/Kocher96}.
 
 \section{Some recommendations}\label{sec:options}
 
 \paragraph{\LaTeX{} distribution, and worklow.}  \LaTeX{}
-distributions are available on a variaty of platforms.  In particular,
+distributions are available on a variety of platforms.  In particular,
 we recommend the \href{https://www.tug.org/texlive/}{TeX Live}
-distribution, which is updated regularly, include a large number of
-packages, and is available on many platforms. We use this for our
-cloud service to compile final versions of papers.
-\begin{description}
-\item[Linux:] A LaTeX installation is included in most Linux
-  distributions.  Alternatively,
-  \href{https://www.tug.org/texlive/}{TeX Live} can be installed
-  easily without root access.
-\item[Windows:] There are also good \LaTeX{} distributions for Windows,
-  such as \href{http://www.miktex.org/}{MikTeX} and
-  \href{https://www.tug.org/texlive/}{TeX Live}.
-\item[MacOSX:] On MacOSX, TeX Live is available inside
-  \href{http://www.tug.org/mactex/}{MacTeX}.
-\end{description}
-
-\paragraph{Internal references.}
-
-We recommend the use of \verb+\autoref+ from \texttt{hyperref}
-(automatically loaded by the class).  For instance,
-\verb+\autoref{sec:options}+ links to \autoref{sec:options}.
+distribution, which is updated regularly, includes a large number of
+packages, and is available on many platforms. We use the texlive medium
+scheme in our cloud service to compile final versions of papers. Note that
+final versions must compile with \texttt{lualatex}, and we recommend
+using this.
 
 \paragraph{Pictures.}
 
@@ -416,14 +386,13 @@ In particular, a large variety of crypto pictures made with
 
 \paragraph{External pictures.}  The \texttt{graphicx} is loaded by the
 class, and is recommended for external figures. The submission server
-does not support \texttt{svg} format for included graphics, so
-you should convert \texttt{svg} files to a supported format.
-
-If possible, external figures should be in a vector format (PDF or
-EPS).  Note that the \verb+\includegraphics+ command will
-automatically select a file with the right extension, so if you write
-\verb+\includegraphics{figure}+ and have two files \texttt{figure.pdf}
-and \texttt{figure.eps}, it should work with both workflow.
+does not support \texttt{svg} format for included graphics, so you
+should convert \texttt{svg} files to a supported format.  If possible,
+external figures should be in a vector format (PDF or EPS).  Note that
+the \verb+\includegraphics+ command will automatically select a file
+with what it thinks should be the right extension, so if you write
+\verb+\includegraphics{figure}+ and have two files \texttt{figure.gif}
+and \texttt{figure.eps}, it will try to select the correct one.
 
 \paragraph{Floats.}
 
@@ -444,16 +413,16 @@ particular, \texttt{algpseudocodex} for pseudo-code).
 
 \section{Further information}
 
-More general information can be found in the following documents:
+If you are a \LaTeX\ novice, you may wish to consult the following documents:
 \begin{itemize}
 \item General \LaTeX{} documentation, such as the
   \href{http://mirrors.ctan.org/info/lshort/english/lshort.pdf}{(not
     so) short introduction to \LaTeXe};
 % \item The \texttt{article} class
 %   \href{http://mirrors.ctan.org/macros/latex/doc/clsguide.pdf}{documentation};
-\item The \AmS-\LaTeX{}
-  \href{http://mirrors.ctan.org/macros/latex/required/amslatex/math/amsldoc.pdf}{documentation}
-  and \texttt{amsthm} \href{ftp://ftp.ams.org/pub/tex/doc/amscls/amsthdoc.pdf}{documentation};
+\item The
+  \href{https://mirror.mwt.me/ctan/macros/latex/required/amsmath/amsldoc.pdf}{amsmath
+    documentation} is useful for learning how to typeset mathematics.
 %\item Documentation of the \LaTeX{} packages used in the class (see below).
 \end{itemize}
 
