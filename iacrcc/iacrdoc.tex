@@ -51,13 +51,11 @@
   \LaTeX{} class for the \publname{}.
 \end{abstract}
 
-\tableofcontents{}
-
 \section*{Introduction}
 
 This document is a guide to preparing a paper for the IACR journal
 titled ``IACR Communications in Cryptology''.  Papers for the journal
-must be prepared in \LaTeX\ using a new \texttt{iacrcc} document
+must be prepared in \LaTeX\ using the \texttt{iacrcc} document
 class. The biggest difference between \texttt{iacrcc} and other
 classes you may have used is the way in which metadata is supplied
 (e.g., author information). Our goal is to minimize the amount of
@@ -120,7 +118,7 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
   line numbers).  If desired, this can be combined with
   \texttt{[notanonymous]} if the call for papers requires
   non-anonymous submissions.
-\item[\texttt{[version=final]}] for final papers. This must be
+\item[\texttt{[version=final]}] for final papers. This \emph{must} be
   compiled with \texttt{lualatex} and imposes some additional
   requirements.
 \item[\texttt{[biblatex]}] may be used if you prefer using
@@ -187,7 +185,7 @@ There are a number of \emph{optional} options to {\tt \textbackslash{}addauthor}
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt onclick} & provide a URL to visit when clicking on the author name: e.g.,~can
 point to the academic webpage.\\
-{\tt email} & Define the e-mail address of this author.\\
+{\tt email} & Define the e-mail address of this author. Note that at least one e-mail address is required for \texttt{[version=final]}.\\
 \end{tabular}
 \end{center}
 
@@ -202,15 +200,15 @@ surnames which might be confusing.
 An example using all the optional options is given below. In this case
 the author has \verb+inst={1,2}+ to indicate that they are affiliated with
 the the first and second affiliations that are entered with
-\verb+\affiliation+
+\verb+\affiliation+:
 
 \begin{verbatim}
-\addauthor[orcid = 0000-0000-0000-0000,
-        inst     = {1,2},
-        footnote = {Thanks to my supervisor for the support.},
-        onclick  = {https://www.mypersonalwebpage.com},
-        email    = {alice@accomplished.com},
-       ]{Alice \surname{Accomplished}}
+\addauthor[orcid    = 0000-0000-0000-0000,
+           inst     = {1,2},
+           footnote = {Thanks to my supervisor for the support.},
+           onclick  = {https://www.mypersonalwebpage.com},
+           email    = {alice@accomplished.com},
+          ]{Alice \surname{Accomplished}}
 \end{verbatim}
 
 \subsection{Affiliations}
@@ -229,7 +227,7 @@ of arguments to {\tt \textbackslash{}affiliation}:
 {\tt  street} & Street address.\\
 {\tt  city} & City name.\\
 {\tt  state} & State or province name.\\
-{\tt  postcode} & zip or postal code.\\
+{\tt  postcode} & Zip or postal code.\\
      {\tt  country} & Country name. Required for \texttt{[version=final]}.\\
 \end{tabular}
 \end{center}
