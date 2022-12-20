@@ -405,6 +405,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }{}%
 }
 
+\let\storeprotect\protect
+
 % latex3 syntax used for writing text to the .meta file. This requires
 % a TeX distribution from 2020 or later.
 \ExplSyntaxOn
@@ -413,26 +415,22 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
 \fi
 \cs_new:Npn\@writemeta#1{
+  \let\protect\@unexpandable@protect
   \ifdefined\text_purify:n
     \immediate\write\iacrmeta{\text_purify:n #1}%
   \else
     \immediate\write\iacrmeta{#1}%
   \fi
+  \let\protect\storeprotect
 }
 \ExplSyntaxOff
-
-\let\storeprotect\protect
 
  \AtBeginDocument{%
   \renewcommand\maketitle{\par
     \@writemeta{version: \@IACRversion}%
-    \let\protect\@unexpandable@protect
     \@writemeta{title: \@plaintitle}%
-    \let\protect\storeprotect
     \if\IACR@title@subtitle\@empty\else
-      \let\protect\@unexpandable@protect
       \@writemeta{\IACRSS subtitle: \IACR@title@subtitle}%
-      \let\protect\storeprotect
     \fi
     \ifx\@genericfootnote\@empty\else
       \begingroup
@@ -586,10 +584,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \@writemeta{author:}%
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
-  \let\protect\@unexpandable@protect
-  \edef\@IACRfootnote{\IACR@author@params@get{footnote}}%
+  \pgfkeysgetvalue{/IACR-author/entities/footnote}{\IACRfootnote}%
+  \expandafter\let\csname IACR@author@footnote\@Alph\num@authors \endcsname\IACRfootnote% Copy the pgf key
   \@writemeta{\IACRSS name: #2}%
-  \let\protect\storeprotect
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
@@ -624,10 +621,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
   \fi
   % Add the footnote text if present
-  \ifx\@IACRfootnote\@empty\else
-    \let\protect\@unexpandable@protect
-    \eappto\@author{\noexpand\footnote{\@IACRfootnote}}%
-    \let\protect\storeprotect      
+  \if\IACRfootnote\@empty\else
+    \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\@Alph\num@authors \endcsname}}%    
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
@@ -650,9 +645,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \edef\@IACR@funding@fundref{\IACR@funding@params@get{fundref}}%
   \edef\@IACR@funding@ror{\IACR@funding@params@get{ror}}%
   \@writemeta{funding:}%
-  \let\protect\@unexpandable@protect
   \@writemeta{\IACRSS name: \@IACR@funding@name}%
-  \let\protect\storeprotect
   \ifx\@IACR@funding@country\@empty\else
     \@writemeta{\IACRSS country: \@IACR@funding@country}%
   \fi
@@ -693,9 +686,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\affiliation[2][]{%
   \global\advance\num@affil by 1\relax% 
   \@writemeta{affiliation:}%
-  \let\protect\@unexpandable@protect
   \@writemeta{\IACRSS name: #2}%
-  \let\protect\storeprotect  
   \IACR@affiliation@params@set@keys{#1}%
   \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
   \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
