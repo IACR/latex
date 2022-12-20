@@ -7,9 +7,6 @@
 
 % IACR Communications in Cryptology DOCUMENT CLASS
 % Authoritative source is github.com/IACR/latex/iacrcc
-% This is originally based on
-%   iacrtrans: github.com/Cryptosaurus/iacrtrans
-%   acmart: github.com/borisveytsman/acmart
 %
 % To the extent possible under law, the author(s) have dedicated all
 % copyright and related and neighboring rights to this software to the
@@ -20,85 +17,6 @@
 % along with this software. If not, see
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 %
-%
-%%% Class options:
-%
-%% Document mode
-% [version=xxx] where xxx is preprint, submission, or final. The default is preprint.
-%               version=submission puts line numbers into the document and makes it
-%               anonymous (which can be overridden).
-%               version=final is for submitting the final version. This requires a license
-%               to be specified and must be compiled with lualatex.
-% [notanonymous]  Keep author names in submission mode
-%% Package options
-% [floatrow]      Load floatrow package with correct captions
-% [xcolor=xxx]    Pass xxx to xcolor package
-% [hyperref=xxx]  Pass xxx to hyperref package
-% [biblatex]      Use the biblatex package instead of bibtex. Note that options
-%                 may not be passed to biblatex at this time.
-%
-%%% HOWTO use this class. See the companion iacrdoc.tex for a better guide.
-%
-%% Title
-% Provide the title of the paper, this should look like:
-%\title[running  = {The iacrcc class},
-%       onclick  = {https://github.com/IACR/latex},
-%       subtitle = {A Template}
-%      ]{How to Use the IACR Communications in Cryptology Class}
-% Where the options in square brackets “[ ]” are optional and control the following:
-% running: The running title displayed in the headers.
-% onclick: Define what to do when clicking on the title.
-%          This could be used to point to a webpage associated with the paper. 
-% subtitle: Provide a subtitle.
-%
-%% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
-% The idea is that every author makes a separate call to this command.
-% This should look like:
-% \addauthor[inst      = {1,2},
-%            orcid     = 0000-0000-0000-0000,
-%            footnote  = {Thanks to my supervisor for the support.},
-%            onclick   = {https://www.mypersonalwebpage.com}
-%           ]{Alice Accomplished}
-% Where the options in square brackets “[ ]” are optional 
-% and control the following:
-% inst:     A numerical list pointing to the index of the institution 
-%           in the affiliation array.
-% orcid:    Create a small clickable orcid logo next to the authors name 
-%           linking to the authors ORCID iD see: orcid.org.
-% footnote: Create an author-specific footnote.
-% onclick:  Define what to do when clicking on the author name: 
-%           e.g., can point to the personal / academic webpage.
-% email:    Define the e-mail address of this author.
-%
-% Affiliations are listed individually using the \affiliations command 
-% *after* the (list of) authors using \addauthor.
-% This should look like:
-% \affiliation[ror        = 05f950310,
-%              onclick    = {http://www.kuleuven.be/english},
-%              department = {Computer Security and Industrial Cryptography},              
-%              street     = {Kasteelpark Arenberg 10, box 2452},
-%              city       = {Leuven},
-%              state      = {Vlaams-Brabant},
-%              postcode   = {3001},
-%              country    = {Belgium}
-%             ]{KU Leuven}
-% Where the options in square brackets “[ ]” are optional and control 
-% the following (optional information is mainly used for meta-data collection):
-% ror:        Provide the Research Organization Registry (ROR) identifier 
-%             for this affiliation (see: ror.org). This is used for meta-data 
-%             collection only.
-% onclick:    Define what to do when clicking on the affiliation name: 
-%             e.g., can point to the affiliation webpage.
-% department: Department or suborganization name.
-% street:     Street address.
-% city:       City name.
-% state:      State or province name.
-% postcode:   Zip or postal code.
-% country:    Country name.
-%
-% A footnote can be placed on the front page without a symbol / numbering using:
-% \genericfootnote{This is the full version of our paper published at XX}
-
 % Common definitions
 
 % expl3: wrapper package for experimental LaTeX3
@@ -144,7 +62,8 @@
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
 % \IACR@Published, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
-  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\@hyperxmp@doitrue\typeout{Inserted DOI into PDF}}{}
+  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\@hyperxmp@doitrue\typeout{Inserted DOI into PDF}%
+}{}
 \newif\if@optbiblatex
 \@optbiblatexfalse
 \define@key{IACR}{biblatex}[]{\@optbiblatextrue}
@@ -161,8 +80,6 @@
 \define@key{IACR}{notanonymous}[]{\@notanonymoustrue}
 \newcommand{\@IACRversion}{preprint}
 \define@choicekey{IACR}{version}[\@IACRversion]{preprint,submission,final}[preprint]{}
-\define@key{IACR}{xcolor}{\PassOptionsToPackage{#1}{xcolor}}
-\define@key{IACR}{hyperref}{\PassOptionsToPackage{#1}{hyperref}}
 % TODO: figure out how to prohibit passing twocolumn and landscape to article.
 %\DeclareOptionX*{
 %  \typeout{passing \CurrentOption to article}\PassOptionsToClass{\CurrentOption}{article}
@@ -274,13 +191,13 @@
   \ifcsstring{@IACRversion}{final}{
     \ClassError{iacrcc}{%
       ^^J%
-      final versions must be compiled with lualatex%
+      Final versions must be compiled with lualatex%
       ^^J%
     }{}%
   }{%
     \ClassWarning{iacrcc}{%
       ^^J%
-      this package is intended to be used with lualatex%
+      This package is intended to be used with lualatex%
       ^^J%
     }{}%
   }%
@@ -362,7 +279,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   onclick/.initial=\@empty,
   email/.initial=\@empty,
 }
-\def\IACR@author@params@set@keys#1{%%
+\def\IACR@author@params@set@keys#1{%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
 \def\IACR@author@params@get#1{%%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
@@ -380,7 +297,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   postcode/.initial=\@empty,
   country/.initial=\@empty,
 }
-\def\IACR@affiliation@params@set@keys#1{%%
+\def\IACR@affiliation@params@set@keys#1{%
   \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
 \def\IACR@affiliation@params@get#1{%%
   \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
@@ -393,7 +310,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   onclick/.initial=\@empty,
   subtitle/.initial=\@empty,
 }
-\def\IACR@title@params@set@keys#1{%%
+\def\IACR@title@params@set@keys#1{%
   \pgfkeys{/IACR-title/entities/.cd,#1}}
 \def\IACR@title@params@get#1{%%
   \pgfkeysvalueof{/IACR-title/entities/#1}}
@@ -407,9 +324,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   fundref/.initial=\@empty,
   ror/.initial=\@empty,
 }
-\def\IACR@funding@params@set@keys#1{%%
+\def\IACR@funding@params@set@keys#1{%
   \pgfkeys{/IACR-funding/entities/.cd,#1}}
-\def\IACR@funding@params@get#1{%%
+\def\IACR@funding@params@get#1{%
   \pgfkeysvalueof{/IACR-funding/entities/#1}}
 \newcommand\IACR@funding@params@clearkeys{%
   \IACR@funding@params@set@keys{country=\@empty,grantid=\@empty,fundref=\@empty,ror=\@empty}%
@@ -847,7 +764,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \ifnum\num@affil=1\relax\else
       \unskip$^{#1}$%
     \fi
-  \fi}
+  \fi
+}
   
 \def\fnmsep{\unskip$^,$}
 
@@ -970,7 +888,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \def\IACR@lp{\pageref*{TotPages}}%
 }{}
 
-
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{
   \gdef\@IACR@License{#1}%
@@ -1046,30 +963,25 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
 \def\IACR@keywords{}
-%%%%%%%%%%%%%%%%%%%%%%%
+
 % Macro \ifnotstring is used to check if an argument is just a string.
 % We use it for \keywords but can be useful for other metadata.
 \ExplSyntaxOn
 \prg_generate_conditional_variant:Nnn \tl_if_eq:nn { e } { T,F,TF }
 \cs_new_protected:Npn \onlystring:nn #1#2
-   {
-     \tl_if_eq:enTF { \text_purify:n { #1 } } { #1 }
-      {% It's ok, do nothing.
-      }
-      {% raise an error
-        % \PackageError{isstring}{#2 ^^J(#1)}{}
-        #2
-      }
+{
+  \tl_if_eq:enTF { \text_purify:n { #1 } } { #1 }
+  {% It's ok, do nothing.
+  }
+  { % raise an error
+    % \PackageError{isstring}{#2 ^^J(#1)}{}
+    #2
+  }
  }
+
 % Usage: \ifnotstring{I'm not text $\mathbb{a}$ so}{execute this}
 \NewDocumentCommand{\ifnotstring}{mm}{\onlystring:nn{#1}{#2}}
 \ExplSyntaxOff
-
-% Keywords are separated by commas. We store two different internal
-% macros for keywords; one allows math and one is plain text.
-% If the author use macros or math in their keywords, then they
-% require an optional argument:
-% \keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit impulse}
 
 % \IACR@keywords may contain mathematics for display in LaTeX.
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
@@ -1155,7 +1067,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }{} % final
 }
 
-
 % autoref: capitals for Sections, and adding Algorithm
 \def\equationautorefname{Equation}%
 \def\footnoteautorefname{footnote}%
@@ -1174,23 +1085,22 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \def\theoremautorefname{Theorem}%
 \def\pageautorefname{page}%
 
-\def\algorithmautorefname{Algorithm}
-
-\def\definitionautorefname{Definition}
-\def\exampleautorefname{Example}
-\def\exerciseautorefname{Exercise}
-\def\propertyautorefname{Property}
-\def\questionautorefname{Question}
-\def\solutionautorefname{Solution}
-\def\propositionautorefname{Proposition}
-\def\problemautorefname{Problem}
-\def\lemmaautorefname{Lemma}
-\def\conjectureautorefname{Conjecture}
-\def\corollaryautorefname{Corollary}
-\def\claimautorefname{Claim}
-\def\remarkautorefname{Remark}
-\def\noteautorefname{Note}
-\def\caseautorefname{Case}
+\def\algorithmautorefname{Algorithm}%
+\def\definitionautorefname{Definition}%
+\def\exampleautorefname{Example}%
+\def\exerciseautorefname{Exercise}%
+\def\propertyautorefname{Property}%
+\def\questionautorefname{Question}%
+\def\solutionautorefname{Solution}%
+\def\propositionautorefname{Proposition}%
+\def\problemautorefname{Problem}%
+\def\lemmaautorefname{Lemma}%
+\def\conjectureautorefname{Conjecture}%
+\def\corollaryautorefname{Corollary}%
+\def\claimautorefname{Claim}%
+\def\remarkautorefname{Remark}%
+\def\noteautorefname{Note}%
+\def\caseautorefname{Case}%
 
 % amsmath: AMS mathematical facilities for LATEX
 % amssymb: defines all the symbols found in the AMS symbol fonts
@@ -1198,29 +1108,29 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{amsmath,amssymb,amsthm}
 % mathtools: mathematical tools to use with amsmath
 \RequirePackage{mathtools}
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\newtheorem{example}{Example}
-\newtheorem{exercise}{Exercise}
-\newtheorem{property}{Property}
-\newtheorem{question}{Question}
-\newtheorem{solution}{Solution}
+\theoremstyle{definition}%
+\newtheorem{definition}{Definition}%
+\newtheorem{example}{Example}%
+\newtheorem{exercise}{Exercise}%
+\newtheorem{property}{Property}%
+\newtheorem{question}{Question}%
+\newtheorem{solution}{Solution}%
 
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
-\newtheorem{proposition}{Proposition}
-\newtheorem{problem}{Problem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{conjecture}{Conjecture}
-\newtheorem{corollary}{Corollary}
-\newtheorem*{claim}{Claim}
+\theoremstyle{plain}%
+\newtheorem{theorem}{Theorem}%
+\newtheorem{proposition}{Proposition}%
+\newtheorem{problem}{Problem}%
+\newtheorem{lemma}{Lemma}%
+\newtheorem{conjecture}{Conjecture}%
+\newtheorem{corollary}{Corollary}%
+\newtheorem*{claim}{Claim}%
 
-\theoremstyle{remark}
-\newtheorem{remark}{Remark}
-\newtheorem{note}{Note}
-\newtheorem{case}{Case}
+\theoremstyle{remark}%
+\newtheorem{remark}{Remark}%
+\newtheorem{note}{Note}%
+\newtheorem{case}{Case}%
 
-\theoremstyle{plain}
+\theoremstyle{plain}%
 
 % Floats and captions
 \if@floatrow
@@ -1271,24 +1181,25 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \RequirePackage[mathlines]{lineno}
   \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
-
   % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
   \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
     \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
     \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
     \renewenvironment{#1}%
-       {\linenomathWithnumbersforAMS\csname old#1\endcsname}%
-       {\csname oldend#1\endcsname\endlinenomath}}%
+    {\linenomathWithnumbersforAMS\csname old#1\endcsname}%
+    {\csname oldend#1\endcsname\endlinenomath}%
+  }%
   \newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
     \patchAmsMathEnvironmentForLineno{#1}%
-    \patchAmsMathEnvironmentForLineno{#1*}}%
+    \patchAmsMathEnvironmentForLineno{#1*}%
+  }%
   \AtBeginDocument{%
-  \patchAmsMathEnvironmentForLineno{equation*}%
-  \patchBothAmsMathEnvironmentsForLineno{align}%
-  \patchBothAmsMathEnvironmentsForLineno{flalign}%
-  \patchBothAmsMathEnvironmentsForLineno{alignat}%
-  \patchBothAmsMathEnvironmentsForLineno{gather}%
-  \patchBothAmsMathEnvironmentsForLineno{multline}%
+    \patchAmsMathEnvironmentForLineno{equation*}%
+    \patchBothAmsMathEnvironmentsForLineno{align}%
+    \patchBothAmsMathEnvironmentsForLineno{flalign}%
+    \patchBothAmsMathEnvironmentsForLineno{alignat}%
+    \patchBothAmsMathEnvironmentsForLineno{gather}%
+    \patchBothAmsMathEnvironmentsForLineno{multline}%
   }
 }{} %submission
 
@@ -1298,7 +1209,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % We load lmodern to get latin modern fonts but only in pdflatex.
 % Lualatex already uses latin modern for text and cm for math.
 \ifpdftex
-\RequirePackage{lmodern}
+  \RequirePackage{lmodern}
 \fi
 
 % Store the default font family used
