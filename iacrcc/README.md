@@ -2,65 +2,29 @@
 
 ## 🔧 This is a work in progress 🔧
 
-This directory contains a LaTeX cls file for the new IACR
+This directory contains a LaTeX cls and bst files for the new IACR
 Communications on Cryptology journal.  The user documentation is
-contained in example.tex, and this README currently holds only
+contained in iacrdoc.tex, and this README currently holds only
 development details.
 
 The purpose of this style is to facilitate proper capture of author metadata
 for the publication editing workflow. Typically a LaTeX class is concerned with
 only the layout of the document, but we have added some additional requirements:
-1. when the user runs pdflatex on their document, it should produce a parsable text
+1. when the user runs lualatex on their document, it should produce a parsable text
    file that contains structured metadata about the paper, including title, authors,
-   their affiliations, and the paper citations.
+   their affiliations, their funding, and the paper citations.
 2. the author should only have to enter this metadata once, in properly formatted
    LaTeX macros that conform to the required cls.
 
 This LaTeX style is based on the previous [iacrtrans](https://github.com/Cryptosaurus/iacrtrans)
-class used to ToSC and TCHES. These may be unified in the future.
+class used to ToSC and TCHES.
 
-While the file we generate appears to be `yaml`, it's not guaranteed
-to be parsable as a `yaml` file because of special characters like {
-or \ or ". For this reason we use a custom parser that looks only at
-the tags on the line to decide what the structure is. The format of
-the file is hierarchical, and is perhaps best illustrated with an
-example in which there are three authors show share three affiliations.
+The text file format is similar to yaml, and there is a parser for this
+file format in the `parser` subdirectory.
 
-```
-title: How to break {RSA} digital signatures
-author:
-  name: Ronald Rivest
-  inst: 1
-author:
-  name: Adi Shamir
-  inst: 2
-  orcid: zzzz-yyyy-zzzz-yyyy
-  email: shamir@weizman.ac.il
-author:
-  name: Leonard M. Adleman
-  inst: 1,3
-  orcid: xxxx-yyyy-zzzz-wwww
-  email: len@usc.edu
-affil:
-  name: MIT
-  ror: ljl2j543
-affil:
-  name: Weizmann Institute
-affil:
-  name: University of Southern California
-  ror: 2342342xy
-citation:
-  title: The best algorithm never exists
-  authors: Alfred Alliant and David Dumbo
-  doi: 10.1007/2122_133
-citation:
-  title: Is it funny if you have to explain it?
-  authors: Ralph Bunch and Ida Lupino
-```
-The specification of metadata requirements is hopefully readily apparent
-from this example. The structure is designed to fulfill the requirements
-for consumers of metadata about papers, which is described in a
-[separate document](METADATA.md).
+The output file has the extension `.meta`. This file is used in the workflow of the
+server to which papers using this class will be submitted. There is a separate paper
+that describes the goals and implementation of the workflow.
 
 ## Related work
 

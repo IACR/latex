@@ -330,3 +330,21 @@ def test13_test():
             first_page = pdf.pages[0].extract_text()
             assert 'Kevin S. McCurley' not in first_page
             assert 'Joppe W. Bös' not in first_page
+
+
+def test14_test():
+    # Check for line numbers in copyedit version
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test14')
+        # should pass with lualatex.
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode == 0
+        logpath = tmpdirpath + '/main.log'
+        log = Path(logpath).read_text(encoding='UTF-8')
+        assert 'lineno.sty' in log
+        pdfpath = tmpdirpath + '/main.pdf'
+        with pdfplumber.open(pdfpath) as pdf:
+            text = pdf.pages[1].extract_text()
+            print(text)
+            assert '39' in text
+            assert '78' in text

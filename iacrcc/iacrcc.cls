@@ -1167,22 +1167,22 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ignorespaces
 }
 
-\ifcsstring{@IACRversion}{submission}{
+\newcommand\IACR@linenumbers{%
   % lineno: line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
   \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
   % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
   \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
-    \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
-    \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
-    \renewenvironment{#1}%
-    {\linenomathWithnumbersforAMS\csname old#1\endcsname}%
-    {\csname oldend#1\endcsname\endlinenomath}%
+    \expandafter\let\csname old##1\expandafter\endcsname\csname ##1\endcsname
+    \expandafter\let\csname oldend##1\expandafter\endcsname\csname end##1\endcsname
+    \renewenvironment{##1}%
+    {\linenomathWithnumbersforAMS\csname old##1\endcsname}%
+    {\csname oldend##1\endcsname\endlinenomath}%
   }%
   \newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
-    \patchAmsMathEnvironmentForLineno{#1}%
-    \patchAmsMathEnvironmentForLineno{#1*}%
+    \patchAmsMathEnvironmentForLineno{##1}%
+    \patchAmsMathEnvironmentForLineno{##1*}%
   }%
   \AtBeginDocument{%
     \patchAmsMathEnvironmentForLineno{equation*}%
@@ -1192,8 +1192,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \patchBothAmsMathEnvironmentsForLineno{gather}%
     \patchBothAmsMathEnvironmentsForLineno{multline}%
   }
-}{} %submission
-
+}
+\ifcsstring{@IACRversion}{submission}{\IACR@linenumbers}{}
+\ifcsstring{@IACRversion}{final}{%
+  \InputIfFileExists{\jobname.copyedit}{% turn on linenumbers and
+    % input any additional commands for copy editing.
+    \typeout{^^JCopy editing enabled^^J}\IACR@linenumbers}{}
+}{}
 % microtype: subliminal refinements towards typographical perfection
 \RequirePackage{microtype}
 
