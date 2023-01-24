@@ -1,5 +1,5 @@
-\def\fileversion{0.2}
-\def\filedate{2022/12/19}
+\def\fileversion{0.21}
+\def\filedate{2023/01/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -889,7 +889,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \else
     \ClassError{iacrcc}{%
       ^^J%
-      Invalid license: must be { CC-by }%
+      Invalid license: must be one of { CC-by }%
       ^^J%
     }{}%
   \fi
@@ -921,8 +921,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
         \if@IACR@Published Published: \IACR@Published \fi%
       }%
+      % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
       \if@doclicense@LongTextForHyperref
         \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+      \else
+        \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
       \fi
       \hypersetup{pdflicenseurl={\doclicenseURL}}
       \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
