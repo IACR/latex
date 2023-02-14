@@ -577,7 +577,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       Do not put several authors in the same \string\addauthor\space macro%
       ^^J%
     }{}%
-  }{}%   
+  }{}%
+  % Do not use a newline "\\" in your author name to try and typeset this yourself.
+  \IfSubStr{#2}{\\}{%
+    \ClassError{iacrcc}{%
+      ^^J%
+      Do not put a newline in the \string\addauthor\space macro%
+      ^^J%
+    }{}%
+  }{}% 
   \global\advance\num@authors by 1\relax%
   %
   % Write out the author in the meta file.
@@ -597,9 +605,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % the provided e-mail addresses
   \ifx\@IACRemail\@empty\else
     \ifx\IACR@displayemails\@empty
-      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(\unexpanded{#2})}%
+      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(\unexpanded{\mbox{#2}})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{#2})}%
+      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{\mbox{#2}})}%
     \fi
     \@writemeta{\IACRSS email: \@IACRemail}%
     \global\advance\num@email by 1\relax% 
@@ -607,16 +615,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % Author name + optionally clickable
   \ifx\@author\@empty
     \ifx\@IACRonclick\@empty
-      \def\@author{\unexpanded{#2}}%
+      \def\@author{\unexpanded{\mbox{#2}}}%
     \else
-      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
+      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
     \def\IACR@runningauthors{#2}%
   \else
     \ifx\@IACRonclick\@empty
-      \appto\@author{\and\unexpanded{#2}}%
+      \appto\@author{\and\unexpanded{\mbox{#2}}}%
     \else
-      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
+      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
     \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
   \fi
