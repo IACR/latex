@@ -553,9 +553,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \newcommand\addauthor[2][]{%    
   % Some very basic checking if addauthor is used correctly
-  % Check if the name contains an "," this might be correct (e.g., Alice, Jr)
+  % Check if the name contains an ","
   \IfSubStr{\detokenize{#2}}{,}{%
-    \ClassWarning{iacrcc}{%
+    \ClassError{iacrcc}{%
       ^^J%
       Do not put several authors in the same \string\addauthor\space macro%
       ^^J%
