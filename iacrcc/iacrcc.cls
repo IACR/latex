@@ -425,6 +425,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 \ExplSyntaxOff
 
+% alphalph: Convert numbers to letters, 
+%           used for footnotes in addauthor
+\RequirePackage{alphalph}
+
  \AtBeginDocument{%
   \renewcommand\maketitle{\par
     \@writemeta{version: \@IACRversion}%
@@ -515,6 +519,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \if@anonymous
           Anonymous Submission
         \else
+          \let\store@footnote\thefootnote%
+          \renewcommand*{\thefootnote}{\alphalph{\value{footnote}}}%
+          \setcounter{footnote}{0}%
           \setcounter{IACR@author@cnt}{1}%
           \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
             \stepcounter{IACR@author@cnt}%
@@ -530,6 +537,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
             \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
           \fi
           \@affiliation
+          \let\thefootnote\store@footnote%
         \fi%!anonymous
       }%
   \end{center}%
