@@ -1,5 +1,5 @@
-\def\fileversion{0.21}
-\def\filedate{2023/01/24}
+\def\fileversion{0.22}
+\def\filedate{2023/02/17}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -463,6 +463,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
                   \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
       \newpage
       \global\@topnum\z@   % Prevents figures from going at top of page.
+      \renewcommand*{\thefootnote}{\alphalph{\value{footnote}}}%
       \@maketitle
       \thispagestyle{title}\@thanks
     \endgroup
@@ -519,8 +520,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \if@anonymous
           Anonymous Submission
         \else
-          \let\store@footnote\thefootnote%
-          \renewcommand*{\thefootnote}{\alphalph{\value{footnote}}}%
           \setcounter{footnote}{0}%
           \setcounter{IACR@author@cnt}{1}%
           \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
@@ -537,7 +536,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
             \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
           \fi
           \@affiliation
-          \let\thefootnote\store@footnote%
         \fi%!anonymous
       }%
   \end{center}%
@@ -586,8 +584,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       ^^J%
     }{}%
   }{}%
-  % Do not use a newline "\\" in your author name to try and typeset this yourself.
-  \IfSubStr{#2}{\\}{%
+  % Do not use a newline "\newline" in your author name to try and typeset this yourself.
+  \IfSubStr{#2}{\newline}{%
     \ClassError{iacrcc}{%
       ^^J%
       Do not put a newline in the \string\addauthor\space macro%

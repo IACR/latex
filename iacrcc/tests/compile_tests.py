@@ -348,3 +348,24 @@ def test14_test():
             print(text)
             assert '39' in text
             assert '78' in text
+
+# Negative test.
+# Check if we detect a newline in the addauthor command
+# --> This should fail.
+def test15_test():
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test15')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode != 0
+
+# Test a submission with 15 authors all with footnotes
+def test16_test():
+    path = Path('test16')
+    # should pass with lualatex.
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode == 0
+    # should pass with pdflatex
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        res = run_engine('-pdf', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode == 0
