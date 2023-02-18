@@ -117,11 +117,7 @@
   \StrDel{\store@classoptionslist}{,}[\store@classoptionslist]%
   \StrDel{\store@classoptionslist}{ }[\store@classoptionslist]%
   \ifx\store@classoptionslist\@empty\else
-    \ClassError{iacrcc}{
-      ^^J%
-      Invalid options passed to iacrcc: \store@classoptionslist%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{Invalid options passed to iacrcc: \store@classoptionslist}{}%
   \fi
 \fi
 
@@ -189,11 +185,7 @@
 \ifluatex
 \else
   \ifcsstring{@IACRversion}{final}{
-    \ClassError{iacrcc}{%
-      ^^J%
-      Final versions must be compiled with lualatex%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{Final versions must be compiled with lualatex}{}%
   }{%
     \ClassWarning{iacrcc}{%
       ^^J%
@@ -359,48 +351,24 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
   \ifx\store@addauthor\addauthor\else
-    \ClassError{iacrcc}{%
-      ^^J%
-      The \string\addauthor\space macro seems to be redefined%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{The \string\addauthor\space macro seems to be redefined}{}%
   \fi
   \ifx\store@title\title\else
-    \ClassError{iacrcc}{%
-      ^^J%
-      The \string\title\space macro seems to be redefined%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{The \string\title\space macro seems to be redefined}{}%
   \fi
   \ifx\store@affiliation\affiliation\else
-    \ClassError{iacrcc}{%
-      ^^J%
-      The \string\affiliation\space macro seems to be redefined%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined}{}%
   \fi
   \ifx\store@font\familydefault\else
-    \ClassError{iacrcc}{%
-      ^^J%
-      The \string\familydefault\space macro seems to be redefined%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{The \string\familydefault\space macro seems to be redefined}{}%
   \fi
   \ifx\store@paperwidth\paperwidth\else
-    \ClassError{iacrcc}{%
-      ^^J%
-      The \string\paperwidth\space macro seems to be redefined%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{The \string\paperwidth\space macro seems to be redefined}{}%
   \fi
   % final version requires abstract.
   \ifcsstring{@IACRversion}{final}{%
     \IfFileExists{\jobname.abstract}{}{%
-      \ClassError{iacrcc}{%
-        ^^J%
-        An abstract with abstract environment is required%
-        ^^J%
-      }{}%
+      \ClassError{iacrcc}{An abstract with abstract environment is required}{}%
     }%
   }{}%
 }
@@ -449,11 +417,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \ifcsstring{@IACRversion}{final}{
       % When we produce the final version we need at least one e-mail address  
       \ifnum\num@email<1\relax
-        \ClassError{iacrcc}{%
-          ^^J%
-          Provide at least one e-mail address for the final version%
-          ^^J%
-        }{}%
+        \ClassError{iacrcc}{Provide at least one e-mail address for the final version}{}%
       \fi
     }{}%
     \begingroup
@@ -548,11 +512,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % We do not support \author, use \addauthor instead
 \renewcommand\author[2][]{
-  \ClassError{iacrcc}{%
-    ^^J%
-    Do not use the \string\author\space macro: use the \string\addauthor\space macro instead%
-    ^^J%
-  }{}%
+  \ClassError{iacrcc}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
 
 \newcommand\surname[1]{#1}
@@ -560,37 +520,31 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand\addauthor[2][]{%    
   % Some very basic checking if addauthor is used correctly
   % Check if the name contains an ","
-  \IfSubStr{\detokenize{#2}}{,}{%
-    \ClassError{iacrcc}{%
-      ^^J%
-      Do not put several authors in the same \string\addauthor\space macro%
-      ^^J%
-    }%
+  \noexpandarg\IfSubStr{\detokenize{#2}}{,}{%
+    \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % Affiliations should be defined *after* addauthor
   \ifnum\num@affil>0\relax
-    \ClassError{iacrcc}{%
-      ^^J%
-      Affiliations must follow authors%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{Affiliations must follow authors}%
   \fi
   % Do not use " and " in your author name: this might indicate incorrect usage
   % The usage of "\and" will not and throw an error.
-  \IfSubStr{#2}{ and }{%
-    \ClassError{iacrcc}{%
-      ^^J%
-      Do not put several authors in the same \string\addauthor\space macro%
-      ^^J%
-    }{}%
+  %\IfSubStr{\detokenize{#2}}{ and }{%
+  \noexpandarg\IfSubStr{#2}{ and }{%
+    \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
+  }{}%
+  % Do not use " \and " in your author name: this might indicate incorrect usage
+  % The usage of "\and" will not and throw an error.
+  %\IfSubStr{\detokenize{#2}}{ and }{%
+  \noexpandarg\IfSubStr{#2}{ \and }{%
+    \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % Do not use a newline "\newline" in your author name to try and typeset this yourself.
-  \IfSubStr{#2}{\newline}{%
-    \ClassError{iacrcc}{%
-      ^^J%
-      Do not put a newline in the \string\addauthor\space macro%
-      ^^J%
-    }{}%
+  \noexpandarg\IfSubStr{#2}{\newline}{%
+    \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
+  }{}%
+  \noexpandarg\IfSubStr{#2}{\\}{%
+    \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
   }{}% 
   \global\advance\num@authors by 1\relax%
   %
@@ -730,11 +684,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \ifx\@IACRcountry\@empty
     \ifcsstring{@IACRversion}{final}{
-      \ClassError{iacrcc}{%
-        ^^J%
-        Specify a country for each affiliation for the final version%
-        ^^J%
-      }{}%
+      \ClassError{iacrcc}{Specify a country for each affiliation for the final version}{}%
     }{}
   \else
     \@writemeta{\IACRSS country: \@IACRcountry}%
@@ -878,11 +828,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \else % did not invoke \documentclass[biblatex]{iacrcc}
   \AtBeginDocument{%
     \@ifpackageloaded{biblatex}{%
-      \ClassError{iacrcc}{%
-        ^^J%
-        biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}
-        ^^J%
-      }%
+      \ClassError{iacrcc}{biblatex should be loaded with \@backslashchar documentclass[biblatex]{iacrcc}}%
     }%
   }
 \fi%!biblatex
@@ -901,11 +847,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     % doclicense: support for putting documents under a license.
     \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}
   \else
-    \ClassError{iacrcc}{%
-      ^^J%
-      Invalid license: must be one of { CC-by }%
-      ^^J%
-    }{}%
+    \ClassError{iacrcc}{Invalid license: must be one of { CC-by }}{}%
   \fi
 }
 
@@ -913,11 +855,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fancyhf{} % clear all header and footer fields
   \ifcsstring{@IACRversion}{final}{
       \ifx\@IACR@License\@empty
-        \ClassError{iacrcc}{%
-          ^^J%
-          Please specify a license when using version=final%
-          ^^J%
-        }{}%
+        \ClassError{iacrcc}{Please specify a license when using version=final}{}%
       \fi
       \fancyhead[L]{%
         \small%
@@ -998,20 +936,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
     \ifnotstring{#2}{%
-      \ClassError{iacrcc}{%
-        ^^J%
-        Optional plaintext keyword argument required if keywords contain macros%
-        ^^J%
-      }%
+      \ClassError{iacrcc}{Optional plaintext keyword argument required if keywords contain macros}%
     }%
     \gdef\IACR@text@keywords{#2}%
   \else
     \ifnotstring{#1}{%
-      \ClassError{iacrcc}{%
-        ^^J%
-        Optional argument to keywords may not contain macros
-        ^^J%
-      }%
+      \ClassError{iacrcc}{Optional argument to keywords may not contain macros}%
     }%
     \gdef\IACR@text@keywords{#1}%
   \fi

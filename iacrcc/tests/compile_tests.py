@@ -350,7 +350,7 @@ def test14_test():
             assert '78' in text
 
 # Negative test.
-# Check if we detect a newline in the addauthor command
+# Check if we detect a newline using "\newline" in the addauthor command
 # --> This should fail.
 def test15_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
@@ -369,3 +369,30 @@ def test16_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
         res = run_engine('-pdf', path.iterdir(), tmpdirpath)
         assert res['proc'].returncode == 0
+
+# Negative test.
+# Check if we detect a newline using "\\" in the addauthor command
+# --> This should fail.
+def test17_test():
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test17')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode != 0
+
+# Negative test.
+# Check if we detect using a " and " in the addauthor command
+# --> This should fail.
+def test18_test():
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test18')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode != 0
+
+# Negative test.
+# Check if we detect using a " \and " in the addauthor command
+# --> This should fail.
+def test19_test():
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test19')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode != 0
