@@ -388,7 +388,7 @@ def test15_test():
         res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
         assert res['proc'].returncode != 0
 
-# Test a submission with 15 authors all with footnotes
+# Test a submission with 30 authors all with footnotes
 def test16_test():
     path = Path('test16')
     # should pass with lualatex.
