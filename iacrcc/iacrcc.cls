@@ -495,7 +495,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
           \setcounter{IACR@author@cnt}{1}%        
           % When there is only one author with one or more affiliations
           % do not display the affiliation counter
-          \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^\theIACR@author@cnt$~\fi}
+          \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^{\theIACR@author@cnt}$~\fi}
           \ifnum\num@authors=1\relax\else
             \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
           \fi
@@ -553,7 +553,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
   \pgfkeysgetvalue{/IACR-author/entities/footnote}{\IACRfootnote}%
-  \expandafter\let\csname IACR@author@footnote\@Alph\num@authors \endcsname\IACRfootnote% Copy the pgf key
+  \expandafter\let\csname IACR@author@footnote\alphalph{\num@authors} \endcsname\IACRfootnote% Copy the pgf key
   \@writemeta{\IACRSS name: #2}%
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
@@ -590,7 +590,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   % Add the footnote text if present
   \if\IACRfootnote\@empty\else
-    \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\@Alph\num@authors \endcsname}}%    
+    \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\alphalph{\num@authors} \endcsname}}%
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
