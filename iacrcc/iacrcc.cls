@@ -325,9 +325,19 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 
 % Title/Author/affiliations
+% Running author list for in the header
 \global\let\IACR@runningauthors\@empty
+% Full author list for the metadata in the pdf
+\global\let\IACR@listofauthors\@empty
 \global\let\@author\@empty
 \global\let\@affiliation\@empty
+
+% Bool to check if the user called the \authorrunning macro
+\gdef\IACR@userdefinedrunningauthors{\@empty}%
+\newcommand{\authorrunning}[1]{%
+  \gdef\IACR@userdefinedrunningauthors{userdefined}%
+  \gdef\IACR@runningauthors{#1}%
+}
 
 \newcounter{IACR@author@cnt}
 \newcounter{IACR@inst@cnt}
@@ -579,14 +589,20 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \else
       \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
-    \def\IACR@runningauthors{#2}%
+    \if\relax\IACR@userdefinedrunningauthors\relax
+      \def\IACR@runningauthors{#2}%
+    \fi
+    \def\IACR@listofauthors{#2}%    
   \else
     \ifx\@IACRonclick\@empty
       \appto\@author{\and\unexpanded{\mbox{#2}}}%
     \else
       \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
-    \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
+    \if\relax\IACR@userdefinedrunningauthors\relax
+      \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
+    \fi
+    \appto\IACR@listofauthors{,\space\unexpanded{#2}}%
   \fi
   % Add the footnote text if present
   \if\IACRfootnote\@empty\else
@@ -709,7 +725,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \if@anonymous
   \gdef\@author{Anonymous Submission to \publname}%
-  \gdef\IACR@runningauthors{}
+  \gdef\IACR@runningauthors{}%
+  \gdef\IACR@listofauthors{}%
   \renewcommand{\addauthor}[2][]{}%
   \renewcommand{\affiliation}[2][]{}%
 \fi
@@ -899,6 +916,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \setcounter{IACR@author@cnt}{1}%
     \@author%
   \else
+    \ifnum\num@authors>4\relax
+      \if\relax\IACR@userdefinedrunningauthors\relax
+        \ClassError{iacrcc}{When using more than 4 authors please define the running authors using the  \string\authorrunning\space macro}{}%
+      \fi
+    \fi
     \IACR@runningauthors%
   \fi%!anonymous
 }
@@ -984,7 +1006,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
-    \hypersetup{pdfauthor={\IACR@runningauthors}}
+    \hypersetup{pdfauthor={\IACR@listofauthors}}
   \fi%!anonymous
   %% PDF title
   \hypersetup{pdftitle={\@plaintitle}}
