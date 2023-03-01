@@ -496,7 +496,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \else
           \setcounter{footnote}{0}%
           \setcounter{IACR@author@cnt}{1}%
-          \def\and{\if@IACR@autoinst\inst{\theIACR@author@cnt} \fi
+          \def\and{%
             \stepcounter{IACR@author@cnt}%
             \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
           \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
@@ -605,15 +605,22 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \appto\IACR@listofauthors{,\space\unexpanded{#2}}%
   \fi
   % Add the footnote text if present
-  \if\IACRfootnote\@empty\else
+  % Define two seperate macros for the institute
+  % \inst and \instwcomma where the latter inserts a comma
+  % between the footnote and the institure marker
+  \if\relax\IACRfootnote\relax
+    \ifx\@IACRinst\@empty\else
+      \eappto\@author{\noexpand\inst{\@IACRinst}}%
+    \fi
+  \else
     \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\alphalph{\num@authors} \endcsname}}%
+    \ifx\@IACRinst\@empty\else
+      \eappto\@author{\noexpand\instwcomma{\@IACRinst}}%
+    \fi
   \fi
   \ifx\@IACRorcid\@empty\else
     \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
     \@writemeta{\IACRSS orcid: \@IACRorcid}%
-  \fi
-  \ifx\@IACRinst\@empty\else
-    \eappto\@author{\noexpand\inst{\@IACRinst}}%
   \fi
   \IACR@author@params@clearkeys%
 }
@@ -735,6 +742,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \ifnum\num@authors=1\relax\else
     \ifnum\num@affil=1\relax\else
       \unskip$^{#1}$%
+    \fi
+  \fi
+}
+
+\newcommand{\instwcomma}[1]{%
+  \ifnum\num@authors=1\relax\else
+    \ifnum\num@affil=1\relax\else
+      \unskip$^{,\,#1}$%
     \fi
   \fi
 }
@@ -910,6 +925,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \if@anonymous
     \def\thanks##1{}%
     \def\inst##1{}%
+    \def\instwcomma##1{}%
     \def\fnmsep{}%
     \def\\{}%
     \def\footnote##1{}%
