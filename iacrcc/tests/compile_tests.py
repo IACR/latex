@@ -426,3 +426,24 @@ def test19_test():
         path = Path('test19')
         res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
         assert res['proc'].returncode != 0
+
+def test20_test():
+    # Check if a paper with one author and two affiliations 
+    # does *not* show the institure markers
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test20')
+        # should pass with lualatex.
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode == 0
+        pdfpath = tmpdirpath + '/main.pdf'
+        with pdfplumber.open(pdfpath) as pdf:
+            text = pdf.pages[0].extract_text()
+            print(text)
+            assert 'Freddy First1' not in text
+            assert 'Freddy First 1' not in text
+            assert '1Company' not in text
+            assert '1 Company' not in text
+            assert '2University' not in text
+            assert '2 University' not in text
+            
+        
