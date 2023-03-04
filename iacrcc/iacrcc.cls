@@ -1,5 +1,5 @@
-\def\fileversion{0.22}
-\def\filedate{2023/02/17}
+\def\fileversion{0.23}
+\def\filedate{2023/03/02}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -327,8 +327,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % Title/Author/affiliations
 % Running author list for in the header
 \global\let\IACR@runningauthors\@empty
+
 % Full author list for the metadata in the pdf
 \global\let\IACR@listofauthors\@empty
+
 \global\let\@author\@empty
 \global\let\@affiliation\@empty
 
@@ -339,21 +341,18 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \gdef\IACR@runningauthors{#1}%
 }
 
+% Count the number of authors
 \newcounter{IACR@author@cnt}
+
+% Count the number of institutions
 \newcounter{IACR@inst@cnt}
-\newif\if@IACR@autoinst
-\@IACR@autoinsttrue
-\def\IACR@author@last{0}
+
+% Count the number of provided e-mail addresses
+\newcounter{IACR@email@cnt}
 
 % Meta information is written out in [jobname].meta
 \newwrite\iacrmeta
 \immediate\openout\iacrmeta=\jobname.meta
-\newcount\num@authors
-\num@authors=0\relax
-\newcount\num@affil
-\num@affil=0\relax
-\newcount\num@email
-\num@email=0\relax
 
 \AtEndDocument{
   \immediate\closeout\iacrmeta%
@@ -408,12 +407,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \RequirePackage{alphalph}
 
  \AtBeginDocument{%
+  % Use this \maketitle command to first write out 
+  % the necessary meta-information 
   \renewcommand\maketitle{\par
     \@writemeta{version: \@IACRversion}%
     \@writemeta{title: \@plaintitle}%
     \if\IACR@title@subtitle\@empty\else
       \@writemeta{\IACRSS subtitle: \IACR@title@subtitle}%
     \fi
+    % Generic footnote and e-mails are displayed without markers
     \ifx\@genericfootnote\@empty\else
       \begingroup
         \renewcommand\thefootnote{}\footnotetext{\@genericfootnote}%
@@ -426,17 +428,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \fi
     \ifcsstring{@IACRversion}{final}{
       % When we produce the final version we need at least one e-mail address  
-      \ifnum\num@email<1\relax
+      \ifnum\theIACR@email@cnt<1\relax
         \ClassError{iacrcc}{Provide at least one e-mail address for the final version}{}%
       \fi
     }{}%
     \begingroup
-      \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
-      \long\def\@makefntext##1{\parindent 1em\noindent
-              \hb@xt@1.8em{%
-                  \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
-      \newpage
       \global\@topnum\z@   % Prevents figures from going at top of page.
+      % Ensure we use alphabetical numbering for the author footnotes 
       \renewcommand*{\thefootnote}{\alphalph{\value{footnote}}}%
       \@maketitle
       \thispagestyle{title}\@thanks
@@ -459,34 +457,26 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }%
 }
 
-% Add support to display provided e-mail addresses 
+% Add support to display the provided e-mail addresses 
 % in the footnote of the front page
 \global\let\IACR@displayemails\@empty
 
 % Add support for a footnote without symbol on the front page
 \global\let\@genericfootnote\@empty
-\newcommand\genericfootnote[1]{
+\newcommand\genericfootnote[1]{%
   \gdef\@genericfootnote{#1}%
 }
 
 \def\@maketitle{%
-  % Count authors and affiliations
-  \setcounter{IACR@author@cnt}{1}%
-  \setcounter{IACR@inst@cnt}{1}%
-  \setbox0\hbox{\def\thanks##1{\global\@IACR@autoinstfalse}\def\inst##1{\global\@IACR@autoinstfalse}\def\and{\stepcounter{IACR@author@cnt}}\@author}%
-  \setbox0\hbox{\def\and{\stepcounter{IACR@inst@cnt}}\@affiliation}%
-  \xdef\IACR@author@last{\theIACR@author@cnt}%
-  \edef\IACR@inst@last{\theIACR@inst@cnt}%
-  \ifnum\IACR@author@last=\IACR@inst@last\else\@IACR@autoinstfalse\fi
-  \ifnum\IACR@author@last=1 \@IACR@autoinstfalse\fi
   \newpage
   \null
   \vskip 2em%
   \begin{center}%
     \let \footnote \thanks
+    % Insert the title and subtitle (if defined)
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
-      {\LARGE \bfseries\sffamily\boldmath \@title\par}
-    \ifdefined\IACR@title@subtitle@defined\vskip .5em{\large\sffamily\bfseries\IACR@title@subtitle\par}\fi
+      {\LARGE \bfseries\sffamily\boldmath \@title\par}%
+      \ifdefined\IACR@title@subtitle@defined\vskip .5em{\large\sffamily\bfseries\IACR@title@subtitle\par}\fi
     }%
     \vskip 1.5em%
     {\large
@@ -495,19 +485,27 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
           Anonymous Submission
         \else
           \setcounter{footnote}{0}%
-          \setcounter{IACR@author@cnt}{1}%
+          \newcounter{IACR@cnt}
+          \setcounter{IACR@cnt}{1}%
+          % Make sure authors are separated by a comma except the last one where we use " and "
           \def\and{%
-            \stepcounter{IACR@author@cnt}%
-            \ifnum\theIACR@author@cnt=\IACR@author@last\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi}
-          \@author\if@IACR@autoinst\inst{\theIACR@author@cnt}\fi
+            \stepcounter{IACR@cnt}%
+            \ifnum\theIACR@cnt=\theIACR@author@cnt\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi%
+          }%
+          % Display the list of authors
+          % Note that affiliations and footnotes are picked up within 
+          % the definition of \@author
+          \@author%
           \vskip 1em\par
           \small
-          \setcounter{IACR@author@cnt}{1}%        
+          \setcounter{IACR@cnt}{1}%        
           % When there is only one author with one or more affiliations
           % do not display the affiliation counter
-          \def\and{\par\ifnum\num@authors=1\relax\else\stepcounter{IACR@author@cnt}$^{\theIACR@author@cnt}$~\fi}
-          \ifnum\num@authors=1\relax\else
-            \ifnum\IACR@inst@last>1 $^1$~\fi\ignorespaces%
+          % Redefine \and to make sure we print the affiliation numbers
+          \def\and{\par\ifnum\theIACR@author@cnt=1\relax\else\stepcounter{IACR@cnt}$^{\theIACR@cnt}$~\fi}
+          % The above redefinition does not work for the first institute: fix that here
+          \ifnum\theIACR@author@cnt=1\relax\else
+            \ifnum\theIACR@inst@cnt>1$^1$~\fi\ignorespaces%
           \fi
           \@affiliation
         \fi%!anonymous
@@ -534,18 +532,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % Affiliations should be defined *after* addauthor
-  \ifnum\num@affil>0\relax
+  \ifnum\theIACR@inst@cnt>0\relax
     \ClassError{iacrcc}{Affiliations must follow authors}%
   \fi
   % Do not use " and " in your author name: this might indicate incorrect usage
   % The usage of "\and" will not and throw an error.
-  %\IfSubStr{\detokenize{#2}}{ and }{%
   \noexpandarg\IfSubStr{#2}{ and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % Do not use " \and " in your author name: this might indicate incorrect usage
   % The usage of "\and" will not and throw an error.
-  %\IfSubStr{\detokenize{#2}}{ and }{%
   \noexpandarg\IfSubStr{#2}{ \and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
@@ -556,14 +552,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \noexpandarg\IfSubStr{#2}{\\}{%
     \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
   }{}% 
-  \global\advance\num@authors by 1\relax%
+  %
+  \stepcounter{IACR@author@cnt}%
   %
   % Write out the author in the meta file.
   \@writemeta{author:}%
   \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
   \pgfkeysgetvalue{/IACR-author/entities/footnote}{\IACRfootnote}%
-  \expandafter\let\csname IACR@author@footnote\alphalph{\num@authors} \endcsname\IACRfootnote% Copy the pgf key
+  \expandafter\let\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname\IACRfootnote% Copy the pgf key
   \@writemeta{\IACRSS name: #2}%
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
@@ -580,7 +577,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{\mbox{#2}})}%
     \fi
     \@writemeta{\IACRSS email: \@IACRemail}%
-    \global\advance\num@email by 1\relax% 
+    \stepcounter{IACR@email@cnt}%
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
@@ -613,7 +610,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       \eappto\@author{\noexpand\inst{\@IACRinst}}%
     \fi
   \else
-    \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\alphalph{\num@authors} \endcsname}}%
+    \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname}}%
     \ifx\@IACRinst\@empty\else
       \eappto\@author{\noexpand\instwcomma{\@IACRinst}}%
     \fi
@@ -675,7 +672,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \let\store@title\title  % Save macro away
 
 \newcommand\affiliation[2][]{%
-  \global\advance\num@affil by 1\relax% 
+  \stepcounter{IACR@inst@cnt}%
   \@writemeta{affiliation:}%
   \@writemeta{\IACRSS name: #2}%
   \IACR@affiliation@params@set@keys{#1}%
@@ -739,16 +736,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \fi
 
 \newcommand{\inst}[1]{%
-  \ifnum\num@authors=1\relax\else
-    \ifnum\num@affil=1\relax\else
+  \ifnum\theIACR@author@cnt=1\relax\else
+    \ifnum\theIACR@inst@cnt=1\relax\else
       \unskip$^{#1}$%
     \fi
   \fi
 }
 
 \newcommand{\instwcomma}[1]{%
-  \ifnum\num@authors=1\relax\else
-    \ifnum\num@affil=1\relax\else
+  \ifnum\theIACR@author@cnt=1\relax\else
+    \ifnum\theIACR@inst@cnt=1\relax\else
       \unskip$^{,\,#1}$%
     \fi
   \fi
@@ -932,7 +929,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \setcounter{IACR@author@cnt}{1}%
     \@author%
   \else
-    \ifnum\num@authors>4\relax
+    \ifnum\theIACR@author@cnt>4\relax
       \if\relax\IACR@userdefinedrunningauthors\relax
         \ClassError{iacrcc}{When using more than 4 authors please define the running authors using the  \string\authorrunning\space macro}{}%
       \fi
