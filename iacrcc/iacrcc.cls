@@ -343,15 +343,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 % Count the number of authors
 \newcounter{IACR@author@cnt}
-\setcounter{IACR@author@cnt}{0}
 
 % Count the number of institutions
 \newcounter{IACR@inst@cnt}
-\setcounter{IACR@inst@cnt}{0}
 
 % Count the number of provided e-mail addresses
 \newcounter{IACR@email@cnt}
-\setcounter{IACR@email@cnt}{0}
 
 % Meta information is written out in [jobname].meta
 \newwrite\iacrmeta
