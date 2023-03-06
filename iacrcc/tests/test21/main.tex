@@ -1,0 +1,474 @@
+\documentclass[version=final]{iacrcc}
+\usepackage{lipsum}
+\license{CC-by}
+\title[running  = {The iacrcc class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
+      ]{How not to use the IACR Communications in Cryptology Cl\r{a}ss}
+
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+	   footnote = {This is an example fö{\"o}tnote.},
+           email    = {joppe.bos@nxp.com}
+	  ]{Joppe W. \surname{B{\"o}s}}
+
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2,3},
+           email   = {test2@digicrime.com},
+          ]{Kevin S. \surname{McCurley}}
+\addauthor[inst={47,45},footnote={Ivan was here}]{Ivan Damgård}
+\addauthor[inst={16,44},email={author1@digicrime.com},footnote={Thanks to my advisor}]{Rafail Ostrovsky}
+\addauthor[inst={38,57},footnote={Thanks to my students}]{Yuval Ishai}
+\addauthor[inst={22,29},email={sahai@digicrime.com}]{Amit Sahai}
+\addauthor[inst={39,16},email={moti@digicrime.com},footnote={This is one of my many papers}]{Moti Yung}
+\addauthor[inst={40,60},email={someone@digicrime.com},footnote={Lots of footnotes}]{Mihir Bellare}
+\addauthor[inst={39,39},footnote={Adi is famous}]{Adi Shamir}
+\addauthor[inst={22,66}]{Jonathan Katz}
+\addauthor[inst={42,52}]{Brent Waters}
+\addauthor[inst={8,17}]{Ueli Maurer}
+\addauthor[inst={46,62},email={foo.bar@example.com},footnote={Notice how UTF-8 works here}]{François-Xavier Standaert}
+\addauthor[inst={23,52}]{Yevgeniy Dodis}
+\addauthor[inst={20,48},email={foo.bar@example.com},footnote={Dan works at Stanford}]{Dan Boneh}
+\addauthor[inst={35,28}]{Ran Canetti}
+\addauthor[inst={30,67},email={foo.bar@example.com},footnote={Thanks to my colleagues}]{Shai Halevi}
+\addauthor[inst={8,57},email={foo.bar@example.com},footnote={Primary author}]{Bart Preneel}
+\addauthor[inst={7,42}]{Eike Kiltz}
+\addauthor[inst={50,59},email={foo.bar@example.com},footnote={Just another footnote}]{Daniel Wichs}
+\addauthor[inst={22,67},email={foo.bar@example.com},footnote={Just another footnote}]{Rafael Pass}
+\addauthor[inst={40,20},email={foo.bar@example.com},footnote={Just another footnote}]{Yehuda Lindell}
+\addauthor[inst={29,65},email={foo.bar@example.com},footnote={Just another footnote}]{Vinod Vaikuntanathan}
+\addauthor[inst={11},email={foo.bar@example.com},footnote={Just another footnote}]{Hoeteck Wee}
+\addauthor[inst={43,53}]{Pierre-Alain Fouque}
+\addauthor[inst={38,21}]{Sanjam Garg}
+\addauthor[inst={24,56}]{Jean-Sébastien Coron}
+\addauthor[inst={38,36},email={foo.bar@example.com},footnote={Just another footnote}]{David Pointcheval}
+\addauthor[inst={17,15},email={foo.bar@example.com},footnote={Just another footnote}]{Krzysztof Pietrzak}
+\addauthor[inst={45,68},email={foo.bar@example.com},footnote={Just another footnote}]{Dennis Hofheinz}
+\addauthor[inst={32,19},email={foo.bar@example.com},footnote={Just another footnote}]{Jesper Buus Nielsen}
+\addauthor[inst={22,69}]{Thomas Peyrin}
+\addauthor[inst={50,38}]{Serge Vaudenay}
+\addauthor[inst={22,51}]{Moni Naor}
+\addauthor[inst={7,27},email={foo.bar@example.com},footnote={Just another footnote}]{Vipul Goyal}
+\addauthor[inst={13,44},email={foo.bar@example.com},footnote={Just another footnote}]{Willi Meier}
+\addauthor[inst={27,26},email={foo.bar@example.com},footnote={Just another footnote}]{Eli Biham}
+\addauthor[inst={27,42},email={foo.bar@example.com},footnote={Just another footnote}]{Gregor Leander}
+\addauthor[inst={32,58}]{Abhishek Jain}
+\addauthor[inst={1,11},email={foo.bar@example.com},footnote={Just another footnote}]{Lars R. Knudsen}
+\addauthor[inst={5,36},email={foo.bar@example.com},footnote={Just another footnote}]{Tatsuaki Okamoto}
+\addauthor[inst={19,19},email={foo.bar@example.com},footnote={This is numbered aa}]{Phillip Rogaway}
+\addauthor[inst={24,32},email={foo.bar@example.com},footnote={Just another footnote}]{Jacques Stern}
+\addauthor[inst={27,11}]{Stefano Tessaro}
+\addauthor[inst={31,29},email={foo.bar@example.com},footnote={Just another footnote}]{Mark Zhandry}
+\addauthor[inst={40,35},email={foo.bar@example.com},footnote={Just another footnote}]{Yvo Desmedt}
+\addauthor[inst={9,68},email={foo.bar@example.com},footnote={Just another footnote}]{Rosario Gennaro}
+\addauthor[inst={11,21},email={foo.bar@example.com},footnote={Just another footnote}]{Benoît Libert}
+\addauthor[inst={38,53}]{Zvika Brakerski}
+\addauthor[inst={5,69}]{Ronald Cramer}
+\addauthor[inst={44,35}]{Kaoru Kurosawa}
+\addauthor[inst={12,48}]{Antoine Joux}
+\addauthor[inst={23,64}]{Yu Sasaki}
+\addauthor[inst={1,49}]{Orr Dunkelman}
+\addauthor[inst={2,22}]{Carmit Hazay}
+\addauthor[inst={13,37}]{Hugo Krawczyk}
+\addauthor[inst={3,47}]{Mridul Nandi}
+\addauthor[inst={45,54}]{Gil Segev}
+\addauthor[inst={47,36}]{Jan Camenisch}
+\addauthor[inst={14,11},email={gentry@example.com}]{Craig Gentry}
+\addauthor[inst={22,57}]{Amir Moradi}
+\addauthor[inst={8,13}]{Silvio Micali}
+\addauthor[inst={7,41}]{Jean-Jacques Quisquater}
+\addauthor[inst={8,54}]{Shafi Goldwasser}
+\addauthor[inst={49,56},email={groth@example.com}]{Jens Groth}
+\addauthor[inst={17,39}]{Masayuki Abe}
+\addauthor[inst={11,36}]{Alex Biryukov}
+\addauthor[inst={1,58},email={leurent@example.com}]{Gaëtan Leurent}
+\addauthor[inst={5,58},email={therealtal@example.com}]{Tal Malkin}
+\addauthor[inst={11,59},email={nigel@example.com}]{Nigel P. Smart}
+\addauthor[inst={15,27}]{Marc Fischlin}
+\addauthor[inst={19,50}]{Thomas Johansson}
+\addauthor[inst={28,52}]{Nathan Keller}
+\addauthor[inst={49,54},email={rijmen@example.com}]{Vincent Rijmen}
+\addauthor[inst={49,41}]{Elaine Shi}
+\addauthor[inst={49,51}]{Serge Fehr}
+\addauthor[inst={41,19}]{Bart Mennink}
+\addauthor[inst={45,55}]{María Naya-Plasencia}
+\addauthor[inst={47,61}]{Oded Goldreich}
+\addauthor[inst={6,41}]{Eyal Kushilevitz}
+\addauthor[inst={47,57}]{Alon Rosen}
+\addauthor[inst={13,29}]{Michel Abdalla}
+\addauthor[inst={41,39}]{Jian Guo}
+\addauthor[inst={46,36}]{Huijia Lin}
+\addauthor[inst={25,29}]{Kenneth G. Paterson}
+\addauthor[inst={6,60}]{Manoj Prabhakaran}
+\addauthor[inst={19,12}]{Itai Dinur}
+\addauthor[inst={42,54}]{Sebastian Faust}
+\addauthor[inst={8,54}]{Vadim Lyubashevsky}
+\addauthor[inst={43,19}]{Daniele Micciancio}
+\addauthor[inst={38,65}]{Tal Rabin}
+\addauthor[inst={38,37}]{Huaxiong Wang}
+\addauthor[inst={16,45}]{Yael Tauman Kalai}
+\addauthor[inst={39,32}]{Ilan Komargodski}
+\addauthor[inst={22,28}]{Florian Mendel}
+\addauthor[inst={45,56}]{Phong Q. Nguyen}
+\addauthor[inst={21,53}]{Christof Paar}
+\addauthor[inst={29,12}]{David Chaum}
+\addauthor[inst={8,16}]{Dana Dachman-Soled}
+\addauthor[inst={1,30}]{Nico Döttling}
+\addauthor[inst={43,19}]{Takanori Isobe}
+\addauthor[inst={32,18}]{Tibor Jager}
+\addauthor[inst={47,39}]{Arjen K. Lenstra}
+\addauthor[inst={35,13}]{Ingrid Verbauwhede}
+\addauthor[inst={46,40}]{Goichiro Hanaoka}
+\addauthor[inst={44,61}]{Hideki Imai}
+\addauthor[inst={32,60}]{Dario Catalano}
+\addauthor[inst={18,47}]{Joan Daemen}
+\addauthor[inst={26,21}]{Aggelos Kiayias}
+\addauthor[inst={3,44}]{Chris Peikert}
+\addauthor[inst={12,47}]{Josef Pieprzyk}
+\addauthor[inst={9,22}]{Victor Shoup}
+\addauthor[inst={33,27}]{Mehdi Tibouchi}
+\addauthor[inst={36,44}]{Ivan Visconti}
+\addauthor[inst={46,52}]{Benny Applebaum}
+\addauthor[inst={35,10}]{Amos Beimel}
+\addauthor[inst={47,45}]{Ryo Nishimaki}
+\addauthor[inst={46,20}]{Leonid Reyzin}
+\addauthor[inst={23,51}]{Muthuramakrishnan Venkitasubramaniam}
+\addauthor[inst={12,23}]{Nir Bitansky}
+\addauthor[inst={33,59}]{David Naccache}
+\addauthor[inst={13,29}]{Benny Pinkas}
+\addauthor[inst={19,18}]{Martijn Stam}
+\addauthor[inst={9,26}]{Prabhanjan Ananth}
+\addauthor[inst={8,30}]{Elette Boyle}
+\addauthor[inst={17,26}]{Anna Lysyanskaya}
+\addauthor[inst={36,66}]{Shota Yamada}
+\addauthor[inst={17,38}]{Shweta Agrawal}
+\addauthor[inst={44,21}]{Kai-Min Chung}
+\addauthor[inst={43,41}]{Tetsu Iwata}
+\addauthor[inst={47,39}]{Giulio Malavolta}
+\addauthor[inst={3,59}]{Damien Stehlé}
+\addauthor[inst={7,46}]{Andrey Bogdanov}
+\addauthor[inst={38,50}]{Geoffroy Couteau}
+\addauthor[inst={44,52}]{Marc Joye}
+\addauthor[inst={32,45}]{Dakshita Khurana}
+\addauthor[inst={36,38}]{Claudio Orlandi}
+\addauthor[inst={16,10}]{Christian Rechberger}
+\addauthor[inst={34,28}]{Yannick Seurin}
+\addauthor[inst={16,30}]{Fabrice Benhamouda}
+\addauthor[inst={45,23}]{Jung Hee Cheon}
+\addauthor[inst={39,33}]{Dario Fiore}
+\addauthor[inst={23,31}]{Alexander May}
+\addauthor[inst={28,28}]{Juan A. Garay}
+\addauthor[inst={37,49}]{Emmanuel Prouff}
+\addauthor[inst={2,67}]{Mike Rosulek}
+\addauthor[inst={11,19}]{David Wagner}
+\addauthor[inst={19,62}]{Xiaoyun Wang}
+\addauthor[inst={31,62}]{Daniel J. Bernstein}
+\addauthor[inst={31,21}]{Léo Ducas}
+\addauthor[inst={25,39}]{Henri Gilbert}
+\addauthor[inst={25,58}]{Iftach Haitner}
+\addauthor[inst={43,57}]{Stanislaw Jarecki}
+\addauthor[inst={29,48}]{Kazuo Ohta}
+\addauthor[inst={35,11}]{Matthieu Rivain}
+\addauthor[inst={32,32}]{Dominique Unruh}
+\addauthor[inst={48,24}]{Salil P. Vadhan}
+\addauthor[inst={44,43}]{Daniele Venturi}
+\addauthor[inst={49,56}]{Takashi Yamakawa}
+\addauthor[inst={33,39}]{Gilad Asharov}
+\addauthor[inst={1,46}]{Ernest F. Brickell}
+\addauthor[inst={15,39}]{Alessandro Chiesa}
+\addauthor[inst={44,24}]{Jovan Dj. Golic}
+\addauthor[inst={36,27}]{Peter Scholl}
+\addauthor[inst={39,57}]{Yosuke Todo}
+\addauthor[inst={20,14}]{Gilles Brassard}
+\addauthor[inst={7,62}]{Susan Hohenberger}
+\addauthor[inst={27,47}]{Joe Kilian}
+\addauthor[inst={13,48}]{Stefan Lucks}
+\addauthor[inst={31,53}]{Jacques Patarin}
+\addauthor[inst={19,23}]{Thomas Peters}
+\addauthor[inst={31,17}]{Thomas Ristenpart}
+\addauthor[inst={46,47}]{Ronald L. Rivest}
+\addauthor[inst={47,10}]{Adam Smith}
+\addauthor[inst={8,58}]{Akshayaram Srinivasan}
+\addauthor[inst={8,27}]{Ron Steinfeld}
+\addauthor[inst={4,12}]{Joos Vandewalle}
+\addauthor[inst={7,53}]{Lei Wang}
+\addauthor[inst={17,20}]{Yuliang Zheng}
+\addauthor[inst={46,57}]{Martin R. Albrecht}
+\addauthor[inst={44,25}]{Anne Canteaut}
+\addauthor[inst={24,67}]{Claude Crépeau}
+\addauthor[inst={29,49}]{Georg Fuchsbauer}
+\addauthor[inst={9,32}]{Tim Güneysu}
+\addauthor[inst={50,19}]{Martin Hirt}
+\addauthor[inst={15,38}]{Feng-Hao Liu}
+\addauthor[inst={27,33}]{Pascal Paillier}
+\addauthor[inst={40,57}]{Omkant Pandey}
+\addauthor[inst={44,20}]{Abhi Shelat}
+\addauthor[inst={19,11}]{Keisuke Tanaka}
+\addauthor[inst={27,14}]{Meiqin Wang}
+\addauthor[inst={31,24}]{Hong-Sheng Zhou}
+\addauthor[inst={18,39}]{Melissa Chase}
+\addauthor[inst={36,16}]{Sangjin Lee}
+\addauthor[inst={25,69}]{Takahiro Matsuda}
+\addauthor[inst={14,57}]{Ivica Nikolić}
+\addauthor[inst={13,18}]{Adam O'Neill}
+\addauthor[inst={40,11}]{Xavier Boyen}
+\affiliation[country={Greece}]{University of Peloponnese}
+\affiliation[country={China}]{Inner Mongolia University of Science and Technology}
+\affiliation[country={Japan}]{Surugadai University}
+\affiliation[country={Indonesia}]{Universitas Islam Kadiri}
+\affiliation[country={Germany}]{Alfons-Kern-Schule Pforzheim}
+\affiliation[country={Netherlands}]{Technische Universiteit Eindhoven}
+\affiliation[country={Russian Federation}]{Rjazanskaja Gosudarstvennaja Radiotehniceskaja Akademija}
+\affiliation[country={France}]{Polytech'Clermont-Ferrand}
+\affiliation[country={Germany}]{Staatliche Fremdsprachenschule Hamburg}
+\affiliation[country={China}]{Liaocheng University}
+\affiliation[country={Taiwan, Province of China}]{Tamkang University}
+\affiliation[country={Denmark}]{TietgenSkolen}
+\affiliation[country={Latvia}]{Rigas Starptautiska ekonomikas un biznesa administracijas augstskola}
+\affiliation[country={India}]{Institute of Technology and Management}
+\affiliation[country={Indonesia}]{Universitas Wangsa Manggala Di Yogyakarta}
+\affiliation[country={United Kingdom}]{University College for the Creative Arts at Canterbury, Epsom, Farnham, Maidstone and Rochester}
+\affiliation[country={China}]{Anhui University of Science and Technology}
+\affiliation[country={United Kingdom}]{Richmond, The American International University in London}
+\affiliation[country={Spain}]{Universidad de Zaragoza}
+\affiliation[country={Japan}]{Hyogo University}
+\affiliation[country={Russian Federation}]{Orenburgskaja Gosudarstvennaja Medicinskaja Akademija}
+\affiliation[country={Russian Federation}]{Tverskoj Institut Ekologii i Prava}
+\affiliation[country={Russian Federation}]{Orenburgskij Gosudarstvennyj Pedagogiceskij Universitet}
+\affiliation[country={Bulgaria}]{Vische transportno utchilichte 'Todor Kablechkov'}
+\affiliation[country={Taiwan, Province of China}]{Chaoyang University of Technology}
+\affiliation[country={Russian Federation}]{Sankt-Peterburgskij Gosudarstvennyj Universitet Ekonomiki i Finansov}
+\affiliation[country={Argentina}]{Instituto Universitario Italiano de Rosario}
+\affiliation[country={Germany}]{Berufliche Schulen Abt. Wirtschaft und Verwaltung Dinslaken}
+\affiliation[country={New Zealand}]{Lincoln University}
+\affiliation[country={Taiwan, Province of China}]{Vanung University}
+\affiliation[country={Japan}]{International Pacific University}
+\affiliation[country={Russian Federation}]{Sibirskij Gosudarstvennyj Universitet Telekommunikacij i Informatiki}
+\affiliation[country={Russian Federation}]{Vserossijskij Gosudarstvennyj Institut Kinematografii im. S.A. Gerasimova}
+\affiliation[country={Indonesia}]{Universitas Panjisakti Singaraja}
+\affiliation[country={India}]{University of Burdwan}
+\affiliation[country={Japan}]{The Graduate University for Advanced Studies}
+\affiliation[country={China}]{University of Shanghai for Science and Technology}
+\affiliation[country={Mexico}]{Universidad Latina, S.C., Campus Centro}
+\affiliation[country={Japan}]{Kansai Gaidai University}
+\affiliation[country={Japan}]{Hachinohe University}
+\affiliation[country={Germany}]{Werner-von-Siemens-Schule Cham}
+\affiliation[country={Japan}]{Fukushima College}
+\affiliation[country={Korea, Republic of}]{Ajou University}
+\affiliation[country={France}]{Institut d'Etudes politiques de Rennes}
+\affiliation[country={France}]{Ecole pratique des Hautes Etudes}
+\affiliation[country={Russian Federation}]{Omskij Gosudarstvennyj Pedagogiceskij Universitet}
+\affiliation[country={Russian Federation}]{Sankt-Peterburgskaja Gosudarstvennaja Konservatorija imeni N.A. Rimskogo-Korsakova}
+\affiliation[country={Russian Federation}]{Pjatigorskaja Gosudarstvennaja Farmacevticeskaja Akademija}
+\affiliation[country={United Kingdom}]{University of Oxford}
+\affiliation[country={Venezuela}]{Universidad Nueva Esparta}
+\affiliation[country={Ukraine}]{Sums'kij Nacional'nij Agrarnij Universitet}
+\affiliation[country={Indonesia}]{Universitas Sisingamangaraja Xll Tapanuli Utara Di Siborong-Borong}
+\affiliation[country={China}]{Henan Normal University}
+\affiliation[country={Thailand}]{Assumption University}
+\affiliation[country={Poland}]{Uniwersytet Szczecinski}
+\affiliation[country={Kyrgyzstan}]{Kyrgyz-Turk Manas Universiteti}
+\affiliation[country={Japan}]{Takushoku University}
+\affiliation[country={Russian Federation}]{Rostovskij-na-Donu Institut Biznesa i Prava}
+\affiliation[country={Germany}]{Berufskolleg Kemnastrasse Recklinghausen}
+\affiliation[country={Malaysia}]{Universiti Pendidikan Sultan Idris}
+\affiliation[country={Philippines}]{Bukidnon State College}
+\affiliation[country={China}]{Taishan Medical College}
+\affiliation[country={India}]{Periyar University}
+\affiliation[country={Spain}]{Universidad de A Coruna}
+\affiliation[country={Russian Federation}]{Moskovskij Gosudarstvennyj Institut Stali i Splavov (Tehnologiceskij Universitet)}
+\affiliation[country={Morocco}]{UniversitÃ© Hassan II Mohammedia}
+\affiliation[country={Indonesia}]{Institut Keguruan dan Ilmu Pendidikan PGRI Malang}
+\affiliation[country={Japan}]{Utsunomiya Kyowa University}
+\affiliation[country={Philippines}]{Bicol University}
+\affiliation[country={Russian Federation}]{Tomskij Gosudarstvennyj Pedagogiceskij Universitet}
+\affiliation[country={Philippines}]{Surigao State College of Technology}
+\affiliation[country={Bangladesh}]{Dhaka International University}
+\affiliation[country={Ethiopia}]{Debub University}
+\affiliation[country={Thailand}]{Mahawithayalai Rajabhat Udonthani}
+\affiliation[country={Germany}]{Staatl. Berufsschule Weilheim i.OB}
+\affiliation[country={Japan}]{Shuchiin University}
+\affiliation[country={China}]{Nanchang University}
+\affiliation[country={India}]{Visvesvaraya National Institute of Technology}
+\affiliation[country={Russian Federation}]{Kemerovskij Gosudarstvennyj Universitet}
+\affiliation[country={Poland}]{Akademia Wychowania Fizycznego im. Eugeniusza Piaseckiego w Poznaniu}
+\affiliation[country={Japan}]{Osaka Medical College}
+\affiliation[country={Indonesia}]{Universitas Negeri Gorontalo}
+\affiliation[country={Indonesia}]{Universitas Muhammadiyah Palu}
+\affiliation[country={Greece}]{Panepistimion Makedonias}
+\affiliation[country={Germany}]{Theologische Hochschule Friedensau}
+\affiliation[country={Finland}]{Lapin yliopisto}
+\affiliation[country={Lebanon}]{Jamiat Al Bekaa}
+\affiliation[country={United Kingdom}]{Canterbury Christ Church University}
+\affiliation[country={China}]{Wuhan Conservatory of Music}
+\affiliation[country={Germany}]{Berufskolleg Niederberg des Kreises Mettmann Velbert}
+\affiliation[country={Russian Federation}]{Uralskaja Gosudarstvennaja Gorno-Geologiceskaja Akademija}
+\affiliation[country={Mexico}]{Centro Universitario de Desarrollo Empresarial y PedagÃ³gico}
+\affiliation[country={Russian Federation}]{Cecenskij Gosudarstvennyj Universitet}
+\affiliation[country={Thailand}]{Mahawithayalai Hor Kanka Thai}
+\affiliation[country={China}]{Tarim University}
+\affiliation[country={Zimbabwe}]{Zimbabwe Open University}
+\affiliation[country={Indonesia}]{Institut Pertanian Bogor}
+\affiliation[country={Sweden}]{Nackademin}
+\affiliation[country={India}]{Tamil University}
+\affiliation[country={Indonesia}]{Universitas Widya Kartika}
+\affiliation[country={Russian Federation}]{Sankt-Peterburgskaja Gosudarstvennaja Medicinskaja Akademija}
+\affiliation[country={Russian Federation}]{Severnyj Gosudarstvennyj Medicinskij Universitet}
+\affiliation[country={India}]{University of Rajasthan}
+\affiliation[country={Indonesia}]{Universitas Kristen Indonesia Maluku, Ambon}
+\affiliation[country={Mexico}]{Universidad Valle del Bravo}
+\affiliation[country={Ireland}]{Limerick Institute of Technology}
+\affiliation[country={Armenia}]{Hayastani Fransiakan Hamalsaran}
+\affiliation[country={Korea, Republic of}]{Gyeongin National University of Education}
+\affiliation[country={Korea, Republic of}]{Koryo Songgyungwan Taehak}
+\affiliation[country={Portugal}]{Universidade de Lisboa}
+\affiliation[country={Japan}]{Japanese Red Cross Toyota College of Nursing}
+\affiliation[country={Russian Federation}]{Orenburgskij Gosudarstvennyj Universitet}
+\affiliation[country={China}]{Inner Mongolia University}
+\affiliation[country={Switzerland}]{Ecole de Commerce Sierre}
+\affiliation[country={Austria}]{Berufsschule Linz 6}
+\affiliation[country={India}]{PSG College of Technology}
+\affiliation[country={Japan}]{Kibi International University}
+\affiliation[country={Russian Federation}]{Irkutskij Gosudarstvennyj Tehniceskij Universitet}
+\affiliation[country={Thailand}]{Withayalai Thongsook}
+\affiliation[country={Russian Federation}]{Altajskij Ekonomiko-Juridiceskij Institut}
+\affiliation[country={Japan}]{University of Marketing and Distribution Sciences}
+\affiliation[country={Germany}]{Fachhochschule Kaiserslautern}
+\affiliation[country={Russian Federation}]{Citinskij Gosudarstvennyj Universitet}
+\affiliation[country={Indonesia}]{Universitas Veteran Bangun Nusantara Sukoharjo}
+\affiliation[country={Taiwan, Province of China}]{Ming Hsin University of Science and Technology}
+\affiliation[country={Ecuador}]{Universidad Nacional de Chimborazo}
+\affiliation[country={Austria}]{Landesberufsschule Feldbach}
+\affiliation[country={Russian Federation}]{Dalnevostocnyj Gosudarstvennyj Agrarnij Universitet}
+\affiliation[country={Philippines}]{Notre Dame of Marbel University}
+\affiliation[country={Japan}]{Toyama Prefectural University}
+\affiliation[country={China}]{Harbin Medical University}
+\affiliation[country={Singapore}]{Singapore Polytechnic}
+\affiliation[country={China}]{Hubei University of Technology}
+\affiliation[country={Germany}]{Fachhochschule Oldenburg/Ostfriesland/Wilhelmshaven}
+\affiliation[country={Poland}]{Politechnika Bialostocka}
+\affiliation[country={Armenia}]{Azpat-Veteran Datakan Porcagitutyan Ev Hogebanutyan Institut}
+\affiliation[country={Korea, Republic of}]{Cheonan University}
+\affiliation[country={Brazil}]{Faculdade de Engenharia Industrial}
+\affiliation[country={Japan}]{Sakushin Gakuin University}
+\affiliation[country={Netherlands}]{Technische Universiteit Delft}
+\affiliation[country={Japan}]{Kyushu International University}
+\affiliation[country={Switzerland}]{STS Schaffhauser Techniker-Schule}
+\affiliation[country={Italy}]{Scuola Superiore 'Sant' Anna' di Studi Universitari e di Perfezionamento}
+\affiliation[country={Indonesia}]{Universitas Lakidende UNAHAA - Kendari}
+\affiliation[country={Japan}]{Osaka University of Commerce}
+\affiliation[country={Korea, Republic of}]{Hanshin University}
+\affiliation[country={Thailand}]{Mahawithayalai Christian}
+\affiliation[country={Germany}]{Staatl. Berufsschule Wiesau}
+\affiliation[country={Indonesia}]{Universitas Muhammadiyah Jakarta}
+\affiliation[country={Russian Federation}]{Moskovskij Institut MVD Rossii}
+\affiliation[country={United Kingdom}]{The University of Manchester}
+\affiliation[country={Belgium}]{French Community}
+\affiliation[country={Mexico}]{Universidad St. John's, S.C.}
+\affiliation[country={Finland}]{Kuopion yliopisto}
+\affiliation[country={Philippines}]{Lyceum Northwestern University}
+\affiliation[country={Philippines}]{Bohol Institute of Technology - Jagna}
+\affiliation[country={Australia}]{University of New South Wales}
+\affiliation[country={Germany}]{Berufskolleg Warendorf}
+%% \affiliation[country={Singapore}]{Raffles Institution}
+%% \affiliation[country={China}]{Tianjin University of Technology}
+%% \affiliation[country={Argentina}]{Instituto Universitario Naval}
+%% \affiliation[country={Switzerland}]{PÃ¤dagogische Hochschule St. Gallen}
+%% \affiliation[country={Japan}]{Hachinohe Institute of Technology}
+%% \affiliation[country={Russian Federation}]{Moskovskij Universitet 'Turo'}
+%% \affiliation[country={Israel}]{Jerusalem College of Engineering}
+%% \affiliation[country={Mexico}]{Universidad del Valle de Tlaxcala}
+%% \affiliation[country={Indonesia}]{Universitas Tulung Agung}
+%% \affiliation[country={Romania}]{Academia Nationala de Educatie Fizica si Sport din Bucuresti}
+%% \affiliation[country={United Kingdom}]{Prifysgol Cymru}
+%% \affiliation[country={Australia}]{University of South Australia}
+%% \affiliation[country={Japan}]{Kwansei Gakuin University}
+%% \affiliation[country={Ecuador}]{Universidad Agraria del Ecuador}
+%% \affiliation[country={Germany}]{Fachhochschule Esslingen - Hochschule fÃ¼r Sozialwesen Esslingen}
+%% \affiliation[country={China}]{Heilongjiang August 1st Land Reclamation University}
+%% \affiliation[country={Venezuela}]{Universidad Nacional Experimental del Yaracuy}
+%% \affiliation[country={Japan}]{Hokkaido Tokai University}
+%% \affiliation[country={Korea, Republic of}]{Calvin University}
+%% \affiliation[country={Belgium}]{FacultÃ© Polytechnique de Mons}
+%% \affiliation[country={Germany}]{European Business School Oestrich-Winkel}
+%% \affiliation[country={Korea, Republic of}]{Yeungnam University}
+%% \affiliation[country={Taiwan, Province of China}]{Tzu Chi University}
+%% \affiliation[country={Bulgaria}]{Mejdunarodno vische biznes utchilichte}
+%% \affiliation[country={Jordan}]{Jami'at Philadelphia Al-Khassa}
+%% \affiliation[country={Russian Federation}]{Dagestanskaja Gosudarstvennaja Medicinskaja Akademija}
+%% \affiliation[country={Germany}]{Staatliche Zeichenakademie Hanau}
+%% \affiliation[country={Ireland}]{Cork Institute of Technology}
+%% \affiliation[country={Germany}]{StÃ¤dt. Berufschule III Augsburg}
+%% \affiliation[country={China}]{Nanchang Institute of Aeronautical Technology}
+%% \affiliation[country={Poland}]{Slaska Wyzsza Szkola Zarzadzania im. Gen. Jerzego Zietka w Katowicach}
+%% \affiliation[country={Austria}]{Landesberufsschule Baden}
+%% \affiliation[country={China}]{Jishou University}
+%% \affiliation[country={Thailand}]{Mahawithayalai Narathiwat Rajanagarindra}
+%% \affiliation[country={Portugal}]{Universidade Fernando Pessoa}
+%% \affiliation[country={Russian Federation}]{Volgogradskij Gosudarstvennyj Universitet}
+%% \affiliation[country={Azerbaijan}]{'Odlar Yurdu' Universiteti}
+%% \affiliation[country={Indonesia}]{Institut Keguruan dan Ilmu Pendidikan (IKIP) Saraswati Tabanan}
+%% \affiliation[country={Mexico}]{Universidad de Xalapa, A.C.}
+%% \affiliation[country={Germany}]{Staatl. Berufsschule Schrobenhausen}
+%% \affiliation[country={China}]{Qinghai Normal University}
+%% \affiliation[country={Poland}]{Akademia Muzyczna im. Stanislawa Moniuszki w Gdansku}
+%% \affiliation[country={Germany}]{Berufliche Schulen des Odenwaldkreises}
+%% \affiliation[country={Chile}]{Universidad de Magallanes}
+%% \affiliation[country={Russian Federation}]{Belgorodskij Gosudarstvennyj Universitet}
+%% \affiliation[country={Indonesia}]{Universitas Nusa Tenggara Barat}
+%% \affiliation[country={Philippines}]{University of Cebu}
+%% \affiliation[country={Indonesia}]{Universitas Islam '45 Bekasi}
+%% \affiliation[country={China}]{Anhui University}
+%% \affiliation[country={New Zealand}]{Universal College of Learning}
+%% \affiliation[country={Japan}]{Shizuoka University of Welfare}
+%% \affiliation[country={Yemen}]{Hadhramout University of Science and Technology}
+%% \affiliation[country={Netherlands}]{Hogeschool voor Economische Studies Amsterdam (HES)}
+%% \affiliation[country={Taiwan, Province of China}]{Fooyin University}
+%% \affiliation[country={Mexico}]{Universidad Westhill}
+%% \affiliation[country={Japan}]{Shikoku Gakuin University}
+%% \affiliation[country={Russian Federation}]{Omskaja Akademija MVD Rossii}
+%% \affiliation[country={Japan}]{Gihu University of Medical Science}
+%% \affiliation[country={Japan}]{Kenichi Ohmae Graduate School of Business}
+%% \affiliation[country={Ecuador}]{Universidad Cooperativa de Colombia}
+%% \affiliation[country={Netherlands}]{Universiteit van Amsterdam}
+%% \affiliation[country={Korea, Republic of}]{Kongju National University}
+%% \affiliation[country={Latvia}]{Latvijas Lauksaimniecibas Universitate}
+%% \affiliation[country={United Kingdom}]{Edinburgh College of Art}
+%% \affiliation[country={United Kingdom}]{Courtauld Institute of Art, U. of London}
+%% \affiliation[country={United Kingdom}]{University of the Arts London}
+\affiliation[ror     = 031v4g827,
+             onclick = {https://www.nxp.com},
+             street  = {Interleuvenlaan 80},
+             city    = {Leuven},
+             postcode= {3001},
+             country = {Belgium}
+	    ]{NXP S\v{e}mïc{\"o}ndúct\o{}rs}
+\affiliation[country={Elbonia}]{Self}
+\affiliation[country={Freedonia}]{Center for the Study of Idiocy}
+\addfunding[fundref=1241171,
+  grantid=5211-2,
+  country=Elbonia]{Horizon 2020 Framework Programme}
+\addfunding[ror = 042c84f31,
+  country={United States}]{Just another foundation}
+\addfunding[fundref={517622},
+  grantid=57821-3]{National Fantasy Foundation}
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+\genericfootnote{This is the f\d{u}ll version of our paper published at \c{c}rypto.}
+
+\newcommand{\impulse}{impulse}
+\keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
+\begin{document}
+\maketitle
+
+% Provide the abstract of your paper
+\begin{abstract}
+This is the abstract.
+\end{abstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+\lipsum[1-5]
+\end{document}

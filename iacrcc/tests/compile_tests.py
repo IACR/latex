@@ -178,7 +178,7 @@ def test6_test():
     assert output[8] == 'Puret:å and Š ü ıĐ'
 
 def test7_test():
-    # with fontenc and pdflatex, we get malformed output.
+    # with inputenc, fontenc and pdflatex, we get mixed encodings.
     res = get_output('-pdf', Path('test7/main.tex'))
     assert res['proc'].returncode == 0
     # The output file is not UTF-8
@@ -446,4 +446,17 @@ def test20_test():
             assert '2University' not in text
             assert '2 University' not in text
             
+def test21_test():
+    # Check that we need \runningauthors
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test21')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode != 0
+
+def test22_test():
+    # Check that it compiles with \runningauthors
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+        path = Path('test22')
+        res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
+        assert res['proc'].returncode == 0
         
