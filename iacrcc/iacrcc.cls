@@ -130,6 +130,10 @@
 \ifluatex
   % lualatex-math: fixes for mathematics-related LuaLATEX issues
   \RequirePackage{lualatex-math}
+  % Check for existence of luatex85.sty and load it if available.
+  % This should ensure that it work also with newer versions of luatex.
+  % luatex85: The package provides emulation of pdfTEX primitives for LuaTEX v0.85+.
+  \IfFileExists{luatex85.sty}{\RequirePackage{luatex85}}
 \fi
 
 % xcolor: starts from the basic facilities of the color package, 
