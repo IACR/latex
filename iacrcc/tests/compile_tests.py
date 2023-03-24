@@ -42,7 +42,7 @@ def test1_test():
         assert res['proc'].returncode == 0
         assert 'meta' in res
         meta = meta_parse.parse_meta(res['meta'])
-        assert meta['title'] == "Thoughts about \"binary\" functions on $GF(p)$ by Fester Bestertester at 30\u00b0C"
+        assert meta['title'] == "Thoughts about \"binary\" functions and $ on $GF(p)$ by Fester Bestertester at 30\u00b0C"
         assert len(meta['authors']) == 3
         assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
         assert meta['authors'][0]['affiliations'] == ['1','2']
@@ -82,7 +82,7 @@ def test2_test():
         assert affil['postcode'] == '3001'
         assert affil['country'] == 'Belgium'
         assert len(meta['keywords']) == 3
-        assert meta['keywords'][0] == 'Template'
+        assert meta['keywords'][0] == 'Témplate'
         assert meta['keywords'][1] == 'LaTeX'
         assert meta['keywords'][2] == 'IACR'
         assert meta['version'] == 'preprint'
@@ -254,7 +254,7 @@ def test11_test():
         res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
         assert res['proc'].returncode == 0
         meta = meta_parse.parse_meta(res['meta'])
-        assert meta['title'] == 'How not to use the IACR Communications in Cryptology Clåss'
+        assert meta['title'] == 'How not to use the IACR Communications in Cryptology Cláss'
         print(json.dumps(meta,indent=2))
         assert len(meta['keywords']) == 2
         assert meta['keywords'][0] == 'Dirac delta function'
@@ -459,4 +459,5 @@ def test22_test():
         path = Path('test22')
         res = run_engine('-pdflua', path.iterdir(), tmpdirpath)
         assert res['proc'].returncode == 0
-        
+        meta = meta_parse.parse_meta(res['meta'])
+        assert meta['title'] == 'How not to use the IACR Communic̄ations in Cryptology Class'
