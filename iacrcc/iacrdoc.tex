@@ -13,13 +13,11 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
-\usepackage{todonotes}
-
+\usepackage{xcolor}
 \title[running  = {The iacrcc class},
        onclick  = {https://publish.iacr.org/iacrcc},
-       subtitle = {LaTeX Class Documentation (v0.2)},
-      ]
-      {How to Use the IACR Communications in Cryptology Class}
+       subtitle = {LaTeX Class Documentation (v0.24)}
+      ]{How to Use the IACR Communications in Cryptology Class}
 
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
@@ -82,32 +80,27 @@ unnecessary code.
 \begin{itemize}
 \item The production system to which you submit your final version requires
   that the main \LaTeX\ file should be \texttt{main.tex}. You might as
-  well start that way.
-\item The production versions of papers produced with this style will
-  be processed with \texttt{lualatex}.  You can use \texttt{pdflatex}
-  for development, but it lacks modern features for support of UTF-8
-  text and we recommend using \texttt{lualatex} instead.  Do not use
-  any features that are specific to \texttt{pdflatex}, because they
-  will not work in final versions. In particular, do not use the
-  \texttt{fontenc} package; use \texttt{fontspec} instead.
-\item One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
-  files is to automate the production of machine-readable metadata in
-  separate files. Users of \LaTeX\ will already be used to seeing this
-  with the \texttt{.log}, \texttt{.aux}, \texttt{.bbl}, \texttt{.blg},
-  \texttt{.toc}, and \texttt{.out} files produced by \texttt{bibtex}
-  and the \texttt{hyperref} package.  You need not be concerned about
-  these, but if your main \LaTeX\ file is called \texttt{main.tex},
-  then the extra files that are produced are:
-\begin{itemize}
-\item a flat text file \texttt{main.meta} containing all metadata
-  from the paper.  When you run \texttt{lualatex} on
-  \texttt{main.tex}, it will produce the metadata from
-  \texttt{main.tex}, and when you run \texttt{bibtex} and
-  \texttt{lualatex} again, it will append the citation data from
-  bibtex into the \texttt{main.meta} file as well.
-\item a file \texttt{main.abstract} that contains
-  the contents of the abstract for the paper.
-\end{itemize}
+  well start that way by copying \texttt{template.tex} to \texttt{main.tex}.
+\item You should use \texttt{lualatex} or \texttt{xelatex} instead of
+  \texttt{pdflatex}. When you submit your final paper, it will be
+  compiled with \texttt{lualatex}. There is a quite good guide to
+  \texttt{lualatex}~\url{http://tug.ctan.org/info/luatex/lualatex-doc/lualatex-doc.pdf}.
+  You can use \texttt{pdflatex} for development, but it lacks modern
+  features for support of UTF-8 text and we recommend using
+  \texttt{lualatex} instead. The final version of your paper must be
+  compiled with \texttt{lualatex}.
+\item Do not change the default fonts; those are chosen by the journal and not you.
+  In particular, do {\color{red}NOT} use the
+  \texttt{fontenc} package; use \texttt{fontspec} instead. If you have
+  to use a non-standard font for some symbols, then only use
+  unicode-encoded fonts ({\color{red}not T1, not T2, and not OT1}).
+\item Avoid using too many packages. Many authors are lazy and just
+  copy what they used in the past. Some won't work - see the list of
+  acceptable packages at \url{https://publish.iacr.org}. Don't use any
+  package that changes fonts. Don't get clever and start writing
+  \texttt{lua} code in your papers.
+\item Don't try to change the \texttt{hyperref} options or the bibliography style.
+\item Don't use macros like \verb+\if+ inside any metadata like the title or abstract.
 \end{itemize}
 \section{Invocation and usage}
 
@@ -123,7 +116,8 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
   requirements.
 \item[\texttt{[biblatex]}] may be used if you prefer using
   \texttt{biblatex} to \texttt{bibtex}. Note that we do not support options to be
-  passed to biblatex, as they may conflict with the style of the journal.
+  passed to biblatex, as they may conflict with the style of the journal. We use
+  a bibliography style based on the alpha style.
 \item[\texttt{[floatrow]}] load the \texttt{floatrow} package. This is useful
   when you have fancy figures or tables. In either case, \texttt{iacrcc}
   will customize how tables and figures are laid out.
@@ -131,7 +125,7 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
 
 Before submitting your final version, please make sure that it compiles
 properly using \texttt{lualatex} with the \texttt{[version=final]} option
-and check that the author names and affiliation are
+and check that the author names and affiliations are
 correct.
 
 The \texttt{iacrcc} class automatically loads \texttt{hyperref}
@@ -148,18 +142,24 @@ A title is added using the \verb+\title+ macro, but with a few other options:
 {\tt running} & The running title displayed in the headers.\\
 {\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
 {\tt subtitle} & Provide a subtitle.\\
+{\tt plaintext} & A text version of the title.\\
 \end{tabular}
 \end{center}
-\noindent  Do not use author-defined macros in arguments to
-\texttt{\textbackslash title}. An example using all the optional
-options would look like:
+\noindent An example using all the optional options would look like:
 
 \begin{verbatim}
 \title[running  = {IACR Communications in Cryptology Class},
        onclick  = {https://github.com/IACR/latex},
-       subtitle = {A Template}
-      ]{How to Use the IACR Communications in Cryptology Class}
+       subtitle = {A Template},
+       plaintext = {How to Use this class}
+      ]{How to Use this class\thanks{Thanks Mom!}}
 \end{verbatim}
+The \verb+plaintext+ version is only required if you use macros in
+your title. Inline mathematics and accents like \verb+\"u+ are allowed
+in plain text, but groups with curly brackets \verb+{...}+ are not
+allowed except within mathematics. \verb+f{\"u}r+ may be written as
+\verb+f\"ur+, but \LaTeX\ has defaulted to UTF-8 input since 2019, so
+just ü is preferred.
 
 \subsection{Footnotes}
 You may use \texttt{\textbackslash{}genericfootnote\{footnotetext\}}
@@ -316,7 +316,7 @@ text-only keywords; for example:
 
 \subsection{Abstract}
 Abstracts are entered with the \texttt{abstract} environment as usual,
-but do not use author-defined macros within the abstract.  Note that
+but do not use macros within the abstract except for inside mathematics.  Note that
 the keywords should be given before starting the abstract
 environment. The \texttt{iacrcc} will automatically produce a file
 \texttt{.abstract} that contains the contents of the abstract.
@@ -344,6 +344,28 @@ symbol at the end of the proof.
 If the QED symbol
 is typeset at a wrong position, you can force its position with
 \verb+\qedhere+.
+
+\section{Auxiliary files}
+One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
+  files is to automate the production of machine-readable metadata in
+  separate files. Users of \LaTeX\ will already be used to seeing this
+  with the \texttt{.log}, \texttt{.aux}, \texttt{.bbl}, \texttt{.blg},
+  \texttt{.toc}, and \texttt{.out} files produced by \texttt{bibtex}
+  and the \texttt{hyperref} package.  You need not be concerned about
+  these, but if your main \LaTeX\ file is called \texttt{main.tex},
+  then the extra files that are produced are:
+\begin{itemize}
+\item a flat text file \texttt{main.meta} containing all metadata
+  from the paper.  When you run \texttt{lualatex} on
+  \texttt{main.tex}, it will produce the metadata from
+  \texttt{main.tex}, and when you run \texttt{bibtex} and
+  \texttt{lualatex} again, it will append the citation data from
+  bibtex into the \texttt{main.meta} file as well.
+\item a file \texttt{main.abstract} that contains
+  the contents of the abstract for the paper. This will be used to show
+  the abstract on the web, which is why you should avoid using macros here
+  except in mathematics.
+\end{itemize}
 
 \section{Typesetting the Bibliography}
 \label{sec:biblio}
@@ -413,7 +435,6 @@ We recommend the \texttt{booktabs} package to typeset tables.
 
 We recommend the \texttt{algorithmicx} packages for algorithms (in
 particular, \texttt{algpseudocodex} for pseudo-code).
-
 
 \section{Further information}
 

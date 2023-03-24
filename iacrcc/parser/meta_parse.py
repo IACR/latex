@@ -7,6 +7,7 @@ import json
 from nameparser import HumanName
 from pathlib import Path
 from pylatexenc.latex2text import LatexNodes2Text
+import re
 
 def get_key_val(line):
     """If line has form key: value, then return key, value."""
@@ -17,6 +18,12 @@ def get_key_val(line):
     val = line[colon+1:].strip()
     return key, val
     
+def remove_macros(txt):
+    txt = txt.replace(r'\protect ', '').replace(r'\\ ', ' ')
+    txt = re.sub(r'\\thanks  {[^}]*} ?', '', txt)
+    txt = re.sub(r'\\index  {[^}]*}', '', txt)
+    return txt.strip()
+
 def parse_meta(metastr):
     """Read the meta file line by line. When we encounter author: or affiliation: or title: or
        citation: we know how to process subsequent lines that start with two spaces.
@@ -84,7 +91,7 @@ def parse_meta(metastr):
             data['version'] = line[8:].strip()
             index += 1
         elif line.startswith('title:'):
-            data['title'] = decoder.latex_to_text(line[6:].strip())
+            data['title'] = decoder.latex_to_text(remove_macros(line[6:].strip()))
             index += 1
             if index < numlines and lines[index].startswith('  '):
                 k,v = get_key_val(lines[index])
@@ -92,7 +99,7 @@ def parse_meta(metastr):
                     data['subtitle'] = v
                     index += 1
         elif line.startswith('keywords:'):
-            data['keywords'] = [k.strip() for k in line[9:].strip().split(',')]
+            data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
             index += 1
         elif line.startswith('citation:'):
             parts = line.split()
