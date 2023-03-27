@@ -236,13 +236,13 @@
 \usetikzlibrary{svg.path}
 
 \definecolor{orcidlogocol}{HTML}{A6CE39}
-\tikzset{
-  orcidlogo/.pic={
+\tikzset{%
+  orcidlogo/.pic={%
     \fill[orcidlogocol] svg{M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
     \fill[white] svg{M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
                  svg{M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
                  svg{M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1C84.2,46.7,88.7,51.3,88.7,56.8z};
-  }
+  }%
 }
 
 % Reciprocal of the height of the svg whose source is above.  The
@@ -253,13 +253,13 @@
 \newlength{\@curXheight}
 
 \DeclareRobustCommand\orcidlink[1]{%
-\texorpdfstring{%
-\setlength{\@curXheight}{\fontcharht\font`X}%
-\href{https://orcid.org/#1}{\XeTeXLinkBox{\mbox{%
-\begin{tikzpicture}[yscale=-\@OrigHeightRecip*\@curXheight,
-xscale=\@OrigHeightRecip*\@curXheight,transform shape]
-\pic{orcidlogo};
-\end{tikzpicture}%
+  \texorpdfstring{%
+    \setlength{\@curXheight}{\fontcharht\font`X}%
+    \href{https://orcid.org/#1}{\XeTeXLinkBox{\mbox{%
+    \begin{tikzpicture}[yscale=-\@OrigHeightRecip*\@curXheight,%
+      xscale=\@OrigHeightRecip*\@curXheight,transform shape]%
+      \pic{orcidlogo};
+    \end{tikzpicture}%
 }}}}{}}
 
 % End of macros for orcidlink
@@ -277,8 +277,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 \def\IACR@author@params@set@keys#1{%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
-\def\IACR@author@params@get#1{%%
+
+\def\IACR@author@params@get#1{%
   \pgfkeysvalueof{/IACR-author/entities/#1}}
+
 \newcommand\IACR@author@params@clearkeys{%
   \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,email=\@empty}%
 }
@@ -295,10 +297,12 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 \def\IACR@affiliation@params@set@keys#1{%
   \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
+
 \def\IACR@affiliation@params@get#1{%%
   \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
+
 \newcommand\IACR@affiliation@params@clearkeys{%
-  \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,postcode=\@empty,country=\@empty}%
+ \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,postcode=\@empty,country=\@empty}%
 }
 
 \pgfkeys{/IACR-title/entities/.cd,
@@ -308,8 +312,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 }
 \def\IACR@title@params@set@keys#1{%
   \pgfkeys{/IACR-title/entities/.cd,#1}}
-\def\IACR@title@params@get#1{%%
+
+\def\IACR@title@params@get#1{%
   \pgfkeysvalueof{/IACR-title/entities/#1}}
+
 \newcommand\IACR@title@params@clearkeys{%
   \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
 }
@@ -358,7 +364,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newwrite\iacrmeta
 \immediate\openout\iacrmeta=\jobname.meta
 
-\AtEndDocument{
+\AtEndDocument{%
   \immediate\closeout\iacrmeta%
   % Check if either \title, \addauthor or \affiliation macros were redefined
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
@@ -393,9 +399,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \ExplSyntaxOn
 \ifdefined\text_purify:n
 \else
-  \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}
+  \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}%
 \fi
-\cs_new:Npn\@writemeta#1{
+\cs_new:Npn\@writemeta#1{%
   \let\protect\@unexpandable@protect
   \ifdefined\text_purify:n
     \immediate\write\iacrmeta{\text_purify:n #1}%
@@ -430,7 +436,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \renewcommand\thefootnote{}\footnotetext{\IACR@displayemails}%
       \endgroup
     \fi
-    \ifcsstring{@IACRversion}{final}{
+    \ifcsstring{@IACRversion}{final}{%
       % When we produce the final version we need at least one e-mail address  
       \ifnum\theIACR@email@cnt<1\relax
         \ClassError{iacrcc}{Provide at least one e-mail address for the final version}{}%
@@ -523,13 +529,13 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \newcommand{\IACRSS}{\space\space}
 
 % We do not support \author, use \addauthor instead
-\renewcommand\author[2][]{
+\renewcommand\author[2][]{%
   \ClassError{iacrcc}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
 
 \newcommand\surname[1]{#1}
 
-\newcommand\addauthor[2][]{%    
+\newcommand\addauthor[2][]{%
   % Some very basic checking if addauthor is used correctly
   % Check if the name contains an ","
   \noexpandarg\IfSubStr{\detokenize{#2}}{,}{%
@@ -626,7 +632,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@author@params@clearkeys%
 }
 
-\let\store@addauthor\addauthor  % Save macro away
+\let\store@addauthor\addauthor% Save macro away
 
 % Define the \addfunding macro to capture funding meta-data
 \newcommand{\addfunding}[2][\@empty]{%
@@ -673,7 +679,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
 }
 
-\let\store@title\title  % Save macro away
+\let\store@title\title% Save macro away
 
 \newcommand\affiliation[2][]{%
   \stepcounter{IACR@inst@cnt}%
@@ -707,7 +713,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \@writemeta{\IACRSS postcode: \@IACRpostcode}%
   \fi
   \ifx\@IACRcountry\@empty
-    \ifcsstring{@IACRversion}{final}{
+    \ifcsstring{@IACRversion}{final}{%
       \ClassError{iacrcc}{Specify a country for each affiliation for the final version}{}%
     }{}
   \else
@@ -729,7 +735,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \IACR@affiliation@params@clearkeys%
 }
 
-\let\store@affiliation\affiliation  % Save macro away
+\let\store@affiliation\affiliation% Save macro away
 
 \if@anonymous
   \gdef\@author{Anonymous Submission to \publname}%
@@ -755,8 +761,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
 }
   
-\def\fnmsep{\unskip$^,$}
-
 % fancyhdr: extensive control of page headers and footers in LATEX2ε
 \RequirePackage{fancyhdr}
 
@@ -776,16 +780,16 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \usebibmacro{name:andothers}%
     {\renewcommand{\bibnamedelima}{ }\renewcommand{\bibnamedelimi}{ }%
       \@writemeta{\IACRSS author: \expanded{\namepartgiven\ifdefvoid{\namepartprefix}{}{ \namepartprefix } \namepartfamily\ifdefvoid{\namepartsuffix}{}{, \namepartsuffix}}}%
-      \@writemeta{\IACRSS surname:\ifdefvoid{\namepartprefix}{}{ \namepartprefix} \namepartfamily}}
-  }
+      \@writemeta{\IACRSS surname:\ifdefvoid{\namepartprefix}{}{ \namepartprefix} \namepartfamily}}%
+  }%
   % We use a sourcemap to copy certain fields to the side so we can
   % include them in the .meta file. biblatex makes it hard to recover
   % some fields intact such as AUTHOR, EDITOR, PUBLISHER, LOCATION, and
   % PAGES. biber is able to parse these, but they get rewritten in a way
   % that is inconvenient to copy them to the .meta file. There may
   % be a better way to do this, but biblatex is complicated.
-  \DeclareSourcemap{
-    \maps[datatype=bibtex,overwrite=true]{
+  \DeclareSourcemap{%
+    \maps[datatype=bibtex,overwrite=true]{%
       \map{% copy author to usera
         \step[fieldsource=author,]
         \step[fieldset=usera,origfieldval,append]
@@ -820,11 +824,11 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
       }
     }
   }
-  \AtEndPreamble{
+  \AtEndPreamble{%
     % TODO: this does not handle ~ properly. Maybe other primitives?
     \newcommand{\@writemkv}[2]{%
       \ifstrempty{\@metaval}{}{\@writemeta{\IACRSS #1: #2}}}
-    \AtEveryBibitem{
+    \AtEveryBibitem{%
       \@writemeta{citation: \strfield{entrytype} \strfield{entrykey}}
       \iffieldundef{title}{}{\@writemkv{title}{\strfield{title}}}
       \iffieldundef{subtitle}{}{\@writemkv{subtitle}{\strfield{subtitle}}}
@@ -866,14 +870,14 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   }
 \fi%!biblatex
 
-\ifcsstring{@IACRversion}{final}{
+\ifcsstring{@IACRversion}{final}{%
   % totpages: count pages in a document, and report last page number
   \RequirePackage{totpages}
   \def\IACR@lp{\pageref*{TotPages}}%
 }{}
 
 \global\let\@IACR@License\@empty%
-\newcommand\license[1]{
+\newcommand\license[1]{%
   \gdef\@IACR@License{#1}%
   \def\@IACR@CCby{CC-by}%
   \ifx\@IACR@License\@IACR@CCby%
@@ -886,7 +890,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 
 \fancypagestyle{title}{%
   \fancyhf{} % clear all header and footer fields
-  \ifcsstring{@IACRversion}{final}{
+  \ifcsstring{@IACRversion}{final}{%
       \ifx\@IACR@License\@empty
         \ClassError{iacrcc}{Please specify a license when using version=final}{}%
       \fi
@@ -901,10 +905,10 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         \doclicenseText%
         \hfill{}%
         \doclicenseImage[imagewidth=4em]\\[.1em]%
-        \if@IACR@Received Received: \IACR@Received \hfill{} \fi%
-        \if@IACR@Revised Revised: \IACR@Revised \hfill{} \fi%
-        \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{} \fi%
-        \if@IACR@Published Published: \IACR@Published \fi%
+        \if@IACR@Received Received: \IACR@Received \hfill{}\fi%
+        \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
+        \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
+        \if@IACR@Published Published: \IACR@Published\fi%
       }%
       % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
       \if@doclicense@LongTextForHyperref
@@ -927,7 +931,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \def\thanks##1{}%
     \def\inst##1{}%
     \def\instwcomma##1{}%
-    \def\fnmsep{}%
     \def\\{}%
     \def\footnote##1{}%
     \setcounter{IACR@author@cnt}{1}%
@@ -954,15 +957,15 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 \ExplSyntaxOn
 \prg_generate_conditional_variant:Nnn \tl_if_eq:nn { e } { T,F,TF }
 \cs_new_protected:Npn \onlystring:nn #1#2
-{
+{%
   \tl_if_eq:enTF { \text_purify:n { #1 } } { #1 }
   {% It's ok, do nothing.
   }
-  { % raise an error
-    % \PackageError{isstring}{#2 ^^J(#1)}{}
-    #2
+  {% raise an error
+   % \PackageError{isstring}{#2 ^^J(#1)}{}
+   #2
   }
- }
+}
 
 % Usage: \ifnotstring{I'm not text $\mathbb{a}$ so}{execute this}
 \NewDocumentCommand{\ifnotstring}{mm}{\onlystring:nn{#1}{#2}}
@@ -971,7 +974,7 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
 % \IACR@keywords may contain mathematics for display in LaTeX.
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
 
-\newcommand{\keywords}[2][\@empty]{
+\newcommand{\keywords}[2][\@empty]{%
   \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
     \ifnotstring{#2}{%
@@ -995,7 +998,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
-  \VerbatimOut{\jobname.abstract}}{
+  \VerbatimOut{\jobname.abstract}}%
+  {%
   \endVerbatimOut
   \input{\jobname.abstract}
   \ifx\IACR@keywords\@empty\else
@@ -1028,8 +1032,8 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
   %% PDF title
   \hypersetup{pdftitle={\@plaintitle}}
   % PDF metadata
-  \ifcsstring{@IACRversion}{final}{
-    \if@hyperxmp@doi{
+  \ifcsstring{@IACRversion}{final}{%
+    \if@hyperxmp@doi
       \hypersetup{%
         pdfdoi=\IACR@DOI,%
         pdfissn=\IACR@ISSN,%
@@ -1039,7 +1043,6 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
         pdfissuenum={\IACR@no},%
         pdfpagerange={\IACR@fp-\IACR@lp},%
       }
-    }
     \fi%hyperxmp@doi
   }{} % final
 }
@@ -1144,9 +1147,9 @@ xscale=\@OrigHeightRecip*\@curXheight,transform shape]
     \ifnum\interlinepenalty>-\linenopenaltypar
       \global\holdinginserts\thr@@
       \advance\interlinepenalty \linenopenalty
-     \ifhmode                                   % v4.3
-      \advance\predisplaypenalty \linenopenalty
-     \fi
+      \ifhmode                                   % v4.3
+        \advance\predisplaypenalty \linenopenalty
+      \fi
       \advance\interdisplaylinepenalty \linenopenalty
     \fi
   \fi
