@@ -1,5 +1,5 @@
-\def\fileversion{0.23}
-\def\filedate{2023/03/02}
+\def\fileversion{0.24}
+\def\filedate{2023/03/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -309,16 +309,13 @@
   running/.initial=\@empty,
   onclick/.initial=\@empty,
   subtitle/.initial=\@empty,
+  plaintext/.initial={},
 }
 \def\IACR@title@params@set@keys#1{%
   \pgfkeys{/IACR-title/entities/.cd,#1}}
 
 \def\IACR@title@params@get#1{%
   \pgfkeysvalueof{/IACR-title/entities/#1}}
-
-\newcommand\IACR@title@params@clearkeys{%
-  \IACR@title@params@set@keys{running=\@empty,onclick=\@empty,subtitle=\@empty}%
-}
 
 \pgfkeys{/IACR-funding/entities/.cd,
   country/.initial=\@empty,
@@ -390,6 +387,9 @@
       \ClassError{iacrcc}{An abstract with abstract environment is required}{}%
     }%
   }{}%
+  % This detects \usepackage[T1]{fontenc}
+  \ltx@iffileloaded{t1lmr.fd}{%
+    \ClassWarningNoLine{iacrcc}{^^J--------------------------------------------^^JThe T1 encoding will cause problems in production. Do not use it}}{}
 }
 
 \let\storeprotect\protect
@@ -659,6 +659,68 @@
   \IACR@funding@params@clearkeys%
 }
  
+% This is a complicated implmentation to test whether a token list is
+% appropriate to use as metadata. It is intended to make sure that
+% \write will produce a string without macros, except that macros are
+% allowed in math mode. In a previous implementation we compared the argument
+% to \text_purify:n applied to the argument, but this did not allow accents
+% to be applied. This implmentation is based on tokcycle, which
+% provides handlers for four classes of tokens: character, group,
+% macro, and space.
+\RequirePackage{tokcycle}
+\RequirePackage{listofitems}
+
+% Just a shortcut
+\newcommand\ClassErr[1]{%
+  \ClassError{iacrcc}{#1}{}%
+}
+% #1 is a string to check as just text. No macros are allowed except accents
+%    that are easily converted downstream.
+% #2 is an error message prefix.
+\newcommand\checkstring[2]{%
+  % Since tokcycle treats the math toggle character $ as just another character,
+  % we keep track of whether we are in math mode using this if. This allows us
+  % to allow macros and groups in math mode but not in text mode.
+  \newif\ifInMathMode
+  \newif\ifTokenNotFound
+  \tokcycle{% \typeout{CHARACTER: ##1} % character handler.
+            \if##1$% Check if we see a math toggle catcode 3
+              \ifInMathMode % toggle this
+                \InMathModefalse
+              \else
+                \InMathModetrue
+              \fi
+            \fi}% end of character handler
+           {% \typeout{GROUP: ##1}%      group handler
+            \ifInMathMode  % groups are allowed in math mode.
+            \else
+              \ClassErr{#2:^^J group not allowed outside math mode in^^J #1}
+            \fi}% end of group handler
+           {% \typeout{MACRO: \string##1}%  macro handler
+            \ifInMathMode
+              \ClassWarning{iacrcc}{^^JMacros are not recommended in the title^^J}
+            \else
+              \setsepchar{,}% parsing-separator
+              \TokenNotFoundtrue
+              \readlist\phrase{\ ,\$,\#,\&,\%,\ss,\o,\O,\`,\',\^,\",\=,\~,\.,\u,\v,\H,\t,\c,\d,\b,\l,\L,\space,\{,\},\=,\\,\r}%
+              \def\iacrtmp{##1}%
+              \foreachitem\word\in\phrase{%
+                \ifTokenNotFound
+                  \ifx\iacrtmp\word
+                    \TokenNotFoundfalse
+                  \fi
+                \fi
+              }%
+              \ifTokenNotFound
+                \ClassErr{#2:^^Jmacro \iacrtmp not allowed in #1}%
+              \fi
+           \fi
+           }% end of macro handler
+           {% spaces are just ok.
+           }%
+           {#1}% argument to be parsed by tokcycle
+}
+
 % Provide the title of the paper with its various options
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
@@ -666,10 +728,17 @@
   \pgfkeysgetvalue{/IACR-title/entities/running}{\IACR@title@running}%
   \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\IACR@title@subtitle}%
   \pgfkeysgetvalue{/IACR-title/entities/onclick}{\IACR@title@onclick}%
+  \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\IACR@title@plaintext}%
+  \ifx\IACR@title@plaintext\@empty
+    \checkstring{#2}{error in title}
+  \else%
+     \gdef\@plaintitle{\IACR@title@plaintext}%
+     \expandafter\checkstring\expandafter{\IACR@title@plaintext}{plaintext argument to title must be plain text}%
+  \fi
   \if\relax\IACR@title@onclick\relax
-    \gdef\@title{\@plaintitle}%
+    \gdef\@title{#2}%
   \else
-    \gdef\@title{\href{\IACR@title@onclick}{\color{black}{\@plaintitle}}}%
+    \gdef\@title{\href{\IACR@title@onclick}{\color{black}{#2}}}%
   \fi
   \if\relax\IACR@title@running\relax
     \gdef\IACR@title@running{\@plaintitle}%
@@ -951,40 +1020,16 @@
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
 \def\IACR@keywords{}
-
-% Macro \ifnotstring is used to check if an argument is just a string.
-% We use it for \keywords but can be useful for other metadata.
-\ExplSyntaxOn
-\prg_generate_conditional_variant:Nnn \tl_if_eq:nn { e } { T,F,TF }
-\cs_new_protected:Npn \onlystring:nn #1#2
-{%
-  \tl_if_eq:enTF { \text_purify:n { #1 } } { #1 }
-  {% It's ok, do nothing.
-  }
-  {% raise an error
-   % \PackageError{isstring}{#2 ^^J(#1)}{}
-   #2
-  }
-}
-
-% Usage: \ifnotstring{I'm not text $\mathbb{a}$ so}{execute this}
-\NewDocumentCommand{\ifnotstring}{mm}{\onlystring:nn{#1}{#2}}
-\ExplSyntaxOff
-
 % \IACR@keywords may contain mathematics for display in LaTeX.
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
 
 \newcommand{\keywords}[2][\@empty]{%
   \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
-    \ifnotstring{#2}{%
-      \ClassError{iacrcc}{Optional plaintext keyword argument required if keywords contain macros}%
-    }%
+    \checkstring{#2}{Keywords should be free of macros. Use optional argument to \string\keywords}
     \gdef\IACR@text@keywords{#2}%
   \else
-    \ifnotstring{#1}{%
-      \ClassError{iacrcc}{Optional argument to keywords may not contain macros}%
-    }%
+    \checkstring{#1}{optional argument to keywords may not contain macros.}
     \gdef\IACR@text@keywords{#1}%
   \fi
 }
