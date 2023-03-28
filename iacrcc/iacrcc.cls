@@ -274,6 +274,7 @@
   footnote/.initial=\@empty,
   onclick/.initial=\@empty,
   email/.initial=\@empty,
+  surname/.initial=\@empty,
 }
 \def\IACR@author@params@set@keys#1{%
   \pgfkeys{/IACR-author/entities/.cd,#1}}
@@ -282,7 +283,7 @@
   \pgfkeysvalueof{/IACR-author/entities/#1}}
 
 \newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,email=\@empty}%
+  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,email=\@empty,surname=\@empty}%
 }
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
@@ -533,10 +534,10 @@
   \ClassError{iacrcc}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
 
-\newcommand\surname[1]{#1}
-
 \newcommand\addauthor[2][]{%
-  % Some very basic checking if addauthor is used correctly
+  \MathAllowedInCheckStringfalse
+  \checkstring{#2}{author names should not contain macros or math}%
+  % Some additional checks on the if addauthor is used correctly
   % Check if the name contains an ","
   \noexpandarg\IfSubStr{\detokenize{#2}}{,}{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
@@ -546,19 +547,10 @@
     \ClassError{iacrcc}{Affiliations must follow authors}%
   \fi
   % Do not use " and " in your author name: this might indicate incorrect usage
-  % The usage of "\and" will not and throw an error.
   \noexpandarg\IfSubStr{#2}{ and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
-  % Do not use " \and " in your author name: this might indicate incorrect usage
-  % The usage of "\and" will not and throw an error.
-  \noexpandarg\IfSubStr{#2}{ \and }{%
-    \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
-  }{}%
-  % Do not use a newline "\newline" in your author name to try and typeset this yourself.
-  \noexpandarg\IfSubStr{#2}{\newline}{%
-    \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
-  }{}%
+  % No newline is allowed in addauthor
   \noexpandarg\IfSubStr{#2}{\\}{%
     \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
   }{}% 
@@ -567,11 +559,17 @@
   %
   % Write out the author in the meta file.
   \@writemeta{author:}%
-  \renewcommand\surname[1]{##1}%
   \IACR@author@params@set@keys{#1}%
   \pgfkeysgetvalue{/IACR-author/entities/footnote}{\IACRfootnote}%
   \expandafter\let\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname\IACRfootnote% Copy the pgf key
+  \pgfkeysgetvalue{/IACR-author/entities/surname}{\IACR@surname}%
   \@writemeta{\IACRSS name: #2}%
+  \if\relax\IACR@surname\relax\else
+    % If a surname is provided does some basic sanity checking on the string
+    \MathAllowedInCheckStringfalse
+    \expandafter\checkstring\expandafter{\IACR@surname}{surname should not contain macros or math}%
+    \@writemeta{\IACRSS surname: \IACR@surname}%
+  \fi
   \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
   \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
   \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
@@ -674,51 +672,78 @@
 \newcommand\ClassErr[1]{%
   \ClassError{iacrcc}{#1}{}%
 }
+
+% Macro which specifies if math is allowed in the 
+% first argument to \checkstring
+\newif\ifMathAllowedInCheckString
+\MathAllowedInCheckStringtrue
+
+% Only check for macros when lualatex is used:
+% this implies for usage with the "final" version.
+% This is because of some problems with pdflatex
+% and special characters which are not recognized.
+\newif\ifTokenNotFound
+\ifluatex
+\newcommand\IsMacroAllowed[3]{%
+  \typeout{MACROCHECK: #1}%
+  \TokenNotFoundtrue
+  \setsepchar{,}% parsing-separator
+  % List of macros which are allowed
+  \readlist\phrase{\ ,\$,\#,\&,\%,\ss,\o,\O,\`,\',\^,\",\=,\~,\.,\u,\v,\H,\t,\c,\d,\b,\l,\L,\space,\{,\},\=,\\,\r}%
+  \def\iacrtmp{#1}%
+  \foreachitem\word\in\phrase{%
+    \ifTokenNotFound
+      \ifx\iacrtmp\word
+        \TokenNotFoundfalse
+      \fi
+    \fi
+  }%
+  \ifTokenNotFound
+    \ClassErr{#3:^^Jmacro \iacrtmp not allowed in #2}%
+  \fi
+}
+\else
+\newcommand\IsMacroAllowed[3]{}%
+\fi
+
 % #1 is a string to check as just text. No macros are allowed except accents
-%    that are easily converted downstream.
+%    that are easily converted downstream and except in math mode. 
 % #2 is an error message prefix.
 \newcommand\checkstring[2]{%
   % Since tokcycle treats the math toggle character $ as just another character,
   % we keep track of whether we are in math mode using this if. This allows us
   % to allow macros and groups in math mode but not in text mode.
   \newif\ifInMathMode
-  \newif\ifTokenNotFound
-  \tokcycle{% \typeout{CHARACTER: ##1} % character handler.
-            \if##1$% Check if we see a math toggle catcode 3
-              \ifInMathMode % toggle this
-                \InMathModefalse
-              \else
-                \InMathModetrue
-              \fi
-            \fi}% end of character handler
-           {% \typeout{GROUP: ##1}%      group handler
-            \ifInMathMode  % groups are allowed in math mode.
-            \else
-              \ClassErr{#2:^^J group not allowed outside math mode in^^J #1}
-            \fi}% end of group handler
-           {% \typeout{MACRO: \string##1}%  macro handler
-            \ifInMathMode
-              \ClassWarning{iacrcc}{^^JMacros are not recommended in the title^^J}
-            \else
-              \setsepchar{,}% parsing-separator
-              \TokenNotFoundtrue
-              \readlist\phrase{\ ,\$,\#,\&,\%,\ss,\o,\O,\`,\',\^,\",\=,\~,\.,\u,\v,\H,\t,\c,\d,\b,\l,\L,\space,\{,\},\=,\\,\r}%
-              \def\iacrtmp{##1}%
-              \foreachitem\word\in\phrase{%
-                \ifTokenNotFound
-                  \ifx\iacrtmp\word
-                    \TokenNotFoundfalse
-                  \fi
-                \fi
-              }%
-              \ifTokenNotFound
-                \ClassErr{#2:^^Jmacro \iacrtmp not allowed in #1}%
-              \fi
-           \fi
-           }% end of macro handler
-           {% spaces are just ok.
-           }%
-           {#1}% argument to be parsed by tokcycle
+  \tokcycle{ \typeout{CHARACTER: ##1} % character handler.
+    \if##1$% Check if we see a math toggle catcode 3
+      \ifMathAllowedInCheckString
+        \ifInMathMode % toggle this
+          \InMathModefalse
+        \else
+          \InMathModetrue
+        \fi
+      \else
+        \ClassErr{#2:^^J math not allowed in ^^J #1}
+      \fi
+    \fi}% end of character handler
+    { \typeout{GROUP: ##1}%      group handler
+    \ifInMathMode  % groups are allowed in math mode.
+    \else
+      % Recurse and check this group: this allows things like {\`e}
+      \checkstring{##1}{#2}%
+    \fi}% end of group handler
+    { \typeout{MACRO: \string##1}%  macro handler
+    \ifInMathMode
+      \ClassWarning{iacrcc}{^^JMacros are not recommended in the title^^J}
+    \else
+      \IsMacroAllowed{##1}{#1}{#2}%
+    \fi
+    }% end of macro handler
+    {% spaces are just ok.
+    }%
+    {#1}% argument to be parsed by tokcycle
+  % Reset the macro to check for math to the default (true) value
+  \MathAllowedInCheckStringtrue
 }
 
 % Provide the title of the paper with its various options
@@ -731,7 +756,7 @@
   \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\IACR@title@plaintext}%
   \ifx\IACR@title@plaintext\@empty
     \checkstring{#2}{error in title}
-  \else%
+  \else
      \gdef\@plaintitle{\IACR@title@plaintext}%
      \expandafter\checkstring\expandafter{\IACR@title@plaintext}{plaintext argument to title must be plain text}%
   \fi
@@ -751,7 +776,10 @@
 \let\store@title\title% Save macro away
 
 \newcommand\affiliation[2][]{%
-  \stepcounter{IACR@inst@cnt}%
+  \stepcounter{IACR@inst@cnt}%  
+  % If a affiliation name is provided does some basic sanity checking on the string
+  \MathAllowedInCheckStringfalse
+  \checkstring{#2}{Affiliation name should not contain macros or math}% 
   \@writemeta{affiliation:}%
   \@writemeta{\IACRSS name: #2}%
   \IACR@affiliation@params@set@keys{#1}%
