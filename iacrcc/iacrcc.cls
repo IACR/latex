@@ -685,7 +685,7 @@
 \newif\ifTokenNotFound
 \ifluatex
 \newcommand\IsMacroAllowed[3]{%
-  \typeout{MACROCHECK: #1}%
+  %\typeout{MACROCHECK: #1}%
   \TokenNotFoundtrue
   \setsepchar{,}% parsing-separator
   % List of macros which are allowed
@@ -714,7 +714,7 @@
   % we keep track of whether we are in math mode using this if. This allows us
   % to allow macros and groups in math mode but not in text mode.
   \newif\ifInMathMode
-  \tokcycle{ \typeout{CHARACTER: ##1} % character handler.
+  \tokcycle{% \typeout{CHARACTER: ##1} % character handler.
     \if##1$% Check if we see a math toggle catcode 3
       \ifMathAllowedInCheckString
         \ifInMathMode % toggle this
@@ -726,13 +726,13 @@
         \ClassErr{#2:^^J math not allowed in ^^J #1}
       \fi
     \fi}% end of character handler
-    { \typeout{GROUP: ##1}%      group handler
+    {% \typeout{GROUP: ##1}%      group handler
     \ifInMathMode  % groups are allowed in math mode.
     \else
       % Recurse and check this group: this allows things like {\`e}
       \checkstring{##1}{#2}%
     \fi}% end of group handler
-    { \typeout{MACRO: \string##1}%  macro handler
+    {% \typeout{MACRO: \string##1}%  macro handler
     \ifInMathMode
       \ClassWarning{iacrcc}{^^JMacros are not recommended in the title^^J}
     \else
