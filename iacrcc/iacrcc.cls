@@ -1,5 +1,5 @@
-\def\fileversion{0.24}
-\def\filedate{2023/03/24}
+\def\fileversion{0.25}
+\def\filedate{2023/03/29}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -1047,7 +1047,7 @@
 
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
-\def\IACR@keywords{}
+\global\let\IACR@keywords\@empty
 % \IACR@keywords may contain mathematics for display in LaTeX.
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
 
@@ -1071,8 +1071,9 @@
   \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
-  \VerbatimOut{\jobname.abstract}}%
-  {%
+  \VerbatimOut{\jobname.abstract}%
+}%
+{%
   \endVerbatimOut
   \input{\jobname.abstract}
   \ifx\IACR@keywords\@empty\else
@@ -1086,17 +1087,6 @@
     \hypersetup{pdfkeywords={\IACR@text@keywords}}
   \fi
   %% PDF author
-  \def\zap@one##1,##2{##1}
-  \def\zap@last##1,##2{\ifx##1\@empty\else\space and \expandafter\zap@one##1\fi}
-  \def\zap@last@comma##1,##2,##3{%
-    ##1%
-    \ifx##3\@empty
-      \expandafter\zap@last
-    \else
-      ,\expandafter\zap@last@comma
-    \fi
-    ##2,##3
-  }%
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
@@ -1117,7 +1107,7 @@
         pdfpagerange={\IACR@fp-\IACR@lp},%
       }
     \fi%hyperxmp@doi
-  }{} % final
+  }{}% final
 }
 
 % autoref: capitals for Sections, and adding Algorithm
