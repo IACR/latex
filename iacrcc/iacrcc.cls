@@ -1,5 +1,5 @@
-\def\fileversion{0.25}
-\def\filedate{2023/03/29}
+\def\fileversion{0.26}
+\def\filedate{2023/03/30}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -673,19 +673,32 @@
   \ClassError{iacrcc}{#1}{}%
 }
 
+% Check if a token macro (in pdflatex) is a UTF-8 char
+\ExplSyntaxOn
+\prg_new_conditional:Npnn \iacr_check_uitfeight:n #1 { T, F, TF }
+{
+  % Define a regular expression where the second argument
+  % needs to be expanded.
+  % Look if the meaning of the token contains UTFviii
+  % In (pdf)latex UTF8 tokens look like:
+  % * \UTFviii@invalid@err
+  % * \UTFviii@two@octets (or three or four octets)
+  \cs_generate_variant:Nn \regex_match:nnTF {nV}
+  \regex_match:nVTF { UTFviii } { \token_to_meaning:N #1 }
+  { \prg_return_true:  }
+  { \prg_return_false: }
+}
+\cs_new_eq:NN \IfUITFEight \iacr_check_uitfeight:nTF
+\ExplSyntaxOff
+
 % Macro which specifies if math is allowed in the 
 % first argument to \checkstring
 \newif\ifMathAllowedInCheckString
 \MathAllowedInCheckStringtrue
 
-% Only check for macros when lualatex is used:
-% this implies for usage with the "final" version.
-% This is because of some problems with pdflatex
-% and special characters which are not recognized.
 \newif\ifTokenNotFound
-\ifluatex
 \newcommand\IsMacroAllowed[3]{%
-  %\typeout{MACROCHECK: #1}%
+  %\typeout{MACROCHECK: \meaning#1}%
   \TokenNotFoundtrue
   \setsepchar{,}% parsing-separator
   % List of macros which are allowed
@@ -699,12 +712,13 @@
     \fi
   }%
   \ifTokenNotFound
-    \ClassErr{#3:^^Jmacro \iacrtmp not allowed in #2}%
+    % Check if the macro is a UTF-8 character in pdflatex
+    % If so, we do not complain
+    \IfUITFEight{#1}{}{%
+      \ClassErr{#3:^^Jmacro \iacrtmp not allowed in #2}%
+    }{}%
   \fi
 }
-\else
-\newcommand\IsMacroAllowed[3]{}%
-\fi
 
 % #1 is a string to check as just text. No macros are allowed except accents
 %    that are easily converted downstream and except in math mode. 
