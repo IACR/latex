@@ -163,7 +163,10 @@
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
   % When pdflatex is used load T1 fonts using fontenc
   \ifpdftex
-    \RequirePackage[T1]{fontenc}
+    % Prefer unicode encoding over T1 encoding. 
+    % There are only a few glyphs that require falling back to T1, 
+    % since most of our fonts should now be unicode-encoded (e.g., latin modern).
+    \RequirePackage[TU,T1]{fontenc} 
   \fi
 }
 
