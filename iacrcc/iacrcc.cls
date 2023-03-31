@@ -161,43 +161,11 @@
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
-  % When pdflatex is used load TU fonts using fontenc
+  % When pdflatex is used load T1 fonts using fontenc
   \ifpdftex
-    \RequirePackage[TU]{fontenc}
+    \RequirePackage[T1]{fontenc}
   \fi
 }
-
-% Check the character encoding. lualatex and unicode are required for final versions.
-% We allow pdflatex to be used for preprint and submission modes, because it is faster
-% than lualatex.
-% Suggested by David Carlisle to eliminate nastiness from the fontenc package.
-% Checking for Umathcode is equivalent to checking for a unicode engine.
-% See https://github.com/latex3/latex2e/issues/279
-\AtBeginDocument{
-  \ifx\Umathcode\undefined
-    \ClassWarning{iacrcc}{%
-      ^^J%
-      You should not use fontenc. Please use lualatex with unicode fonts%
-      ^^J%
-    }{}%
-  \else
-    \def\encodingdefault{TU}%
-    \fontencoding{TU}\selectfont
-  \fi
-}
-
-\ifluatex
-\else
-  \ifcsstring{@IACRversion}{final}{
-    \ClassError{iacrcc}{Final versions must be compiled with lualatex}{}%
-  }{%
-    \ClassWarning{iacrcc}{%
-      ^^J%
-      This package is intended to be used with lualatex%
-      ^^J%
-    }{}%
-  }%
-\fi
 
 % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
 % for embedding document metadata within the document itself.
@@ -388,30 +356,18 @@
       \ClassError{iacrcc}{An abstract with abstract environment is required}{}%
     }%
   }{}%
-  % This detects \usepackage[T1]{fontenc}
-  \ltx@iffileloaded{t1lmr.fd}{%
-    \ClassWarningNoLine{iacrcc}{^^J--------------------------------------------^^JThe T1 encoding will cause problems in production. Do not use it}}{}
 }
 
 \let\storeprotect\protect
 
-% latex3 syntax used for writing text to the .meta file. This requires
-% a TeX distribution from 2020 or later.
-\ExplSyntaxOn
-\ifdefined\text_purify:n
-\else
-  \ClassWarningNoLine{iacrcc}{The .meta file may be ill-formed.}%
-\fi
-\cs_new:Npn\@writemeta#1{%
-  \let\protect\@unexpandable@protect
-  \ifdefined\text_purify:n
-    \immediate\write\iacrmeta{\text_purify:n #1}%
-  \else
-    \immediate\write\iacrmeta{#1}%
-  \fi
-  \let\protect\storeprotect
-}
-\ExplSyntaxOff
+% xpatch: Extending etoolbox patching commands
+\RequirePackage{xpatch}
+
+% create an immediate version of \protected@write
+\let\protected@iwrite\protected@write
+\xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
+
+\newcommand\@writemeta[1]{\protected@iwrite\iacrmeta{}{#1}}%
 
 % alphalph: Convert numbers to letters, 
 %           used for footnotes in addauthor
@@ -657,7 +613,7 @@
   \IACR@funding@params@clearkeys%
 }
  
-% This is a complicated implmentation to test whether a token list is
+% This is a complicated implementation to test whether a token list is
 % appropriate to use as metadata. It is intended to make sure that
 % \write will produce a string without macros, except that macros are
 % allowed in math mode. In a previous implementation we compared the argument
@@ -673,6 +629,7 @@
   \ClassError{iacrcc}{#1}{}%
 }
 
+% TODO: Check if this is neccesary with new fixes.
 % Check if a token macro (in pdflatex) is a UTF-8 char
 \ExplSyntaxOn
 \prg_new_conditional:Npnn \iacr_check_uitfeight:n #1 { T, F, TF }
