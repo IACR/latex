@@ -13,12 +13,20 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
+\newcommand{\cmd}[2][]{%
+  \def\FirstArg{#1}
+  \ifx\FirstArg\empty
+    \texttt{\textbackslash{}#2}%
+  \else
+    \texttt{\textbackslash{}#2\{#1\}}%
+  \fi
+}
 \usepackage{xcolor}
 \title[running  = {The iacrcc class},
        onclick  = {https://publish.iacr.org/iacrcc},
-       subtitle = {LaTeX Class Documentation (v0.24)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.27)}
       ]{How to Use the IACR Communications in Cryptology Class}
-
+\genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
            onclick = {https://www.joppebos.com},
@@ -38,7 +46,7 @@
              postcode = {3001},
              country  = {Belgium}
             ]{NXP Semiconductors}
-\affiliation{Self}
+\affiliation[country=Absurdistan]{Self}
 \license{CC-by}
 \begin{document}
 
@@ -58,12 +66,13 @@ titled ``IACR Communications in Cryptology''.  Papers for the journal
 must be prepared in \LaTeX\ using the \texttt{iacrcc} document
 class. The biggest difference between \texttt{iacrcc} and other
 classes you may have used is the way in which metadata is supplied
-(e.g., author information). Our goal is to minimize the amount of
-human effort required to process final versions of a paper, so that we
-can reduce the cost of open access publishing.  Some of the stylistic
-choices were inspired by IACR Transactions class file (the
-\texttt{iacrtrans} class v. 0.92) written by Ga{\"e}tan Leurent and
-Friedrich Wiemer with help from others.
+(e.g., title, author information, affiliations, and funding
+information). Our goal is to minimize the amount of human effort
+required to process final versions of a paper, so that we can reduce
+the cost of open access publishing.  Some of the stylistic choices
+were inspired by IACR Transactions class file (the \texttt{iacrtrans}
+class v. 0.92) written by Ga{\"e}tan Leurent and Friedrich Wiemer with
+help from others.
 
 The class is still in development and feedback and comments are
 welcome.  The latest version can be found at:
@@ -83,27 +92,31 @@ unnecessary code.
 \item The production system to which you submit your final version requires
   that the main \LaTeX\ file should be \texttt{main.tex}. You might as
   well start that way by copying \texttt{template.tex} to \texttt{main.tex}.
-\item You should use \texttt{lualatex} or \texttt{xelatex} instead of
-  \texttt{pdflatex}. When you submit your final paper, it will be
-  compiled with \texttt{lualatex}. There is a quite good guide to
-  \texttt{lualatex}~\url{http://tug.ctan.org/info/luatex/lualatex-doc/lualatex-doc.pdf}.
-  You can use \texttt{pdflatex} for development, but it lacks modern
-  features for support of UTF-8 text and we recommend using
-  \texttt{lualatex} instead. The final version of your paper must be
-  compiled with \texttt{lualatex}.
-\item Do not change the default fonts; those are chosen by the journal and not you.
-  In particular, do {\color{red}NOT} use the
-  \texttt{fontenc} package; use \texttt{fontspec} instead. If you have
-  to use a non-standard font for some symbols, then only use
-  unicode-encoded fonts ({\color{red}not T1, not T2, and not OT1}).
+%% \item You should use \texttt{lualatex} or \texttt{xelatex} instead of
+%%   \texttt{pdflatex}. When you submit your final paper, it will be
+%%   compiled with \texttt{lualatex}. There is a quite good guide to
+%%   \texttt{lualatex}~\url{http://tug.ctan.org/info/luatex/lualatex-doc/lualatex-doc.pdf}.
+%%   You can use \texttt{pdflatex} for development, but it lacks modern
+%%   features for support of UTF-8 text and we recommend using
+%%   \texttt{lualatex} instead. The final version of your paper must be
+%%   compiled with \texttt{lualatex}.
+\item The default fonts are provided by the \verb+lmodern+ package. Do not
+  change this.
+  %% In particular, {\color{red}do NOT} use the
+  %% \texttt{fontenc} package; use \texttt{fontspec} instead. If you have
+  %% to use a non-standard font for some symbols, then only use
+  %% unicode-encoded fonts ({\color{red}not T1, not T2, and not OT1}).
 \item Avoid using too many packages. Many authors are lazy and just
   copy what they used in the past. Some won't work - see the list of
   acceptable packages at \url{https://publish.iacr.org}. Don't use any
-  package that changes fonts. Don't get clever and start writing
-  \texttt{lua} code in your papers.
+  package that changes fonts.
 \item Don't try to change the \texttt{hyperref} options or the bibliography style.
-\item Don't use macros like \verb+\if+ inside any metadata like the title or abstract.
+\item Don't use macros like \cmd{if} or \cmd{include} inside any
+  metadata like the title or abstract.
+\item Footnotes are handled differently in this class, and in
+  particular \cmd{thanks} is disabled for authors and title.
 \end{itemize}
+
 \section{Invocation and usage}
 
 The class supports the following class options with \verb+\documentclass{iacrcc}+
@@ -113,20 +126,19 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
   line numbers).  If desired, this can be combined with
   \texttt{[notanonymous]} if the call for papers requires
   non-anonymous submissions.
-\item[\texttt{[version=final]}] for final papers. This \emph{must} be
-  compiled with \texttt{lualatex} and imposes some additional
-  requirements.
+\item[\texttt{[version=final]}] for final papers. This imposes some
+  additional requirements.
 \item[\texttt{[biblatex]}] may be used if you prefer using
   \texttt{biblatex} to \texttt{bibtex}. Note that we do not support options to be
   passed to biblatex, as they may conflict with the style of the journal. We use
-  a bibliography style based on the alpha style.
+  a bibliography style based on the alpha style (e.g., \cite{RSA78}).
 \item[\texttt{[floatrow]}] load the \texttt{floatrow} package. This is useful
   when you have fancy figures or tables. In either case, \texttt{iacrcc}
   will customize how tables and figures are laid out.
 \end{description}
 
 Before submitting your final version, please make sure that it compiles
-properly using \texttt{lualatex} with the \texttt{[version=final]} option
+properly with the \texttt{[version=final]} option
 and check that the author names and affiliations are
 correct.
 
@@ -138,38 +150,31 @@ explicitly at the correct position.
 \section{Macros to add title and author information}
 
 \subsection{Title}
-A title is added using the \verb+\title+ macro, but with a few other options:
+A title is added using the \cmd{title} macro, but with a few other options:
 \begin{center}
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt running} & The running title displayed in the headers.\\
-{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
-{\tt subtitle} & Provide a subtitle.\\
 {\tt plaintext} & A text version of the title.\\
+{\tt subtitle} & Provide a subtitle.\\
+{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
 \end{tabular}
 \end{center}
 \noindent An example using all the optional options would look like:
 
 \begin{verbatim}
-\title[running  = {IACR Communications in Cryptology Class},
-       onclick  = {https://github.com/IACR/latex},
+\title[running  = {How to use the iacrcc class},
+       plaintext = {How to use the iacrcc LaTeX class},
        subtitle = {A Template},
-       plaintext = {How to Use this class}
-      ]{How to Use this class\thanks{Thanks Mom!}}
+       onclick  = {https://github.com/IACR/latex}
+      ]{How to use the \texttt{iacrcc} \LaTeX\ class}
 \end{verbatim}
 The \verb+plaintext+ version is only required if you use macros in
-your title. Inline mathematics and accents like \verb+\"u+ are allowed
-in plain text, but groups with curly brackets \verb+{...}+ are not
-allowed except within mathematics. \verb+f{\"u}r+ may be written as
-\verb+f\"ur+, but \LaTeX\ has defaulted to UTF-8 input since 2019, so
-just ü is preferred.
-
-\subsection{Footnotes}
-You may use \texttt{\textbackslash{}genericfootnote\{footnotetext\}}
-to place a footnote on the first page without a reference. This is
-useful to indicate this is a full / extended version of a published
-paper, or to indicate funding relationships for the authors.  This is
-an optional macro that may be repeated for multiple footnotes. See
-below for footnotes associated with an author's name.
+your title (it is required in the example). Inline mathematics and
+accents like \verb+\"u+ are allowed in plain text. Note
+that \LaTeX\ has defaulted to UTF-8 input since 2019, so just ü is
+preferred to \verb+\"u+. Note that \verb+\thanks+ and \verb+\footnote+ are disabled
+within \cmd{title}, and you should instead use the
+\cmd{genericfootnote} macro described in section~\ref{footnotes}.
 
 \subsection{Authors}
 Author information is entered using the \verb+\addauthor+,
@@ -177,14 +182,16 @@ Author information is entered using the \verb+\addauthor+,
 to enter this information in a structured way so that we can provide
 it to indexing agencies. The \verb+\author+ macro is disabled.
 
-Authors are listed individually using the {\tt \textbackslash{}addauthor} command. 
-There are a number of \emph{optional} options to {\tt \textbackslash{}addauthor}:
+Authors are listed individually using repeated calls to the {\tt
+\textbackslash{}addauthor} command.  There are a number of
+\emph{optional} options to {\tt \textbackslash{}addauthor}:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt inst} & A numerical list of indices specifying an institution in the affiliation
     array (see below).\\
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID ID (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
+{\tt surname} & the surname of the author\\
 {\tt onclick} & provide a URL to visit when clicking on the author name: e.g.,~can
 point to the academic webpage.\\
 {\tt email} & Define the e-mail address of this author. Note that at least one e-mail address is required for \texttt{[version=final]}.\\
@@ -210,20 +217,21 @@ the the first and second affiliations that are entered with
            footnote = {Thanks to my supervisor for the support.},
            onclick  = {https://www.mypersonalwebpage.com},
            email    = {alice@accomplished.com},
-          ]{Alice \surname{Accomplished}}
+           surname = {Accomplished},
+          ]{Alice Accomplished}
 \end{verbatim}
 
-The author names displayed in the header are constructed automatically for 
-four authors or less. One can optionally modify this with the
-\textbackslash{}authorrunning macro.
-For five or more authors the use of the \textbackslash{}authorrunning macro
-is mandatory.
+The author names displayed in the header are constructed automatically
+for four authors or less. One can optionally modify this with the
+\cmd{authorrunning} macro.  For five or more authors the use of the
+\cmd{authorrunning} macro is mandatory. The \cmd{thanks} macro is disabled
+inside \cmd{addauthor}, so use \verb+footnote+ instead.
 
 \subsection{Affiliations}
-Affiliations are listed individually using the {\tt
-  \textbackslash{}affiliation} command \emph{after} the last author
-has been added using {\tt \textbackslash{}addauthor}.  There are a number
-of arguments to {\tt \textbackslash{}affiliation}:
+Affiliations are listed individually using the \cmd{affiliation} command
+\emph{after} the last author
+has been added using \cmd{addauthor}.  There are a number
+of arguments to \cmd{affiliation}:
 
 %\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 \begin{center}
@@ -240,9 +248,10 @@ of arguments to {\tt \textbackslash{}affiliation}:
 \end{tabular}
 \end{center}
 \noindent There is an online tool at
-\href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
-help you find ROR identifiers.  An example using all the optional
-options would look like:
+\href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}}
+to help you find ROR identifiers, and you are strongly urged to
+include these. Country is required if \verb+[version=final]+ on the
+paper.  An example using all the optional options would look like:
 
 \begin{verbatim}
 \affiliation[ror        = 05f950310,
@@ -289,12 +298,34 @@ The complete list of options for \texttt{\textbackslash addfunding} is:
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
 help you find \texttt{fundref} and \texttt{ror} identifiers.
 
-Note that the document class does not automatically create footnotes
-or an acknowledgements section to identify funding - it only collects
-the metadata for indexing. If you wish to include such visible
-annotations, you can use \texttt{\textbackslash genericfootnote} or
-the \texttt{footnote} option on \texttt{\textbackslash addauthor}, or
-add a separate acknowledgements section.
+Note that \cmd{addfunding} does not automatically create footnotes or
+an acknowledgements section to identify funding - it only collects the
+metadata for indexing. If you wish to include such visible
+annotations, you can use the \texttt{footnote} option on
+\cmd{addauthor}, or the \cmd{genericfootnote}, or add a separate
+acknowledgements section. Some funding agencies have specific
+requirements for how they want to be acknowledged in the paper.
+
+\subsection{Footnotes}\label{footnotes}
+Authors may be accustomed to using \cmd{thanks} for footnotes
+indicating affiliation, email, or funding, but the
+\cmd{thanks} macro is disabled and you should use other methods described
+in this document.
+\begin{itemize}
+\item Footnotes on titles are not supported. You should use 
+  \cmd{genericfootnote} to place a
+  footnote on the first page without a reference. This is useful to
+  indicate this is a full / extended version of a published paper, or to
+  indicate funding relationships for the authors.  This is an optional
+  macro that may be repeated for multiple footnotes.
+\item For a footnote on an author, use the \texttt{footnote} option
+  on \cmd{addauthor}. This can be used for indicating that the author's
+  affiliation for the work was different than their current affiliation,
+  or to indicate contact address, or a previous name, etc.
+\end{itemize}
+
+Footnotes may be used elsewhere in the paper, but please do not
+overuse them.
 
 \subsection{License}
 When the \texttt{version=final} document mode is used, the author needs
@@ -320,7 +351,7 @@ text-only keywords; for example:
 Abstracts are entered with the \texttt{abstract} environment as usual,
 but do not use macros within the abstract except for inside mathematics.  Note that
 the keywords should be given before starting the abstract
-environment. The \texttt{iacrcc} will automatically produce a file
+environment. The \texttt{iacrcc} class will automatically produce a file
 \texttt{.abstract} that contains the contents of the abstract.
 
 \subsection{Theorems}
@@ -358,10 +389,10 @@ One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
   then the extra files that are produced are:
 \begin{itemize}
 \item a flat text file \texttt{main.meta} containing all metadata
-  from the paper.  When you run \texttt{lualatex} on
+  from the paper.  When you compile
   \texttt{main.tex}, it will produce the metadata from
   \texttt{main.tex}, and when you run \texttt{bibtex} and
-  \texttt{lualatex} again, it will append the citation data from
+  \texttt{latex} again, it will append the citation data from
   bibtex into the \texttt{main.meta} file as well.
 \item a file \texttt{main.abstract} that contains
   the contents of the abstract for the paper. This will be used to show
