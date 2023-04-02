@@ -1,0 +1,686 @@
+\documentclass{iacrcc}
+\title[running  = {The iacrcc class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
+      ]{How not to use the IACR Communications in Cryptology Cl\r{a}ss}
+
+%% \addauthor[orcid    = {0000-0003-1010-8157},
+%%            inst     = {1},
+%%            onclick  = {https://www.joppebos.com},
+%% 	   footnote = {This is an example fö{\"o}tnote.},
+%%            email    = {joppe.bos@nxp.com}
+%% 	  ]{Joppe W. B{\"o}s}
+
+%% \addauthor[orcid   = {0000-0001-7890-5430},
+%%            inst    = {2,3},
+%%            email   = {test2@digicrime.com},
+%%           ]{Kevin S. McCurley}
+%% \affiliation[ror     = 031v4g827,
+%%              onclick = {https://www.nxp.com},
+%%              street  = {Interleuvenlaan 80},
+%%              city    = {Leuven},
+%%              postcode= {3001},
+%%              country = {Belgium}
+%% 	    ]{NXP S\v{e}mïc{\"o}ndúct\o{}rs}
+%% \affiliation[country={Elbonia}]{Self}
+\newcommand{\F}{F}
+\newcommand{\perm}{PERM}
+\newcommand{\fq}{F_q}
+\newcommand{\mbf}{MBF}
+\newcommand{\LLR}{LLR}
+\newcommand{\cP}{c^P}
+\newcommand{\gf}{GF}
+\newcommand{\GF}{GF}
+\newcommand{\G}{G}
+\newcommand{\w}{W}
+\newcommand{\EXP}{EXP}
+\newcommand{\BPP}{BPP}
+\newcommand{\impulse}{impulse}
+\keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
+\begin{document}
+\makeatletter
+\def\foo{On the possibility of basing Cryptography on the assumption that $P \neq NP$}\@writemeta{title: \foo}
+\def\foo{Black-Box Concurrent Zero-Knowledge Requires $\tilde\Omega(\log n)$ Rounds}\@writemeta{title: \foo}
+\def\foo{Parallel scalar multiplication on general elliptic curves over $\mathbb{F}_p$ hedged against Non-Differential Side-Channel Attacks}\@writemeta{title: \foo}
+\def\foo{An Upper Bound on the Size of a Code with the $k$-Identifiable Parent Property}\@writemeta{title: \foo}
+\def\foo{New covering radius of Reed-Muller codes for $t$-resilient functions}\@writemeta{title: \foo}
+\def\foo{Counting Points for Hyperelliptic Curves of type $y^2=x^5+ax$ over Finite Prime Fields}\@writemeta{title: \foo}
+\def\foo{Goldbach’s Conjecture on ECDSA Protocols}\@writemeta{title: \foo}
+\def\foo{Isomorphism Classes of Hyperelliptic Curves of Genus 2 over $\mathbb{F}_{2^n}$}\@writemeta{title: \foo}
+\def\foo{Point Compression on Jacobians of Hyperelliptic Curves over $\F_q$.}\@writemeta{title: \foo}
+\def\foo{Redundant Trinomials for Finite Fields of Characteristic $2$}\@writemeta{title: \foo}
+\def\foo{A Dynamic and Differential CMOS Logic Style to Resist Power and Timing Attacks on Security IC’s.}\@writemeta{title: \foo}
+\def\foo{Charge Recycling Sense Amplifier Based Logic: Securing Low Power Security IC’s against Differential Power Analysis}\@writemeta{title: \foo}
+\def\foo{The Sorcerer’s Apprentice Guide to Fault Attacks}\@writemeta{title: \foo}
+\def\foo{Classification of genus 2 curves over $\mathbb{F}_{2^n}$ and optimization of their arithmetic}\@writemeta{title: \foo}
+\def\foo{Fast addition on non-hyperelliptic genus $3$ curves}\@writemeta{title: \foo}
+\def\foo{Suitable Curves for Genus-4 HCC over Prime Fields: Point Counting Formulae for Hyperelliptic Curves of type $y^2=x^{2k+1}+ax$}\@writemeta{title: \foo}
+\def\foo{Improvement of Thériault Algorithm of Index Calculus for Jacobian of Hyperelliptic Curves of Small Genus}\@writemeta{title: \foo}
+\def\foo{Covering Radius of the $(n-3)$-rd Order Reed-Muller Code in the Set of Resilient Functions}\@writemeta{title: \foo}
+\def\foo{DISTRIBUTION OF R-PATTERNS IN THE KERDOCK-CODE BINARY SEQUENCES AND THE HIGHEST LEVEL SEQUENCES OF PRIMITIVE SEQUENCES OVER $Z_{2^l}$}\@writemeta{title: \foo}
+\def\foo{Applications of $\mathcal{M}$ultivariate $\mathcal{Q}$uadratic Public Key Systems}\@writemeta{title: \foo}
+\def\foo{Parallel Montgomery Multiplication in $GF(2^k)$ using Trinomial Residue Arithmetic}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Noel McCullagh and Paulo S. L. M. Barreto¡¯s two-party identity-based key agreement}\@writemeta{title: \foo}
+\def\foo{A note on López-Dahab coordinates}\@writemeta{title: \foo}
+\def\foo{Equivalent Keys in HFE, C$^*$, and variations}\@writemeta{title: \foo}
+\def\foo{A new security proof for Damgård's ElGamal}\@writemeta{title: \foo}
+\def\foo{A Metric on the Set of Elliptic Curves over ${\mathbf F}_p$.}\@writemeta{title: \foo}
+\def\foo{Comment on cryptanalysis of Tseng et al.¡¦s authenticated encryption schemes}\@writemeta{title: \foo}
+\def\foo{BROADCAST ENCRYPTION $\pi$}\@writemeta{title: \foo}
+\def\foo{Finding MD5 Collisions – a Toy For a Notebook}\@writemeta{title: \foo}
+\def\foo{Cryptographer's Toolkit for Construction of $8$-Bit Bent Functions}\@writemeta{title: \foo}
+\def\foo{Almost Perfect Nonlinear Monomials over GF($2^n$) for Infinitely Many $n$}\@writemeta{title: \foo}
+\def\foo{A Uniform Framework for Cryptanalysis of the Bluetooth $E_0$ Cipher}\@writemeta{title: \foo}
+\def\foo{Secret sharing on the $d$-dimensional cube}\@writemeta{title: \foo}
+\def\foo{Minimality of the Hamming Weight of the \tau-NAF for Koblitz Curves and Improved Combination with Point Halving}\@writemeta{title: \foo}
+\def\foo{On the binary sequences with high $GF(2)$ linear complexities and low $GF(p)$ linear complexities}\@writemeta{title: \foo}
+\def\foo{Efficient reduction of 1 out of $n$ oblivious transfers in random oracle model}\@writemeta{title: \foo}
+\def\foo{Classification of Cubic $(n-4)$-resilient Boolean Functions}\@writemeta{title: \foo}
+\def\foo{Secure and {\sl Practical} Identity-Based Encryption}\@writemeta{title: \foo}
+\def\foo{Key Mixing in Block Ciphers through Addition modulo $2^n$}\@writemeta{title: \foo}
+\def\foo{Unified Point Addition Formulæ and Side-Channel Attacks}\@writemeta{title: \foo}
+\def\foo{Improvement of Manik et al.¡¦s remote user authentication scheme}\@writemeta{title: \foo}
+\def\foo{Weakness of shim¡¦s New ID-based tripartite multiple-key agreement protocol}\@writemeta{title: \foo}
+\def\foo{Gröbner Basis Based Cryptanalysis of SHA-1}\@writemeta{title: \foo}
+\def\foo{Tate pairing for $y^{2}=x^{5}-\alpha x$  in Characteristic Five}\@writemeta{title: \foo}
+\def\foo{Low Complexity Bit-Parallel Square Root Computation over GF($2^m$) for all Trinomials}\@writemeta{title: \foo}
+\def\foo{The Design Principle of Hash Function with Merkle-Damgård Construction}\@writemeta{title: \foo}
+\def\foo{Divisibility of the Hamming Weight by $2^k$ and Monomial Criteria for Boolean Functions}\@writemeta{title: \foo}
+\def\foo{There exist Boolean functions on $n$ (odd) variables having nonlinearity $> 2^{n-1} - 2^{\frac{n-1}{2}}$ if and only if $n > 7$}\@writemeta{title: \foo}
+\def\foo{Ate pairing for $y^{2}=x^{5}-\alpha x$ in characteristic five}\@writemeta{title: \foo}
+\def\foo{On (Hierarchical) Identity Based Encryption Protocols with Short Public Parameters \\ (With an Exposition of Waters' Artificial Abort Technique)}\@writemeta{title: \foo}
+\def\foo{An Algorithm for the $\eta_T$ Pairing Calculation in Characteristic Three and its Hardware Implementation}\@writemeta{title: \foo}
+\def\foo{RadioGatún, a belt-and-mill hash function}\@writemeta{title: \foo}
+\def\foo{Hardware Implementation of the $\eta_T$ Pairing in Characteristic 3}\@writemeta{title: \foo}
+\def\foo{Another class of quadratic APN binomials over $\F_{2^n}$: the case $n$ divisible by 4}\@writemeta{title: \foo}
+\def\foo{Some Efficient Algorithms for the Final Exponentiation of $\eta_T$ Pairing}\@writemeta{title: \foo}
+\def\foo{How to Win the Clone Wars: \\ Efficient Periodic n-Times Anonymous Authentication}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Hwang-Chang’s a Time-Stamp Protocol for Digital Watermarking}\@writemeta{title: \foo}
+\def\foo{A Coprocessor for the Final Exponentiation of the $\eta_T$ Pairing in Characteristic Three}\@writemeta{title: \foo}
+\def\foo{High Efficiency Feedback Shift Register: $\sigma-$LFSR}\@writemeta{title: \foo}
+\def\foo{Edon--${\cal R}(256,384,512)$ -- an Efficient Implementation of Edon--${\cal R}$ Family of Cryptographic Hash Functions}\@writemeta{title: \foo}
+\def\foo{The constructing of $3$-resilient Boolean functions of $9$ variables with nonlinearity $240$.}\@writemeta{title: \foo}
+\def\foo{Voting with Unconditional Privacy by Merging Prêt-à-Voter and PunchScan}\@writemeta{title: \foo}
+\def\foo{A Refined Algorithm for the $\eta_T$ Pairing Calculation in Characteristic Three}\@writemeta{title: \foo}
+\def\foo{SECURITY PROOF FOR SHENGBAO WANG’S IDENTITY-BASED ENCRYPTION SCHEME}\@writemeta{title: \foo}
+\def\foo{On the Big Gap   Between $|p|$ and $|q|$ in DSA}\@writemeta{title: \foo}
+\def\foo{Secure PRNGs from Specialized Polynomial Maps over Any $F_q$}\@writemeta{title: \foo}
+\def\foo{Algorithms and Arithmetic Operators for Computing the $\eta_T$ Pairing in Characteristic Three}\@writemeta{title: \foo}
+\def\foo{Computing the Ate Pairing on Elliptic Curves with Embedding Degree $k=9$}\@writemeta{title: \foo}
+\def\foo{Notes on the Wang et al. $2^{63}$ SHA-1 Differential Path}\@writemeta{title: \foo}
+\def\foo{A Proof of Security in $O(2^n)$ for the Xor of Two Random Permutations\\ -- Proof with the ``$H_{\sigma}$ technique''--}\@writemeta{title: \foo}
+\def\foo{Pairing-friendly Hyperelliptic Curves with Ordinary Jacobians of Type $y^2=x^5+ax$}\@writemeta{title: \foo}
+\def\foo{Merkle's Key Agreement Protocol is Optimal: An $O(n^2)$ Attack on any Key Agreement from Random Oracles}\@writemeta{title: \foo}
+\def\foo{A Comparison Between Hardware Accelerators for the Modified Tate Pairing over $\mathbb{F}_{2^m}$ and $\mathbb{F}_{3^m}$}\@writemeta{title: \foo}
+\def\foo{TinyECCK: Efficient Elliptic Curve Cryptography Implementation over $GF(2^m)$ on 8-bit MICAz Mote}\@writemeta{title: \foo}
+\def\foo{A Pipelined Karatsuba-Ofman Multiplier over GF($3^{97}$) Amenable for Pairing Computation}\@writemeta{title: \foo}
+\def\foo{Constant-Size Dynamic $k$-TAA}\@writemeta{title: \foo}
+\def\foo{Redundant $\tau$-adic Expansions I: Non-Adjacent Digit Sets and their Applications to Scalar Multiplication}\@writemeta{title: \foo}
+\def\foo{Redundant $\tau$-adic Expansions II: Non-Optimality and Chaotic Behaviour}\@writemeta{title: \foo}
+\def\foo{On The Security of The ElGamal Encryption Scheme and Damgard’s Variant}\@writemeta{title: \foo}
+\def\foo{Polynomials for  Ate Pairing and $\mathbf{Ate}_{i}$ Pairing}\@writemeta{title: \foo}
+\def\foo{Remarks on the Attack of Fouque et al. against the {\ell}IC Scheme}\@writemeta{title: \foo}
+\def\foo{On the CCA1-Security of Elgamal and Damgård's Elgamal}\@writemeta{title: \foo}
+\def\foo{ON MIDDLE UNIVERSAL $m$-INVERSE QUASIGROUPS AND THEIR APPLICATIONS TO CRYPTOGRAPHY}\@writemeta{title: \foo}
+\def\foo{FPGA and ASIC Implementations of the $\eta_T$ Pairing in Characteristic Three}\@writemeta{title: \foo}
+\def\foo{Foundations of Group Key Management – Framework, Security Model and a Generic Construction}\@writemeta{title: \foo}
+\def\foo{A New $(k,n)$-Threshold Secret Sharing Scheme and Its Extension}\@writemeta{title: \foo}
+\def\foo{Generalized Universal Circuits for Secure Evaluation of Private Functions with Application to Data Classification}\@writemeta{title: \foo}
+\def\foo{The $F_f$-Family of Protocols for RFID-Privacy and Authentication}\@writemeta{title: \foo}
+\def\foo{The $n^c$-Unique Shortest Vector Problem is Hard}\@writemeta{title: \foo}
+\def\foo{A NEW HASH ALGORITHM$:$ Khichidi$-$1}\@writemeta{title: \foo}
+\def\foo{A Fast Implementation of $\eta_T$ Pairing in Characteristic Three on Intel Core 2 Duo Processor}\@writemeta{title: \foo}
+\def\foo{How to Prove the Security of Practical Cryptosystems with Merkle-Damgård Hashing by Adopting Indifferentiability}\@writemeta{title: \foo}
+\def\foo{Low Complexity Cubing and Cube Root Computation over $\F_{3^m}$ in Polynomial Basis}\@writemeta{title: \foo}
+\def\foo{Practical Key Recovery Attack against Secret-preﬁx Edon-R}\@writemeta{title: \foo}
+\def\foo{A new bound for t−wise almost universal hash functions}\@writemeta{title: \foo}
+\def\foo{Indifferentiability with Distinguishers: Why Shabal\\Does Not Require Ideal Ciphers}\@writemeta{title: \foo}
+\def\foo{Hardware Implementations of a Variant of the Zémor-Tillich Hash Function: Can a Provably Secure Hash Function be very efficient ?}\@writemeta{title: \foo}
+\def\foo{On the Randomness and Regularity of Reduced EDON-$\mathcal{R}$ Compression Function}\@writemeta{title: \foo}
+\def\foo{Differential Path for SHA-1 with complexity $O(2^{52})$}\@writemeta{title: \foo}
+\def\foo{Algebraic Attacks specialized to \(\mathbb{F}_2\) (Diplomarbeit)}\@writemeta{title: \foo}
+\def\foo{FPGA Implementations of SHA-3 Candidates:CubeHash, Grøstl, L{\sc ane}, Shabal and Spectral Hash}\@writemeta{title: \foo}
+\def\foo{Compact Hardware Implementations of the SHA-3 Candidates ARIRANG, BLAKE, Grøstl, and Skein}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of the Tillich-Zémor hash function}\@writemeta{title: \foo}
+\def\foo{A short Note on Discrete Log Problem in $\mathbb{F_p}$}\@writemeta{title: \foo}
+\def\foo{Permutation Polynomials modulo $p^n$}\@writemeta{title: \foo}
+\def\foo{Fast Architectures for the $\eta_T$ Pairing over Small-Characteristic Supersingular Elliptic Curves}\@writemeta{title: \foo}
+\def\foo{A Secure and Efficient Authenticated Diffie–Hellman Protocol}\@writemeta{title: \foo}
+\def\foo{Ntr¹u-like Public Key Cryptosystems beyond Dedekind Domain Up to Alternative Algebra}\@writemeta{title: \foo}
+\def\foo{Improving the Berlekamp algorithm for binomials \boldmath$x^{n} - a$}\@writemeta{title: \foo}
+\def\foo{On Cryptographic Protocols Employing Asymmetric Pairings -- The Role of $\Psi$ Revisited}\@writemeta{title: \foo}
+\def\foo{Eﬃcient Privacy-Preserving Face Recognition}\@writemeta{title: \foo}
+\def\foo{High-Speed Hardware Implementations of BLAKE, Blue Midnight Wish, CubeHash, ECHO, Fugue, Grøstl, Hamsi, JH, Keccak, Luffa, Shabal, SHAvite-3, SIMD, and Skein}\@writemeta{title: \foo}
+\def\foo{A Family of $p$-ary Binomial Bent Functions}\@writemeta{title: \foo}
+\def\foo{A complete set of addition laws\\for incomplete Edwards curves}\@writemeta{title: \foo}
+\def\foo{Efficiency Limitations for $\Sigma$-Protocols for Group Homomorphisms}\@writemeta{title: \foo}
+\def\foo{Reducing Elliptic Curve Logarithm to Logarithm in a Finite Field $\mathbb{F}_q$ for Some Orders}\@writemeta{title: \foo}
+\def\foo{On the order of the polynomial $x^p-x-a$}\@writemeta{title: \foo}
+\def\foo{Constructing Veriﬁable Random Functions with Large Input Spaces}\@writemeta{title: \foo}
+\def\foo{On zero practical significance of “Key recovery attack on  full GOST block cipher with zero time and memory”}\@writemeta{title: \foo}
+\def\foo{On The Broadcast and Validity-Checking Security of PKCS \#1 v1.5 Encryption}\@writemeta{title: \foo}
+\def\foo{Elliptic Curve Discrete Logarithm Problem over Small Degree Extension Fields. Application to the static Diffie-Hellman problem on $E(\F_{q^5})$}\@writemeta{title: \foo}
+\def\foo{New Methods to Construct Golay Complementary Sequences Over the $QAM$ Constellation}\@writemeta{title: \foo}
+\def\foo{A Framework for Fully-Simulatable $t$-out-of-$n$ Oblivious Transfer}\@writemeta{title: \foo}
+\def\foo{A Security Weakness in Composite-Order Pairing-Based Protocols with Imbedding Degree $k>2$}\@writemeta{title: \foo}
+\def\foo{On second-order nonlinearities of some $\mathcal{D}_0$ type bent functions}\@writemeta{title: \foo}
+\def\foo{On the Indifferentiability of the Grøstl Hash Function}\@writemeta{title: \foo}
+\def\foo{The analytical property for $\zeta(s)$}\@writemeta{title: \foo}
+\def\foo{Combining leak--resistant arithmetic for elliptic curves defined over $\F_p$ and RNS representation}\@writemeta{title: \foo}
+\def\foo{Fast Exhaustive Search for Polynomial Systems in $F_2$}\@writemeta{title: \foo}
+\def\foo{A Certifying Compiler for Zero-Knowledge Proofs of Knowledge Based on $\Sigma$-Protocols}\@writemeta{title: \foo}
+\def\foo{Decoding square-free Goppa codes over $\F_p$}\@writemeta{title: \foo}
+\def\foo{Improved Collision Attacks on the Reduced-Round Grøstl Hash Function}\@writemeta{title: \foo}
+\def\foo{First-Order Side-Channel Attacks on the Permutation Tables Countermeasure –Extended Version–}\@writemeta{title: \foo}
+\def\foo{Perfectly Balanced Boolean Functions and Golić Conjecture}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis and Improvement of A New Electronic Traveler’s Check Scheme Based on One-way Hash Function}\@writemeta{title: \foo}
+\def\foo{Two Attacks on Dutta’s Dynamic Group Key Agreement Protocol}\@writemeta{title: \foo}
+\def\foo{Eﬃcient Fully Secure Predicate Encryption for Conjunctions, Disjunctions and k-CNF/DNF formulae}\@writemeta{title: \foo}
+\def\foo{Number formula and degree level of ergodic polynomial functions over $\mathbb{Z}$/$2^{n}\mathbb{Z}$ and generalized result of linear equation on ergodic power-series T-Function}\@writemeta{title: \foo}
+\def\foo{Linear Approximations of Addition Modulo $2^n$-1}\@writemeta{title: \foo}
+\def\foo{RNS arithmetic in ${\mathbb F}_{p^k}$ and application to fast pairing computation}\@writemeta{title: \foo}
+\def\foo{On permutation polynomials EA-equivalent to the inverse function over $GF(2^n)$}\@writemeta{title: \foo}
+\def\foo{Fast Algorithm to solve a family of SIS problem with $l_\infty$ norm}\@writemeta{title: \foo}
+\def\foo{Enumerating Results of Homogeneous Rotation over $GF(p)$}\@writemeta{title: \foo}
+\def\foo{Practical Frameworks For $h$-Out-Of-$n$  Oblivious Transfer With Security Against  Covert and Malicious  Adversaries}\@writemeta{title: \foo}
+\def\foo{Cover and Decomposition Index Calculus on Elliptic Curves made practical. Application to a seemingly secure curve over $\F_{p^6}$}\@writemeta{title: \foo}
+\def\foo{A Construction of A New Class of Knapsack-Type Public Key Cryptosystem, K(III)$\Sigma$PKC}\@writemeta{title: \foo}
+\def\foo{Ergodic Theory Over ${\F}_2[[T]]$}\@writemeta{title: \foo}
+\def\foo{Computing $(\ell,\ell)$-isogenies in polynomial time on Jacobians of genus~$2$ curves}\@writemeta{title: \foo}
+\def\foo{Linear Diophantine Equation Discrete Log Problem, Matrix Decomposition Problem and the AA{\beta}-cryptosystem}\@writemeta{title: \foo}
+\def\foo{On the relation between the MXL family of algorithms and Gröbner basis algorithms}\@writemeta{title: \foo}
+\def\foo{Security Analysis of $LMAP^{++}$, an RFID Authentication Protocol}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Chen \textit{et al.}'s RFID Access Control Protocol}\@writemeta{title: \foo}
+\def\foo{On the Number of Carries Occuring in an Addition $\mod 2^k-1$}\@writemeta{title: \foo}
+\def\foo{Security \& Indistinguishability in the Presence of Traffic Analysis}\@writemeta{title: \foo}
+\def\foo{Exploiting Linear Hull in Matsui’s Algorithm 1 (extended version)}\@writemeta{title: \foo}
+\def\foo{Scalar Multiplication on Koblitz Curves using $\tau^2-$NAF}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of the Smart-Vercauteren and Gentry-Halevi’s Fully Homomorphic Encryption}\@writemeta{title: \foo}
+\def\foo{Simple and Asymptotically Optimal $t$-Cheater Identifiable Secret Sharing Scheme}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Cho \textit{et al.}'s Protocol, A Hash-Based Mutual Authentication Protocol for RFID Systems}\@writemeta{title: \foo}
+\def\foo{$HB^N$: An HB-like protocol secure against man-in-the-middle attacks}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of the $AA_{\beta}$ Cryptosystem based on Linear Diophantine Equation Discrete Log Problem}\@writemeta{title: \foo}
+\def\foo{High-Entropy Visual Identiﬁcation for Touch Screen Devices}\@writemeta{title: \foo}
+\def\foo{The Value $4$ of Binary Kloosterman Sums}\@writemeta{title: \foo}
+\def\foo{A representation of the $p$-sylow subgroup of $\perm(\F_p^n)$ and  a cryptographic application}\@writemeta{title: \foo}
+\def\foo{On a generalized combinatorial conjecture involving addition $\mod 2^k - 1$}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of improved Yeh \textit{et al. }'s authentication Protocol: An EPC Class-1 Generation-2 standard compliant protocol}\@writemeta{title: \foo}
+\def\foo{On the influence of the algebraic degree of $F^{−1}$ on the algebraic degree of $G \circ F$}\@writemeta{title: \foo}
+\def\foo{Efficient Implementation of the $\eta_T$ Pairing on GPU}\@writemeta{title: \foo}
+\def\foo{Randomness Extraction in finite fields  $\mathbb{F}_{p^{n}}$}\@writemeta{title: \foo}
+\def\foo{Impact of Intel's New Instruction Sets on Software Implementation of $GF(2)[x]$ Multiplication}\@writemeta{title: \foo}
+\def\foo{Receipt Freeness of Prêt à Voter Provably Secure}\@writemeta{title: \foo}
+\def\foo{New Subexponential Algorithms for Factoring in $SL(2,\fq)$}\@writemeta{title: \foo}
+\def\foo{$GF(2^{n})$ Subquadratic Polynomial Basis Multipliers for Some Irreducible Trinomials}\@writemeta{title: \foo}
+\def\foo{A Scalable Method for Constructing Galois NLFSRs with Period $2^n-1$ using Cross-Join Pairs}\@writemeta{title: \foo}
+\def\foo{Constructing differentially 4-uniform permutations over $\mbf_{2^{2m}}$ from quadratic APN permutations over $\mbf_{2^{2m+1}}$}\@writemeta{title: \foo}
+\def\foo{Breaking $H^2$-MAC Using Birthday Paradox}\@writemeta{title: \foo}
+\def\foo{On the security of Lo et al.’s ownership transfer protocol}\@writemeta{title: \foo}
+\def\foo{Decoding Random Binary Linear Codes in $2^{n/20}$: How $1+1=0$ Improves Information Set Decoding}\@writemeta{title: \foo}
+\def\foo{Some results on $q$-ary bent functions}\@writemeta{title: \foo}
+\def\foo{Key Length Estimation of Pairing-based Cryptosystems using $\eta_T$ Pairing}\@writemeta{title: \foo}
+\def\foo{Modified version of “Latin Dances Revisited: New Analytic Results of Salsa20 and ChaCha”}\@writemeta{title: \foo}
+\def\foo{Construction of the Tsujii-Shamir-Kasahara (TSK) Type Multivariate Public Key Cryptosystem, which relies on the Diﬃculty of Prime Factorization}\@writemeta{title: \foo}
+\def\foo{(Pseudo) Preimage Attack on Round-Reduced Grøstl Hash Function and Others (Extended Version)}\@writemeta{title: \foo}
+\def\foo{Adaptive Preimage Resistance Analysis Revisited:\\ Requirements, Subtleties and Implications}\@writemeta{title: \foo}
+\def\foo{A General Construction for 1-round $\delta$-RMT and (0, $\delta$)-SMT}\@writemeta{title: \foo}
+\def\foo{New Transference Theorems on Lattices Possessing n^\epsilon-unique Shortest Vectors}\@writemeta{title: \foo}
+\def\foo{Construction of New Classes of Knapsack Type Public Key Cryptosystem Using Uniform Secret Sequence, K(II)$\Sigma\Pi$PKC, Constructed Based on Maximum Length Code}\@writemeta{title: \foo}
+\def\foo{Breaking pairing-based cryptosystems using $\eta_T$ pairing over $GF(3^{97})$}\@writemeta{title: \foo}
+\def\foo{Multiple Differential Cryptanalysis using \LLR and $\chi^2$ Statistics}\@writemeta{title: \foo}
+\def\foo{CCBKE – Session Key Negotiation for Fast and Secure Scheduling of Scientific Applications in Cloud Computing}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Sood et al.’s Authentication Scheme using Smart Cards}\@writemeta{title: \foo}
+\def\foo{On second-order nonlinearity and maximum algebraic immunity of some bent functions in $\cP S^+$}\@writemeta{title: \foo}
+\def\foo{Low complexity bit-parallel $GF(2^m)$ multiplier for all-one polynomials}\@writemeta{title: \foo}
+\def\foo{A note on ‘An efficient certificateless aggregate signature with constant pairing computations’}\@writemeta{title: \foo}
+\def\foo{On the Simplicity of Converting Leakages from Multivariate to Univariate – Case Study of a Glitch-Resistant Masking Scheme –}\@writemeta{title: \foo}
+\def\foo{Tahoe – The Least-Authority Filesystem}\@writemeta{title: \foo}
+\def\foo{A Low-Area Unified Hardware Architecture for the AES and the Cryptographic Hash Function Grøstl}\@writemeta{title: \foo}
+\def\foo{Bit-Parallel $GF(2^{n})$ Squarer Using Shifted Polynomial Basis}\@writemeta{title: \foo}
+\def\foo{Practical Covertly Secure MPC for Dishonest Majority – or: Breaking the SPDZ Limits}\@writemeta{title: \foo}
+\def\foo{Asynchronous Physical Unclonable Functions –  AsyncPUF}\@writemeta{title: \foo}
+\def\foo{Uniform Compression Functions Can Fail to Preserve “Full” Entropy}\@writemeta{title: \foo}
+\def\foo{Estimating the Φ(n) of Upper/Lower Bound in its RSA Cryptosystem}\@writemeta{title: \foo}
+\def\foo{Improved (Pseudo) Preimage Attack and Second Preimage Attack on Round-Reduced Grøstl}\@writemeta{title: \foo}
+\def\foo{New Impossible Differential Attack on $\text{SAFER}_{+}$ and $\text{SAFER}_{++}$}\@writemeta{title: \foo}
+\def\foo{On the Function Field Sieve and the Impact of Higher Splitting Probabilities: Application to Discrete Logarithms in $\F_{2^{1971}}$ and $\F_{2^{3164}}$}\@writemeta{title: \foo}
+\def\foo{A new index calculus algorithm with complexity $L(1/4+o(1))$ in very small characteristic}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Some Double-Block-Length Hash Modes of Block Ciphers with $n$-Bit Block and $n$-Bit Key}\@writemeta{title: \foo}
+\def\foo{A New Class of Product-sum Type Public Key Cryptosystem,K(V)$\Sigma\Pi$PKC,Constructed Based on Maximum Length Code}\@writemeta{title: \foo}
+\def\foo{Practical and Employable Protocols for UC-Secure Circuit Evaluation over $Z_n$}\@writemeta{title: \foo}
+\def\foo{Attacks on JH, Grøstl and SMASH Hash Functions}\@writemeta{title: \foo}
+\def\foo{Adapting Lyubashevsky’s Signature Schemes to the Ring Signature Setting}\@writemeta{title: \foo}
+\def\foo{Theory of masking with codewords in hardware: low-weight $d$th-order correlation-immune Boolean functions}\@writemeta{title: \foo}
+\def\foo{Solving a $6120$-bit DLP on a Desktop Computer}\@writemeta{title: \foo}
+\def\foo{Security in $O(2^n)$ for the Xor of Two Random Permutations\\ -- Proof with the standard $H$ technique--}\@writemeta{title: \foo}
+\def\foo{Breaking the Even-Mansour Hash Function: Collision and Preimage Attacks on JH and Grøstl}\@writemeta{title: \foo}
+\def\foo{Key Recovery Attacks on 3-round Even-Mansour, 8-step LED-128, and Full $\mbox{AES}^{2}$}\@writemeta{title: \foo}
+\def\foo{Efficient Cryptosystems From $2^k$-th Power Residue Symbols}\@writemeta{title: \foo}
+\def\foo{Fast Exhaustive Search for Quadratic Systems in $\mathbb{F}_2$ on FPGAs --- Extended Version}\@writemeta{title: \foo}
+\def\foo{Revisiting Conditional Rényi Entropies and Generalizing Shannon's Bounds in Information Theoretically Secure Encryption}\@writemeta{title: \foo}
+\def\foo{Multi-Valued Byzantine Broadcast: the $t < n$ Case}\@writemeta{title: \foo}
+\def\foo{Self-pairings on supersingular elliptic curves with embedding degree $three$}\@writemeta{title: \foo}
+\def\foo{More Efficient Cryptosystems From $k^{th}$-Power Residues}\@writemeta{title: \foo}
+\def\foo{The Special Number Field Sieve in $\F _{p^{n}}$, Application to Pairing-Friendly Constructions}\@writemeta{title: \foo}
+\def\foo{Solving the Elliptic Curve Discrete Logarithm Problem Using Semaev Polynomials, Weil Descent and Gröbner Basis Methods -- an Experimental Study}\@writemeta{title: \foo}
+\def\foo{Some results concerning global avalanche characteristics of two $q$-ary functions}\@writemeta{title: \foo}
+\def\foo{Stamp \& Extend -- Instant but Undeniable Timestamping based on Lazy Trees}\@writemeta{title: \foo}
+\def\foo{CBEAM: Efficient Authenticated Encryption from Feebly One-Way $\phi$ Functions}\@writemeta{title: \foo}
+\def\foo{$GF(2^n)$ Bit-Parallel Squarer Using Generalized Polynomial Basis For a New Class of Irreducible Pentanomials}\@writemeta{title: \foo}
+\def\foo{Construction of New Families of ‎MDS‎ Diffusion Layers}\@writemeta{title: \foo}
+\def\foo{Solving Random Subset Sum Problem by $l_{p}$-norm SVP Oracle}\@writemeta{title: \foo}
+\def\foo{Side-Channel Leakage through Static Power – Should We Care about in Practice? –}\@writemeta{title: \foo}
+\def\foo{Crypto-analyses on “user efficient recoverable off-line e-cashs scheme with fast anonymity revoking”}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis on “Secure untraceable off-line electronic cash system”}\@writemeta{title: \foo}
+\def\foo{A Preliminary FPGA Implementation and Analysis of Phatak’s Quotient-First Scaling Algorithm in the Reduced-Precision Residue Number System}\@writemeta{title: \foo}
+\def\foo{Secure Compression: Theory \& Practice}\@writemeta{title: \foo}
+\def\foo{Breaking `128-bit Secure' Supersingular Binary Curves (or how to solve discrete logarithms in ${\mathbb F}_{2^{4 \cdot 1223}}$ and ${\mathbb F}_{2^{12 \cdot 367}}$)}\@writemeta{title: \foo}
+\def\foo{Generalized proper matrices and constructing of $m$-resilient Boolean functions with maximal nonlinearity for expanded range of parameters}\@writemeta{title: \foo}
+\def\foo{Remarks on the Pocklington and Padró-Sáez Cube Root Algorithm in $\mathbb F_q$}\@writemeta{title: \foo}
+\def\foo{Trial multiplication is not optimal but... On the symmetry of finite cyclic groups (Z/pZ)∗}\@writemeta{title: \foo}
+\def\foo{An Efficient Abuse-Free Fair Contract-Signing Protocol Based on RSA Signature and Σ-protocol}\@writemeta{title: \foo}
+\def\foo{Actively Private and Correct MPC Scheme in $t < n/2$ from Passively Secure Schemes with Small Overhead}\@writemeta{title: \foo}
+\def\foo{Collision Attack on 5 Rounds of Grøstl}\@writemeta{title: \foo}
+\def\foo{Proof of Activity: Extending Bitcoin’s Proof of Work via Proof of Stake}\@writemeta{title: \foo}
+\def\foo{Lightweight Diffusion Layer from the $k^{th}$ root of the MDS Matrix}\@writemeta{title: \foo}
+\def\foo{On the quaternion $\ell$-isogeny path problem}\@writemeta{title: \foo}
+\def\foo{New Classes of Public Key Cryptosystems over $F_2^8$ Constructed Based on Reed-Solomon Codes, K(XVII)SE(1)PKC and K(XVII)$\Sigma \Pi$PKC}\@writemeta{title: \foo}
+\def\foo{Simple AEAD Hardware Interface (SÆHI) in a SoC: Implementing an On-Chip Keyak/WhirlBob Coprocessor}\@writemeta{title: \foo}
+\def\foo{An Efficient $t$-Cheater Identifiable Secret Sharing Scheme with Optimal Cheater Resiliency}\@writemeta{title: \foo}
+\def\foo{Zipf’s Law in Passwords}\@writemeta{title: \foo}
+\def\foo{An Equivalent Condition on the Switching Construction of Differentially $4$-uniform Permutations on $\gf_{2^{2k}}$ from the Inverse Function}\@writemeta{title: \foo}
+\def\foo{A Dynamic Cube Attack on $105$ round Grain v1}\@writemeta{title: \foo}
+\def\foo{On the Optimal Pre-Computation of Window $\tau$NAF for Koblitz Curves}\@writemeta{title: \foo}
+\def\foo{New Class of Multivariate Public Key Cryptosystem, K(XI)RSE(2)PKC, Constructed based on Reed-Solomon Code Along with K(X)RSE(2)PKC over $\mathbb{F}_2$}\@writemeta{title: \foo}
+\def\foo{Crypto-analyses on “secure and efficient privacy-preserving public auditing scheme for cloud storage”}\@writemeta{title: \foo}
+\def\foo{Navigating in the Cayley graph of $SL_2(F_p)$ and applications to hashing}\@writemeta{title: \foo}
+\def\foo{Faster ECC over $\mathbb{F}_{2^{521}-1}$}\@writemeta{title: \foo}
+\def\foo{Post-Quantum Forward-Secure Onion Routing (Future Anonymity in Today’s Budget)}\@writemeta{title: \foo}
+\def\foo{Optimal software-implemented Itoh--Tsujii inversion for GF($2^m$)}\@writemeta{title: \foo}
+\def\foo{Non-committing encryption from $\Phi$-hiding}\@writemeta{title: \foo}
+\def\foo{CamlCrush: A PKCS\#11 Filtering Proxy}\@writemeta{title: \foo}
+\def\foo{Fully Homomorphic Encryption from Ring-LWE：Identity-Based，Arbitrary Cyclotomic，Tighter Parameters}\@writemeta{title: \foo}
+\def\foo{Related-Key Forgeries for Prøst-OTR}\@writemeta{title: \foo}
+\def\foo{Déjà Q: Encore! Un Petit IBE}\@writemeta{title: \foo}
+\def\foo{C$\emptyset$C$\emptyset$: A Framework for Building Composable Zero-Knowledge Proofs}\@writemeta{title: \foo}
+\def\foo{Computing Jacobi's \theta in quasi-linear time}\@writemeta{title: \foo}
+\def\foo{Pseudo-Free Families of Finite Computational Elementary Abelian $p$-Groups}\@writemeta{title: \foo}
+\def\foo{Re-encryption Veriﬁability: How to Detect Malicious Activities of a Proxy in Proxy Re-encryption}\@writemeta{title: \foo}
+\def\foo{Tighter Security for Efficient Lattice Cryptography via the Rényi Divergence of Optimized Orders}\@writemeta{title: \foo}
+\def\foo{$\Lambda \circ \lambda$: Functional Lattice Cryptography}\@writemeta{title: \foo}
+\def\foo{A note on the optimality of frequency analysis vs. $\ell_p$-optimization}\@writemeta{title: \foo}
+\def\foo{Authenticated Range \& Closest Point Queries in Zero-Knowledge}\@writemeta{title: \foo}
+\def\foo{$Area-Time$ Efficient Hardware Implementation of Elliptic Curve Cryptosystem}\@writemeta{title: \foo}
+\def\foo{Unclonable encryption revisited ($4 \times 2 = 8$)}\@writemeta{title: \foo}
+\def\foo{Statistical Properties of Multiplication mod $2^n$}\@writemeta{title: \foo}
+\def\foo{Exhausting Demirci-Selçuk Meet-in-the-Middle Attacks against Reduced-Round AES}\@writemeta{title: \foo}
+\def\foo{Eclipse Attacks on Bitcoin’s Peer-to-Peer Network}\@writemeta{title: \foo}
+\def\foo{Identity-Set-based Broadcast Encryption supporting “Cut-or-Select” with Short Ciphertext}\@writemeta{title: \foo}
+\def\foo{End-to-End Verifiable Elections in the Standard Model∗}\@writemeta{title: \foo}
+\def\foo{New attacks on  RSA with Moduli $N=p^rq$}\@writemeta{title: \foo}
+\def\foo{Improved security proofs in lattice-based cryptography: using the Rényi divergence rather than the statistical distance}\@writemeta{title: \foo}
+\def\foo{Improving algebraic attacks on stream ciphers based on linear feedback shifter registers over $F_{2^k}$}\@writemeta{title: \foo}
+\def\foo{Computing Individual Discrete Logarithms Faster in $GF(p^n)$}\@writemeta{title: \foo}
+\def\foo{Related-Key Rectangle Attack on Round-reduced \textit{Khudra} Block Cipher}\@writemeta{title: \foo}
+\def\foo{Quantum homomorphic encryption for circuits of low $T$-gate complexity}\@writemeta{title: \foo}
+\def\foo{PUDA – Privacy and Unforgeability for Data Aggregation}\@writemeta{title: \foo}
+\def\foo{Improved (Pseudo) Preimage Attacks on Reduced-Round GOST and Grøstl-256 and Studies on Several Truncation Patterns for AES-like Compression Functions (Full Version)}\@writemeta{title: \foo}
+\def\foo{An analysis of the $C$ class of bent functions}\@writemeta{title: \foo}
+\def\foo{Improved Linear Hull Attack on Round-Reduced \textsc{Simon} with Dynamic Key-guessing Techniques}\@writemeta{title: \foo}
+\def\foo{On Generating Coset Representatives of PGL_2(\F_q) in PGL_2(\F_{q^2})}\@writemeta{title: \foo}
+\def\foo{Interdiction in Practice – Hardware Trojan Against a High-Security USB Flash Drive}\@writemeta{title: \foo}
+\def\foo{Skipping the $q$ in Group Signatures}\@writemeta{title: \foo}
+\def\foo{Comparison of cube attacks over diﬀerent vector spaces}\@writemeta{title: \foo}
+\def\foo{Faster point scalar multiplication on NIST elliptic curves over GF(p) using (twisted) Edwards curves over GF(p³)}\@writemeta{title: \foo}
+\def\foo{Fast Oblivious AES\\A dedicated application of the MiniMac protocol}\@writemeta{title: \foo}
+\def\foo{Refund attacks on Bitcoin’s Payment Protocol}\@writemeta{title: \foo}
+\def\foo{Standard quantum bit commitment – an indefinite commitment time}\@writemeta{title: \foo}
+\def\foo{The Security of NTP’s Datagram Protocol}\@writemeta{title: \foo}
+\def\foo{An Algorithm for Counting the Number of $2^n$-Periodic Binary Sequences with Fixed $k$-Error Linear Complexity}\@writemeta{title: \foo}
+\def\foo{Construction of $n$-variable ($n\equiv 2 \bmod 4$) balanced Boolean functions with maximum absolute value in autocorrelation spectra $< 2^{\frac n2}$}\@writemeta{title: \foo}
+\def\foo{Direct construction of quasi-involutory recursive-like MDS matrices from $2$-cyclic codes}\@writemeta{title: \foo}
+\def\foo{Modifying Shor’s algorithm to compute short discrete logarithms}\@writemeta{title: \foo}
+\def\foo{Are RNGs Achilles’ heel of RFID Security and Privacy Protocols ?}\@writemeta{title: \foo}
+\def\foo{Comments on “Flaw in the Security Analysis of Leakage-resilient Authenticated Key Exchange Protocol from CT-RSA 2016 and Restoring the Security Proof”}\@writemeta{title: \foo}
+\def\foo{An Oblivious Parallel RAM with $O(\log^2 N)$ Parallel Runtime Blowup}\@writemeta{title: \foo}
+\def\foo{Computing Optimal Ate Pairings on Elliptic Curves with Embedding Degree $9,15$ and $27$}\@writemeta{title: \foo}
+\def\foo{Collecting relations for the Number Field Sieve in $GF(p^6)$}\@writemeta{title: \foo}
+\def\foo{A new algorithm for residue multiplication modulo $2^{521}-1$}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Multi-Prime $\Phi$-Hiding Assumption}\@writemeta{title: \foo}
+\def\foo{Cryptographic Properties of Addition Modulo $2^n$}\@writemeta{title: \foo}
+\def\foo{Trick or Tweak: On the (In)security of OTR’s Tweaks}\@writemeta{title: \foo}
+\def\foo{May-Ozerov Algorithm for Nearest-Neighbor Problem over $\mathbb{F}_{q}$ and Its Application to Information Set Decoding}\@writemeta{title: \foo}
+\def\foo{\(\mu\)Kummer: efficient hyperelliptic signatures and key exchange on microcontrollers}\@writemeta{title: \foo}
+\def\foo{Malleability of the blockchain’s entropy}\@writemeta{title: \foo}
+\def\foo{Automatic Search for the Best Trails in ARX: Application to Block Cipher \textsc{Speck}}\@writemeta{title: \foo}
+\def\foo{A note on the security of threshold implementations with $d+1$ input shares}\@writemeta{title: \foo}
+\def\foo{Loop-Abort Faults on Lattice-Based Fiat–Shamir and Hash-and-Sign Signatures}\@writemeta{title: \foo}
+\def\foo{Improved Factorization of $N=p^rq^s$}\@writemeta{title: \foo}
+\def\foo{Bitstream Fault Injections (BiFI) – Automated Fault Attacks against SRAM-based FPGAs}\@writemeta{title: \foo}
+\def\foo{Efficient probabilistic algorithm for estimating the algebraic properties  of Boolean functions for large $n$}\@writemeta{title: \foo}
+\def\foo{The Lightest 4x4 MDS Matrices over $GL(4,\mathbb{F}_2)$}\@writemeta{title: \foo}
+\def\foo{Software Benchmarking of the 2$^{\text{nd}}$ round CAESAR Candidates}\@writemeta{title: \foo}
+\def\foo{Cryptographic Voting — A Gentle Introduction}\@writemeta{title: \foo}
+\def\foo{Privately Matching $k$-mers}\@writemeta{title: \foo}
+\def\foo{A generalisation of Dillon's APN permutation with the best known differential and nonlinear properties for all fields of size $2^{4k+2}$}\@writemeta{title: \foo}
+\def\foo{Generalized Desynchronization Attack on UMAP: Application to  RCIA, KMAP,  SLAP and SASI$^+$ protocols}\@writemeta{title: \foo}
+\def\foo{Fast Arithmetic Modulo $2^xp^y\pm 1$}\@writemeta{title: \foo}
+\def\foo{Practical Non-Malleable Codes from $\ell$-more Extractable Hash Functions}\@writemeta{title: \foo}
+\def\foo{Fast Montgomery-like Square Root Computation over $GF(2^m)$ for All Trinomials}\@writemeta{title: \foo}
+\def\foo{Round and Communication Efficient Unconditionally-secure MPC with $t < n/3$ in Partially Synchronous Network}\@writemeta{title: \foo}
+\def\foo{Homomorphic SIM$^2$D Operations: Single Instruction Much More Data}\@writemeta{title: \foo}
+\def\foo{A Novel Pre-Computation Scheme of Window $\tau$NAF for Koblitz Curves}\@writemeta{title: \foo}
+\def\foo{$\mu$chain: How to Forget without Hard Forks}\@writemeta{title: \foo}
+\def\foo{Settling the mystery of $Z_r=r$ in RC4}\@writemeta{title: \foo}
+\def\foo{A Certain Family of Subgroups of $\mathbb Z_n^\star$ Is Weakly Pseudo-Free under the General Integer Factoring Intractability Assumption}\@writemeta{title: \foo}
+\def\foo{Machine-Learning Attacks on PolyPUFs, OB-PUFs, RPUFs, LHS-PUFs, and PUF–FSMs}\@writemeta{title: \foo}
+\def\foo{Twisted $\mu_4$-normal form for elliptic curves}\@writemeta{title: \foo}
+\def\foo{Quantum Demiric-Selçuk Meet-in-the-Middle Attacks: Applications to 6-Round Generic Feistel Constructions}\@writemeta{title: \foo}
+\def\foo{A Provably Secure PKCS\#11 Configuration Without Authenticated Attributes}\@writemeta{title: \foo}
+\def\foo{Some results on the existence of $t$-all-or-nothing  transforms over arbitrary alphabets}\@writemeta{title: \foo}
+\def\foo{The Approximate $k$-List Problem}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Wang et al’s Certificateless Signature Scheme without Bilinear Pairings}\@writemeta{title: \foo}
+\def\foo{When It’s All Just Too Much: Outsourcing MPC-Preprocessing}\@writemeta{title: \foo}
+\def\foo{A New Algorithm for Inversion mod $p^k$}\@writemeta{title: \foo}
+\def\foo{Efficient hash maps to \mathbb{G}_2 on BLS curves}\@writemeta{title: \foo}
+\def\foo{Sharper Bounds in Lattice-Based Cryptography using the Rényi Divergence}\@writemeta{title: \foo}
+\def\foo{Encryption Switching Protocols Revisited: Switching modulo $p$}\@writemeta{title: \foo}
+\def\foo{Recovering Short Generators of Principal Fractional Ideals in Cyclotomic Fields of Conductor $p^\alpha q^\beta$}\@writemeta{title: \foo}
+\def\foo{Snarky Signatures: \\ Minimal Signatures of Knowledge from Simulation-Extractable SNARKs}\@writemeta{title: \foo}
+\def\foo{Multiplication and Division over Extended Galois Field GF($p^q$): A new Approach to find Monic Irreducible Polynomials over any Galois Field GF($p^q$).}\@writemeta{title: \foo}
+\def\foo{Can You Trust Your Encrypted Cloud? An Assessment of SpiderOakONE’s Security}\@writemeta{title: \foo}
+\def\foo{Large Modulus Ring-LWE $\geq$ Module-LWE}\@writemeta{title: \foo}
+\def\foo{Brute–Force Search Strategies for Single–Trace and Few–Traces Template Attacks on the DES Round Keys of a Recent Smart Card}\@writemeta{title: \foo}
+\def\foo{Lower bounds on communication for multiparty computation of multiple «AND» instances with secret sharing}\@writemeta{title: \foo}
+\def\foo{δ-subgaussian Random Variables in Cryptography}\@writemeta{title: \foo}
+\def\foo{AS$^3$: Adaptive Social Secret Sharing for Distributed Storage Systems}\@writemeta{title: \foo}
+\def\foo{Lattice-Based Techniques for Accountable Anonymity: Composition of Abstract Stern’s Protocols and Weak PRF with Efficient Protocols from LWR}\@writemeta{title: \foo}
+\def\foo{HAL — The Missing Piece of the Puzzle for Hardware Reverse Engineering, Trojan Detection and Insertion}\@writemeta{title: \foo}
+\def\foo{No-Match Attacks and Robust Partnering Definitions – Defining Trivial Attacks for Security Protocols is Not Trivial}\@writemeta{title: \foo}
+\def\foo{Möbius: Trustless Tumbling for Transaction Privacy}\@writemeta{title: \foo}
+\def\foo{Blockwise $p$-Tampering Attacks on Cryptographic Primitives, Extractors, and Learners}\@writemeta{title: \foo}
+\def\foo{On the Power of Amortization in Secret Sharing: $d$-Uniform Secret Sharing and CDS with Constant Information Rate}\@writemeta{title: \foo}
+\def\foo{Full-Hiding (Unbounded) Multi-Input Inner Product Functional Encryption from the $k$-Linear Assumption}\@writemeta{title: \foo}
+\def\foo{Faster multiplication in $\mathbb{Z}_{2^m}[x]$ on Cortex-M4 to speed up NIST PQC candidates}\@writemeta{title: \foo}
+\def\foo{Synchronous Byzantine Agreement with Expected $O(1)$ Rounds, Expected $O(n^2)$ Communication, and Optimal Resilience}\@writemeta{title: \foo}
+\def\foo{Constructing Infinite Families of Low Differential Uniformity $(n,m)$-Functions with $m>n/2$}\@writemeta{title: \foo}
+\def\foo{Yet Another Size Record for AES: A First-Order SCA Secure AES S-box Based on GF($2^8$) Multiplication}\@writemeta{title: \foo}
+\def\foo{P4TC—Provably-Secure yet Practical Privacy-Preserving Toll Collection}\@writemeta{title: \foo}
+\def\foo{Improvements of Blockchain’s Block Broadcasting:An Incentive Approach}\@writemeta{title: \foo}
+\def\foo{On the Concrete Security of Goldreich’s Pseudorandom Generator}\@writemeta{title: \foo}
+\def\foo{Polynomial Time Bounded Distance Decoding near Minkowski’s Bound in Discrete Logarithm Lattices}\@writemeta{title: \foo}
+\def\foo{Full Indifferentiable Security of the Xor of Two or More Random Permutations Using the $\chi^2$ Method}\@writemeta{title: \foo}
+\def\foo{Can We Overcome the $n \log n$ Barrier for Oblivious Sorting?}\@writemeta{title: \foo}
+\def\foo{Hadamard Matrices, $d$-Linearly Independent Sets and Correlation-Immune Boolean Functions with Minimum Hamming Weights}\@writemeta{title: \foo}
+\def\foo{Agreement with Satoshi – On the Formalization of Nakamoto Consensus}\@writemeta{title: \foo}
+\def\foo{“Larger Keys, Less Complexity”   A Strategic Proposition}\@writemeta{title: \foo}
+\def\foo{Efficient Range ORAM with $\mathbb{O}(\log^{2}{N})$ Locality}\@writemeta{title: \foo}
+\def\foo{Improved Parallel Mask Refreshing Algorithms: Generic Solutions with Parametrized Non-Interference \& Automated Optimizations}\@writemeta{title: \foo}
+\def\foo{Finding Small Solutions of the Equation $Bx-Ay=z$ and Its Applications to Cryptanalysis of the RSA Cryptosystem}\@writemeta{title: \foo}
+\def\foo{On the Menezes-Teske-Weng’s conjecture}\@writemeta{title: \foo}
+\def\foo{A $k$-out-of-$n$ Ring Signature with Flexible Participation for Signers}\@writemeta{title: \foo}
+\def\foo{Towards Static Assumption Based Cryptosystem in Pairing Setting: Further Applications of DéjàQ and Dual-Form Signature}\@writemeta{title: \foo}
+\def\foo{Witness-Indistinguishable Arguments with $\Sigma$-Protocols for Bundled Witness Spaces and its Application to Global Identities}\@writemeta{title: \foo}
+\def\foo{Practical Fully Secure Unrestricted Inner Product Functional Encryption modulo $p$}\@writemeta{title: \foo}
+\def\foo{Blending FHE-NTRU keys – The Excalibur Property}\@writemeta{title: \foo}
+\def\foo{Injective Trapdoor Functions via Derandomization: How Strong is Rudich’s Black-Box Barrier?}\@writemeta{title: \foo}
+\def\foo{Programming the Demirci-Sel{ç}uk Meet-in-the-Middle Attack with Constraints}\@writemeta{title: \foo}
+\def\foo{Building Quantum-One-Way Functions from Block Ciphers: Davies-Meyer and Merkle-Damgård Constructions}\@writemeta{title: \foo}
+\def\foo{Round Optimal Black-Box “Commit-and-Prove”}\@writemeta{title: \foo}
+\def\foo{How to leverage hardness of constant-degree expanding polynomials over $\mathbb{R}$ to build iO}\@writemeta{title: \foo}
+\def\foo{A Proof of the Beierle-Kranz-Leander’s Conjecture related to Lightweight Multiplication in $F_{2^n}$}\@writemeta{title: \foo}
+\def\foo{Upper Bound on $\lambda_1(\Lambda^{\bot}(\mathbf A))$}\@writemeta{title: \foo}
+\def\foo{Quantum Algorithms for the Approximate $k$-List Problem and their Application to Lattice Sieving}\@writemeta{title: \foo}
+\def\foo{Breaking the Bluetooth Pairing – The Fixed Coordinate Invalid Curve Attack}\@writemeta{title: \foo}
+\def\foo{New point compression method for elliptic $\mathbb{F}_{\!q^2}$-curves of $j$-invariant $0$}\@writemeta{title: \foo}
+\def\foo{Low Complexity MDS Matrices Using $GF(2^n)$ SPB or GPB}\@writemeta{title: \foo}
+\def\foo{On the Complexity of non-recursive $n$-term Karatsuba Multiplier for Trinomials}\@writemeta{title: \foo}
+\def\foo{Formalising $\Sigma$-Protocols and Commitment Schemes using CryptHOL}\@writemeta{title: \foo}
+\def\foo{Simplifying Constructions and Assumptions for $i\mathcal{O}$}\@writemeta{title: \foo}
+\def\foo{Probabilistic Properties of Modular Addition \\ (Extended abstract)}\@writemeta{title: \foo}
+\def\foo{Fast Secrecy Computation with Multiplication Under the Setting of $k\le N<2k-1$ using Secret Sharing Scheme}\@writemeta{title: \foo}
+\def\foo{SÉTA: Supersingular Encryption from Torsion Attacks}\@writemeta{title: \foo}
+\def\foo{Hashing to elliptic curves of $j$-invariant $1728$}\@writemeta{title: \foo}
+\def\foo{Reduction Modulo $2^{448}-2^{224}-1$}\@writemeta{title: \foo}
+\def\foo{Unifying Leakage Models on a Rényi Day}\@writemeta{title: \foo}
+\def\foo{Toward A More Efficient Gröbner-based Algebraic Cryptanalysis}\@writemeta{title: \foo}
+\def\foo{$AC^0$ Constructions for Evolving Secret Sharing Schemes and Redistribution of Secret Shares}\@writemeta{title: \foo}
+\def\foo{Analogue of Vélu's Formulas for Computing Isogenies  over Hessian Model of Elliptic Curves}\@writemeta{title: \foo}
+\def\foo{Solving $X^{q+1}+X+a=0$ over Finite Fields}\@writemeta{title: \foo}
+\def\foo{Overdrive2k: Efficient Secure MPC over $Z_{2^k}$ from Somewhat Homomorphic Encryption}\@writemeta{title: \foo}
+\def\foo{Fast Algebraic Immunity of $2^m+2$ & $2^m+3$ variables Majority Function}\@writemeta{title: \foo}
+\def\foo{Solving $x^{2^k+1}+x+a=0$ in $\mathbb{F}_{2^n}$ with $\gcd(n,k)=1$}\@writemeta{title: \foo}
+\def\foo{Fully Secure Attribute-Based Encryption for $t$-CNF from LWE}\@writemeta{title: \foo}
+\def\foo{Improving Speed of Dilithium’s Signing Procedure}\@writemeta{title: \foo}
+\def\foo{FloodXMR: Low-cost transaction flooding attack with Monero’s bulletproof protocol}\@writemeta{title: \foo}
+\def\foo{How to wrap it up - A formally verified proposal for the use of authenticated wrapping in PKCS\#11}\@writemeta{title: \foo}
+\def\foo{RingCT 3.0 for Blockchain Conﬁdential Transaction: Shorter Size and Stronger Security}\@writemeta{title: \foo}
+\def\foo{Solutions of $x^{q^k}+\cdots+x^{q}+x=a$ in $GF(2^n)$}\@writemeta{title: \foo}
+\def\foo{A${^2}$L: Anonymous Atomic Locks for Scalability in Payment Channel Hubs}\@writemeta{title: \foo}
+\def\foo{The Exchange Attack: How to Distinguish Six Rounds of AES with $2^{88.2}$ chosen plaintexts}\@writemeta{title: \foo}
+\def\foo{Scrutinizing the Tower Field Implementation of the $\mathbb{F}_{2^8}$ Inverter -- with Applications to AES, Camellia, and SM4}\@writemeta{title: \foo}
+\def\foo{On cryptographic parameters of permutation polynomials of the form $x^rh(x^{(q-1)/d})$}\@writemeta{title: \foo}
+\def\foo{Don't forget your roots: constant-time root finding over $\mathbb{F}_{2^m}$}\@writemeta{title: \foo}
+\def\foo{Can we Beat the Square Root Bound for ECDLP over $\mathbb{F}_{p^2}$ via Representations?}\@writemeta{title: \foo}
+\def\foo{Asymptotically-Good Arithmetic Secret Sharing over Z/(p^\ell Z) with Strong Multiplication and Its Applications to Efficient MPC}\@writemeta{title: \foo}
+\def\foo{Efficient Information-Theoretic Secure Multiparty Computation over $\mathbb{Z}/p^k \mathbb{Z}$ via Galois Rings}\@writemeta{title: \foo}
+\def\foo{Modifying The Tropical Version of Stickel’s Key Exchange Protocol}\@writemeta{title: \foo}
+\def\foo{One Bit is All It Takes: A Devastating Timing Attack on BLISS’s Non-Constant Time Sign Flips}\@writemeta{title: \foo}
+\def\foo{Probabilistic analysis on Macaulay matrices over finite fields and complexity of constructing Gröbner bases}\@writemeta{title: \foo}
+\def\foo{Information Conservational Security with “Black Hole” Keypad Compression and Scalable One-Time Pad — An Analytical Quantum Intelligence Approach to Pre- and Post-Quantum Cryptography}\@writemeta{title: \foo}
+\def\foo{Detecting Faults in Inner Product Masking Scheme - IPM-FD: IPM with Fault Detection (extended version∗)}\@writemeta{title: \foo}
+\def\foo{Low Weight Discrete Logarithms and Subset Sum in $2^{0.65n}$ with Polynomial Memory}\@writemeta{title: \foo}
+\def\foo{CCA-Secure Leakage-Resilient Identity-Based  Key-Encapsulation from Simple (not $\mathtt{q}$-type) Assumptions}\@writemeta{title: \foo}
+\def\foo{Faster point compression for elliptic curves of $j$-invariant $0$}\@writemeta{title: \foo}
+\def\foo{Cortex-M4 Optimizations for \{R,M\}LWE Schemes}\@writemeta{title: \foo}
+\def\foo{Efficient indifferentiable hashing to elliptic curves $y^2 = x^3 + b$ provided that $b$ is a quadratic residue}\@writemeta{title: \foo}
+\def\foo{Karatsuba-based square-root Vélu’s formulas applied to two isogeny-based protocols}\@writemeta{title: \foo}
+\def\foo{Two-round $n$-out-of-$n$ and Multi-Signatures and Trapdoor Commitment from Lattices}\@writemeta{title: \foo}
+\def\foo{TinyGarble2: Smart, Efficient, and Scalable Yao’s Garble Circuit}\@writemeta{title: \foo}
+\def\foo{Schrödinger's Pirate: How To Trace a Quantum Decoder}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of RSA: A Special Case of Boneh-Durfee’s Attack}\@writemeta{title: \foo}
+\def\foo{Post-Quantum Cryptography with Contemporary Co-Processors: Beyond Kronecker, Schönhage-Strassen & Nussbaumer}\@writemeta{title: \foo}
+\def\foo{Simulation Extractable Versions of Groth’s zk-SNARK Revisited}\@writemeta{title: \foo}
+\def\foo{Breaking the $O(\sqrt n)$-Bit Barrier: Byzantine Agreement with Polylog Bits Per Party}\@writemeta{title: \foo}
+\def\foo{A New Generalisation of the Goldwasser-Micali Cryptosystem Based on the Gap $2^k$-Residuosity Assumption}\@writemeta{title: \foo}
+\def\foo{Compressed $\Sigma$-Protocols for Bilinear Group Arithmetic Circuits and Application to Logarithmic Transparent Threshold Signatures}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Aggregate $\Gamma$-Signature and Practical Countermeasures in Application to Bitcoin}\@writemeta{title: \foo}
+\def\foo{Unlinkable and Invisible γ-Sanitizable Signatures}\@writemeta{title: \foo}
+\def\foo{The SQALE of CSIDH: Sublinear Vélu Quantum-resistant isogeny Action with Low Exponents}\@writemeta{title: \foo}
+\def\foo{Compressed $\Sigma$-Protocol Theory and Practical Application to Plug & Play Secure Algorithmics}\@writemeta{title: \foo}
+\def\foo{Comments on “ Multi Recipient Aggregate Signcryption Scheme Based on Elliptic Curve”}\@writemeta{title: \foo}
+\def\foo{Homological Characterization of bounded $F_2$-regularity}\@writemeta{title: \foo}
+\def\foo{$P_4$-free Partition and Cover Numbers and Application}\@writemeta{title: \foo}
+\def\foo{$L_1$-Norm Ball for CSIDH: Optimal Strategy for Choosing the Secret Key Space}\@writemeta{title: \foo}
+\def\foo{Bitcoin Crypto–Bounties for Quantum Capable Adversaries}\@writemeta{title: \foo}
+\def\foo{Committing to Quantum Resistance, Better: A Speed–and–Risk–Configurable Defence for Bitcoin against a Fast Quantum Computing Attack}\@writemeta{title: \foo}
+\def\foo{About the Tu-Deng Conjecture for $\w(t)$ Less Than or Equal to 10}\@writemeta{title: \foo}
+\def\foo{On Adaptive Attacks against Jao-Urbanik’s Isogeny-Based Protocol}\@writemeta{title: \foo}
+\def\foo{New Assumptions and Efficient Cryptosystems from the $e$-th Power Residue Symbol}\@writemeta{title: \foo}
+\def\foo{A ”Final” Security Bug}\@writemeta{title: \foo}
+\def\foo{Multichain-MWPoW: A $p/2$ Adversary Power Resistant Blockchain Sharding Approach to a Decentralised Autonomous Organisation Architecture}\@writemeta{title: \foo}
+\def\foo{A Trace Based $GF(2^n)$ Inversion Algorithm}\@writemeta{title: \foo}
+\def\foo{ConTra Corona: Contact Tracing against the Coronavirus by Bridging the Centralized–Decentralized Divide for Stronger Privacy}\@writemeta{title: \foo}
+\def\foo{HACL×N: Verified Generic SIMD Crypto (for all your favorite platforms)}\@writemeta{title: \foo}
+\def\foo{MoniPoly---An Expressive $q$-SDH-Based Anonymous Attribute-Based Credential System}\@writemeta{title: \foo}
+\def\foo{Proof of Mirror Theory for $\xi_{\max}=2$}\@writemeta{title: \foo}
+\def\foo{Compressing Proofs of $k$-Out-Of-$n$ Partial Knowledge}\@writemeta{title: \foo}
+\def\foo{Functional Encryption for Attribute-Weighted Sums from $k$-Lin}\@writemeta{title: \foo}
+\def\foo{Time-Space Tradeoffs and Short Collisions in Merkle-Damgård Hash Functions}\@writemeta{title: \foo}
+\def\foo{Trace-$\Sigma$: a privacy-preserving contact tracing app}\@writemeta{title: \foo}
+\def\foo{Not enough LESS: An improved algorithm for solving Code Equivalence Problems over $\mathbb{F}_q$}\@writemeta{title: \foo}
+\def\foo{Secure merge with $O(n \log \log n)$ secure operation}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of a ``Strengthened'' Key Exchange Protocol for IoT, or When SAKE$^+$ Turns Out to Be SAKE$^-$}\@writemeta{title: \foo}
+\def\foo{Adaptively Secure Revocable Hierarchical IBE from $k$-linear Assumption}\@writemeta{title: \foo}
+\def\foo{Another code-based adaptation of Lyubashevsky’s signature cryptanalysed}\@writemeta{title: \foo}
+\def\foo{A Note on Authenticated Group Key Agreement Protocol Based on Twist Conjugacy Problem in Near – Rings}\@writemeta{title: \foo}
+\def\foo{Timing attacks and local timing attacks against Barrett’s modular multiplication algorithm}\@writemeta{title: \foo}
+\def\foo{New Techniques for Traitor Tracing: Size $N^{1/3}$ and More from Pairings}\@writemeta{title: \foo}
+\def\foo{Hashing to elliptic curves of $j=0$ and quadratic imaginary orders of class number $2$}\@writemeta{title: \foo}
+\def\foo{A Family of Nonlinear MDS Diffusion Layers over $\mathbb{F}_{2^{4n}}$}\@writemeta{title: \foo}
+\def\foo{Complete solution over $\GF{p^n}$ of the equation $X^{p^k+1}+X+a=0$}\@writemeta{title: \foo}
+\def\foo{Evolution of Bulletin Board & its application to E-Voting – A Survey}\@writemeta{title: \foo}
+\def\foo{The Study of Modulo $2^n$}\@writemeta{title: \foo}
+\def\foo{SCA-secure ECC in software – mission impossible?}\@writemeta{title: \foo}
+\def\foo{Limits of Polynomial Packings for $\mathbb{Z}_{p^k}$ and $\mathbb{F}_{p^k}$}\@writemeta{title: \foo}
+\def\foo{Optimal encodings to elliptic curves of $j$-invariants $0$, $1728$}\@writemeta{title: \foo}
+\def\foo{Neyman’s Smoothness Test: a Trade-off between Moment-based and Distribution-based Leakage Detections}\@writemeta{title: \foo}
+\def\foo{Comparing Lattice Families for Bounded Distance Decoding near Minkowski’s Bound.}\@writemeta{title: \foo}
+\def\foo{Discovering New $L$-Function Relations Using Algebraic Sieving}\@writemeta{title: \foo}
+\def\foo{Cairo – a Turing-complete STARK-friendly CPU architecture}\@writemeta{title: \foo}
+\def\foo{Glowworm Attack: Optical TEMPEST Sound Recovery via a Device’s Power Indicator LED}\@writemeta{title: \foo}
+\def\foo{Towards the Least Inequalities for Describing a Subset in $Z_2^n$}\@writemeta{title: \foo}
+\def\foo{A note on group membership tests for $\G_1$, $\G_2$ and $\G_T$ on BLS pairing-friendly curves}\@writemeta{title: \foo}
+\def\foo{Facial Recognition for Remote Electronic Voting – Missing Piece of the Puzzle or Yet Another Liability?}\@writemeta{title: \foo}
+\def\foo{($\epsilon,\delta$)-indistinguishable Mixing for Cryptocurrencies}\@writemeta{title: \foo}
+\def\foo{Estimating (Miner) Extractable Value is Hard, Let’s Go Shopping!}\@writemeta{title: \foo}
+\def\foo{Gröbner Basis Attack on STARK-Friendly Symmetric-Key Primitives: JARVIS, MiMC and GMiMCerf}\@writemeta{title: \foo}
+\def\foo{Parallel Repetition of $(k_1,\dots,k_{\mu})$-Special-Sound Multi-Round Interactive Proofs}\@writemeta{title: \foo}
+\def\foo{An Open Problem on the Bentness of Mesnager’s Functions}\@writemeta{title: \foo}
+\def\foo{Ofelimos: Combinatorial Optimization via Proof-of-Useful-Work \\ A Provably Secure  Blockchain Protocol}\@writemeta{title: \foo}
+\def\foo{MHz2k: MPC from HE over $\mathbb{Z}_{2^k}$ with New Packing, Simpler Reshare, and Better ZKP}\@writemeta{title: \foo}
+\def\foo{Log-$\mathcal{S}$-unit lattices using Explicit Stickelberger Generators to solve Approx Ideal-SVP}\@writemeta{title: \foo}
+\def\foo{Fiat–Shamir Bulletproofs are Non-Malleable (in the Algebraic Group Model)}\@writemeta{title: \foo}
+\def\foo{Breaking the $IKEp182 Challenge}\@writemeta{title: \foo}
+\def\foo{On Bitcoin Cash’s Target Recalculation Functions}\@writemeta{title: \foo}
+\def\foo{$P/poly$ Invalidity of the Agr17 Functional Encryption Scheme}\@writemeta{title: \foo}
+\def\foo{\(\chi\)perbp: a Cloud-based Lightweight Mutual Authentication Protocol}\@writemeta{title: \foo}
+\def\foo{A State-Separating Proof for Yao’s Garbling Scheme}\@writemeta{title: \foo}
+\def\foo{Interactive Error Correcting Codes Over Binary Erasure Channels Resilient to $>\frac12$ Adversarial Corruption}\@writemeta{title: \foo}
+\def\foo{Practical Garbled RAM: GRAM with $O(\log^2 n)$ Overhead}\@writemeta{title: \foo}
+\def\foo{Just how hard are rotations of $\mathbb{Z}^n$? Algorithms and cryptography with the simplest lattice}\@writemeta{title: \foo}
+\def\foo{Generating cryptographically-strong random lattice bases and recognizing rotations of $\mathbb{Z}^n$}\@writemeta{title: \foo}
+\def\foo{Improved Security Bound of \textsf{(E/D)WCDM}}\@writemeta{title: \foo}
+\def\foo{The most efficient indifferentiable hashing to elliptic curves of $j$-invariant $1728$}\@writemeta{title: \foo}
+\def\foo{Secure Sampling of Constant-Weight Words – Application to BIKE}\@writemeta{title: \foo}
+\def\foo{A Simple Deterministic Algorithm for Systems of Quadratic Polynomials over $\mathbb{F}_2$}\@writemeta{title: \foo}
+\def\foo{“They’re not that hard to mitigate”: What Cryptographic Library Developers Think About Timing Attacks}\@writemeta{title: \foo}
+\def\foo{Information Security in the Quantum Era. Threats to modern cryptography: Grover’s algorithm}\@writemeta{title: \foo}
+\def\foo{Improving Support-Minors rank attacks: applications to G$e$MSS and Rainbow}\@writemeta{title: \foo}
+\def\foo{Invertible Quadratic Non-Linear Layers for MPC-/FHE-/ZK-Friendly Schemes over $\mathbb F_p^n$}\@writemeta{title: \foo}
+\def\foo{Pre-Computation Scheme of Window $\tau$NAF for Koblitz Curves Revisited}\@writemeta{title: \foo}
+\def\foo{Tight Security Bounds for Micali’s SNARGs}\@writemeta{title: \foo}
+\def\foo{Indifferentiable hashing to ordinary elliptic $\mathbb{F}_{\!q}$-curves of $j=0$ with the cost of one exponentiation in $\mathbb{F}_{\!q}$}\@writemeta{title: \foo}
+\def\foo{A Compressed $\Sigma$-Protocol Theory for Lattices}\@writemeta{title: \foo}
+\def\foo{An $O(\log^2 p)$ Approach to Point-Counting on Elliptic Curves From a Prominent Family Over the Prime Field $\mathbb{F}_p$}\@writemeta{title: \foo}
+\def\foo{Explicit connections between supersingular isogeny graphs and Bruhat–Tits trees}\@writemeta{title: \foo}
+\def\foo{Stacking Sigmas: A Framework to Compose $\Sigma$-Protocols for Disjunctions}\@writemeta{title: \foo}
+\def\foo{Let’s Take it Offline: Boosting Brute-Force Attacks on iPhone’s User Authentication through SCA}\@writemeta{title: \foo}
+\def\foo{Upslices, Downslices, and Secret-Sharing with Complexity of $1.5^n$}\@writemeta{title: \foo}
+\def\foo{CryptoGram: Fast Private Calculations of Histograms over Multiple Users’ Inputs}\@writemeta{title: \foo}
+\def\foo{Cryptanalysis of Boyen’s Attribute-Based Encryption Scheme in TCC 2013}\@writemeta{title: \foo}
+\def\foo{Delegating Supersingular Isogenies over $\mathbb{F}_{p^2}$ with Cryptographic Applications}\@writemeta{title: \foo}
+\def\foo{LogStack: Stacked Garbling with $O(b \log b)$ Computation}\@writemeta{title: \foo}
+\def\foo{On the Possibility of Basing Cryptography on $\EXP \neq \BPP$}\@writemeta{title: \foo}
+\def\foo{Efficient Sorting of Homomorphic Encrypted Data with $k$-way Sorting Network}\@writemeta{title: \foo}
+\def\foo{Grover on Caesar and Vigenère Ciphers}\@writemeta{title: \foo}
+\def\foo{PrORAM: Fast $O(\log n)$ Private Coin ZK ORAM}\@writemeta{title: \foo}
+\def\foo{Side Channel Analysis against the ANSSI’s protected AES implementation on ARM}\@writemeta{title: \foo}
+\def\foo{Help, my Signal has bad Device! Breaking the Signal Messenger’s Post-CompromiseSecurity through a Malicious Device}\@writemeta{title: \foo}
+\def\foo{On the Design and Misuse of Microcoded (Embedded) Processors — A Cautionary Note}\@writemeta{title: \foo}
+\def\foo{Faster indifferentiable hashing to elliptic $\mathbb{F}_{\!q^2}$-curves}\@writemeta{title: \foo}
+\def\foo{Learnability of Multiplexer PUF and $S_N$-PUF : A Fourier-based Approach}\@writemeta{title: \foo}
+\def\foo{GenoPPML – a framework for genomic privacy-preserving machine learning}\@writemeta{title: \foo}
+\def\foo{Appenzeller to Brie: Efficient Zero-Knowledge Proofs for Mixed-Mode Arithmetic and $\mathbb{Z}_{2^k}$}\@writemeta{title: \foo}
+\def\foo{A Note on ``Reduction Modulo $2^{448}-2^{224}-1$''}\@writemeta{title: \foo}
+\def\foo{SNARGs for $\mathcal{P}$ from LWE}\@writemeta{title: \foo}
+\def\foo{One-out-of-$q$ OT Combiners}\@writemeta{title: \foo}
+\def\foo{MPC for $Q_2$ Access Structures over Rings and Fields}\@writemeta{title: \foo}
+\def\foo{SoK: Gröbner Basis Algorithms for Arithmetization Oriented Ciphers}\@writemeta{title: \foo}
+\def\foo{Efficiency through Diversity in Ensemble Models applied to Side-Channel Attacks – A Case Study on Public-Key Algorithms –}\@writemeta{title: \foo}
+\def\foo{Tighter Security for Schnorr Identification and Signatures: A High-Moment Forking Lemma for $\Sigma$-Protocols}\@writemeta{title: \foo}
+\def\foo{SPHINCS-$\alpha$: A Compact Stateless Hash-Based Signature Scheme}\@writemeta{title: \foo}
+\def\foo{NTRU-$\nu$-um: Secure Fully Homomorphic Encryption from NTRU with Small Modulus}\@writemeta{title: \foo}
+\def\foo{Quantum Cryptanalysis of $5$ rounds Feistel schemes and Benes schemes}\@writemeta{title: \foo}
+\def\foo{Evaluating the Security of Merkle-Damgård Hash Functions and Combiners in Quantum Settings}\@writemeta{title: \foo}
+\def\foo{On NTRU-ν-um Modulo $X^N − 1$}\@writemeta{title: \foo}
+\def\foo{$\mu$Cash: Transparent Anonymous Transactions}\@writemeta{title: \foo}
+\def\foo{Arithmetization of Σ¹₁ relations with polynomial bounds in Halo 2}\@writemeta{title: \foo}
+\def\foo{Explicit infinite families of   bent functions outside $\mathcal{MM}^\#$}\@writemeta{title: \foo}
+\def\foo{Threshold Linearly Homomorphic Encryption on $\mathbf{Z}/2^k\mathbf{Z}$}\@writemeta{title: \foo}
+\def\foo{The Scholz conjecture on addition chain is true for $v(n)= 4$}\@writemeta{title: \foo}
+\def\foo{On the Performance Gap of a Generic C Optimized Assembler and Wide Vector Extensions for Masked Software with an Ascon-{\it{p}} test case}\@writemeta{title: \foo}
+\def\foo{Second-Order Low-Randomness $d+1$ Hardware Sharing of the AES}\@writemeta{title: \foo}
+\def\foo{Bounded Surjective Quadratic Functions over $\mathbb F_p^n$ for MPC-/ZK-/FHE-Friendly Symmetric Primitives}\@writemeta{title: \foo}
+\def\foo{Hitchhiker’s Guide to a Practical Automated TFHE Parameter Setup for Custom Applications}\@writemeta{title: \foo}
+\def\foo{On Polynomial Functions Modulo $p^e$ and Faster Bootstrapping for Homomorphic Encryption}\@writemeta{title: \foo}
+\def\foo{Weightwise almost perfectly balanced functions: secondary constructions for all $n$ and better weightwise nonlinearities}\@writemeta{title: \foo}
+\def\foo{How to Meet Ternary LWE Keys on Babai’s Nearest Plane}\@writemeta{title: \foo}
+\def\foo{K-XMSS and K-SPHINCS$^+$:Hash based Signatures with\\Korean Cryptography Algorithms}\@writemeta{title: \foo}
+\def\foo{DAG-$\Sigma$: A DAG-based Sigma Protocol for Relations in CNF}\@writemeta{title: \foo}
+\def\foo{Applications of the indirect sum in the design of several special classes of bent functions outside the completed $\mathcal{MM}$ class}\@writemeta{title: \foo}
+\def\foo{Polynomial-Time Cryptanalysis of the Subspace Flooding Assumption for Post-Quantum $i\mathcal{O}$}\@writemeta{title: \foo}
+\def\foo{An algorithm for efficient detection of $(N,N)$-splittings and its application to the isogeny problem in dimension 2}\@writemeta{title: \foo}
+\def\foo{Demystifying the comments made on “A Practical Full Key Recovery Attack on TFHE and FHEW by Inducing Decryption Errors”}\@writemeta{title: \foo}
+\def\foo{Vector Commitments over Rings and Compressed $\Sigma$-Protocols}\@writemeta{title: \foo}
+\def\foo{NanoGRAM: Garbled RAM with $\widetilde{O}(\log N)$ Overhead}\@writemeta{title: \foo}
+\def\foo{Guaranteed Output in $O(\sqrt{n})$ Rounds for Round-Robin Sampling Protocols}\@writemeta{title: \foo}
+\def\foo{Promise $\Sigma$-protocol: How to Construct Efficient Threshold ECDSA from Encryptions Based on Class Groups}\@writemeta{title: \foo}
+\def\foo{On Time-Space Tradeoffs for Bounded-Length Collisions in Merkle-Damgård Hashing}\@writemeta{title: \foo}
+\def\foo{Beyond the Csiszár-Körner Bound: Best-Possible Wiretap Coding via Obfuscation}\@writemeta{title: \foo}
+\def\foo{Recovering the tight security proof of $SPHINCS^{+}$}\@writemeta{title: \foo}
+\def\foo{Fast Subgroup Membership Testings for $\mathbb{G}_1$, $\mathbb{G}_2$ and $\mathbb{G}_T$ on Pairing-friendly Curves}\@writemeta{title: \foo}
+\def\foo{An Improved Model on the Vague Sets-Based DPoS’s Voting Phase in Blockchain}\@writemeta{title: \foo}
+\def\foo{The Inverse of $\chi$ and Its Applications to Rasta-like Ciphers}\@writemeta{title: \foo}
+\def\foo{New optimization techniques for PlonK’s arithmetization}\@writemeta{title: \foo}
+\def\foo{Băhēm: A Provably Secure Symmetric Cipher}\@writemeta{title: \foo}
+\def\foo{India’s “Aadhaar” Biometric ID: Structure, Security, and Vulnerabilities}\@writemeta{title: \foo}
+\def\foo{Drive (Quantum) Safe! – Towards PQ Authentication for V2V Communications}\@writemeta{title: \foo}
+\def\foo{Two new classes of permutation trinomials over $\mathbb{F}_{q^3}$  with odd characteristic}\@writemeta{title: \foo}
+\def\foo{Don’t Learn What You Already Know: Scheme-Aware Modeling for Profiling Side-Channel Analysis against Masking}\@writemeta{title: \foo}
+\def\foo{Single-Trace Side-Channel Attacks on ω-Small Polynomial Sampling: With Applications to NTRU, NTRU Prime, and CRYSTALS-DILITHIUM}\@writemeta{title: \foo}
+\def\foo{Băhēm: A Symmetric Cipher with Provable 128-bit Security}\@writemeta{title: \foo}
+\def\foo{The Generals’ Scuttlebutt: Byzantine-Resilient Gossip Protocols}\@writemeta{title: \foo}
+\def\foo{Byzantine Reliable Broadcast with $O(nL+kn+n^2 log n)$ Communication}\@writemeta{title: \foo}
+\def\foo{Find the Bad Apples: An efficient method for perfect key recovery under imperfect SCA oracles – A case study of Kyber}\@writemeta{title: \foo}
+\def\foo{On the Differential Spectrum of a Differentially $3$-Uniform Power Function}\@writemeta{title: \foo}
+\def\foo{The $c-$differential uniformity and boomerang uniformity of three classes of permutation polynomials over $\mathbb{F}_{2^n}$}\@writemeta{title: \foo}
+\def\foo{Proof of Mirror Theory for a Wide Range of  $\xi_{\max}$}\@writemeta{title: \foo}
+\def\foo{Tight Multi-User Security Bound of $\textsf{DbHtS}$}\@writemeta{title: \foo}
+\def\foo{LIKE – Lattice Isomorphism-based Non-Interactive Key Exchange via Group Actions}\@writemeta{title: \foo}
+\def\foo{Breaking the quadratic barrier: Quantum cryptanalysis of Milenage, telecommunications’ cryptographic backbone}\@writemeta{title: \foo}
+\def\foo{SwiftEC: Shallue–van de Woestijne Indifferentiable Function To Elliptic Curves}\@writemeta{title: \foo}
+\def\foo{Arithmetization of Σ¹₁ relations in Halo 2}\@writemeta{title: \foo}
+\def\foo{Simon’s Algorithm and Symmetric Crypto: Generalizations and Automatized Applications}\@writemeta{title: \foo}
+\def\foo{More Efficient Dishonest Majority Secure Computation over $\mathbb{Z}_{2^k}$ via Galois Rings}\@writemeta{title: \foo}
+\def\foo{Moz$\mathbb{Z}_{2^k}$arella: Efficient Vector-OLE and Zero-Knowledge Proofs Over $\mathbb{Z}_{2^k}$}\@writemeta{title: \foo}
+\def\foo{\(\texttt{POLKA}\): Towards Leakage-Resistant Post-Quantum CCA-Secure Public Key Encryption}\@writemeta{title: \foo}
+\def\foo{$\texttt{zk-creds}$: Flexible Anonymous Credentials from zkSNARKs and Existing Identity Infrastructure}\@writemeta{title: \foo}
+\def\foo{Efficient supersingularity testing over $\mathbb{F}_p$ and CSIDH key validation}\@writemeta{title: \foo}
+\def\foo{Time-Space Lower Bounds for Finding Collisions in Merkle-Damgård Hash Functions}\@writemeta{title: \foo}
+\def\foo{Post-quantum hash functions using $\mathrm{SL}_n(\mathbb{F}_p)$}\@writemeta{title: \foo}
+\def\foo{Low-Delay 4, 5 and 6-Term Karatsuba Formulae in $\mathbb{F}_2[x]$ Using Overlap-free Splitting}\@writemeta{title: \foo}
+\def\foo{MR-DSS – Smaller MinRank-based (Ring-)Signatures}\@writemeta{title: \foo}
+\def\foo{A Signature-Based Gröbner Basis Algorithm with Tail-Reduced Reductors (M5GB)}\@writemeta{title: \foo}
+\def\foo{An $\mathcal{O}(n)$ Algorithm for Coefficient Grouping}\@writemeta{title: \foo}
+\def\foo{Fast Hashing to $G_2$ in Direct Anonymous Attestation}\@writemeta{title: \foo}
+\def\foo{The Scholz conjecture on addition chain is true for infinitely many integers with ℓ(2n) = ℓ(n)}\@writemeta{title: \foo}
+\def\foo{Verification of the (1–δ)-Correctness Proof of CRYSTALS-KYBER with Number Theoretic Transform}\@writemeta{title: \foo}
+\def\foo{Grotto: Screaming fast $(2 + 1)$-PC for $\mathbb{Z}_{2^{n}}$ via (2, 2)-DPFs}\@writemeta{title: \foo}
+\def\foo{Homomorphic Sortition – Single Secret Leader Election for PoS Blockchains}\@writemeta{title: \foo}
+\def\foo{Hashing to elliptic curves over highly $2$-adic fields $\mathbb{F}_{\!q}$ with $O(\log(q))$ operations in $\mathbb{F}_{\!q}$}\@writemeta{title: \foo}
+\def\foo{More Efficient Zero-Knowledge Protocols over $\mathbb{Z}_{2^k}$ via Galois Rings}\@writemeta{title: \foo}
+\def\foo{Practical Improvement to Gaudry-Schost Algorithm on Subgroups of $\mathbb{Z}^{*}_{p}$}\@writemeta{title: \foo}
+\def\foo{Degree-$D$ Reverse Multiplication-Friendly Embeddings: Constructions and Applications}\@writemeta{title: \foo}
+\def\foo{Maravedí: A Secure and Practical Protocol  to Trade Risk for Instantaneous Finality}\@writemeta{title: \foo}
+\def\foo{A simpler alternative to Lucas–Lehmer–Riesel primality test}\@writemeta{title: \foo}
+\def\foo{CNF Characterization of Sets over $\mathbb{Z}_2^n$ and Its Applications in Cryptography}\@writemeta{title: \foo}
+\def\foo{Differential Fault Attack on Rasta and $\text {FiLIP} _ {\text {DSM}}$}\@writemeta{title: \foo}
+\def\foo{The state diagram of $\chi$}\@writemeta{title: \foo}
+\def\foo{Efficient computation of $(3^n,3^n)$-isogenies}\@writemeta{title: \foo}
+\def\foo{Origami: Fold a Plonk for Ethereum’s VDF}\@writemeta{title: \foo}
+\def\foo{Batching Cipolla-Lehmer-Müller's square root algorithm with hashing to elliptic curves}\@writemeta{title: \foo}
+\def\foo{Machine-Checked Security for $\mathrm{XMSS}$ as in RFC 8391 and $\mathrm{SPHINCS}^{+}$}\@writemeta{title: \foo}
+\def\foo{Minimal $p$-ary codes from non-covering permutations}\@writemeta{title: \foo}
+\def\foo{Provable Lattice Reduction of $\mathbb Z^n$ with Blocksize $n/2$}\@writemeta{title: \foo}
+\makeatother
+
+% Provide the abstract of your paper
+\begin{abstract}
+This is the abstract.
+\end{abstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+\end{document}
