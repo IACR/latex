@@ -6,7 +6,8 @@ import argparse
 import json
 from nameparser import HumanName
 from pathlib import Path
-from pylatexenc.latex2text import LatexNodes2Text
+from pylatexenc import latexwalker
+from pylatexenc.latex2text import LatexNodes2Text, get_default_latex_context_db, MacroTextSpec
 import re
 
 def get_key_val(line):
@@ -18,10 +19,62 @@ def get_key_val(line):
     val = line[colon+1:].strip()
     return key, val
     
+def _raise_lt_unknown_macro(n):
+    """Callback for unknown macro or environment."""
+    if n.isNodeType(latexwalker.LatexMacroNode):
+        raise ValueError("Metadata may not contain unknown macro: '\\{}'".format(n.macroname))
+    elif n.isNodeType(latexwalker.LatexEnvironmentNode):
+        raise ValueError("Unknown environment: '\\begin{{{}}}'".format(n.environmentname))
+    raise ValueError("Unknown latex construct: '{}'".format(n.latex_verbatim()))
+
+def frac_decoder(n, l2tobj):
+    """Better formatting for \frac."""
+    arg1 = l2tobj.nodelist_to_text([n.nodeargd.argnlist[0]])
+    arg2 = l2tobj.nodelist_to_text([n.nodeargd.argnlist[1]])
+    return arg1 + '/' + arg2
+    ans = ''
+    if len(arg1) == 1:
+        ans += arg1 + '/'
+    else:
+        ans += '(' + arg1 + ')/'
+    if len(arg2) == 1:
+        ans += arg2
+    else:
+        ans += '(' + arg2 + ')'
+    return ans
+
+def get_decoder():
+    r"""Special handling for output from \protected@write."""
+    lt_context_db = get_default_latex_context_db()
+    lt_context_db.add_context_category('stripper',
+                                       macros=[MacroTextSpec('texttt', '%s'),
+                                               MacroTextSpec('textsf', '%s'),
+                                               MacroTextSpec('it', ''),
+                                               MacroTextSpec('frac', simplify_repl=frac_decoder),
+                                               MacroTextSpec('protect', ''),
+                                               MacroTextSpec('\\', ' '),
+                                               MacroTextSpec('bot', '⊥'),
+                                               MacroTextSpec('gcd', r'\gcd'),
+                                               MacroTextSpec('sc', ''),
+                                               MacroTextSpec('boldmath', ''),
+                                               MacroTextSpec('bm', ''),
+                                               MacroTextSpec('sl', '')],
+                                       prepend=True)
+    lt_context_db.set_unknown_macro_spec(MacroTextSpec('',
+                                                       simplify_repl=_raise_lt_unknown_macro))
+    return LatexNodes2Text(math_mode='with-delimiters',
+                           strict_latex_spaces=True,
+                           keep_braced_groups=True,
+                           keep_comments=False,
+                           latex_context=lt_context_db)
+
 def remove_macros(txt):
-    txt = txt.replace(r'\protect ', '').replace(r'\\ ', ' ')
+    txt = txt.replace(r'\\[\s]+', ' ')
     txt = re.sub(r'\\thanks  {[^}]*} ?', '', txt)
     txt = re.sub(r'\\index  {[^}]*}', '', txt)
+#    re.sub(r'\\protect (\\[a-zA-Z]+ )', r'THERE \1 HERE', txt)
+    if re.match(r'\\protect \$ ', txt):
+        re.sub(r'\\protect \$ ', r'\$', txt)
     return txt.strip()
 
 def parse_meta(metastr):
@@ -33,8 +86,7 @@ def parse_meta(metastr):
         a dict with authors, affiliations, citations and (optionally) editors
     # TODO: define a JSON schema for this file, or return a pydantic object.
     """
-    # This is used to decode lines with TeX character macros like \'e.
-    decoder = LatexNodes2Text(math_mode='with-delimiters', keep_braced_groups=False)
+    decoder = get_decoder()
     data = {'authors': [],
             'affiliations': [],
             'funders': [],
@@ -91,7 +143,7 @@ def parse_meta(metastr):
             data['version'] = line[8:].strip()
             index += 1
         elif line.startswith('title:'):
-            data['title'] = decoder.latex_to_text(remove_macros(line[6:].strip()))
+            data['title'] = decoder.latex_to_text(line[6:].strip())
             index += 1
             if index < numlines and lines[index].startswith('  '):
                 k,v = get_key_val(lines[index])
