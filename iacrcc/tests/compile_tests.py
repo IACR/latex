@@ -1125,3 +1125,4 @@ def test23_test():
       assert line[639] == r"title: Meet-in-the-Middle Preimage Attacks on Sponge-based Hashing\protect \thanks  {The full version of the paper is available at \protect \em  {https://eprint.iacr.org/2022/1714}}"
       assert line[640] == r"title: Practical Pre-Constrained Cryptography \\ \protect \Large  {(or: Balancing Privacy and Traceability in Encrypted Systems)}"
       assert line[641] == r"title: \protect \textbf  {Fully Adaptive \\Decentralized Multi-Authority \protect \textsf  {ABE}}"
+      assert line[642] == r"title: On a result by Paul Erdős (a.k.a. Paul Erd\H {o}s)"
