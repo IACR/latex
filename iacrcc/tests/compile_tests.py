@@ -287,7 +287,7 @@ def test12_test():
   # Check for presence of author name with notanonymous.
   # also check XMP data.
   # should pass with lualatex and pdflatex
-  for option in ['-pdflua']: #, '-pdf']:
+  for option in ['-pdflua', '-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       path = Path('test12')
       res = run_engine(option, path.iterdir(), tmpdirpath)
@@ -310,8 +310,10 @@ def test12_test():
       assert webStatement == 'https://creativecommons.org/licenses/by/4.0/deed.en'
       rights = xmp.get_string('.//dc:rights/rdf:Alt/rdf:li')
       assert rights == 'This work is licensed under a Creative Commons "Attribution 4.0 International" license.'
-      byteCount = xmp.get_string('.//prism:byteCount')
-      assert int(byteCount) > 40000
+      if option == 'pdflua':
+        # this does not exist under pdflatex. See https://github.com/borisveytsman/acmart/issues/413
+        byteCount = xmp.get_string('.//prism:byteCount')
+        assert int(byteCount) > 40000
       pageCount = xmp.get_string('.//prism:pageCount')
       assert int(pageCount) == 1
       source = xmp.get_string('.//dc:source')
