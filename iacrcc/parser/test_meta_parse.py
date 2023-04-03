@@ -670,7 +670,8 @@ def test_latex():
         r"Batching Cipolla-Lehmer-Müller's square root algorithm with hashing to elliptic curves": r"Batching Cipolla-Lehmer-Müller's square root algorithm with hashing to elliptic curves",
         r"Machine-Checked Security for $\protect \mathrm  {XMSS}$ as in RFC 8391 and $\protect \mathrm  {SPHINCS}^{+}$": r"Machine-Checked Security for $XMSS$ as in RFC 8391 and $SPHINCS^+$",
         r"Minimal $p$-ary codes from non-covering permutations": r"Minimal $p$-ary codes from non-covering permutations",
-        r"Provable Lattice Reduction of $\protect \mathbb  Z^n$ with Blocksize $n/2$": r"Provable Lattice Reduction of $ℤ^n$ with Blocksize $n/2$"}
+        r"Provable Lattice Reduction of $\protect \mathbb  Z^n$ with Blocksize $n/2$": r"Provable Lattice Reduction of $ℤ^n$ with Blocksize $n/2$",
+        r"On a result by Paul Erdős (a.k.a. Paul Erd\H {o}s)": r"On a result by Paul Erdős (a.k.a. Paul Erdős)"}
 
     for key, output in cases.items():
         assert decoder.latex_to_text(key) == output
