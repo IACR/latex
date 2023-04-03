@@ -481,7 +481,7 @@ def test23_test():
       path = Path('test23')
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode == 0
-      line = [meta_parse.remove_macros(l) for l in res['meta'].splitlines()]
+      line = res['meta'].splitlines()
       print(line[0])
       assert line[0] == r"title: On the possibility of basing Cryptography on the assumption that $P \protect \neq  NP$"
       assert line[1] == r"title: Black-Box Concurrent Zero-Knowledge Requires $\protect \tilde  \Omega (\log n)$ Rounds"
@@ -1117,3 +1117,11 @@ def test23_test():
       assert line[631] == r"title: Machine-Checked Security for $\protect \mathrm  {XMSS}$ as in RFC 8391 and $\protect \mathrm  {SPHINCS}^{+}$"
       assert line[632] == r"title: Minimal $p$-ary codes from non-covering permutations"
       assert line[633] == r"title: Provable Lattice Reduction of $\protect \mathbb  Z^n$ with Blocksize $n/2$"
+      assert line[634] == r"title: Batch Bootstrapping II: \\{\protect \normalsize  Bootstrapping in Polynomial Modulus Only Requires $\protect \tilde  O(1)$ FHE Multiplications in Amortization}"
+      assert line[635] == r"title: Complete Characterization of Broadcast and Pseudo-Signatures from Correlations\protect \thanks  {VN was supported by ISF Grants 1709/14 \protect \textit  {\&} 2774/20 and ERC Project NTSC (742754).}"
+      assert line[636] == r"title: End-to-End Encrypted Zoom Meetings:\\ Proving Security and Strengthening Liveness"
+      assert line[637] == r"title: End-to-End Secure Messaging with Traceability\\ {\protect \em  Only} for Illegal Content"
+      assert line[638] == r"title: \protect \large  {Almost Tight Multi-User Security under Adaptive Corruptions \& Leakages in the Standard Model}"
+      assert line[639] == r"title: Meet-in-the-Middle Preimage Attacks on Sponge-based Hashing\protect \thanks  {The full version of the paper is available at \protect \em  {https://eprint.iacr.org/2022/1714}}"
+      assert line[640] == r"title: Practical Pre-Constrained Cryptography \\ \protect \Large  {(or: Balancing Privacy and Traceability in Encrypted Systems)}"
+      assert line[641] == r"title: \protect \textbf  {Fully Adaptive \\Decentralized Multi-Authority \protect \textsf  {ABE}}"
