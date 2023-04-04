@@ -1128,3 +1128,37 @@ def test23_test():
       assert line[640] == r"title: Practical Pre-Constrained Cryptography \\ \protect \Large  {(or: Balancing Privacy and Traceability in Encrypted Systems)}"
       assert line[641] == r"title: \protect \textbf  {Fully Adaptive \\Decentralized Multi-Authority \protect \textsf  {ABE}}"
       assert line[642] == r"title: On a result by Paul Erdős (a.k.a. Paul Erd\H {o}s)"
+
+# Negative test.
+# Check if we detect using "\thanks" in the author name of the \addauthor command
+# --> This should fail.
+def test24_test():
+  path = Path('test24')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+
+# Negative test.
+# Check if we detect using "\thanks" in the affiliation name of the \affiliation command
+# --> This should fail.
+def test25_test():
+  path = Path('test25')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+
+# Negative test.
+# Check if we detect using "\thanks" in the title \title command
+# --> This should fail.
+def test26_test():
+  path = Path('test26')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+
