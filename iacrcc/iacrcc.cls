@@ -1,5 +1,5 @@
-\def\fileversion{0.27}
-\def\filedate{2023/03/31}
+\def\fileversion{0.28}
+\def\filedate{2023/04/04}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -80,10 +80,6 @@
 \define@key{IACR}{notanonymous}[]{\@notanonymoustrue}
 \newcommand{\@IACRversion}{preprint}
 \define@choicekey{IACR}{version}[\@IACRversion]{preprint,submission,final}[preprint]{}
-% TODO: figure out how to prohibit passing twocolumn and landscape to article.
-%\DeclareOptionX*{
-%  \typeout{passing \CurrentOption to article}\PassOptionsToClass{\CurrentOption}{article}
-%}
 \DeclareOptionX*{}
 \ProcessOptionsX<IACR>\relax
 \typeout{Compiling version=\@IACRversion}
@@ -442,7 +438,6 @@
   \null
   \vskip 2em%
   \begin{center}%
-    \let \footnote \thanks
     % Insert the title and subtitle (if defined)
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
       {\LARGE \bfseries\sffamily\boldmath \@title\par}%
@@ -728,6 +723,7 @@
   \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\IACR@title@subtitle}%
   \pgfkeysgetvalue{/IACR-title/entities/onclick}{\IACR@title@onclick}%
   \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\IACR@title@plaintext}%
+  \renewcommand\thanks[1]{\ClassError{iacrcc}{The \string\thanks\space macro is not supported. Please see the documentation how to use footnotes.}{}}%
   \ifx\IACR@title@plaintext\@empty
     \checkstring{#2}{error in title}
   \else
