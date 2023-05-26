@@ -1032,20 +1032,15 @@
   \fi
 }
 
-% fancyvrb: sophisticated verbatim text
-\RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
-
-\renewenvironment{abstract}{%
+% Define the abstract environment for the iacrcc
+\newenvironment{iacrabstract}{%
   \ifx\IACR@text@keywords\@empty\else
     \@writemeta{keywords: \IACR@text@keywords}%
   \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
-  \VerbatimOut{\jobname.abstract}%
 }%
 {%
-  \endVerbatimOut
-  \input{\jobname.abstract}
   \ifx\IACR@keywords\@empty\else
     \smallskip\par\textbf{\textsf{Keywords:}}
     % Replace comma by a centered period.
@@ -1078,6 +1073,19 @@
       }
     \fi%hyperxmp@doi
   }{}% final
+}
+
+% Redefine the abstract environment to write it to the .abstract file
+\renewenvironment{abstract}{%
+  \filecontents[nosearch,noheader,overwrite]{\jobname.abstract}%
+}%
+{%
+  \endfilecontents
+}
+
+% Add a hook to display the abstract text after writing to file.
+\AddToHook{env/abstract/after}{%
+  \begin{iacrabstract}\input{\jobname.abstract}\end{iacrabstract}%
 }
 
 % autoref: capitals for Sections, and adding Algorithm
