@@ -1,5 +1,5 @@
-\def\fileversion{0.28}
-\def\filedate{2023/04/04}
+\def\fileversion{0.30}
+\def\filedate{2023/05/30}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -331,7 +331,7 @@
 
 \AtEndDocument{%
   \immediate\closeout\iacrmeta%
-  % Check if either \title, \addauthor or \affiliation macros were redefined
+  % Check if either \title, \addauthor or \addaffiliation macros were redefined
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
   \ifx\store@addauthor\addauthor\else
@@ -340,8 +340,8 @@
   \ifx\store@title\title\else
     \ClassError{iacrcc}{The \string\title\space macro seems to be redefined}{}%
   \fi
-  \ifx\store@affiliation\affiliation\else
-    \ClassError{iacrcc}{The \string\affiliation\space macro seems to be redefined}{}%
+  \ifx\store@addaffiliation\addaffiliation\else
+    \ClassError{iacrcc}{The \string\addaffiliation\space macro seems to be redefined}{}%
   \fi
   \ifx\store@font\familydefault\else
     \ClassError{iacrcc}{The \string\familydefault\space macro seems to be redefined}{}%
@@ -745,7 +745,7 @@
 
 \let\store@title\title% Save macro away
 
-\newcommand\affiliation[2][]{%
+\newcommand\addaffiliation[2][]{%
   \stepcounter{IACR@inst@cnt}%  
   % If a affiliation name is provided does some basic sanity checking on the string
   \MathAllowedInCheckStringfalse
@@ -802,14 +802,14 @@
   \IACR@affiliation@params@clearkeys%
 }
 
-\let\store@affiliation\affiliation% Save macro away
+\let\store@addaffiliation\addaffiliation% Save macro away
 
 \if@anonymous
   \gdef\@author{Anonymous Submission to \publname}%
   \gdef\IACR@runningauthors{}%
   \gdef\IACR@listofauthors{}%
   \renewcommand{\addauthor}[2][]{}%
-  \renewcommand{\affiliation}[2][]{}%
+  \renewcommand{\addaffiliation}[2][]{}%
 \fi
 
 \newcommand{\inst}[1]{%

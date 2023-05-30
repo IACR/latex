@@ -13,6 +13,7 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
+
 \newcommand{\cmd}[2][]{%
   \def\FirstArg{#1}
   \ifx\FirstArg\empty
@@ -21,12 +22,16 @@
     \texttt{\textbackslash{}#2\{#1\}}%
   \fi
 }
+
 \usepackage{xcolor}
+
 \title[running  = {The iacrcc class},
        onclick  = {https://publish.iacr.org/iacrcc},
        subtitle = {iacrcc LaTeX Class Documentation (v0.27)}
       ]{How to Use the IACR Communications in Cryptology Class}
+
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
+
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
            onclick = {https://www.joppebos.com},
@@ -39,15 +44,17 @@
 	   surname = {McCurley},
           ]{Kevin S. McCurley}
 
-\affiliation[ror      = 031v4g827,
-             onclick  = {https://www.nxp.com},
-             street   = {Interleuvenlaan 80},
-             city     = {Leuven},
-             postcode = {3001},
-             country  = {Belgium}
-            ]{NXP Semiconductors}
-\affiliation[country=Absurdistan]{Self}
+\addaffiliation[ror      = 031v4g827,
+                onclick  = {https://www.nxp.com},
+                street   = {Interleuvenlaan 80},
+                city     = {Leuven},
+                postcode = {3001},
+                country  = {Belgium}
+               ]{NXP Semiconductors}
+\addaffiliation[country=Absurdistan]{Self}
+
 \license{CC-by}
+
 \begin{document}
 
 \maketitle
@@ -92,20 +99,8 @@ unnecessary code.
 \item The production system to which you submit your final version requires
   that the main \LaTeX\ file should be \texttt{main.tex}. You might as
   well start that way by copying \texttt{template.tex} to \texttt{main.tex}.
-%% \item You should use \texttt{lualatex} or \texttt{xelatex} instead of
-%%   \texttt{pdflatex}. When you submit your final paper, it will be
-%%   compiled with \texttt{lualatex}. There is a quite good guide to
-%%   \texttt{lualatex}~\url{http://tug.ctan.org/info/luatex/lualatex-doc/lualatex-doc.pdf}.
-%%   You can use \texttt{pdflatex} for development, but it lacks modern
-%%   features for support of UTF-8 text and we recommend using
-%%   \texttt{lualatex} instead. The final version of your paper must be
-%%   compiled with \texttt{lualatex}.
 \item The default fonts are provided by the \verb+lmodern+ package. Do not
   change this.
-  %% In particular, {\color{red}do NOT} use the
-  %% \texttt{fontenc} package; use \texttt{fontspec} instead. If you have
-  %% to use a non-standard font for some symbols, then only use
-  %% unicode-encoded fonts ({\color{red}not T1, not T2, and not OT1}).
 \item Avoid using too many packages. Many authors are lazy and just
   copy what they used in the past. Some won't work - see the list of
   acceptable packages at \url{https://publish.iacr.org}. Don't use any
@@ -150,7 +145,7 @@ explicitly at the correct position.
 \section{Macros to add title and author information}
 
 \subsection{Title}
-A title is added using the \cmd{title} macro, but with a few other options:
+A title is added using the \cmd{title} macro, it has a number of (optional) options:
 \begin{center}
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 {\tt running} & The running title displayed in the headers.\\
@@ -168,7 +163,7 @@ A title is added using the \cmd{title} macro, but with a few other options:
        onclick  = {https://github.com/IACR/latex}
       ]{How to use the \texttt{iacrcc} \LaTeX\ class}
 \end{verbatim}
-The \verb+plaintext+ version is only required if you use macros in
+The \verb+plaintext+ option is only required if you use macros in
 your title (it is required in the example). Inline mathematics and
 accents like \verb+\"u+ are allowed in plain text. Note
 that \LaTeX\ has defaulted to UTF-8 input since 2019, so just ü is
@@ -178,7 +173,7 @@ and you should instead use the
 
 \subsection{Authors}
 Author information is entered using the \verb+\addauthor+,
-\verb+\affiliation+, and \verb+\addfunding+ macros. Authors are asked
+\verb+\addaffiliation+, and \verb+\addfunding+ macros. Authors are asked
 to enter this information in a structured way so that we can provide
 it to indexing agencies. The \verb+\author+ macro is disabled.
 
@@ -191,8 +186,8 @@ Authors are listed individually using repeated calls to the {\tt
     array (see below).\\
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID ID (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
-{\tt surname} & the surname of the author\\
-{\tt onclick} & provide a URL to visit when clicking on the author name: e.g.,~can
+{\tt surname} & The surname of the author.\\
+{\tt onclick} & Provide a URL to visit when clicking on the author name: e.g.,~can
 point to the academic webpage.\\
 {\tt email} & Define the e-mail address of this author. Note that at least one e-mail address is required for \texttt{[version=final]}.\\
 \end{tabular}
@@ -208,8 +203,8 @@ surnames which might be confusing.
 
 An example using all the optional options is given below. In this case
 the author has \verb+inst={1,2}+ to indicate that they are affiliated with
-the the first and second affiliations that are entered with
-\verb+\affiliation+:
+the first and second affiliations that are entered with
+\verb+\addaffiliation+:
 
 \begin{verbatim}
 \addauthor[orcid    = 0000-0000-0000-0000,
@@ -217,7 +212,7 @@ the the first and second affiliations that are entered with
            footnote = {Thanks to my supervisor for the support.},
            onclick  = {https://www.mypersonalwebpage.com},
            email    = {alice@accomplished.com},
-           surname = {Accomplished},
+           surname  = {Accomplished},
           ]{Alice Accomplished}
 \end{verbatim}
 
@@ -228,12 +223,10 @@ for four authors or less. One can optionally modify this with the
 inside \cmd{addauthor}, so use \verb+footnote+ instead.
 
 \subsection{Affiliations}
-Affiliations are listed individually using the \cmd{affiliation} command
-\emph{after} the last author
-has been added using \cmd{addauthor}.  There are a number
-of arguments to \cmd{affiliation}:
+Affiliations are listed individually using the \cmd{addaffiliation} command
+\emph{after} the last author has been added using \cmd{addauthor}.
+There are a number of arguments to \cmd{addaffiliation}:
 
-%\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt ror} & Provide the Research Organization Registry (ROR) indentifier
@@ -251,18 +244,18 @@ of arguments to \cmd{affiliation}:
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}}
 to help you find ROR identifiers, and you are strongly urged to
 include these. Country is required if \verb+[version=final]+ on the
-paper.  An example using all the optional options would look like:
+paper. An example using all the optional options would look like:
 
 \begin{verbatim}
-\affiliation[ror        = 05f950310,
-             onclick    = {http://www.kuleuven.be/english},
-             department = {Computer Security and Industrial Cryptography},              
-             street     = {Kasteelpark Arenberg 10, box 2452},
-             city       = {Leuven},
-             state      = {Vlaams-Brabant},
-             postcode   = {3001},
-             country    = {Belgium}
-            ]{KU Leuven}
+\addaffiliation[ror        = 05f950310,
+                onclick    = {http://www.kuleuven.be/english},
+                department = {Computer Security and Industrial Cryptography},              
+                street     = {Kasteelpark Arenberg 10, box 2452},
+                city       = {Leuven},
+                state      = {Vlaams-Brabant},
+                postcode   = {3001},
+                country    = {Belgium}
+               ]{KU Leuven}
 \end{verbatim}           
 
 \subsection{Funding information}
@@ -287,11 +280,11 @@ The complete list of options for \texttt{\textbackslash addfunding} is:
 \begin{center}
 \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
   {\tt fundref} & An identifier from the
-  \href{https://publish.iacr.org/funding}{Crossref funder registry}\\
+  \href{https://publish.iacr.org/funding}{Crossref funder registry}.\\
   {\tt ror} & An identifier from the \href{https://publish.iacr.org/funding}{Research Organization Registry} (ROR). A \texttt{fundref} identifier is preferred for \texttt{\textbackslash addfunding}.\\
-  {\tt country} & The country of the funding agency \\
+  {\tt country} & The country of the funding agency. \\
   {\tt grantid} & The identifier of the grant that is assigned by the agency who
-      provided it
+      provided it.
 \end{tabular}
 \end{center}
 \noindent You can use the online tool at 
@@ -348,9 +341,8 @@ text-only keywords; for example:
 \texttt{\textbackslash keywords[rings, arithmetic on Z]\{rings, arithmetic on \$\textbackslash mathbb\{Z\}\$\}}
 
 \subsection{Abstract}
-Abstracts are entered with the \texttt{abstract} environment as usual,
-but do not use macros within the abstract except for inside mathematics.  Note that
-the keywords should be given before starting the abstract
+Abstracts are entered with the \texttt{abstract} environment as usual.
+Note that the keywords should be given before starting the abstract
 environment. The \texttt{iacrcc} class will automatically produce a file
 \texttt{.abstract} that contains the contents of the abstract.
 
@@ -396,8 +388,7 @@ One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
   bibtex into the \texttt{main.meta} file as well.
 \item a file \texttt{main.abstract} that contains
   the contents of the abstract for the paper. This will be used to show
-  the abstract on the web, which is why you should avoid using macros here
-  except in mathematics.
+  the abstract on the web.
 \end{itemize}
 
 \section{Typesetting the Bibliography}
@@ -433,12 +424,9 @@ distributions are available on a variety of platforms.  In particular,
 we recommend the \href{https://www.tug.org/texlive/}{TeX Live}
 distribution, which is updated regularly, includes a large number of
 packages, and is available on many platforms. We use the texlive medium
-scheme in our cloud service to compile final versions of papers. Note that
-final versions must compile with \texttt{lualatex}, and we recommend
-using this.
+scheme in our cloud service to compile final versions of papers.
 
 \paragraph{Pictures.}
-
 We recommend the use of the \texttt{tikz} package to render pictures.
 In particular, a large variety of crypto pictures made with
 \texttt{tikz} is available at \href{http://iacr.org/authors/tikz/}{\texttt{iacr.org/authors/tikz/}}
@@ -454,34 +442,27 @@ with what it thinks should be the right extension, so if you write
 and \texttt{figure.eps}, it will try to select the correct one.
 
 \paragraph{Floats.}
-
 Figure captions should be below the figures, and table captions above
 the tables.  The \texttt{float} package loaded by the class should
 take care of this automatically.  If want to have several figures side
 by side, see the \texttt{[floatrow]} option.
 
 \paragraph{Tables.}
-
 We recommend the \texttt{booktabs} package to typeset tables.
 
 \paragraph{Algorithms.}
-
 We recommend the \texttt{algorithmicx} packages for algorithms (in
 particular, \texttt{algpseudocodex} for pseudo-code).
 
 \section{Further information}
-
 If you are a \LaTeX\ novice, you may wish to consult the following documents:
 \begin{itemize}
 \item General \LaTeX{} documentation, such as the
   \href{http://mirrors.ctan.org/info/lshort/english/lshort.pdf}{(not
     so) short introduction to \LaTeXe};
-% \item The \texttt{article} class
-%   \href{http://mirrors.ctan.org/macros/latex/doc/clsguide.pdf}{documentation};
 \item The
   \href{https://mirror.mwt.me/ctan/macros/latex/required/amsmath/amsldoc.pdf}{amsmath
     documentation} is useful for learning how to typeset mathematics.
-%\item Documentation of the \LaTeX{} packages used in the class (see below).
 \end{itemize}
 
 \renewcommand{\refname}{Sample References}
