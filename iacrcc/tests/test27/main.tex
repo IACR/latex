@@ -11,7 +11,6 @@
 
 \errorcontextlines=5
 \newcommand\niceguy{Fester Bestertester}
-
 %%%% 2. PACKAGES %%%%
 \usepackage{lipsum} % Example package -- can be removed
 \usepackage{amsmath}
@@ -19,13 +18,16 @@
 \usepackage[T1]{fontenc}
 %%%% 3. AUTHOR, INSTITUTE %%%%
 
+\license{CC-by}
+
 % NOTE: There are two affiliations, referred to by 1,2
 \addauthor[orcid=0000-0003-1010-8157,inst={1,2}]{Alice Accomplished}
 % NOTE: Only one affiliation for this author.
-\addauthor[inst={1},footnote={Thanks to my mom!},email={bad@example.com}]{Bob Badenuff}
+\addauthor[inst={1},footnote={Thanks to my mom!},
+  email={bad@example.com}]{Bob Badenuff}
 \addauthor[inst={3,2,1}]{Tancr{\`e}de Lepoint}
-
-\addaffiliation[ror=02t274463,country={United States}]{University of California, Santa Barbara}
+\addaffiliation[ror=02t274463,
+  country={United States}]{University of California, Santa Barbara}
 \addaffiliation[country={Elbonia}]{University of Antartica}
 \addaffiliation[country={Turkey}]{Bo{\u g}azi{\c c}i University}
 
@@ -34,8 +36,16 @@
 %%%% 4. TITLE %%%%
 % Note that \thanks and \footnote are forbidden in \title. Please use
 % \genericfootnote.
-\title[running={Thoughts on binary functions}]{Thoughts about
-"binary" functions on $GF(p)$ by \niceguy\ at 30°C}
+\title[running={Thoughts on binary functions},
+  plaintext={Thoughts about "binary" functions and \$\ on $GF(p)$ by Fester Bestertester at 30°C}]{%
+  Thoughts about "binary" functions and \$\ on $GF(p)$ by \niceguy\ at 30°C}
+
+% Redefine some macros which control the margins,
+% this is NOT allowed.
+\setlength{\marginparwidth}{0pt}
+\setlength{\marginparsep}{0pt}
+\setlength{\topmargin}{0pt}
+
 \begin{document}
 
 \maketitle

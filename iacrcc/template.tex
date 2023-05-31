@@ -74,18 +74,18 @@
 % This is optional for <= 4 authors and mandatory for > 4 authors
 % \authorrunning{Joppe W. Bos and Kevin S. McCurley}
 
-% Affiliations are listed individually using the \affiliations command 
+% Affiliations are listed individually using the \addaffiliation command 
 % *after* the (list of) authors using \addauthor
 % This should look like (full example):
-% \affiliation[ror        = 05f950310,
-%              onclick    = {http://www.kuleuven.be/english},
-%              department = {Computer Security and Industrial Cryptography},              
-%              street     = {Kasteelpark Arenberg 10, box 2452},
-%              city       = {Leuven},
-%              state      = {Vlaams-Brabant},
-%              postcode   = {3001},
-%              country    = {Belgium}
-%             ]{KU Leuven}
+% \addaffiliation[ror        = 05f950310,
+%                 onclick    = {http://www.kuleuven.be/english},
+%                 department = {Computer Security and Industrial Cryptography},              
+%                 street     = {Kasteelpark Arenberg 10, box 2452},
+   %              city       = {Leuven},
+%                 state      = {Vlaams-Brabant},
+%                 postcode   = {3001},
+%                 country    = {Belgium}
+%                ]{KU Leuven}
 % Where the options in square brackets “[ ]” are optional and control 
 % the following (optional information is mainly used for meta-data collection):
 % ror:        provide the Research Organization Registry (ROR) identifier 
@@ -100,14 +100,14 @@
 % postcode:   zip or postal code
 % country:    country name
 
-\affiliation[ror     = 031v4g827,
-             onclick = {https://www.nxp.com},
-             street  = {Interleuvenlaan 80},
-             city    = {Leuven},
-             postcode= {3001},
-             country = {Belgium}
-            ]{NXP Semiconductors}
-\affiliation{Self}
+\addaffiliation[ror     = 031v4g827,
+                onclick = {https://www.nxp.com},
+                street  = {Interleuvenlaan 80},
+                city    = {Leuven},
+                postcode= {3001},
+                country = {Belgium}
+               ]{NXP Semiconductors}
+\addaffiliation{Self}
 
 \addfunding[country  = {europe}, 
             grantid  = {1234}, 
@@ -122,14 +122,13 @@
 \maketitle
 
 % Provide the keywords *before* the abstract
+% When keywords contain macros provide the text version as the optional argument
 \newcommand{\Dirac}{Dirac}
-\keywords[Dirac delta function,
-  unit impulse]{\Dirac $\delta$ function,
-  unit impulse}
+\keywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
+
 % Provide the abstract of your paper
 \begin{abstract}
-  Abstract goes here. You should not use macros inside the abstract, but you
-  may use display mathematics.
+  Abstract goes here.
 \end{abstract}
 
 % The content of the paper starts here
