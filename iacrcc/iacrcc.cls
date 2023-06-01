@@ -157,12 +157,10 @@
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
   \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
-  % When pdflatex is used load T1 fonts using fontenc
   \ifpdftex
-    % Prefer unicode encoding over T1 encoding. 
-    % There are only a few glyphs that require falling back to T1, 
-    % since most of our fonts should now be unicode-encoded (e.g., latin modern).
-    \RequirePackage[TU,T1]{fontenc} 
+    % TU encoding is only available with XeTeX and LuaTeX.
+    % Defaulting to T1 encoding.
+    \RequirePackage[T1]{fontenc} 
   \fi
 }
 
@@ -1034,6 +1032,25 @@
 
 % fancyvrb: sophisticated verbatim text
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
+
+% See: https://tex.stackexchange.com/questions/596323/unicode-characters-within-verbatimout-of-fancyvrb
+% The fancyvrb package uses \immediate\write, but this has the consequence 
+% that active characters not explicitly inactivated are expanded.
+% Ptach to use a “protected” immediate write.
+% Define the same as \protected@write, but with \immediate
+\providecommand*\protected@iwrite@fancyvrb[3]{%
+  \begingroup
+  \let\thepage\relax
+  #2%
+  \let\protect\@unexpandable@protect
+  \edef\reserved@a{\immediate\write#1{#3}}\reserved@a
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi
+}
+\patchcmd{\FVB@VerbatimOut}
+  {\immediate\write\FV@OutFile}
+  {\protected@iwrite@fancyvrb\FV@OutFile{}}
+  {}{}
 
 \renewenvironment{abstract}{%
   \ifx\IACR@text@keywords\@empty\else

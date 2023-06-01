@@ -1162,3 +1162,25 @@ def test26_test():
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
 
+# Check for writing to file in the abstract when unicode 
+# characters are used.
+def test27_test():
+  path = Path('test27')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      assert 'meta' in res
+      meta = meta_parse.parse_meta(res['meta'])
+      assert meta['title'] == "Thoughts about \"binary\" functions and $ on $GF(p)$ by Fester Bestertester at 30\u00b0C"
+      assert len(meta['authors']) == 3
+      assert meta['authors'][0]['orcid'] == '0000-0003-1010-8157'
+      assert meta['authors'][0]['affiliations'] == ['1','2']
+      assert meta['authors'][1]['email'] == 'bad@example.com'
+      assert meta['authors'][2]['name'] == 'Tancrède Lepoint'
+      assert meta['affiliations'][0]['ror'] == '02t274463'
+      assert meta['affiliations'][2]['name'] == 'Boğaziçi University'
+      assert meta['affiliations'][2]['country'] == 'Turkey'
+      assert meta['version'] == 'final'
+
