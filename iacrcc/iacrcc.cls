@@ -1036,7 +1036,7 @@
 % See: https://tex.stackexchange.com/questions/596323/unicode-characters-within-verbatimout-of-fancyvrb
 % The fancyvrb package uses \immediate\write, but this has the consequence 
 % that active characters not explicitly inactivated are expanded.
-% Ptach to use a “protected” immediate write.
+% Patch to use a “protected” immediate write.
 % Define the same as \protected@write, but with \immediate
 \providecommand*\protected@iwrite@fancyvrb[3]{%
   \begingroup
