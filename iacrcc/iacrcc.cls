@@ -156,7 +156,7 @@
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue}{}
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
-  \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
+  \bibliographystyle{iacrcc}
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
