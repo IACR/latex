@@ -114,111 +114,121 @@ FUNCTION {meta.names}
 }
 
 % Output commands to write fields into the meta file.
-FUNCTION {meta.all}
-{
-  author empty$
-    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{}" * }
-    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{" * author * "}" * }
+FUNCTION {meta.all.1}
+{ author empty$
+    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{}" * write$ }
+    { "\iacrmetacite{" type$ "l" change.case$ * "}{" * cite$ * "}{" * author * "}" *  write$ }
   if$
-  write$ newline$
   author missing$
-    { }
+    { skip$ }
     { "author" author meta.names }
   if$
   address missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{address}{" address * "}" * write$ newline$ }
   if$
   booktitle missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{booktitle}{" booktitle * "}" * write$ newline$ }
   if$
-  chapter missing$
-    { }
+}
+FUNCTION {meta.all.2}
+{  chapter missing$
+    { skip$ }
     { "\iacrwritemeta{chapter}{" chapter * "}" * write$ newline$ }
   if$
   doi missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{doi}{" doi * "}" * write$ newline$ }
   if$
   edition missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{edition}{" edition * "}" * write$ newline$ }
   if$
   editor missing$
-    { }
+    { skip$ }
     { "editor" editor meta.names }
   if$
-  howpublished missing$
-    { }
+}
+FUNCTION {meta.all.3}
+{  howpublished missing$
+    { skip$ }
     { "\iacrwritemeta{howpublished}{" howpublished * "}" * write$ newline$ }
   if$
   institution missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{institution}{" institution * "}" * write$ newline$ }
   if$
   isbn missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{isbn}{" isbn * "}" * write$ newline$ }
   if$
   issn missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{issn}{" issn * "}" * write$ newline$ }
   if$
-  journal missing$
-    { }
+}
+FUNCTION {meta.all.4}
+{  journal missing$
+    { skip$ }
     { "\iacrwritemeta{journal}{" journal * "}" * write$ newline$ }
   if$
   key missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{key}{" key * "}" * write$ newline$ }
   if$
   month missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{month}{" month * "}" * write$ newline$ }
   if$
   note missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{note}{" note * "}" * write$ newline$ }
   if$
-  number missing$
-    { }
+}
+FUNCTION {meta.all.5}
+{  number missing$
+    { skip$ }
     { "\iacrwritemeta{number}{" number * "}" * write$ newline$ }
   if$
   organization missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{organization}{" organization * "}" * write$ newline$ }
   if$
   pages missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{pages}{" pages * "}" * write$ newline$ }
   if$
   publisher missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{publisher}{" publisher * "}" * write$ newline$ }
   if$
-  school missing$
-    { }
+}
+FUNCTION {meta.all.6}
+{  school missing$
+    { skip$ }
     { "\iacrwritemeta{school}{" school * "}" * write$ newline$ }
   if$
   series missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{series}{" series * "}" * write$ newline$ }
   if$
   title missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{title}{" title * "}" * write$ newline$ }
   if$
   url missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{url}{" url * "}" * write$ newline$ }
   if$
-  volume missing$
-    { }
+}
+FUNCTION {meta.all.7}
+{  volume missing$
+    { skip$ }
     { "\iacrwritemeta{volume}{" volume * "}" * write$ newline$ }
   if$
   year missing$
-    { }
+    { skip$ }
     { "\iacrwritemeta{year}{" year * "}" * write$ newline$ }
   if$
 }
@@ -226,7 +236,13 @@ FUNCTION {meta.all}
 % moved here
 FUNCTION {output.bibitem}
 { newline$
-  meta.all newline$ % iacr
+  meta.all.1 newline$ % iacr
+  meta.all.2 newline$ % iacr
+  meta.all.3 newline$ % iacr
+  meta.all.4 newline$ % iacr
+  meta.all.5 newline$ % iacr
+  meta.all.6 newline$ % iacr
+  meta.all.7 newline$ % iacr
   "\bibitem[" write$
   label write$
   "]{" write$
@@ -1430,14 +1446,10 @@ FUNCTION {begin.bib}
     { preamble$ write$ newline$ }
   if$
   % iacr begin
-  "\newcommand{\iacrwritemeta}[2]{%"
-  write$ newline$
-  "\ifstrempty{#2}{}{\immediate\write\iacrmeta{\IACRSS #1: \unexpanded{#2}}}}"
-  write$ newline$
-  "\newcommand{\iacrmetacite}[3]{\immediate\write\iacrmeta{citation: #1 #2}%"
-  write$ newline$
-  "\ifstrempty{#3}{}{\immediate\write\iacrmeta{\IACRSS authors: \detokenize{#3}}}}"
-  write$ newline$
+  "\newcommand{\iacrwritemeta}[2]{%" write$ newline$
+  "\ifstrempty{#2}{}{\immediate\write\iacrmeta{\IACRSS #1: \unexpanded{#2}}}}" write$ newline$
+  "\newcommand{\iacrmetacite}[3]{\immediate\write\iacrmeta{citation: #1 #2}%" write$ newline$
+  "\ifstrempty{#3}{}{\immediate\write\iacrmeta{\IACRSS authors: \detokenize{#3}}}}" write$ newline$
   % iacr end
   "\begin{thebibliography}{"  longest.label  * "}" * write$ newline$
 }
