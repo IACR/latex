@@ -234,68 +234,45 @@
 \RequirePackage{pgfkeys}
 
 \pgfkeys{/IACR-author/entities/.cd,
-  inst/.initial=\@empty,
-  orcid/.initial=\@empty,
-  footnote/.initial=\@empty,
-  onclick/.initial=\@empty,
-  email/.initial=\@empty,
-  surname/.initial=\@empty,
+  inst/.initial={},
+  orcid/.initial={},
+  footnote/.initial={},
+  onclick/.initial={},
+  email/.initial={},
+  surname/.initial={},
 }
-\def\IACR@author@params@set@keys#1{%
-  \pgfkeys{/IACR-author/entities/.cd,#1}}
-
-\def\IACR@author@params@get#1{%
-  \pgfkeysvalueof{/IACR-author/entities/#1}}
-
-\newcommand\IACR@author@params@clearkeys{%
-  \IACR@author@params@set@keys{inst=\@empty,orcid=\@empty,footnote=\@empty,onclick=\@empty,email=\@empty,surname=\@empty}%
-}
+\def\IACR@author@params@set@keys#1{\pgfkeys{/IACR-author/entities/.cd,#1}}
+\newcommand\IACR@author@params@clearkeys{\IACR@author@params@set@keys{inst={},orcid={},footnote={},onclick={},email={},surname={}}}
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
-  ror/.initial=\@empty,
-  onclick/.initial=\@empty,
-  department/.initial=\@empty,
-  street/.initial=\@empty,
-  city/.initial=\@empty,
-  state/.initial=\@empty,
-  postcode/.initial=\@empty,
-  country/.initial=\@empty,
+  ror/.initial={},
+  onclick/.initial={},
+  department/.initial={},
+  street/.initial={},
+  city/.initial={},
+  state/.initial={},
+  postcode/.initial={},
+  country/.initial={},
 }
-\def\IACR@affiliation@params@set@keys#1{%
-  \pgfkeys{/IACR-affiliation/entities/.cd,#1}}
-
-\def\IACR@affiliation@params@get#1{%%
-  \pgfkeysvalueof{/IACR-affiliation/entities/#1}}
-
-\newcommand\IACR@affiliation@params@clearkeys{%
- \IACR@affiliation@params@set@keys{ror=\@empty,onclick=\@empty,department=\@empty,street=\@empty,city=\@empty,state=\@empty,postcode=\@empty,country=\@empty}%
-}
+\def\IACR@affiliation@params@set@keys#1{\pgfkeys{/IACR-affiliation/entities/.cd,#1}}
+\newcommand\IACR@affiliation@params@clearkeys{\IACR@affiliation@params@set@keys{ror={},onclick={},department={},street={},city={},state={},postcode={},country={}}}
 
 \pgfkeys{/IACR-title/entities/.cd,
-  running/.initial=\@empty,
-  onclick/.initial=\@empty,
-  subtitle/.initial=\@empty,
+  running/.initial={},
+  onclick/.initial={},
+  subtitle/.initial={},
   plaintext/.initial={},
 }
-\def\IACR@title@params@set@keys#1{%
-  \pgfkeys{/IACR-title/entities/.cd,#1}}
-
-\def\IACR@title@params@get#1{%
-  \pgfkeysvalueof{/IACR-title/entities/#1}}
+\def\IACR@title@params@set@keys#1{\pgfkeys{/IACR-title/entities/.cd,#1}}
 
 \pgfkeys{/IACR-funding/entities/.cd,
-  country/.initial=\@empty,
-  grantid/.initial=\@empty,
-  fundref/.initial=\@empty,
-  ror/.initial=\@empty,
+  country/.initial={},
+  grantid/.initial={},
+  fundref/.initial={},
+  ror/.initial={},
 }
-\def\IACR@funding@params@set@keys#1{%
-  \pgfkeys{/IACR-funding/entities/.cd,#1}}
-\def\IACR@funding@params@get#1{%
-  \pgfkeysvalueof{/IACR-funding/entities/#1}}
-\newcommand\IACR@funding@params@clearkeys{%
-  \IACR@funding@params@set@keys{country=\@empty,grantid=\@empty,fundref=\@empty,ror=\@empty}%
-}
+\def\IACR@funding@params@set@keys#1{\pgfkeys{/IACR-funding/entities/.cd,#1}}
+\newcommand\IACR@funding@params@clearkeys{\IACR@funding@params@set@keys{country={},grantid={},fundref={},ror={}}}
 
 % Title/Author/affiliations
 % Running author list for in the header
@@ -308,7 +285,7 @@
 \global\let\@affiliation\@empty
 
 % Bool to check if the user called the \authorrunning macro
-\gdef\IACR@userdefinedrunningauthors{\@empty}%
+\global\let\IACR@userdefinedrunningauthors\@empty%
 \newcommand{\authorrunning}[1]{%
   \gdef\IACR@userdefinedrunningauthors{userdefined}%
   \gdef\IACR@runningauthors{#1}%
@@ -354,7 +331,6 @@
     }%
   }{}%
 }
-
 \let\storeprotect\protect
 
 % xpatch: Extending etoolbox patching commands
@@ -363,7 +339,6 @@
 % create an immediate version of \protected@write
 \let\protected@iwrite\protected@write
 \xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
-
 \newcommand\@writemeta[1]{\protected@iwrite\iacrmeta{}{#1}}%
 
 % alphalph: Convert numbers to letters, 
@@ -376,8 +351,8 @@
   \renewcommand\maketitle{\par
     \@writemeta{version: \@IACRversion}%
     \@writemeta{title: \@plaintitle}%
-    \if\IACR@title@subtitle\@empty\else
-      \@writemeta{\IACRSS subtitle: \IACR@title@subtitle}%
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
+      \@writemeta{\IACRSS subtitle: \@IACR@title@subtitle}%
     \fi
     % Generic footnote and e-mails are displayed without markers
     \ifx\@genericfootnote\@empty\else
@@ -439,7 +414,7 @@
     % Insert the title and subtitle (if defined)
     {\def\@makefnmark{\rlap{\@textsuperscript{\normalfont\@thefnmark}}}%
       {\LARGE \bfseries\sffamily\boldmath \@title\par}%
-      \ifdefined\IACR@title@subtitle@defined\vskip .5em{\large\sffamily\bfseries\IACR@title@subtitle\par}\fi
+      \ifdefined\@IACR@title@subtitle@defined\vskip .5em{\large\sffamily\bfseries\@IACR@title@subtitle\par}\fi
     }%
     \vskip 1.5em%
     {\large
@@ -512,51 +487,51 @@
   % Write out the author in the meta file.
   \@writemeta{author:}%
   \IACR@author@params@set@keys{#1}%
-  \pgfkeysgetvalue{/IACR-author/entities/footnote}{\IACRfootnote}%
-  \expandafter\let\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname\IACRfootnote% Copy the pgf key
-  \pgfkeysgetvalue{/IACR-author/entities/surname}{\IACR@surname}%
+  \pgfkeysgetvalue{/IACR-author/entities/footnote}{\@IACR@author@footnote}%
+  \pgfkeysgetvalue{/IACR-author/entities/surname}{\@IACR@author@surname}%
+  \pgfkeysgetvalue{/IACR-author/entities/orcid}{\@IACR@author@orcid}%
+  \pgfkeysgetvalue{/IACR-author/entities/onclick}{\@IACR@author@onclick}%
+  \pgfkeysgetvalue{/IACR-author/entities/inst}{\@IACR@author@inst}%
+  \pgfkeysgetvalue{/IACR-author/entities/email}{\@IACR@author@email}%
+  \expandafter\let\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname\@IACR@author@footnote% Copy the pgf key
   \@writemeta{\IACRSS name: #2}%
-  \if\relax\IACR@surname\relax\else
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@surname}\relax\else
     % If a surname is provided does some basic sanity checking on the string
     \MathAllowedInCheckStringfalse
-    \expandafter\checkstring\expandafter{\IACR@surname}{surname should not contain macros or math}%
-    \@writemeta{\IACRSS surname: \IACR@surname}%
+    \expandafter\checkstring\expandafter{\@IACR@author@surname}{surname should not contain macros or math}%
+    \@writemeta{\IACRSS surname: \@IACR@author@surname}%
   \fi
-  \@writemeta{\IACRSS affil: \IACR@author@params@get{inst}}%
-  \edef\@IACRorcid{\IACR@author@params@get{orcid}}%
-  \edef\@IACRonclick{\IACR@author@params@get{onclick}}%
-  \edef\@IACRinst{\IACR@author@params@get{inst}}%
-  \edef\@IACRemail{\IACR@author@params@get{email}}%
+  \@writemeta{\IACRSS affil: \@IACR@author@inst}%
   % Create the unlabeled footnote consisting of:
   % First the provided footnote (if any) and next
   % the provided e-mail addresses
-  \ifx\@IACRemail\@empty\else
-    \ifx\IACR@displayemails\@empty
-      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACRemail}~(\unexpanded{\mbox{#2}})}%
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@email}\relax\else
+    \if\relax\expandafter\detokenize\expandafter{\IACR@displayemails}\relax
+      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\url{\@IACRemail}~(\unexpanded{\mbox{#2}})}%
+      \eappto\IACR@displayemails{, \noexpand\url{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
     \fi
-    \@writemeta{\IACRSS email: \@IACRemail}%
+    \@writemeta{\IACRSS email: \@IACR@author@email}%
     \stepcounter{IACR@email@cnt}%
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
-    \ifx\@IACRonclick\@empty
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax
       \def\@author{\unexpanded{\mbox{#2}}}%
     \else
-      \edef\@author{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
+      \edef\@author{\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
-    \if\relax\IACR@userdefinedrunningauthors\relax
+    \ifx\IACR@userdefinedrunningauthors\@empty
       \def\IACR@runningauthors{#2}%
     \fi
     \def\IACR@listofauthors{#2}%    
   \else
-    \ifx\@IACRonclick\@empty
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax
       \appto\@author{\and\unexpanded{\mbox{#2}}}%
     \else
-      \eappto\@author{\noexpand\and\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
+      \eappto\@author{\noexpand\and\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
     \fi
-    \if\relax\IACR@userdefinedrunningauthors\relax
+    \ifx\IACR@userdefinedrunningauthors\@empty
       \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
     \fi
     \appto\IACR@listofauthors{,\space\unexpanded{#2}}%
@@ -564,46 +539,45 @@
   % Add the footnote text if present
   % Define two seperate macros for the institute
   % \inst and \instwcomma where the latter inserts a comma
-  % between the footnote and the institure marker
-  \if\relax\IACRfootnote\relax
-    \ifx\@IACRinst\@empty\else
-      \eappto\@author{\noexpand\inst{\@IACRinst}}%
+  % between the footnote and the institute marker
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@footnote}\relax
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@inst}\relax\else
+      \eappto\@author{\noexpand\inst{\@IACR@author@inst}}%
     \fi
   \else
     \eappto\@author{\noexpand\footnote{\expandafter\noexpand\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname}}%
-    \ifx\@IACRinst\@empty\else
-      \eappto\@author{\noexpand\instwcomma{\@IACRinst}}%
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@inst}\relax\else
+      \eappto\@author{\noexpand\instwcomma{\@IACR@author@inst}}%
     \fi
   \fi
-  \ifx\@IACRorcid\@empty\else
-    \eappto\@author{~\noexpand\orcidlink{\@IACRorcid}}%
-    \@writemeta{\IACRSS orcid: \@IACRorcid}%
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@orcid}\relax\else
+    \eappto\@author{~\noexpand\orcidlink{\@IACR@author@orcid}}%
+    \@writemeta{\IACRSS orcid: \@IACR@author@orcid}%
   \fi
   \IACR@author@params@clearkeys%
 }
-
 \let\store@addauthor\addauthor% Save macro away
 
 % Define the \addfunding macro to capture funding meta-data
 \newcommand{\addfunding}[2][\@empty]{%
   \IACR@funding@params@set@keys{#1}%
-  \edef\@IACR@funding@name{\unexpanded{#2}}%
-  \edef\@IACR@funding@country{\IACR@funding@params@get{country}}%
-  \edef\@IACR@funding@grantid{\IACR@funding@params@get{grantid}}%
-  \edef\@IACR@funding@fundref{\IACR@funding@params@get{fundref}}%
-  \edef\@IACR@funding@ror{\IACR@funding@params@get{ror}}%
+  \gdef\@IACR@funding@name{#2}%
+  \pgfkeysgetvalue{/IACR-funding/entities/country}{\@IACR@funding@country}%
+  \pgfkeysgetvalue{/IACR-funding/entities/grantid}{\@IACR@funding@grantid}%
+  \pgfkeysgetvalue{/IACR-funding/entities/fundref}{\@IACR@funding@fundref}%
+  \pgfkeysgetvalue{/IACR-funding/entities/ror}{\@IACR@funding@ror}%
   \@writemeta{funding:}%
   \@writemeta{\IACRSS name: \@IACR@funding@name}%
-  \ifx\@IACR@funding@country\@empty\else
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@country}\relax\else
     \@writemeta{\IACRSS country: \@IACR@funding@country}%
   \fi
-  \ifx\@IACR@funding@grantid\@empty\else
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@grantid}\relax\else
     \@writemeta{\IACRSS grantid: \@IACR@funding@grantid}%
   \fi
-  \ifx\@IACR@funding@fundref\@empty\else
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@fundref}\relax\else
     \@writemeta{\IACRSS fundref: \@IACR@funding@fundref}%
-  \fi  
-  \ifx\@IACR@funding@ror\@empty\else
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@ror}\relax\else
     \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
   \fi  
   \IACR@funding@params@clearkeys%
@@ -614,16 +588,18 @@
 % \write will produce a string without macros, except that macros are
 % allowed in math mode. In a previous implementation we compared the argument
 % to \text_purify:n applied to the argument, but this did not allow accents
-% to be applied. This implmentation is based on tokcycle, which
+% to be applied. This implementation is based on tokcycle, which
 % provides handlers for four classes of tokens: character, group,
 % macro, and space.
+
+% tokcycle: Build tools to process tokens from an input stream
 \RequirePackage{tokcycle}
+
+% listofitems: Grab items in lists using user-specified sep char
 \RequirePackage{listofitems}
 
-% Just a shortcut
-\newcommand\ClassErr[1]{%
-  \ClassError{iacrcc}{#1}{}%
-}
+% Just a shortcut for Errors
+\newcommand\ClassErr[1]{\ClassError{iacrcc}{#1}{}}
 
 % TODO: Check if this is neccesary with new fixes.
 % Check if a token macro (in pdflatex) is a UTF-8 char
@@ -651,7 +627,6 @@
 
 \newif\ifTokenNotFound
 \newcommand\IsMacroAllowed[3]{%
-  %\typeout{MACROCHECK: \meaning#1}%
   \TokenNotFoundtrue
   \setsepchar{,}% parsing-separator
   % List of macros which are allowed
@@ -681,7 +656,8 @@
   % we keep track of whether we are in math mode using this if. This allows us
   % to allow macros and groups in math mode but not in text mode.
   \newif\ifInMathMode
-  \tokcycle{% \typeout{CHARACTER: ##1} % character handler.
+  \tokcycle{% character handler
+    %\typeout{CHARACTER: ##1} 
     \if##1$% Check if we see a math toggle catcode 3
       \ifMathAllowedInCheckString
         \ifInMathMode % toggle this
@@ -693,13 +669,15 @@
         \ClassErr{#2:^^J math not allowed in ^^J #1}
       \fi
     \fi}% end of character handler
-    {% \typeout{GROUP: ##1}%      group handler
-    \ifInMathMode  % groups are allowed in math mode.
+    {% group handler
+    %\typeout{GROUP: ##1}
+    \ifInMathMode % groups are allowed in math mode.
     \else
       % Recurse and check this group: this allows things like {\`e}
       \checkstring{##1}{#2}%
     \fi}% end of group handler
-    {% \typeout{MACRO: \string##1}%  macro handler
+    {%  macro handler
+    %\typeout{MACRO: \string##1}
     \ifInMathMode
       \ClassWarning{iacrcc}{^^JMacros are not recommended in the title^^J}
     \else
@@ -717,30 +695,29 @@
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
   \gdef\@plaintitle{#2}%
-  \pgfkeysgetvalue{/IACR-title/entities/running}{\IACR@title@running}%
-  \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\IACR@title@subtitle}%
-  \pgfkeysgetvalue{/IACR-title/entities/onclick}{\IACR@title@onclick}%
-  \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\IACR@title@plaintext}%
+  \pgfkeysgetvalue{/IACR-title/entities/running}{\@IACR@title@running}%
+  \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\@IACR@title@subtitle}%
+  \pgfkeysgetvalue{/IACR-title/entities/onclick}{\@IACR@title@onclick}%
+  \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\@IACR@title@plaintext}%
   \renewcommand\thanks[1]{\ClassError{iacrcc}{The \string\thanks\space macro is not supported. Please see the documentation how to use footnotes.}{}}%
-  \ifx\IACR@title@plaintext\@empty
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@title@plaintext}\relax
     \checkstring{#2}{error in title}
   \else
-     \gdef\@plaintitle{\IACR@title@plaintext}%
-     \expandafter\checkstring\expandafter{\IACR@title@plaintext}{plaintext argument to title must be plain text}%
+     \gdef\@plaintitle{\@IACR@title@plaintext}%
+     \expandafter\checkstring\expandafter{\@IACR@title@plaintext}{plaintext xxargument to title must be plain text}%
   \fi
-  \if\relax\IACR@title@onclick\relax
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@title@onclick}\relax
     \gdef\@title{#2}%
   \else
-    \gdef\@title{\href{\IACR@title@onclick}{\color{black}{#2}}}%
+    \gdef\@title{\href{\@IACR@title@onclick}{\color{black}{#2}}}%
   \fi
-  \if\relax\IACR@title@running\relax
-    \gdef\IACR@title@running{\@plaintitle}%
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
+    \gdef\@IACR@title@running{\@plaintitle}%
   \fi
-  \if\IACR@title@subtitle\@empty\else
-    \gdef\IACR@title@subtitle@defined{}%
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
+    \gdef\@IACR@title@subtitle@defined{}%
   \fi
 }
-
 \let\store@title\title% Save macro away
 
 \newcommand\addaffiliation[2][]{%
@@ -750,41 +727,17 @@
   \checkstring{#2}{Affiliation name should not contain macros or math}% 
   \@writemeta{affiliation:}%
   \@writemeta{\IACRSS name: #2}%
+  % Set and retrieve all the parameters passed
   \IACR@affiliation@params@set@keys{#1}%
-  \edef\@IACRror{\IACR@affiliation@params@get{ror}}%
-  \edef\@IACRonclick{\IACR@affiliation@params@get{onclick}}%
-  \edef\@IACRdepartment{\IACR@affiliation@params@get{department}}%
-  \edef\@IACRstreet{\IACR@affiliation@params@get{street}}%
-  \edef\@IACRcity{\IACR@affiliation@params@get{city}}%
-  \edef\@IACRstate{\IACR@affiliation@params@get{state}}%
-  \edef\@IACRpostcode{\IACR@affiliation@params@get{postcode}}%
-  \edef\@IACRcountry{\IACR@affiliation@params@get{country}}%
-  \ifx\@IACRror\@empty\else
-    \@writemeta{\IACRSS ror: \@IACRror}%
-  \fi  
-  \ifx\@IACRdepartment\@empty\else
-    \@writemeta{\IACRSS department: \@IACRdepartment}%
-  \fi
-  \ifx\@IACRstreet\@empty\else
-    \@writemeta{\IACRSS street: \@IACRstreet}%
-  \fi
-  \ifx\@IACRcity\@empty\else
-    \@writemeta{\IACRSS city: \@IACRcity}%
-  \fi
-  \ifx\@IACRstate\@empty\else
-    \@writemeta{\IACRSS state: \@IACRstate}%
-  \fi
-  \ifx\@IACRpostcode\@empty\else
-    \@writemeta{\IACRSS postcode: \@IACRpostcode}%
-  \fi
-  \ifx\@IACRcountry\@empty
-    \ifcsstring{@IACRversion}{final}{%
-      \ClassError{iacrcc}{Specify a country for each affiliation for the final version}{}%
-    }{}
-  \else
-    \@writemeta{\IACRSS country: \@IACRcountry}%
-  \fi
-  \ifx\@IACRonclick\@empty
+  \pgfkeysgetvalue{/IACR-affiliation/entities/ror}{\@IACR@affiliation@ror}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/onclick}{\@IACR@affiliation@onclick}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/department}{\@IACR@affiliation@department}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/street}{\@IACR@affiliation@street}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/city}{\@IACR@affiliation@city}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/state}{\@IACR@affiliation@state}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/postcode}{\@IACR@affiliation@postcode}%
+  \pgfkeysgetvalue{/IACR-affiliation/entities/country}{\@IACR@affiliation@country}%
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@onclick}\relax
     \ifx\@affiliation\@empty
       \gdef\@affiliation{\unexpanded{#2}}%
     \else
@@ -792,14 +745,39 @@
     \fi
   \else
     \ifx\@affiliation\@empty
-      \edef\@affiliation{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
+      \edef\@affiliation{\noexpand\href{\@IACR@affiliation@onclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
     \else
-      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACRonclick}{\noexpand\color{black}{\unexpanded{#2}}}}}%
+      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACR@affiliation@onclick}{\noexpand\color{black}{\unexpanded{#2}}}}}%
     \fi
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@ror}\relax\else
+    \@writemeta{\IACRSS ror: \@IACR@affiliation@ror}%
+  \fi  
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@department}\relax\else
+    \@writemeta{\IACRSS department: \@IACR@affiliation@department}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@street}\relax\else
+    \@writemeta{\IACRSS street: \@IACR@affiliation@street}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@city}\relax\else
+    \@writemeta{\IACRSS city: \@IACR@affiliation@city}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@state}\relax\else
+    \@writemeta{\IACRSS state: \@IACR@affiliation@state}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@postcode}\relax\else
+    \@writemeta{\IACRSS postcode: \@IACR@affiliation@postcode}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@country}\relax
+    % We require a country for every author when compiling the final version
+    \ifcsstring{@IACRversion}{final}{%
+      \ClassError{iacrcc}{Specify a country for each affiliation for the final version}{}%
+    }{}
+  \else
+    \@writemeta{\IACRSS country: \@IACR@affiliation@country}%
   \fi
   \IACR@affiliation@params@clearkeys%
 }
-
 \let\store@addaffiliation\addaffiliation% Save macro away
 
 \if@anonymous
@@ -935,6 +913,7 @@
   }
 \fi%!biblatex
 
+% When compiling the final version we need the last page number
 \ifcsstring{@IACRversion}{final}{%
   % totpages: count pages in a document, and report last page number
   \RequirePackage{totpages}
@@ -990,7 +969,7 @@
 
 \fancyhf{}
 \fancyhead[RO,LE]{\thepage}
-\fancyhead[RE]{\IACR@title@running}%
+\fancyhead[RE]{\@IACR@title@running}%
 \fancyhead[LO]{%
   \if@anonymous
     \def\thanks##1{}%
@@ -1002,7 +981,7 @@
     \@author%
   \else
     \ifnum\theIACR@author@cnt>4\relax
-      \if\relax\IACR@userdefinedrunningauthors\relax
+      \ifx\IACR@userdefinedrunningauthors\@empty
         \ClassError{iacrcc}{When using more than 4 authors please define the running authors using the  \string\authorrunning\space macro}{}%
       \fi
     \fi
@@ -1244,6 +1223,7 @@
 % We load lmodern to get latin modern fonts but only in pdflatex.
 % Lualatex already uses latin modern for text and cm for math.
 \ifpdftex
+  % lmodern: Latin modern fonts in outline formats
   \RequirePackage{lmodern}
 \fi
 
