@@ -1184,3 +1184,25 @@ def test27_test():
       assert meta['affiliations'][2]['country'] == 'Turkey'
       assert meta['version'] == 'final'
 
+# Check for writing to file and in pdf when unicode characters are used
+# in a lot of options
+def test28_test():
+  path = Path('test28')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      assert 'meta' in res
+      meta = meta_parse.parse_meta(res['meta'])
+      assert len(meta['authors']) == 3
+      assert meta['title']    == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['subtitle'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['authors'][0]['name'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['name'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['department'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['street'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['city'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['state'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+      assert meta['affiliations'][0]['country'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
+
