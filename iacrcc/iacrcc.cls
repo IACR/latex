@@ -19,6 +19,12 @@
 %
 % Common definitions
 
+% This is used to make the latex log easier to parse and keep track of
+% the current file for error reporting.
+\RequirePackage[abspath]{currfile}
+\AtBeginOfFiles{\wlog{iacrcc:opened \currfileabspath}}
+\AtEndOfFiles{\wlog{iacrcc:closed \currfileabspath}}
+
 % expl3: wrapper package for experimental LaTeX3
 \RequirePackage{expl3} % used for text_purify on metadata.
 
