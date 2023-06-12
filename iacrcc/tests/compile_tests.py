@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import pdfplumber
 import pytest
+import re
 import tempfile
 import shutil
 import subprocess
@@ -30,6 +31,9 @@ def run_engine(eng, filelist, tmpdirpath):
     metafile = Path('main.meta')
     if metafile.is_file():# and eng == '-pdflua':
       data['meta'] = metafile.read_text(encoding='UTF-8')
+    logfile = Path('main.log')
+    if logfile.is_file():
+      data['log'] = logfile.read_text('utf-8', errors='replace')
     return data
   finally:
     os.chdir(cwd)
@@ -1206,3 +1210,34 @@ def test28_test():
       assert meta['affiliations'][0]['state'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
       assert meta['affiliations'][0]['country'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
 
+# Check that the log contains lines for opening and closing files.
+# This will be used as the basis for a test of the latex log parser.
+def test29_test():
+  path = Path('test29')
+  # should pass with lualatex and pdflatex
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      assert 'log' in res
+      lines = res['log'].splitlines()
+      patt = re.compile('^iacrcc:(?P<action>opened|closed) (with|as) (?P<file>.*)')
+      status = {}
+      opened_files = set()
+      print(res['log'])
+      for line in lines:
+        m = patt.search(line)
+        if m:
+          status[m.group('file')] = m.group('action')
+          if m.group('action') == 'opened':
+            opened_files.add(m.group('file'))
+          else:
+            try:
+              opened_files.remove(m.group('file'))
+            except Exception as e:
+              assert(m.group('file').endswith('main.tex'))
+      assert 130 == sum([1 for line in lines if line.startswith('iacrcc:closed')])
+      # It doesn't show main.tex being opened because it is opened before
+      # currfile is loaded.
+      assert 129 == sum([1 for line in lines if line.startswith('iacrcc:opened')])
+      assert r'Overfull \hbox' in res['log']

@@ -1,5 +1,5 @@
-\def\fileversion{0.30}
-\def\filedate{2023/05/30}
+\def\fileversion{0.31}
+\def\filedate{2023/06/10}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -18,6 +18,23 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 %
 % Common definitions
+
+% This is used to make the latex log easier to parse and keep track of
+% the current file for error reporting.
+\RequirePackage[abspath=true]{currfile}
+% \currfileabspath is sometimes empty when \RequirePackage is called
+% from inside a package included with \RequirePackage under lualatex,
+% but currfilepath is always present (but may not be unique).
+\AtBeginOfFiles{\ifx\currfileabspath\empty%
+  \wlog{iacrcc:opened as \currfilepath}%
+  \else%
+  \wlog{iacrcc:opened with \currfileabspath}%
+  \fi}
+\AtEndOfFiles{\ifx\currfileabspath\empty%
+  \wlog{iacrcc:closed as \currfilepath}
+  \else%
+  \wlog{iacrcc:closed with \currfileabspath}%
+  \fi}
 
 % expl3: wrapper package for experimental LaTeX3
 \RequirePackage{expl3} % used for text_purify on metadata.
