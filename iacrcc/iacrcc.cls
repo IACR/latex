@@ -276,7 +276,6 @@
 
 \pgfkeys{/IACR-title/entities/.cd,
   running/.initial={},
-  onclick/.initial={},
   subtitle/.initial={},
   plaintext/.initial={},
 }
@@ -361,6 +360,9 @@
 % alphalph: Convert numbers to letters, 
 %           used for footnotes in addauthor
 \RequirePackage{alphalph}
+
+% fontawesome: Font containing web-related icons
+\RequirePackage{fontawesome}
 
  \AtBeginDocument{%
   % Use this \maketitle command to first write out 
@@ -533,21 +535,13 @@
   \fi
   % Author name + optionally clickable
   \ifx\@author\@empty
-    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax
-      \def\@author{\unexpanded{\mbox{#2}}}%
-    \else
-      \edef\@author{\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
-    \fi
+    \def\@author{\unexpanded{\mbox{#2}}}%
     \ifx\IACR@userdefinedrunningauthors\@empty
       \def\IACR@runningauthors{#2}%
     \fi
     \def\IACR@listofauthors{#2}%    
   \else
-    \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax
-      \appto\@author{\and\unexpanded{\mbox{#2}}}%
-    \else
-      \eappto\@author{\noexpand\and\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\unexpanded{\mbox{#2}}}}}%
-    \fi
+    \appto\@author{\and\unexpanded{\mbox{#2}}}%
     \ifx\IACR@userdefinedrunningauthors\@empty
       \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
     \fi
@@ -570,6 +564,9 @@
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@orcid}\relax\else
     \eappto\@author{~\noexpand\orcidlink{\@IACR@author@orcid}}%
     \@writemeta{\IACRSS orcid: \@IACR@author@orcid}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax\else
+    \eappto\@author{~\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\noexpand\faExternalLink}}}%
   \fi
   \IACR@author@params@clearkeys%
 }
@@ -714,7 +711,6 @@
   \gdef\@plaintitle{#2}%
   \pgfkeysgetvalue{/IACR-title/entities/running}{\@IACR@title@running}%
   \pgfkeysgetvalue{/IACR-title/entities/subtitle}{\@IACR@title@subtitle}%
-  \pgfkeysgetvalue{/IACR-title/entities/onclick}{\@IACR@title@onclick}%
   \pgfkeysgetvalue{/IACR-title/entities/plaintext}{\@IACR@title@plaintext}%
   \renewcommand\thanks[1]{\ClassError{iacrcc}{The \string\thanks\space macro is not supported. Please see the documentation how to use footnotes.}{}}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@plaintext}\relax
@@ -723,11 +719,7 @@
      \gdef\@plaintitle{\@IACR@title@plaintext}%
      \expandafter\checkstring\expandafter{\@IACR@title@plaintext}{plaintext xxargument to title must be plain text}%
   \fi
-  \if\relax\expandafter\detokenize\expandafter{\@IACR@title@onclick}\relax
-    \gdef\@title{#2}%
-  \else
-    \gdef\@title{\href{\@IACR@title@onclick}{\color{black}{#2}}}%
-  \fi
+  \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
   \fi

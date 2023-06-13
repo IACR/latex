@@ -26,7 +26,6 @@
 \usepackage{xcolor}
 
 \title[running  = {The iacrcc class},
-       onclick  = {https://publish.iacr.org/iacrcc},
        subtitle = {iacrcc LaTeX Class Documentation (v0.27)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
@@ -151,7 +150,6 @@ A title is added using the \cmd{title} macro, it has a number of (optional) opti
 {\tt running} & The running title displayed in the headers.\\
 {\tt plaintext} & A text version of the title.\\
 {\tt subtitle} & Provide a subtitle.\\
-{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
 \end{tabular}
 \end{center}
 \noindent An example using all the optional options would look like:
@@ -160,7 +158,6 @@ A title is added using the \cmd{title} macro, it has a number of (optional) opti
 \title[running  = {How to use the iacrcc class},
        plaintext = {How to use the iacrcc LaTeX class},
        subtitle = {A Template},
-       onclick  = {https://github.com/IACR/latex}
       ]{How to use the \texttt{iacrcc} \LaTeX\ class}
 \end{verbatim}
 The \verb+plaintext+ option is only required if you use macros in
@@ -187,8 +184,7 @@ Authors are listed individually using repeated calls to the {\tt
 {\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \orcidlink{0000-0003-1010-8157} and linking to the authors ORCID ID (see: \url{https://orcid.org}.\\
 {\tt footnote} & Create an author-specific footnote.\\
 {\tt surname} & The surname of the author.\\
-{\tt onclick} & Provide a URL to visit when clicking on the author name: e.g.,~can
-point to the academic webpage.\\
+{\tt onclick} & Provide a URL to visit when clicking on the author name: e.g.,~can point to the academic webpage.\\
 {\tt email} & Define the e-mail address of this author. Note that at least one e-mail address is required for \texttt{[version=final]}.\\
 \end{tabular}
 \end{center}
