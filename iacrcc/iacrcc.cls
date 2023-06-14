@@ -1,5 +1,5 @@
-\def\fileversion{0.31}
-\def\filedate{2023/06/10}
+\def\fileversion{0.32}
+\def\filedate{2023/06/14}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -263,7 +263,6 @@
 
 \pgfkeys{/IACR-affiliation/entities/.cd,
   ror/.initial={},
-  onclick/.initial={},
   department/.initial={},
   street/.initial={},
   city/.initial={},
@@ -272,7 +271,7 @@
   country/.initial={},
 }
 \def\IACR@affiliation@params@set@keys#1{\pgfkeys{/IACR-affiliation/entities/.cd,#1}}
-\newcommand\IACR@affiliation@params@clearkeys{\IACR@affiliation@params@set@keys{ror={},onclick={},department={},street={},city={},state={},postcode={},country={}}}
+\newcommand\IACR@affiliation@params@clearkeys{\IACR@affiliation@params@set@keys{ror={},department={},street={},city={},state={},postcode={},country={}}}
 
 \pgfkeys{/IACR-title/entities/.cd,
   running/.initial={},
@@ -566,7 +565,7 @@
     \@writemeta{\IACRSS orcid: \@IACR@author@orcid}%
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax\else
-    \eappto\@author{~\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\noexpand\faExternalLink}}}%
+    \eappto\@author{~\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\noexpand\small\noexpand\faExternalLink}}}%
   \fi
   \IACR@author@params@clearkeys%
 }
@@ -593,7 +592,7 @@
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@ror}\relax\else
     \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
-  \fi  
+  \fi
   \IACR@funding@params@clearkeys%
 }
  
@@ -739,35 +738,25 @@
   % Set and retrieve all the parameters passed
   \IACR@affiliation@params@set@keys{#1}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/ror}{\@IACR@affiliation@ror}%
-  \pgfkeysgetvalue{/IACR-affiliation/entities/onclick}{\@IACR@affiliation@onclick}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/department}{\@IACR@affiliation@department}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/street}{\@IACR@affiliation@street}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/city}{\@IACR@affiliation@city}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/state}{\@IACR@affiliation@state}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/postcode}{\@IACR@affiliation@postcode}%
   \pgfkeysgetvalue{/IACR-affiliation/entities/country}{\@IACR@affiliation@country}%
-  \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@onclick}\relax
-    \ifx\@affiliation\@empty
-      \gdef\@affiliation{\unexpanded{#2}}%
-    \else
-      \appto\@affiliation{\and\unexpanded{#2}}%
-    \fi
+  \ifx\@affiliation\@empty
+    \gdef\@affiliation{\unexpanded{#2}}%
   \else
-    \ifx\@affiliation\@empty
-      \edef\@affiliation{\noexpand\href{\@IACR@affiliation@onclick}{\noexpand\color{black}{\unexpanded{#2}}}}%
-    \else
-      \eappto\@affiliation{\noexpand\and{\noexpand\href{\@IACR@affiliation@onclick}{\noexpand\color{black}{\unexpanded{#2}}}}}%
-    \fi
+    \appto\@affiliation{\and\unexpanded{#2}}%
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@ror}\relax\else
     \@writemeta{\IACRSS ror: \@IACR@affiliation@ror}%
-  \fi  
+  \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@department}\relax\else
     \@writemeta{\IACRSS department: \@IACR@affiliation@department}%
     \appto\@affiliation{, }%
     \expandafter\appto\expandafter\@affiliation\expandafter{\@IACR@affiliation@department}%
   \fi
-  %
   \if\relax\expandafter\detokenize\expandafter{\@IACR@affiliation@street}\relax\else
     \@writemeta{\IACRSS street: \@IACR@affiliation@street}%
   \fi
