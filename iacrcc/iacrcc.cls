@@ -1004,6 +1004,9 @@
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
 
 \newcommand{\keywords}[2][\@empty]{%
+  \noexpandarg\IfSubStr{#2}{ \and }{%
+    \ClassError{iacrcc}{Do not use the \string\and\space macro in \string\keywords: use "," instead}{}%
+  }%
   \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
     \checkstring{#2}{Keywords should be free of macros. Use optional argument to \string\keywords}
