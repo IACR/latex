@@ -1241,5 +1241,11 @@
 % Store the paper width
 \let\store@paperwidth\paperwidth%
 
+% The use of the \XKV@useoption command, provided by the xkeyval,
+% is a trick to delete the option given as its argument from the
+% list stored in \@unusedoptionlist so that the option will not
+% produce the “Unused global options” message
+\XKV@useoption{version}
+
 \endinput
 %end of file iacrcc.cls
