@@ -83,10 +83,10 @@
 }{}
 \newif\if@optbiblatex
 \@optbiblatexfalse
-\define@key{IACR}{biblatex}[]{\@optbiblatextrue}
+\DeclareOptionX<IACR>{biblatex}{\@optbiblatextrue}
 \newif\if@floatrow
 \@floatrowfalse
-\define@key{IACR}{floatrow}[]{\@floatrowtrue}
+\DeclareOptionX<IACR>{floatrow}{\@floatrowtrue}
 % version=submission will set anonymous to true, but it can be
 % overridden with the notanonymous option for the class.
 \newif\if@anonymous
@@ -94,7 +94,7 @@
 % This maybe be used to override \@anonymous
 \newif\if@notanonymous
 \@notanonymousfalse
-\define@key{IACR}{notanonymous}[]{\@notanonymoustrue}
+\DeclareOptionX<IACR>{notanonymous}{\@notanonymoustrue}
 \newcommand{\@IACRversion}{preprint}
 \define@choicekey{IACR}{version}[\@IACRversion]{preprint,submission,final}[preprint]{}
 \DeclareOptionX*{}
@@ -1241,14 +1241,19 @@
 % Store the paper width
 \let\store@paperwidth\paperwidth%
 
-% The use of the \XKV@useoption command, provided by the xkeyval,
-% is a trick to delete the option given as its argument from the
-% list stored in \@unusedoptionlist so that the option will not
-% produce the “Unused global options” message
-\XKV@useoption{version}
-\XKV@useoption{floatrow}
-\XKV@useoption{notanonymous}
-\XKV@useoption{biblatex}
+% One might get an “Unused global options” warning for some of our options.
+% This can be removed using the \XKV@useoption command provided by the xkeyval
+% package but this does not seem to work in all LaTeX environments.
+% Simply remove the options from \@unusedoptionlist ourselves.
+\ifx\@unusedoptionlist\@empty\else
+  \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{version=preprint}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{version}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{floatrow}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{notanonymous}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{biblatex}[\@unusedoptionlist]%
+\fi
 
 \endinput
 %end of file iacrcc.cls
