@@ -1246,6 +1246,9 @@
 % list stored in \@unusedoptionlist so that the option will not
 % produce the “Unused global options” message
 \XKV@useoption{version}
+\XKV@useoption{floatrow}
+\XKV@useoption{notanonymous}
+\XKV@useoption{biblatex}
 
 \endinput
 %end of file iacrcc.cls
