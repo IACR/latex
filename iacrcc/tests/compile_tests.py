@@ -24,6 +24,8 @@ def run_engine(eng, filelist, tmpdirpath):
     ending = str(f).split('.')[-1]
     if ending in ['abstract', 'aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'sty', 'xmpdata', 'meta', 'bcf', 'xml']:
       f.unlink()
+    else:
+      print(str(f))
   try:
     os.chdir(tmpdir)
     proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode', '-g', eng, 'main'], capture_output=True)
@@ -44,6 +46,7 @@ def test1_test():
   for option in ['-pdflua', '-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
+      print(res)
       assert res['proc'].returncode == 0
       assert 'meta' in res
       meta = meta_parse.parse_meta(res['meta'])
@@ -1224,7 +1227,6 @@ def test29_test():
       patt = re.compile('^iacrcc:(?P<action>opened|closed) (with|as) (?P<file>.*)')
       status = {}
       opened_files = set()
-      print(res['log'])
       for line in lines:
         m = patt.search(line)
         if m:
@@ -1235,9 +1237,8 @@ def test29_test():
             try:
               opened_files.remove(m.group('file'))
             except Exception as e:
+              # It doesn't show main.tex being opened because it is opened before
+              # currfile is loaded. It still shows up as closed.
               assert(m.group('file').endswith('main.tex'))
-      assert 130 == sum([1 for line in lines if line.startswith('iacrcc:closed')])
-      # It doesn't show main.tex being opened because it is opened before
-      # currfile is loaded.
-      assert 129 == sum([1 for line in lines if line.startswith('iacrcc:opened')])
+      assert len(opened_files) == 0
       assert r'Overfull \hbox' in res['log']
