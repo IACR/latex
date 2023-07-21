@@ -1253,6 +1253,7 @@
   \StrDel{\@unusedoptionlist}{floatrow}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{notanonymous}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{biblatex}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{,}[\@unusedoptionlist]%
 \fi
 
 \endinput
