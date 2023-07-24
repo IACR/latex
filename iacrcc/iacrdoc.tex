@@ -61,6 +61,14 @@
   This document is a quick introduction to the \texttt{iacrcc.cls}
   \LaTeX{} class for the \publname{}.
 \end{abstract}
+\begin{textabstract}
+This is a quick introduction to the iacrcc.cls LaTeX class for
+The IACR Communications in Cryptology. No macros are allowed in
+the textabstract, but you may use unicode such as Paul Erdős, or
+diacriticals like F\"ur Elise.
+
+Multiple paragraphs are allowed.
+\end{textabstract}
 
 \section*{Introduction}
 
@@ -82,9 +90,8 @@ welcome.  The latest version can be found at:
 \href{https://publish.iacr.org/iacrcc}{\texttt{publish.iacr.org/iacrcc}}.
 There is also a \href{https://github.com/IACR/latex}{github
   repository} where you can open issues or to submit pull requests.
-The complete package consists of four files. \texttt{iacrcc.cls} is
-the main document class. \texttt{iacrcc.bst} is the bibliography style
-for the journal.  \texttt{iacrdoc.tex} is used to produce this PDF
+The complete package consists of three files. \texttt{iacrcc.cls} is
+the main document class. \texttt{iacrdoc.tex} is used to produce this PDF
 file. \texttt{template.tex} can be used as a starting point for
 writing a paper.  The \LaTeX{} source of \texttt{iacrdoc.tex} can also
 be used as a more advanced example, but please make sure to remove any
@@ -218,7 +225,8 @@ The author names displayed in the header are constructed automatically
 for four authors or less. One can optionally modify this with the
 \cmd{authorrunning} macro.  For five or more authors the use of the
 \cmd{authorrunning} macro is mandatory. The \cmd{thanks} macro is disabled
-inside \cmd{addauthor}, so use \verb+footnote+ instead.
+inside \cmd{addauthor}, so use the \verb+footnote+ option on \cmd{addauthor}
+instead.
 
 \subsection{Affiliations}
 Affiliations are listed individually using the \cmd{addaffiliation} command
@@ -323,7 +331,7 @@ overuse them.
 \subsection{License}
 When the \texttt{version=final} document mode is used, the author needs
 to provide a supported license.  In all other modes this information
-is not required and when provided ignored.  At present the only
+is not required and is ignored if it is provided.  At present the only
 acceptable license is \texttt{CC-by}.  An example would look like:
 
 \begin{verbatim}
@@ -341,10 +349,32 @@ text-only keywords; for example:
 \texttt{\textbackslash keywords[rings, arithmetic on Z]\{rings, arithmetic on \$\textbackslash mathbb\{Z\}\$\}}
 
 \subsection{Abstract}
-Abstracts are entered with the \texttt{abstract} environment as usual.
-Note that the keywords should be given before starting the abstract
-environment. The \texttt{iacrcc} class will automatically produce a file
-\texttt{.abstract} that contains the contents of the abstract.
+Abstracts serve several purposes in a journal article, including both
+summarization and indexing. An abstract should be a self-contained
+mini-document that describes the contributions of the paper. It
+should be free of bibliographic references and also free of undefined
+terminology introduced in the paper. It is acceptable to use
+mathematical notation, but this kind of content is not useful for
+indexing.
+
+For this reason, the \texttt{iacrcc} document class uses two kinds
+of abstracts. The first (traditional) form of abstract is entered with the
+\texttt{abstract} environment as usual.  Note that the keywords should
+be given before starting the \texttt{abstract} environment.
+
+For \texttt{final} versions of papers, an additional text-only
+abstract is required. This abstract is contained in the
+\texttt{textabstract} environment, and must be free of macros or
+mathematical content. It will be used for indexing and production of
+{HTML} pages to describe the paper. As such, it is just as important
+as the classical \texttt{abstract} of a paper because it contains a
+textual summary that readers will use to decide if the paper is worth
+reading. The only difference is that the contents of the
+\texttt{textabstract} is constrained on what it may contain.  The
+contents of this environment will be written to a file that ends with
+\texttt{.abstract} when you compile your \LaTeX, but will not be
+displayed in the final PDF except as metadata. Note that
+\verb+\begin{textabstract}+ must appear on a line by itself.
 
 \subsection{Theorems}
 
@@ -405,10 +435,10 @@ and clean.  We strongly encourage authors to use bibliographic data
 from \url{http://www.dblp.org} or \url{https://cryptobib.di.ens.fr/}.
 All references should have DOIs if at all possible.
 
-You may use either \BibTeX\ or \texttt{biblatex}. If you
-use \BibTeX, then the \texttt{iacrcc} class will load the
-\verb+\bibliographystyle{iacrcc}+ style.  If you use
-\texttt{biblatex}, then this is done using
+You may use either \BibTeX\ or \texttt{biblatex}. If you use \BibTeX,
+then the \texttt{iacrcc} class will load the
+\verb+\bibliographystyle{alphaurl}+ style.  You may not change
+this. If you use \texttt{biblatex}, then this is done using
 \verb+\documentclass[biblatex]{iacrcc}+ instead of
 \verb+\usepackage{biblatex}+; the latter will generate an error
 because the \texttt{iacrcc.cls} file loads \texttt{biblatex} with a
@@ -416,6 +446,12 @@ specific style.
 
 Here are some example citations: the RSA paper~\cite{RSA78}, the AES
 standard~\cite{AES-FIPS}, and \cite{DBLP:conf/crypto/Kocher96}.
+
+For the IACR Communications in Cryptology, you will be required to
+upload your bibtex files rather than just the \texttt{bbl} file.
+Many authors use the \texttt{cryptobib} \BibTeX\ files, and you need
+not upload those with your paper. They can be referenced as
+\texttt{\textbackslash bibliography\{cryptobib/abbrev1,cryptobib/crypto\}}
 
 \section{Some recommendations}\label{sec:options}
 

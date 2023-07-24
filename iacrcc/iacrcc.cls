@@ -141,8 +141,6 @@
 \RequirePackage{iftex}
 
 \ifluatex
-  % lualatex-math: fixes for mathematics-related LuaLATEX issues
-  \RequirePackage{lualatex-math}
   % Check for existence of luatex85.sty and load it if available.
   % This should ensure that it work also with newer versions of luatex.
   % luatex85: The package provides emulation of pdfTEX primitives for LuaTEX v0.85+.
@@ -173,7 +171,7 @@
   \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue}{}
   % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
   \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
-  \@ifpackageloaded{biblatex}{}{\bibliographystyle{iacrcc}}
+  \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
@@ -339,12 +337,13 @@
   \ifx\store@paperwidth\paperwidth\else
     \ClassError{iacrcc}{The \string\paperwidth\space macro seems to be redefined}{}%
   \fi
-  % final version requires abstract.
-  \ifcsstring{@IACRversion}{final}{%
-    \IfFileExists{\jobname.abstract}{}{%
-      \ClassError{iacrcc}{An abstract with abstract environment is required}{}%
-    }%
-  }{}%
+  % Final version requires textabstract.
+  \IfFileExists{\jobname.abstract}{}{%
+    \ifcsstring{@IACRversion}{final}{%
+      \ClassError{iacrcc}{An abstract with textabstract environment is required}{}}{%
+      \ClassWarningNoLine{iacrcc}{^^JYour final version will need the textabstract environment.^^J}%
+    }
+  }{}
 }
 \let\storeprotect\protect
 
@@ -822,7 +821,7 @@
   % csquotes: context sensitive quotation facilities
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   % biblatex: sophisticated Bibliographies in LaTeX
-  \RequirePackage[backend=biber,style=alphabetic,maxcitenames=4,maxbibnames=20]{biblatex}[2019/12/01]
+  \RequirePackage[backend=biber,style=alphabetic,maxcitenames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
   \DeclareNameFormat{author}{%
     \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
     \usebibmacro{name:andothers}%
@@ -1039,17 +1038,19 @@
   {\protected@iwrite@fancyvrb\FV@OutFile{}}
   {}{}
 
+% To be used by an author to provide a text abstract. This is required
+% for the final version.
+\newenvironment{textabstract}{%
+  \VerbatimOut{\jobname.abstract}}{\endVerbatimOut}
+
 \renewenvironment{abstract}{%
   \ifx\IACR@text@keywords\@empty\else
     \@writemeta{keywords: \IACR@text@keywords}%
   \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
-  \VerbatimOut{\jobname.abstract}%
 }%
 {%
-  \endVerbatimOut
-  \input{\jobname.abstract}
   \ifx\IACR@keywords\@empty\else
     \smallskip\par\textbf{\textsf{Keywords:}}
     % Replace comma by a centered period.
