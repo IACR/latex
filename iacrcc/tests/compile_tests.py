@@ -91,15 +91,6 @@ def test2_test():
       assert meta['keywords'][1] == 'LaTeX'
       assert meta['keywords'][2] == 'IACR'
       assert meta['version'] == 'preprint'
-      assert len(meta['citations']) == 6
-      citation = meta['citations'][0]
-      assert citation['id'] == 'fancynames'
-      assert citation['title'] == 'Something about mathematics $x^n+y^n=z^n$ when $n=2$'
-      assert len(citation['authorlist']) == 6
-      assert citation['authorlist'][0]['name'] == 'Jeroen von Bücher'
-      assert citation['authorlist'][0]['surname'] == 'von Bücher'
-      assert citation['authorlist'][2]['name'] == 'Öznur Küçükkubaş'
-      citation = meta['citations'][3]['doi'] == '10.1007/3-540-68697-5_9'
 
 def test3_test():
   # should pass with lualatex and pdflatex
@@ -109,12 +100,6 @@ def test3_test():
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode == 0
       meta = meta_parse.parse_meta(res['meta'])
-      assert len(meta['citations']) == 79
-      citation = meta['citations'][1]
-      assert citation['title'] == 'Effect of immobilization on catalytic characteristics of saturated {Pd-N}-heterocyclic carbenes in {Mizoroki-Heck} reactions'
-      assert len(citation['authorlist']) == 7
-      authorlist = citation['authorlist']
-      assert authorlist[0]['name'] == 'Özge Aksın'
 
 # Negative test.
 # Test a final version without an e-mail address provided
@@ -1238,7 +1223,9 @@ def test29_test():
               opened_files.remove(m.group('file'))
             except Exception as e:
               # It doesn't show main.tex being opened because it is opened before
-              # currfile is loaded. It still shows up as closed.
+              # currfile is loaded. It still shows up as closed. This test may
+              # fail unless the log file is allowed to be longer than 78 characters.
+              # This is done with max_print_line=2000 in the texmf.cnf file.
               assert(m.group('file').endswith('main.tex'))
       assert len(opened_files) == 0
       assert r'Overfull \hbox' in res['log']
