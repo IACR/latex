@@ -1,5 +1,5 @@
-\def\fileversion{0.33}
-\def\filedate{2023/07/24}
+\def\fileversion{0.34}
+\def\filedate{2023/07/28}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -524,9 +524,9 @@
   % the provided e-mail addresses
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@email}\relax\else
     \if\relax\expandafter\detokenize\expandafter{\IACR@displayemails}\relax
-      \edef\IACR@displayemails{E-mail: \noexpand\url{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
+      \edef\IACR@displayemails{E-mail: \noexpand\href{mailto:\@IACR@author@email}{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\url{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
+      \eappto\IACR@displayemails{, \noexpand\href{mailto:\@IACR@author@email}{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
     \fi
     \@writemeta{\IACRSS email: \@IACR@author@email}%
     \stepcounter{IACR@email@cnt}%

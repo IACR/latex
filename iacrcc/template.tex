@@ -48,8 +48,8 @@
 % orcid:    create a small clickable orcid logo next to the authors name 
 %           linking to the authors ORCID iD see: orcid.org.
 % footnote: create an author-specific footnote.
-% onclick:  define what to do when clicking on the author name: 
-%           e.g., can point to the academic webpage.
+% onclick:  define what to do when clicking on the external link logo
+%           next to the author name: e.g., can point to the academic webpage.
 % email:    define the e-mail address of this author.
 \addauthor[orcid    = {0000-0003-1010-8157},
            inst     = {1},
@@ -100,10 +100,20 @@
                ]{NXP Semiconductors}
 \addaffiliation{Self}
 
-\addfunding[country  = {europe}, 
-            grantid  = {1234}, 
-            fundref = {100010661}
-           ]{Horizon 2020 Framework Programme}
+% Authors should use the \addfunding macro to make sure that funding agencies
+% can find papers published under their sponsorship.
+% You can use the online tool at
+% https://publish.iacr.org/funding
+% to help you find fundref and ror identifiers.
+% Note that \addfunding *does not* automatically create footnotes or
+% an acknowledgements section to identify funding - it only collects the
+% metadata for indexing.
+% An example is:
+
+% \addfunding[country  = {europe},
+%             grantid  = {1234},
+%             fundref = {100010661}
+%            ]{Horizon 2020 Framework Programme}
 
 % A footnote can be placed on the front page without a symbol / numbering using:
 %\genericfootnote{This is the full version of our paper published at XX}
