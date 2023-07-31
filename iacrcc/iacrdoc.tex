@@ -1,7 +1,7 @@
 % IACR Communications CLASS DOCUMENTATION
-% Written by Joppe W. Bos and Kevin S. McCurley (2022),
+% Written by Joppe W. Bos and Kevin S. McCurley (2022-2023),
 % based on prior work on the iacrtrans class by
-% Gaetan Leurent gaetan.leurent@inria.fr (2016-2018)
+% Gaetan Leurent gaetan.leurent@inria.fr (2016-2018).
 %
 % To the extent possible under law, the author(s) have dedicated all
 % copyright and related and neighboring rights to this software to the
@@ -23,8 +23,14 @@
   \fi
 }
 
+% Borrowed from btxdoc.tex
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\def\BibLaTeX{Bib\LaTeX}
+
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.33)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.34)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -41,7 +47,7 @@
 	   surname = {McCurley},
           ]{Kevin S. McCurley}
 
-\addaffiliation[ror      = 031v4g827,
+\addaffiliation[ror      = {031v4g827},
                 street   = {Interleuvenlaan 80},
                 city     = {Leuven},
                 postcode = {3001},
@@ -61,6 +67,7 @@
   This document is a quick introduction to the \texttt{iacrcc.cls}
   \LaTeX{} class for the \publname{}.
 \end{abstract}
+
 \begin{textabstract}
 This is a quick introduction to the iacrcc.cls LaTeX class for
 The IACR Communications in Cryptology. No macros are allowed in
@@ -127,8 +134,8 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
 \item[\texttt{[version=final]}] for final papers. This imposes some
   additional requirements.
 \item[\texttt{[biblatex]}] may be used if you prefer using
-  \texttt{biblatex} to \texttt{bibtex}. Note that we do not support options to be
-  passed to biblatex, as they may conflict with the style of the journal. We use
+  \BibLaTeX\ to \BibTeX. Note that we do not support options to be
+  passed to \BibLaTeX, as they may conflict with the style of the journal. We use
   a bibliography style based on the alpha style (e.g., \cite{RSA78}).
 \item[\texttt{[floatrow]}] load the \texttt{floatrow} package. This is useful
   when you have fancy figures or tables. In either case, \texttt{iacrcc}
@@ -138,7 +145,8 @@ The class supports the following class options with \verb+\documentclass{iacrcc}
 Before submitting your final version, please make sure that it compiles
 properly with the \texttt{[version=final]} option
 and check that the author names and affiliations are
-correct.
+correct and a text version of the abstract is provided
+in the \texttt{textabstract} environment.
 
 The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded
@@ -148,15 +156,15 @@ explicitly at the correct position.
 \section{Macros to add title and author information}
 
 \subsection{Title}
-A title is added using the \cmd{title} macro, it has a number of (optional) options:
+A title is added using the \cmd{title} macro, it has a number of optional arguments:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt running}   & The running title displayed in the headers.\\
-    {\tt plaintext} & A text version of the title.\\
+    {\tt plaintext} & A text version of the title (mandatory if macros are used in the title).\\
     {\tt subtitle}  & Provide a subtitle.\\
   \end{tabular}
 \end{center}
-\noindent An example using all the optional options would look like:
+\noindent An example using all the optional arguments would look like:
 
 \begin{verbatim}
 \title[running  = {How to use the iacrcc class},
@@ -180,7 +188,7 @@ it to indexing agencies. The \verb+\author+ macro is disabled.
 
 Authors are listed individually using repeated calls to the {\tt
 \textbackslash{}addauthor} command.  There are a number of
-\emph{optional} options to {\tt \textbackslash{}addauthor}:
+optional arguments to {\tt \textbackslash{}addauthor}:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt inst}     & A numerical list of indices specifying an institution in the 
@@ -189,12 +197,13 @@ Authors are listed individually using repeated calls to the {\tt
                      looking like \orcidlink{0000-0003-1010-8157} and linking to 
                      the authors ORCID ID (see: \url{https://orcid.org}.\\
     {\tt footnote} & Create an author-specific footnote.\\
-    {\tt surname}  & The surname of the author.\\
-    {\tt onclick}  & Provide a URL to visit when clicking on the author name: 
+    {\tt surname}  & Indicate the surname of the author for indexing purposes.\\
+    {\tt onclick}  & Provide a URL to visit when clicking on the external link logo
+                     {\small\faExternalLink}\ displayed next to the author name:
                      e.g.,~can point to the academic webpage.\\
     {\tt email}    & Define the e-mail address of this author. 
-                     Note that at least one e-mail address is required for 
-                     \texttt{[version=final]}.\\
+                     Note that at least one e-mail address is required when
+                     \texttt{[version=final]} is used.\\
   \end{tabular}
 \end{center}
 
@@ -206,7 +215,7 @@ name is the surname: this is used for meta-data collection and is
 especially useful for cases with middle names \emph{and} double
 surnames which might be confusing.
 
-An example using all the optional options is given below. In this case
+An example using all the optional arguments is given below. In this case
 the author has \verb+inst={1,2}+ to indicate that they are affiliated with
 the first and second affiliations that are entered with
 \verb+\addaffiliation+:
@@ -231,7 +240,7 @@ instead.
 \subsection{Affiliations}
 Affiliations are listed individually using the \cmd{addaffiliation} command
 \emph{after} the last author has been added using \cmd{addauthor}.
-There are a number of arguments to \cmd{addaffiliation}:
+There are a number of optional arguments to \cmd{addaffiliation}:
 
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
@@ -250,7 +259,11 @@ There are a number of arguments to \cmd{addaffiliation}:
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}}
 to help you find ROR identifiers, and you are strongly urged to
 include these. Country is required if \verb+[version=final]+ on the
-paper. An example using all the optional options would look like:
+paper.
+When provided, only the \verb+city+ and \verb+country+ arguments are used
+to display the affliation. The other arguments are used to provide
+to indexing agencies.
+An example using all the optional arguments would look like:
 
 \begin{verbatim}
 \addaffiliation[ror        = 05f950310,
@@ -281,7 +294,7 @@ National Science Foundation and support from Rambus (with no
 \texttt{grantid} might be appropriate if the author simply received
 support for a visit.
 
-The complete list of options for \texttt{\textbackslash addfunding} is:
+The complete list of optional arguments for \texttt{\textbackslash addfunding} is:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
     {\tt fundref} & An identifier from the
@@ -299,7 +312,7 @@ The complete list of options for \texttt{\textbackslash addfunding} is:
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
 help you find \texttt{fundref} and \texttt{ror} identifiers.
 
-Note that \cmd{addfunding} does not automatically create footnotes or
+Note that \cmd{addfunding} \textbf{does not} automatically create footnotes or
 an acknowledgements section to identify funding - it only collects the
 metadata for indexing. If you wish to include such visible
 annotations, you can use the \texttt{footnote} option on
@@ -406,7 +419,7 @@ One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
   files is to automate the production of machine-readable metadata in
   separate files. Users of \LaTeX\ will already be used to seeing this
   with the \texttt{.log}, \texttt{.aux}, \texttt{.bbl}, \texttt{.blg},
-  \texttt{.toc}, and \texttt{.out} files produced by \texttt{bibtex}
+  \texttt{.toc}, and \texttt{.out} files produced by \BibTeX\ 
   and the \texttt{hyperref} package.  You need not be concerned about
   these, but if your main \LaTeX\ file is called \texttt{main.tex},
   then the extra files that are produced are:
@@ -416,18 +429,15 @@ One goal of the \texttt{iacrcc.cls} and \texttt{iacrcc.bst}
   \texttt{main.tex}, it will produce the metadata from
   \texttt{main.tex}, and when you run \texttt{bibtex} and
   \texttt{latex} again, it will append the citation data from
-  bibtex into the \texttt{main.meta} file as well.
+  \BibTeX into the \texttt{main.meta} file as well.
 \item a file \texttt{main.abstract} that contains
-  the contents of the abstract for the paper. This will be used to show
+  the contents of the abstract for the paper provided with the
+  \texttt{textabstract} environment. This will be used to show
   the abstract on the web.
 \end{itemize}
 
 \section{Typesetting the Bibliography}
 \label{sec:biblio}
-
-% Borrowed from btxdoc.tex
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 Having good bibliographic references is very important for the
 visibility of the journal.  Since we don't use a commercial editor,
@@ -436,20 +446,20 @@ and clean.  We strongly encourage authors to use bibliographic data
 from \url{http://www.dblp.org} or \url{https://cryptobib.di.ens.fr/}.
 All references should have DOIs if at all possible.
 
-You may use either \BibTeX\ or \texttt{biblatex}. If you use \BibTeX,
+You may use either \BibTeX\ or \BibLaTeX. If you use \BibTeX,
 then the \texttt{iacrcc} class will load the
 \verb+\bibliographystyle{alphaurl}+ style.  You may not change
-this. If you use \texttt{biblatex}, then this is done using
+this. If you use \BibLaTeX, then this is done using
 \verb+\documentclass[biblatex]{iacrcc}+ instead of
 \verb+\usepackage{biblatex}+; the latter will generate an error
-because the \texttt{iacrcc.cls} file loads \texttt{biblatex} with a
+because the \texttt{iacrcc.cls} file loads \BibLaTeX\ with a
 specific style.
 
 Here are some example citations: the RSA paper~\cite{RSA78}, the AES
 standard~\cite{AES-FIPS}, and \cite{DBLP:conf/crypto/Kocher96}.
 
 For the IACR Communications in Cryptology, you will be required to
-upload your bibtex files rather than just the \texttt{bbl} file.
+upload your \BibTeX files rather than just the \texttt{bbl} file.
 Many authors use the \texttt{cryptobib} \BibTeX\ files, and you need
 not upload those with your paper. They can be referenced as
 \texttt{\textbackslash bibliography\{cryptobib/abbrev1,cryptobib/crypto\}}
