@@ -167,9 +167,9 @@ A title is added using the \cmd{title} macro, it has a number of optional argume
 \noindent An example using all the optional arguments would look like:
 
 \begin{verbatim}
-\title[running  = {How to use the iacrcc class},
+\title[running   = {How to use the iacrcc class},
        plaintext = {How to use the iacrcc LaTeX class},
-       subtitle = {A Template},
+       subtitle  = {A Template},
       ]{How to use the \texttt{iacrcc} \LaTeX\ class}
 \end{verbatim}
 The \verb+plaintext+ option is only required if you use macros in
@@ -195,7 +195,7 @@ optional arguments to {\tt \textbackslash{}addauthor}:
                      affiliation array (see below).\\
     {\tt orcid}    & Create a small clickable orcid logo next to the authors name 
                      looking like \orcidlink{0000-0003-1010-8157} and linking to 
-                     the authors ORCID ID (see: \url{https://orcid.org}.\\
+		     the authors ORCID (see: \url{https://orcid.org}).\\
     {\tt footnote} & Create an author-specific footnote.\\
     {\tt surname}  & Indicate the surname of the author for indexing purposes.\\
     {\tt onclick}  & Provide a URL to visit when clicking on the external link logo
@@ -221,7 +221,7 @@ the first and second affiliations that are entered with
 \verb+\addaffiliation+:
 
 \begin{verbatim}
-\addauthor[orcid    = 0000-0000-0000-0000,
+\addauthor[orcid    = {0000-0000-0000-0000},
            inst     = {1,2},
            footnote = {Thanks to my supervisor for the support.},
            onclick  = {https://www.mypersonalwebpage.com},
@@ -266,8 +266,8 @@ to indexing agencies.
 An example using all the optional arguments would look like:
 
 \begin{verbatim}
-\addaffiliation[ror        = 05f950310,
-                department = {Computer Security and Industrial Cryptography},              
+\addaffiliation[ror        = {05f950310},
+                department = {Computer Security and Industrial Cryptography},
                 street     = {Kasteelpark Arenberg 10, box 2452},
                 city       = {Leuven},
                 state      = {Vlaams-Brabant},
@@ -281,11 +281,11 @@ Authors should use the \texttt{\textbackslash addfunding} macro to
 make sure that funding agencies can find papers published under their
 sponsorship. An example is:
 \begin{verbatim}
-\addfunding[fundref = 100000001
+\addfunding[fundref = {100000001},
             grantid = {CNS-1237235},
             country = {United States}]{National Science Foundation}
-\addfunding[ror=00pn5a327,
-            country={United States}]{Rambus}
+\addfunding[ror     = {00pn5a327},
+            country = {United States}]{Rambus}
 \end{verbatim}
 
 \noindent In this example, the author acknowledges a grant from the
