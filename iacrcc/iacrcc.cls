@@ -1,5 +1,5 @@
-\def\fileversion{0.34}
-\def\filedate{2023/07/28}
+\def\fileversion{0.35}
+\def\filedate{2023/08/08}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -146,11 +146,6 @@
   % luatex85: The package provides emulation of pdfTEX primitives for LuaTEX v0.85+.
   \IfFileExists{luatex85.sty}{\RequirePackage{luatex85}}{}
 \fi
-
-% xcolor: starts from the basic facilities of the color package, 
-%         and provides easy driver-independent access to several kinds 
-%         of color tints, shades, tones, and mixes of arbitrary colors. I
-\RequirePackage{xcolor}
 
 % The hyperref package is used to handle cross-referencing commands in 
 % LaTeX to produce hypertext links in the document. 
