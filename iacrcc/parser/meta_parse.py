@@ -103,19 +103,21 @@ def parse_meta(metastr):
             index = index + 1
             while index < numlines and lines[index].startswith('  '):
                 k,v = get_key_val(lines[index].rstrip())
-                if k == 'name':
+                if k == 'surname':
+                    author['familyName'] = v
+                elif k == 'name':
                     author[k] = v
                     v = decoder.latex_to_text(v)
                     parsed = HumanName(v)
                     if parsed:
                         author[k] = str(parsed) # canonicalize name
                         if parsed.last:
-                            author['surname'] = parsed.last
+                            author['familyName'] = parsed.last
                         if parsed.first:
                             author['given'] = parsed.first
                     else: # surname is required, so guess if the parser fails.
                         parts = author[k].split()
-                        author['surname'] = parts[-1]
+                        author['familyName'] = parts[-1]
                 elif k == 'email':
                     author['email'] = v
                 elif k == 'affil':
@@ -153,40 +155,6 @@ def parse_meta(metastr):
         elif line.startswith('keywords:'):
             data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
             index += 1
-        elif line.startswith('citation:'):
-            parts = line.split()
-            assert(len(parts) == 3)
-            citation = {'ptype': parts[1].strip(),
-                        'id': parts[2].strip(),
-                        'authorlist': []}
-            data['citations'].append(citation)
-            index += 1
-            while index < numlines and lines[index].startswith('  '): # associated with citation:
-                k,v = get_key_val(lines[index])
-                if k == 'authors': # Original BibTeX form.
-                    citation['authors'] = decoder.latex_to_text(v)
-                    index += 1
-                elif k == 'author': # separated out by bst
-                    author = {'name': decoder.latex_to_text(v)}
-                    citation['authorlist'].append(author)
-                    index += 1
-                    k,v = get_key_val(lines[index])
-                    if k == 'surname':
-                        author['surname'] = decoder.latex_to_text(v)
-                        index += 1
-                elif k == 'editor':
-                    if 'editors' not in citation:
-                        citation['editors'] = []
-                    editor = {'name': v}
-                    citation['editors'].append(editor)
-                    index += 1
-                    k,v = get_key_val(lines[index])
-                    if k == 'surname':
-                        editor['surname'] = v
-                        index += 1
-                else:
-                    citation[k] = v
-                    index += 1
         else:
             raise Exception('unexpected line {}'.format(line))
     return data
