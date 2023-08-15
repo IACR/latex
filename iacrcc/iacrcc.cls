@@ -1,5 +1,5 @@
-\def\fileversion{0.35}
-\def\filedate{2023/08/08}
+\def\fileversion{0.36}
+\def\filedate{2023/08/10}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -519,9 +519,9 @@
   % the provided e-mail addresses
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@email}\relax\else
     \if\relax\expandafter\detokenize\expandafter{\IACR@displayemails}\relax
-      \edef\IACR@displayemails{E-mail: \noexpand\href{mailto:\@IACR@author@email}{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
+      \edef\IACR@displayemails{E-mail: \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{\mbox{#2}})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\href{mailto:\@IACR@author@email}{\@IACR@author@email}~(\unexpanded{\mbox{#2}})}%
+      \eappto\IACR@displayemails{, \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{\mbox{#2}})}%
     \fi
     \@writemeta{\IACRSS email: \@IACR@author@email}%
     \stepcounter{IACR@email@cnt}%
@@ -935,7 +935,7 @@
   \fancyhf{} % clear all header and footer fields
   \ifcsstring{@IACRversion}{final}{%
       \ifx\@IACR@License\@empty
-        \ClassError{iacrcc}{Please specify a license when using version=final}{}%
+        \ClassError{iacrcc}{Please specify a license when using version=final: using for example \string\license{CC-by}}{}%
       \fi
       \fancyhead[L]{%
         \small%
@@ -981,7 +981,7 @@
   \else
     \ifnum\theIACR@author@cnt>4\relax
       \ifx\IACR@userdefinedrunningauthors\@empty
-        \ClassError{iacrcc}{When using more than 4 authors please define the running authors using the  \string\authorrunning\space macro}{}%
+        \ClassError{iacrcc}{When using more than 4 authors please define the running authors using the \string\authorrunning\space macro}{}%
       \fi
     \fi
     \IACR@runningauthors%
