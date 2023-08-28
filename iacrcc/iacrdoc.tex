@@ -464,6 +464,28 @@ Many authors use the \texttt{cryptobib} \BibTeX\ files, and you need
 not upload those with your paper. They can be referenced as
 \texttt{\textbackslash bibliography\{cryptobib/abbrev1,cryptobib/crypto\}}
 
+\section{Package load order}
+
+\LaTeX\ suffers from the weakness of having a global namespace for
+macros. As a result, it is possible that some packages may overwrite
+the definitions of another package that was loaded earlier. The
+biggest offender for this seems to be the \texttt{hyperref} package,
+which overwrites some basic macros in \LaTeX\ itself. The
+\texttt{iacrcc} document class loads \texttt{hyperref}, but it
+provides a mechanism for loading packages before \texttt{hyperref}. If
+the file \texttt{before-hyperref.sty} exists in the directory of your
+main file, then it will be included before loading \texttt{hyperref}.
+As an example, to load \texttt{longtable} before \texttt{hyperref}, you
+can create a file \texttt{before-hyperref.sty} that contains:
+\begin{verbatim}
+\RequirePackage{longtable}
+\end{verbatim}
+A complete survey of the conflicts between packages is beyond the scope of this document, but
+some known conflicts between packages are documented in the
+\href{https://github.com/mhelvens/latex-pkgloader/blob/master/pkgloader-recommended.sty}{\texttt{pkgloader}}
+package. It is wise to read the documentation for any package you use to make sure
+there are no conflicts with other packages loaded by \texttt{iacrcc.cls}.
+
 \section{Some recommendations}\label{sec:options}
 
 \paragraph{\LaTeX{} distribution, and worklow.}  \LaTeX{}
