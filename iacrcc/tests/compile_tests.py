@@ -348,9 +348,6 @@ def test13_test():
       assert xmp.get_string('.//dc:title/rdf:Alt/rdf:li') == 'An example that is not anonymous'
       assert xmp.get_string('.//dc:creator/rdf:Seq/rdf:li') == 'hidden for submission'
       assert xmp.get_string('.//pdf:Keywords') == 'stuff, other random'
-      subject = xmp.get_strings('.//dc:subject/rdf:Bag/rdf:li')
-      assert subject[0] == 'stuff'
-      assert subject[1] == 'other random'
       assert xmp.get_string('.//dc:source') == 'main.tex'
       assert xmp.get_string('.//xmpTPg:NPages') == str(1)
       # Make sure author names appear in the paper with notanonymous

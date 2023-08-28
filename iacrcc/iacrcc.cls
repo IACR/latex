@@ -70,16 +70,13 @@
 \tracinglostchars=3
 
 % Options
-% only required for old hyperxmp.
-\newif\if@hyperxmp@doi
-\@hyperxmp@doifalse
 % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
 \newif\if@doclicense@LongTextForHyperref
 \@doclicense@LongTextForHyperreffalse
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
 % \IACR@Published, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
-  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\@hyperxmp@doitrue\typeout{Inserted DOI into PDF}%
+  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\typeout{Inserted DOI into PDF}%
 }{}
 \newif\if@optbiblatex
 \@optbiblatexfalse
@@ -148,38 +145,71 @@
 \fi
 
 % The hyperref package is used to handle cross-referencing commands in 
-% LaTeX to produce hypertext links in the document. 
-% Hyperref must be loaded last, but before other AtEndPreamble hooks  
-\AtEndPreamble{
-  \@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
-  \hypersetup{pdflang=en}
-  \hypersetup{urlcolor=blue}
-  \hypersetup{colorlinks=true,
-    citecolor=black!70!green,
-    linkcolor=black!70!red}
-  % Disable latexdiff commands in PDF links
-  \pdfstringdefDisableCommands{%
-    \def\DIFadd#1{#1}%
-    \def\DIFdel#1{}%
-  }
-  % Old versions of hyperxmp do not support DOI TODO: move to require newer version.
-  \@ifpackagelater{hyperxmp}{2019/03/14}{\@hyperxmp@doitrue}{}
-  % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-  \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
-  \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
+% LaTeX to produce hypertext links in the document. hyperref is fussy about
+% the order in which it is loaded, and the official documentation recommends
+% loading last. In spite of this, there are some packages that must be
+% loaded before hyperref. (e.g., cleveref). In order to support this, the
+% author should create a file called before-hyperref.sty with
+% \RequirePackage{longtable} in it.
+\IfFileExists{before-hyperref.sty}{%
+  \RequirePackage{before-hyperref}
+}{}
+
+% XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
+% for embedding document metadata within the document itself. It should
+% be loaded before hyperref. We require a version later than 2019/03/14,
+% and this will issue a warning if that is not satisfied.
+\RequirePackage{hyperxmp}[2019/03/14]
+\setcounter{tocdepth}{2}
+
+\RequirePackage{hyperref}
+\hypersetup{pdflang=en,
+            urlcolor=blue,
+            colorlinks=true,
+            citecolor=black!70!green,
+            linkcolor=black!70!red}
+% Disable latexdiff commands in PDF links
+\pdfstringdefDisableCommands{%
+  \def\DIFadd#1{#1}%
+  \def\DIFdel#1{}%
+}
+% doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+\@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
+\@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
+\AtEndPreamble{%
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
     \RequirePackage[T1]{fontenc} 
   \fi
+  %% PDF title and author
+  \if@anonymous
+    \hypersetup{pdfauthor={hidden for submission}}
+  \else
+    \hypersetup{pdfauthor=\IACR@listofauthors}
+  \fi
+  \hypersetup{pdftitle={\@plaintitle}}
+  \if\@IACR@title@subtitle\empty
+  \else
+    \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
+  \fi
+  % other PDF metadata
+  \ifcsstring{@IACRversion}{final}{%
+    \hypersetup{%
+      pdfpubstatus=VoR,
+      pdfdoi=\IACR@DOI,%
+      pdfissn=\IACR@ISSN,%
+      pdfpubtype=journal,%
+      pdfpublication={\publname},%
+      pdfvolumenum={\IACR@vol},%
+      pdfissuenum={\IACR@no},%
+      pdfpagerange={\IACR@fp-\IACR@lp},%
+    }
+  }{}% final
 }
 
-% XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe 
-% for embedding document metadata within the document itself.
-\RequirePackage{hyperxmp} % hyperxmp 5.x has issues with AtEndPreamble
-\setcounter{tocdepth}{2}
-
-% Geometry: flexible and complete interface to document dimensions
+% Geometry: flexible and complete interface to document dimensions. Must be loaded after
+% hyperref.
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
 
 % afterpage: execute command after the next page break
@@ -532,7 +562,7 @@
     \ifx\IACR@userdefinedrunningauthors\@empty
       \def\IACR@runningauthors{#2}%
     \fi
-    \def\IACR@listofauthors{#2}%    
+    \def\IACR@listofauthors{#2}%
   \else
     \appto\@author{\and\unexpanded{\mbox{#2}}}%
     \ifx\IACR@userdefinedrunningauthors\@empty
@@ -833,6 +863,8 @@
   % totpages: count pages in a document, and report last page number
   \RequirePackage{totpages}
   \def\IACR@lp{\pageref*{TotPages}}%
+  \hypersetup{pdfnumpages=\IACR@lp,
+  pdfpagerange={1-\IACR@lp}}
 }{}
 
 \global\let\@IACR@License\@empty%
@@ -925,6 +957,10 @@
     \checkstring{#1}{optional argument to keywords may not contain macros.}
     \gdef\IACR@text@keywords{#1}%
   \fi
+  %% PDF keywords
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords=\IACR@text@keywords}
+  \fi
 }
 
 % fancyvrb: sophisticated verbatim text
@@ -968,32 +1004,6 @@
     \expandarg\StrSubstitute{\IACR@keywords}{,}{\unskip\space\textperiodcentered\space\ignorespaces}
   \fi
   \endquotation%
-  %% PDF keywords
-  \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords={\IACR@text@keywords}}
-  \fi
-  %% PDF author
-  \if@anonymous
-    \hypersetup{pdfauthor={hidden for submission}}
-  \else
-    \hypersetup{pdfauthor={\IACR@listofauthors}}
-  \fi%!anonymous
-  %% PDF title
-  \hypersetup{pdftitle={\@plaintitle}}
-  % PDF metadata
-  \ifcsstring{@IACRversion}{final}{%
-    \if@hyperxmp@doi
-      \hypersetup{%
-        pdfdoi=\IACR@DOI,%
-        pdfissn=\IACR@ISSN,%
-        pdfpubtype=journal,%
-        pdfpublication={\publname},%
-        pdfvolumenum={\IACR@vol},%
-        pdfissuenum={\IACR@no},%
-        pdfpagerange={\IACR@fp-\IACR@lp},%
-      }
-    \fi%hyperxmp@doi
-  }{}% final
 }
 
 % autoref: capitals for Sections, and adding Algorithm
