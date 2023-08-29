@@ -154,24 +154,37 @@
 % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
 \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
 \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
+
 \AtEndPreamble{%
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
+    % fontenc: Standard package for selecting font encodings
     \RequirePackage[T1]{fontenc} 
   \fi
+  % hyperref: Extensive support for hypertext in LaTeX
+  \RequirePackage{hyperref}
   %% PDF title and author
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
     \hypersetup{pdfauthor=\IACR@listofauthors}
   \fi
-  \hypersetup{pdftitle={\@plaintitle}}
   \if\@IACR@title@subtitle\empty
   \else
     \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
   \fi
-  % other PDF metadata
+  %% PDF keywords
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords=\IACR@text@keywords}
+  \fi
+  \hypersetup{pdftitle={\@plaintitle},%
+              pdflang=en,%
+              urlcolor=blue,%
+              colorlinks=true,%
+              citecolor=black!70!green,%
+              linkcolor=black!70!red%
+             }
   \ifcsstring{@IACRversion}{final}{%
     \hypersetup{%
       pdfpubstatus=VoR,
@@ -182,15 +195,19 @@
       pdfvolumenum={\IACR@vol},%
       pdfissuenum={\IACR@no},%
       pdfpagerange={\IACR@fp-\IACR@lp},%
+      pdfnumpages=\IACR@lp,%
+      pdfpagerange={1-\IACR@lp},%
+      pdflicenseurl={\doclicenseURL},%
+      pdfsubject={\publname{}, DOI:\IACR@DOI}%
     }
+    % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+    \if@doclicense@LongTextForHyperref
+      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+    \else
+      \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
+    \fi
   }{}% final
   %
-  \RequirePackage{hyperref}
-  \hypersetup{pdflang=en,
-              urlcolor=blue,
-              colorlinks=true,
-              citecolor=black!70!green,
-              linkcolor=black!70!red}
   % Disable latexdiff commands in PDF links
   \pdfstringdefDisableCommands{%
     \def\DIFadd#1{#1}%
@@ -862,8 +879,6 @@
   % totpages: count pages in a document, and report last page number
   \RequirePackage{totpages}
   \def\IACR@lp{\pageref*{TotPages}}%
-  \hypersetup{pdfnumpages=\IACR@lp,
-  pdfpagerange={1-\IACR@lp}}
 }{}
 
 \global\let\@IACR@License\@empty%
@@ -900,14 +915,6 @@
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
       }%
-      % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-      \if@doclicense@LongTextForHyperref
-        \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
-      \else
-        \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
-      \fi
-      \hypersetup{pdflicenseurl={\doclicenseURL}}
-      \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
   }{} % final
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
@@ -955,10 +962,6 @@
   \else
     \checkstring{#1}{optional argument to keywords may not contain macros.}
     \gdef\IACR@text@keywords{#1}%
-  \fi
-  %% PDF keywords
-  \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords=\IACR@text@keywords}
   \fi
 }
 
