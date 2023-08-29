@@ -30,7 +30,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.38)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.39)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -150,8 +150,7 @@ in the \texttt{textabstract} environment.
 
 The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded
-\emph{after} \texttt{hyperref}, you should load \texttt{hyperref}
-explicitly at the correct position.
+\emph{after} \texttt{hyperref}, you should read Section~\ref{sec:loadorder}.
 
 \section{Macros to add title and author information}
 
@@ -464,7 +463,7 @@ Many authors use the \texttt{cryptobib} \BibTeX\ files, and you need
 not upload those with your paper. They can be referenced as
 \texttt{\textbackslash bibliography\{cryptobib/abbrev1,cryptobib/crypto\}}
 
-\section{Package load order}
+\section{Package load order}\label{sec:loadorder}
 
 \LaTeX\ suffers from the weakness of having a global namespace for
 macros. As a result, it is possible that some packages may overwrite
@@ -472,13 +471,13 @@ the definitions of another package that was loaded earlier. The
 biggest offender for this seems to be the \texttt{hyperref} package,
 which overwrites some basic macros in \LaTeX\ itself. The
 \texttt{iacrcc} document class loads \texttt{hyperref}, but it
-provides a mechanism for loading packages before \texttt{hyperref}. If
-the file \texttt{before-hyperref.sty} exists in the directory of your
-main file, then it will be included before loading \texttt{hyperref}.
-As an example, to load \texttt{longtable} before \texttt{hyperref}, you
-can create a file \texttt{before-hyperref.sty} that contains:
+provides a mechanism for loading packages \emph{after} \texttt{hyperref}. If
+the file \texttt{after-hyperref.sty} exists in the directory of your
+main file, then it will be included after loading \texttt{hyperref}.
+As an example, to load \texttt{cleveref} after \texttt{hyperref}, you
+can create a file \texttt{after-hyperref.sty} that contains:
 \begin{verbatim}
-\RequirePackage{longtable}
+\RequirePackage{cleveref}
 \end{verbatim}
 A complete survey of the conflicts between packages is beyond the scope of this document, but
 some known conflicts between packages are documented in the

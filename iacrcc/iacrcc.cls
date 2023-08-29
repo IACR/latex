@@ -1,5 +1,5 @@
-\def\fileversion{0.38}
-\def\filedate{2023/08/15}
+\def\fileversion{0.39}
+\def\filedate{2023/08/29}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -144,35 +144,13 @@
   \IfFileExists{luatex85.sty}{\RequirePackage{luatex85}}{}
 \fi
 
-% The hyperref package is used to handle cross-referencing commands in 
-% LaTeX to produce hypertext links in the document. hyperref is fussy about
-% the order in which it is loaded, and the official documentation recommends
-% loading last. In spite of this, there are some packages that must be
-% loaded before hyperref. (e.g., cleveref). In order to support this, the
-% author should create a file called before-hyperref.sty with
-% \RequirePackage{longtable} in it.
-\IfFileExists{before-hyperref.sty}{%
-  \RequirePackage{before-hyperref}
-}{}
-
 % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
-% for embedding document metadata within the document itself. It should
-% be loaded before hyperref. We require a version later than 2019/03/14,
+% for embedding document metadata within the document itself.
+% We require a version later than 2019/03/14,
 % and this will issue a warning if that is not satisfied.
 \RequirePackage{hyperxmp}[2019/03/14]
 \setcounter{tocdepth}{2}
 
-\RequirePackage{hyperref}
-\hypersetup{pdflang=en,
-            urlcolor=blue,
-            colorlinks=true,
-            citecolor=black!70!green,
-            linkcolor=black!70!red}
-% Disable latexdiff commands in PDF links
-\pdfstringdefDisableCommands{%
-  \def\DIFadd#1{#1}%
-  \def\DIFdel#1{}%
-}
 % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
 \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
 \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
@@ -206,10 +184,31 @@
       pdfpagerange={\IACR@fp-\IACR@lp},%
     }
   }{}% final
+  %
+  \RequirePackage{hyperref}
+  \hypersetup{pdflang=en,
+              urlcolor=blue,
+              colorlinks=true,
+              citecolor=black!70!green,
+              linkcolor=black!70!red}
+  % Disable latexdiff commands in PDF links
+  \pdfstringdefDisableCommands{%
+    \def\DIFadd#1{#1}%
+    \def\DIFdel#1{}%
+  }
+  % The hyperref package is used to handle cross-referencing commands in
+  % LaTeX to produce hypertext links in the document. hyperref is fussy about
+  % the order in which it is loaded, and the official documentation recommends
+  % loading last. In spite of this, there are some packages that must be
+  % loaded after hyperref. (e.g., cleveref). In order to support this, the
+  % author should create a file called after-hyperref.sty with
+  % \RequirePackage{cleveref} in it.
+  \IfFileExists{after-hyperref.sty}{%
+    \RequirePackage{after-hyperref}
+  }{}
 }
 
-% Geometry: flexible and complete interface to document dimensions. Must be loaded after
-% hyperref.
+% Geometry: flexible and complete interface to document dimensions.
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
 
 % afterpage: execute command after the next page break
