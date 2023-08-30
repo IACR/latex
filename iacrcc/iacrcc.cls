@@ -190,9 +190,6 @@
       pdfpublication={\publname},%
       pdfvolumenum={\IACR@vol},%
       pdfissuenum={\IACR@no},%
-      pdfpagerange={\IACR@fp-\IACR@lp},%
-      pdfnumpages=\IACR@lp,%
-      pdfpagerange={1-\IACR@lp},%
       pdflicenseurl={\doclicenseURL},%
       pdfsubject={\publname{}, DOI:\IACR@DOI}%
     }
@@ -219,6 +216,23 @@
   \IfFileExists{after-hyperref.sty}{%
     \RequirePackage{after-hyperref}
   }{}
+  \ifcsstring{@IACRversion}{final}{%
+    % When compiling the final version we need the last page number
+    % totpages: count pages in a document, and report last page number
+    % The documentation recommends to load this package last.
+    \RequirePackage{totpages}
+  }{}% final
+}
+
+% The TotPages label is not defined until after the \begin{document}.
+\AtBeginDocument{%
+  \ifcsstring{@IACRversion}{final}{%
+    \gdef\IACR@lp{\ref*{TotPages}}
+    \hypersetup{%
+      pdfnumpages=\IACR@lp,%
+      pdfpagerange={\IACR@fp-\IACR@lp},%
+    }%
+  }{}% final
 }
 
 % Geometry: flexible and complete interface to document dimensions.
@@ -869,13 +883,6 @@
     }%
   }
 \fi%!biblatex
-
-% When compiling the final version we need the last page number
-\ifcsstring{@IACRversion}{final}{%
-  % totpages: count pages in a document, and report last page number
-  \RequirePackage{totpages}
-  \def\IACR@lp{\pageref*{TotPages}}%
-}{}
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{%
