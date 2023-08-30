@@ -99,10 +99,10 @@
 \typeout{Compiling version=\@IACRversion}
 \ifcsstring{@IACRversion}{submission}{
   \if@notanonymous\@anonymousfalse
-  \typeout{Disabling anonymity}
+    \typeout{Disabling anonymity}
   \else
-  \@anonymoustrue
-  \typeout{Setting to anonymous}
+    \@anonymoustrue
+    \typeout{Setting to anonymous}
   \fi
 }{}
 \ifcsstring{@IACRversion}{final}{
@@ -157,17 +157,22 @@
     % fontenc: Standard package for selecting font encodings
     \RequirePackage[T1]{fontenc} 
   \fi
-  % hyperref: Extensive support for hypertext in LaTeX
-  \RequirePackage{hyperref}
-  %
-  % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
-  % for embedding document metadata within the document itself.
-  % We require a version later than 2019/03/14,
-  % and this will issue a warning if that is not satisfied.
-  % Load this *after* hyperref as a work-around for recent issues, see
-  % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
-  % for more information
-  \RequirePackage{hyperxmp}[2019/03/14]
+  \ifpdftex
+    % hyperref: Extensive support for hypertext in LaTeX
+    \RequirePackage{hyperref}
+    %
+    % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
+    % for embedding document metadata within the document itself.
+    % We require a version later than 2019/03/14,
+    % and this will issue a warning if that is not satisfied.
+    % Load this *after* hyperref as a work-around for recent issues, see
+    % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
+    % for more information (only when using pdflatex)
+    \RequirePackage{hyperxmp}[2019/03/14]
+  \else
+    \RequirePackage{hyperxmp}[2019/03/14]
+    \RequirePackage{hyperref}
+  \fi
   %
   % Pass the keeppdfinfo option to hyperxmp to ensure the
   % Info dictionary is retained which contain the author names
@@ -177,11 +182,11 @@
   \else
     \hypersetup{pdfauthor={\IACR@listofauthors}}
   \fi
-  \if\@IACR@title@subtitle\empty\else
+  \ifdefined\@IACR@title@subtitle@defined
     \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
   \fi
   \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords=\IACR@text@keywords}
+    \hypersetup{pdfkeywords={\IACR@text@keywords}}
   \fi
   \hypersetup{pdftitle={\@plaintitle},%
               pdflang=en,%
@@ -193,8 +198,8 @@
   \ifcsstring{@IACRversion}{final}{%
     \hypersetup{%
       pdfpubstatus=VoR,
-      pdfdoi=\IACR@DOI,%
-      pdfissn=\IACR@ISSN,%
+      pdfdoi={\IACR@DOI},%
+      pdfissn={\IACR@ISSN},%
       pdfpubtype=journal,%
       pdfpublication={\publname},%
       pdfvolumenum={\IACR@vol},%
@@ -238,7 +243,7 @@
   \ifcsstring{@IACRversion}{final}{%
     \gdef\IACR@lp{\ref*{TotPages}}
     \hypersetup{%
-      pdfnumpages=\IACR@lp,%
+      pdfnumpages={\IACR@lp},%
       pdfpagerange={\IACR@fp-\IACR@lp},%
     }%
   }{}% final
@@ -927,7 +932,7 @@
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
       }%
-  }{} % final
+  }{}% final
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
 }%fancypagestyle
@@ -978,7 +983,7 @@
   %% PDF keywords
   \ifx\IACR@text@keywords\@empty\else
     \@ifpackageloaded{hyperref}{%
-      \hypersetup{pdfkeywords=\IACR@text@keywords}
+      \hypersetup{pdfkeywords={\IACR@text@keywords}}
     }{}%
   \fi
 }
@@ -1138,7 +1143,6 @@
 \newcommand\IACR@linenumbers{%
   % lineno: line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
-  \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
   % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
   \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
@@ -1153,6 +1157,7 @@
     \patchAmsMathEnvironmentForLineno{##1*}%
   }%
   \AtBeginDocument{%
+    \linenumbers
     \patchAmsMathEnvironmentForLineno{equation*}%
     \patchBothAmsMathEnvironmentsForLineno{align}%
     \patchBothAmsMathEnvironmentsForLineno{flalign}%
@@ -1190,7 +1195,7 @@
 \ifx\@unusedoptionlist\@empty\else
   \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{version=preprint}[\@unusedoptionlist]%
-  \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{version=submission}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{version}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{floatrow}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{notanonymous}[\@unusedoptionlist]%
