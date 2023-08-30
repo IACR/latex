@@ -180,6 +180,9 @@
   \if\@IACR@title@subtitle\empty\else
     \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
   \fi
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords=\IACR@text@keywords}
+  \fi
   \hypersetup{pdftitle={\@plaintitle},%
               pdflang=en,%
               urlcolor=blue,%
@@ -974,7 +977,9 @@
   \fi
   %% PDF keywords
   \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords=\IACR@text@keywords}
+    \@ifpackageloaded{hyperref}{%
+      \hypersetup{pdfkeywords=\IACR@text@keywords}
+    }{}%
   \fi
 }
 
