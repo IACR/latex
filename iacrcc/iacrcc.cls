@@ -174,10 +174,6 @@
   \else
     \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
   \fi
-  %% PDF keywords
-  \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords=\IACR@text@keywords}
-  \fi
   \hypersetup{pdftitle={\@plaintitle},%
               pdflang=en,%
               urlcolor=blue,%
@@ -962,6 +958,10 @@
   \else
     \checkstring{#1}{optional argument to keywords may not contain macros.}
     \gdef\IACR@text@keywords{#1}%
+  \fi
+  %% PDF keywords
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords=\IACR@text@keywords}
   \fi
 }
 
