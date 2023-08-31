@@ -1,5 +1,5 @@
-\def\fileversion{0.38}
-\def\filedate{2023/08/15}
+\def\fileversion{0.39}
+\def\filedate{2023/08/29}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -99,10 +99,10 @@
 \typeout{Compiling version=\@IACRversion}
 \ifcsstring{@IACRversion}{submission}{
   \if@notanonymous\@anonymousfalse
-  \typeout{Disabling anonymity}
+    \typeout{Disabling anonymity}
   \else
-  \@anonymoustrue
-  \typeout{Setting to anonymous}
+    \@anonymoustrue
+    \typeout{Setting to anonymous}
   \fi
 }{}
 \ifcsstring{@IACRversion}{final}{
@@ -144,72 +144,109 @@
   \IfFileExists{luatex85.sty}{\RequirePackage{luatex85}}{}
 \fi
 
-% The hyperref package is used to handle cross-referencing commands in 
-% LaTeX to produce hypertext links in the document. hyperref is fussy about
-% the order in which it is loaded, and the official documentation recommends
-% loading last. In spite of this, there are some packages that must be
-% loaded before hyperref. (e.g., cleveref). In order to support this, the
-% author should create a file called before-hyperref.sty with
-% \RequirePackage{longtable} in it.
-\IfFileExists{before-hyperref.sty}{%
-  \RequirePackage{before-hyperref}
-}{}
-
-% XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
-% for embedding document metadata within the document itself. It should
-% be loaded before hyperref. We require a version later than 2019/03/14,
-% and this will issue a warning if that is not satisfied.
-\RequirePackage{hyperxmp}[2019/03/14]
 \setcounter{tocdepth}{2}
 
-\RequirePackage{hyperref}
-\hypersetup{pdflang=en,
-            urlcolor=blue,
-            colorlinks=true,
-            citecolor=black!70!green,
-            linkcolor=black!70!red}
-% Disable latexdiff commands in PDF links
-\pdfstringdefDisableCommands{%
-  \def\DIFadd#1{#1}%
-  \def\DIFdel#1{}%
-}
 % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
 \@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
 \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
+
 \AtEndPreamble{%
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
+    % fontenc: Standard package for selecting font encodings
     \RequirePackage[T1]{fontenc} 
   \fi
-  %% PDF title and author
+  \ifpdftex
+    % hyperref: Extensive support for hypertext in LaTeX
+    \RequirePackage{hyperref}
+    %
+    % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
+    % for embedding document metadata within the document itself.
+    % We require a version later than 2019/03/14,
+    % and this will issue a warning if that is not satisfied.
+    % Load this *after* hyperref as a work-around for recent issues, see
+    % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
+    % for more information (only when using pdflatex)
+    \RequirePackage{hyperxmp}[2019/03/14]
+  \else
+    \RequirePackage{hyperxmp}[2019/03/14]
+    \RequirePackage{hyperref}
+  \fi
+  %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
-    \hypersetup{pdfauthor=\IACR@listofauthors}
+    \hypersetup{pdfauthor={\IACR@listofauthors}}
   \fi
-  \hypersetup{pdftitle={\@plaintitle}}
-  \if\@IACR@title@subtitle\empty
-  \else
+  \ifdefined\@IACR@title@subtitle@defined
     \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
   \fi
-  % other PDF metadata
+  \ifx\IACR@text@keywords\@empty\else
+    \hypersetup{pdfkeywords={\IACR@text@keywords}}
+  \fi
+  \hypersetup{pdftitle={\@plaintitle},%
+              pdflang=en,%
+              urlcolor=blue,%
+              colorlinks=true,%
+              citecolor=black!70!green,%
+              linkcolor=black!70!red%
+             }
   \ifcsstring{@IACRversion}{final}{%
     \hypersetup{%
       pdfpubstatus=VoR,
-      pdfdoi=\IACR@DOI,%
-      pdfissn=\IACR@ISSN,%
+      pdfdoi={\IACR@DOI},%
+      pdfissn={\IACR@ISSN},%
       pdfpubtype=journal,%
       pdfpublication={\publname},%
       pdfvolumenum={\IACR@vol},%
       pdfissuenum={\IACR@no},%
-      pdfpagerange={\IACR@fp-\IACR@lp},%
+      pdflicenseurl={\doclicenseURL},%
+      pdfsubject={\publname{}, DOI:\IACR@DOI}%
     }
+    % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+    \if@doclicense@LongTextForHyperref
+      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
+    \else
+      \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
+    \fi
+  }{}% final
+  %
+  % Disable latexdiff commands in PDF links
+  \pdfstringdefDisableCommands{%
+    \def\DIFadd#1{#1}%
+    \def\DIFdel#1{}%
+  }
+  % The hyperref package is used to handle cross-referencing commands in
+  % LaTeX to produce hypertext links in the document. hyperref is fussy about
+  % the order in which it is loaded, and the official documentation recommends
+  % loading last. In spite of this, there are some packages that must be
+  % loaded after hyperref. (e.g., cleveref). In order to support this, the
+  % author should create a file called after-hyperref.sty with
+  % \RequirePackage{cleveref} in it.
+  \IfFileExists{after-hyperref.sty}{%
+    \RequirePackage{after-hyperref}
+  }{}
+  \ifcsstring{@IACRversion}{final}{%
+    % When compiling the final version we need the last page number
+    % totpages: count pages in a document, and report last page number
+    % The documentation recommends to load this package last.
+    \RequirePackage{totpages}
   }{}% final
 }
 
-% Geometry: flexible and complete interface to document dimensions. Must be loaded after
-% hyperref.
+% The TotPages label is not defined until after the \begin{document}.
+\AtBeginDocument{%
+  \ifcsstring{@IACRversion}{final}{%
+    \gdef\IACR@lp{\ref*{TotPages}}
+    \hypersetup{%
+      pdfnumpages={\IACR@lp},%
+      pdfpagerange={\IACR@fp-\IACR@lp},%
+    }%
+  }{}% final
+}
+
+% Geometry: flexible and complete interface to document dimensions.
 \RequirePackage[a4paper,hscale=0.65,vscale=0.75,marginratio=1:1,marginparwidth=2.7cm]{geometry}
 
 % afterpage: execute command after the next page break
@@ -858,15 +895,6 @@
   }
 \fi%!biblatex
 
-% When compiling the final version we need the last page number
-\ifcsstring{@IACRversion}{final}{%
-  % totpages: count pages in a document, and report last page number
-  \RequirePackage{totpages}
-  \def\IACR@lp{\pageref*{TotPages}}%
-  \hypersetup{pdfnumpages=\IACR@lp,
-  pdfpagerange={1-\IACR@lp}}
-}{}
-
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{%
   \gdef\@IACR@License{#1}%
@@ -901,15 +929,7 @@
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
       }%
-      % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-      \if@doclicense@LongTextForHyperref
-        \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
-      \else
-        \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
-      \fi
-      \hypersetup{pdflicenseurl={\doclicenseURL}}
-      \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}
-  }{} % final
+  }{}% final
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
 }%fancypagestyle
@@ -959,7 +979,9 @@
   \fi
   %% PDF keywords
   \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords=\IACR@text@keywords}
+    \@ifpackageloaded{hyperref}{%
+      \hypersetup{pdfkeywords={\IACR@text@keywords}}
+    }{}%
   \fi
 }
 
@@ -1118,7 +1140,6 @@
 \newcommand\IACR@linenumbers{%
   % lineno: line numbers on paragraphs
   \RequirePackage[mathlines]{lineno}
-  \linenumbers
   \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
   % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
   \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
@@ -1133,6 +1154,7 @@
     \patchAmsMathEnvironmentForLineno{##1*}%
   }%
   \AtBeginDocument{%
+    \linenumbers
     \patchAmsMathEnvironmentForLineno{equation*}%
     \patchBothAmsMathEnvironmentsForLineno{align}%
     \patchBothAmsMathEnvironmentsForLineno{flalign}%
@@ -1170,7 +1192,7 @@
 \ifx\@unusedoptionlist\@empty\else
   \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{version=preprint}[\@unusedoptionlist]%
-  \StrDel{\@unusedoptionlist}{version=final}[\@unusedoptionlist]%
+  \StrDel{\@unusedoptionlist}{version=submission}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{version}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{floatrow}[\@unusedoptionlist]%
   \StrDel{\@unusedoptionlist}{notanonymous}[\@unusedoptionlist]%
