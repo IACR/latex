@@ -174,9 +174,6 @@
     \RequirePackage{hyperref}
   \fi
   %
-  % Pass the keeppdfinfo option to hyperxmp to ensure the
-  % Info dictionary is retained which contain the author names
-  \hypersetup{keeppdfinfo}
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
