@@ -70,9 +70,6 @@
 \tracinglostchars=3
 
 % Options
-% doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-\newif\if@doclicense@LongTextForHyperref
-\@doclicense@LongTextForHyperreffalse
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
 % \IACR@Published, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
@@ -146,8 +143,6 @@
 
 \setcounter{tocdepth}{2}
 
-% doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-\@ifpackagelater{doclicense}{2022/04/25}{\@doclicense@LongTextForHyperreftrue}{}
 \@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
 
 \AtEndPreamble{%
@@ -157,22 +152,17 @@
     % fontenc: Standard package for selecting font encodings
     \RequirePackage[T1]{fontenc} 
   \fi
-  \ifpdftex
-    % hyperref: Extensive support for hypertext in LaTeX
-    \RequirePackage{hyperref}
-    %
-    % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
-    % for embedding document metadata within the document itself.
-    % We require a version later than 2019/03/14,
-    % and this will issue a warning if that is not satisfied.
-    % Load this *after* hyperref as a work-around for recent issues, see
-    % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
-    % for more information (only when using pdflatex)
-    \RequirePackage{hyperxmp}[2019/03/14]
-  \else
-    \RequirePackage{hyperxmp}[2019/03/14]
-    \RequirePackage{hyperref}
-  \fi
+  % hyperref: Extensive support for hypertext in LaTeX
+  \RequirePackage{hyperref}
+  %
+  % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
+  % for embedding document metadata within the document itself.
+  % We require a version later than 2019/03/14,
+  % and this will issue a warning if that is not satisfied.
+  % Load this *after* hyperref as a work-around for recent issues, see
+  % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
+  % for more information.
+  \RequirePackage{hyperxmp}[2019/03/14]
   %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
@@ -201,16 +191,18 @@
       pdfpublication={\publname},%
       pdfvolumenum={\IACR@vol},%
       pdfissuenum={\IACR@no},%
-      pdflicenseurl={\doclicenseURL},%
       pdfsubject={\publname{}, DOI:\IACR@DOI}%
     }
-    % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-    \if@doclicense@LongTextForHyperref
-      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}
-    \else
-      \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
-    \fi
   }{}% final
+  \ifx\@IACR@License\@empty\else%
+    \hypersetup{pdflicenseurl={\doclicenseURL}}%
+     % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
+    \ifcsdef{doclicenseLongTextForHyperref}{%
+      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}%
+    }{%
+      \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
+    }
+  \fi
   %
   % Disable latexdiff commands in PDF links
   \pdfstringdefDisableCommands{%
@@ -900,10 +892,12 @@
   \gdef\@IACR@License{#1}%
   \def\@IACR@CCby{CC-by}%
   \ifx\@IACR@License\@IACR@CCby%
-    % doclicense: support for putting documents under a license.
-    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}
+    % doclicense: support for putting documents under a license. Only usable in preamble.
+    \@ifpackageloaded{hyperxmp}{\ClassError{iacrcc}{\string\license\space must be used before \string\begin{document}}{}}
+    % load without hyperxmp integration.
+    \RequirePackage[type={CC},modifier={by},version={4.0},hyperxmp=false]{doclicense}
   \else
-    \ClassError{iacrcc}{Invalid license: must be one of { CC-by }}{}%
+    \ClassError{iacrcc}{Invalid license: only acceptable license is CC-by}{}%
   \fi
 }
 
