@@ -1,5 +1,5 @@
-\def\fileversion{0.39}
-\def\filedate{2023/08/29}
+\def\fileversion{0.40}
+\def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -893,7 +893,7 @@
   \def\@IACR@CCby{CC-by}%
   \ifx\@IACR@License\@IACR@CCby%
     % doclicense: support for putting documents under a license. Only usable in preamble.
-    \@ifpackageloaded{hyperxmp}{\ClassError{iacrcc}{\string\license\space must be used before \string\begin{document}}{}}
+    \ifx\@onlypreamble\@notprerr\ClassError{iacrcc}{\string\license\space must be used before \string\begin{document}}{}\fi
     % load without hyperxmp integration.
     \RequirePackage[type={CC},modifier={by},version={4.0},hyperxmp=false]{doclicense}
   \else
