@@ -1,4 +1,4 @@
-\def\fileversion{0.40}
+\def\fileversion{0.41}
 \def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -777,7 +777,7 @@
     \StrLen{#2}[\IACR@tmp]%
     \ifnumgreater{\IACR@tmp}{65}{%
       \ClassError{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
-    }{}%JWB
+    }{}
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
     \gdef\@IACR@title@subtitle@defined{}%
