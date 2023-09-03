@@ -48,7 +48,7 @@
 \def\IACR@vol{0}
 \def\IACR@no{0}
 \def\IACR@fp{1}
-\def\IACR@ISSN{XXXX-XXXX}
+\def\IACR@EISSN{XXXX-XXXX}
 \def\IACR@DOI{XXXXXXXX}
 \def\IACR@Received{20XX-XX-XX}
 \def\IACR@Revised{20XX-XX-XX}
@@ -65,7 +65,7 @@
 
 \newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
 \newcommand{\setnumber}[1]{\def\IACR@no{#1}}
-\newcommand{\setISSN}[1]{\def\IACR@ISSN{#1}}
+\newcommand{\setEISSN}[1]{\def\IACR@EISSN{#1}}
 % See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
 \tracinglostchars=3
 
@@ -186,7 +186,7 @@
     \hypersetup{%
       pdfpubstatus=VoR,
       pdfdoi={\IACR@DOI},%
-      pdfissn={\IACR@ISSN},%
+      pdfissn={\IACR@EISSN},%
       pdfpubtype=journal,%
       pdfpublication={\publname},%
       pdfvolumenum={\IACR@vol},%
@@ -910,7 +910,7 @@
       \fancyhead[L]{%
         \small%
         \publname{}\\
-        ISSN~\IACR@ISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
+        ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
         \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
       }
       \fancyfoot[L]{%
