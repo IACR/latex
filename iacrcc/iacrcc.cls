@@ -1,4 +1,4 @@
-\def\fileversion{0.40}
+\def\fileversion{0.41}
 \def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -769,11 +769,15 @@
     \checkstring{#2}{error in title}
   \else
      \gdef\@plaintitle{\@IACR@title@plaintext}%
-     \expandafter\checkstring\expandafter{\@IACR@title@plaintext}{plaintext xxargument to title must be plain text}%
+     \expandafter\checkstring\expandafter{\@IACR@title@plaintext}{plaintext argument to title must be plain text}%
   \fi
   \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
+    \StrLen{#2}[\IACR@tmp]%
+    \ifnumgreater{\IACR@tmp}{70}{%
+      \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
+    }{}
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
     \gdef\@IACR@title@subtitle@defined{}%
