@@ -775,8 +775,8 @@
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
     \StrLen{#2}[\IACR@tmp]%
-    \ifnumgreater{\IACR@tmp}{65}{%
-      \ClassError{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
+    \ifnumgreater{\IACR@tmp}{70}{%
+      \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
     }{}
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
