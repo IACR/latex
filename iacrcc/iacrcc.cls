@@ -757,6 +757,9 @@
   \MathAllowedInCheckStringtrue
 }
 
+\global\let\@plaintitle\@empty%
+\global\let\@IACR@title@subtitle\@empty%
+
 % Provide the title of the paper with its various options
 \renewcommand\title[2][]{%
   \IACR@title@params@set@keys{#1}%
