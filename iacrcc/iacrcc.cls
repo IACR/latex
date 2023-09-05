@@ -169,14 +169,7 @@
   \else
     \hypersetup{pdfauthor={\IACR@listofauthors}}
   \fi
-  \ifdefined\@IACR@title@subtitle@defined
-    \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
-  \fi
-  \ifx\IACR@text@keywords\@empty\else
-    \hypersetup{pdfkeywords={\IACR@text@keywords}}
-  \fi
-  \hypersetup{pdftitle={\@plaintitle},%
-              pdflang=en,%
+  \hypersetup{pdflang=en,%
               urlcolor=blue,%
               colorlinks=true,%
               citecolor=black!70!green,%
@@ -416,7 +409,7 @@
 % fontawesome: Font containing web-related icons
 \RequirePackage{fontawesome}
 
- \AtBeginDocument{%
+\AtBeginDocument{%
   % Use this \maketitle command to first write out 
   % the necessary meta-information 
   \renewcommand\maketitle{\par
@@ -424,6 +417,10 @@
     \@writemeta{title: \@plaintitle}%
     \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
       \@writemeta{\IACRSS subtitle: \@IACR@title@subtitle}%
+    \fi
+    \hypersetup{pdftitle={\@plaintitle}}%
+    \ifdefined\@IACR@title@subtitle@defined
+      \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
     \fi
     % Generic footnote and e-mails are displayed without markers
     \ifx\@genericfootnote\@empty\else
@@ -1016,6 +1013,7 @@
 \renewenvironment{abstract}{%
   \ifx\IACR@text@keywords\@empty\else
     \@writemeta{keywords: \IACR@text@keywords}%
+    \hypersetup{pdfkeywords={\IACR@text@keywords}}
   \fi
   \small\quotation\setlength{\parindent}{0pt}\noindent
   \textbf{\textsf{Abstract.}}
