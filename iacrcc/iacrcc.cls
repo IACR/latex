@@ -1,4 +1,4 @@
-\def\fileversion{0.41}
+\def\fileversion{0.43}
 \def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -446,6 +446,7 @@
       \@maketitle
       \thispagestyle{title}\@thanks
     \endgroup
+    \def\thispagestyle##1{\ClassError{iacrcc}{The pagestyle is set by iacrcc.cls and may not be changed by the author}{}}
     \setcounter{footnote}{0}%
     \global\let\thanks\relax
     \global\let\maketitle\relax
@@ -958,9 +959,9 @@
     \IACR@runningauthors%
   \fi%!anonymous
 }
-
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
+\def\pagestyle#1{\ClassError{iacrcc}{The pagestyle is set by iacrcc.cls and may not be changed by the author}{}}
 
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
