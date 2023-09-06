@@ -1,4 +1,4 @@
-\def\fileversion{0.41}
+\def\fileversion{0.42}
 \def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
