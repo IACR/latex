@@ -917,6 +917,10 @@
         ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
         \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
       }
+  }{}% final
+  \ifx\@IACR@License\@empty\else%
+    % If \license is provided show this for preprint and final (not for submission)
+    \ifcsstring{@IACRversion}{submission}{}{%
       \fancyfoot[L]{%
         \small%
         \doclicenseText%
@@ -927,7 +931,8 @@
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
       }%
-  }{}% final
+    }% !if @IACRversion != submission
+  \fi% !\@IACR@License
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}
 }%fancypagestyle
