@@ -13,7 +13,6 @@
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 \documentclass{iacrcc}
-
 \newcommand{\cmd}[2][]{%
   \def\FirstArg{#1}
   \ifx\FirstArg\empty
@@ -30,7 +29,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.42)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.43)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -115,7 +114,8 @@ unnecessary code.
   copy what they used in the past. Some won't work - see the list of
   acceptable packages at \url{https://publish.iacr.org}. Don't use any
   package that changes fonts.
-\item Don't try to change the \texttt{hyperref} options or the bibliography style.
+\item Don't try to change the \texttt{hyperref} options or the bibliography style
+  or the page style.
 \item Don't use macros like \cmd{if} or \cmd{include} inside any
   metadata like the title or abstract.
 \item Footnotes are handled differently in this class, and in
