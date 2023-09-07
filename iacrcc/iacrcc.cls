@@ -1,4 +1,4 @@
-\def\fileversion{0.41}
+\def\fileversion{0.42}
 \def\filedate{2023/09/01}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -143,7 +143,11 @@
 
 \setcounter{tocdepth}{2}
 
-\@ifpackageloaded{biblatex}{}{\bibliographystyle{alphaurl}}
+\@ifpackageloaded{biblatex}{}{%
+  \bibliographystyle{alphaurl}%
+  \def\bibliographystyle#1{%
+    \ClassError{iacrcc}{The bibliography style is set by iacrcc.cls and may not be changed by the author}{}%
+  }}
 
 \AtEndPreamble{%
   \ifpdftex
