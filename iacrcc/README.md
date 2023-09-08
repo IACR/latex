@@ -2,7 +2,7 @@
 
 ## 🔧 This is a work in progress 🔧
 
-This directory contains a LaTeX cls and bst files for the new IACR
+This directory contains a LaTeX cls file for the new IACR
 Communications on Cryptology journal.  The user documentation is
 contained in iacrdoc.tex, and this README currently holds only
 development details.
@@ -10,7 +10,7 @@ development details.
 The purpose of this style is to facilitate proper capture of author metadata
 for the publication editing workflow. Typically a LaTeX class is concerned with
 only the layout of the document, but we have added some additional requirements:
-1. when the user runs lualatex on their document, it should produce a parsable text
+1. when the user runs (pdf|lua|xe)latex on their document, it should produce a parsable text
    file that contains structured metadata about the paper, including title, authors,
    their affiliations, their funding, and the paper citations.
 2. the author should only have to enter this metadata once, in properly formatted
@@ -23,12 +23,12 @@ The text file format is similar to yaml, and there is a parser for this
 file format in the `parser` subdirectory.
 
 The output file has the extension `.meta`. This file is used in the workflow of the
-server to which papers using this class will be submitted. There is a separate paper
-that describes the goals and implementation of the workflow.
+server to which papers using this class will be submitted. There is a
+[separate paper](https://arxiv.org/abs/2301.08277) that describes the goals and implementation of the workflow.
 
 ## Related work
 
-There are a large number of LaTeX styles that attempt to capture strucutred metadata
+There are a large number of LaTeX styles that attempt to capture structured metadata
 about authors and affiliations. Some are listed below.
 
  - [elsarticle](https://ctan.org/tex-archive/macros/latex/contrib/elsarticle?lang=en) They use

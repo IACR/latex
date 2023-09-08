@@ -22,10 +22,8 @@ def run_engine(eng, filelist, tmpdirpath):
   tmpdir = Path(tmpdirpath)
   for f in tmpdir.iterdir():
     ending = str(f).split('.')[-1]
-    if ending in ['abstract', 'aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'sty', 'xmpdata', 'meta', 'bcf', 'xml']:
+    if ending in ['abstract', 'aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'xmpdata', 'meta', 'bcf', 'xml']:
       f.unlink()
-    else:
-      print(str(f))
   try:
     os.chdir(tmpdir)
     proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode', '-g', eng, 'main'], capture_output=True)
@@ -1172,6 +1170,10 @@ def test27_test():
       assert meta['affiliations'][2]['name'] == 'Boğaziçi University'
       assert meta['affiliations'][2]['country'] == 'Turkey'
       assert meta['version'] == 'final'
+      logfile = tmpdirpath / Path('main.log')
+      logtext = logfile.read_text('utf-8', errors='replace')
+      assert 'Proof that I was loaded after hyperref' in logtext
+      assert 'Package: cleveref' in logtext
 
 # Check for writing to file and in pdf when unicode characters are used
 # in a lot of options
@@ -1195,11 +1197,9 @@ def test28_test():
       assert meta['affiliations'][0]['state'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
       assert meta['affiliations'][0]['country'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
 
-# Check that the log contains lines for opening and closing files.
-# This will be used as the basis for a test of the latex log parser.
+# check file opening and closing.
 def test29_test():
   path = Path('test29')
-  # should pass with lualatex and pdflatex
   for option in ['-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
@@ -1207,22 +1207,40 @@ def test29_test():
       assert 'log' in res
       lines = res['log'].splitlines()
       patt = re.compile('^iacrcc:(?P<action>opened|closed) (with|as) (?P<file>.*)')
-      status = {}
-      opened_files = set()
+      # a stack of files that have been opened. Note that a file can be opened while it is already
+      # opened, because it might be opened from another package.
+      opened_files = []
       for line in lines:
         m = patt.search(line)
         if m:
-          status[m.group('file')] = m.group('action')
-          if m.group('action') == 'opened':
-            opened_files.add(m.group('file'))
+          thefile = m.group('file')
+          action = m.group('action')
+          if action == 'opened':
+            opened_files.append(thefile)
           else:
             try:
-              opened_files.remove(m.group('file'))
+              opened_files.pop()
             except Exception as e:
               # It doesn't show main.tex being opened because it is opened before
               # currfile is loaded. It still shows up as closed. This test may
               # fail unless the log file is allowed to be longer than 78 characters.
               # This is done with max_print_line=2000 in the texmf.cnf file.
-              assert(m.group('file').endswith('main.tex'))
+              assert(thefile.endswith('main.tex'))
       assert len(opened_files) == 0
       assert r'Overfull \hbox' in res['log']
+
+# Check that the user may not use \bibliographystyle in their paper.
+def test30_test():
+  path = Path('test30')
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+
+# Check that the user may not use \pagestyle in their paper.
+def test31_test():
+  path = Path('test31')
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
