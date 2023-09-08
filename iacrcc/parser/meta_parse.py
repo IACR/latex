@@ -77,20 +77,20 @@ def remove_macros(txt):
         re.sub(r'\\protect \$ ', r'\$', txt)
     return txt.strip()
 
+
 def parse_meta(metastr):
     """Read the meta file line by line. When we encounter author: or affiliation: or title: or
-       citation: we know how to process subsequent lines that start with two spaces.
+       funding: we know how to process subsequent lines that start with two spaces.
     args:
        metastr: UTF-8 string from a .meta file.
     Returns:
-        a dict with authors, affiliations, citations and (optionally) editors
+        a dict with authors, affiliations, funders and (optionally) editors
     # TODO: define a JSON schema for this file, or return a pydantic object.
     """
     decoder = get_decoder()
     data = {'authors': [],
             'affiliations': [],
-            'funders': [],
-            'citations': []}
+            'funders': []}
 
     lines = metastr.splitlines()
     numlines = len(lines)
@@ -121,7 +121,10 @@ def parse_meta(metastr):
                 elif k == 'email':
                     author['email'] = v
                 elif k == 'affil':
-                    author['affiliations'] = [a for a in v.split(',' ) if a.isnumeric()]
+                    author['affiliations'] = [a.strip() for a in v.split(',') if a.strip()]
+                    for i in author['affiliations']:
+                        if not i.isdigit():
+                            raise ValueError('Invalid list of affiliations {}'.format(v))
                 elif k == 'orcid':
                     author['orcid'] = v.rstrip()
                 index += 1
@@ -157,6 +160,13 @@ def parse_meta(metastr):
             index += 1
         else:
             raise Exception('unexpected line {}'.format(line))
+    # perform a sanity check on affiliations to make sure the indices are in range.
+    num_affiliations = len(data.get('affiliations'))
+    for author in data.get('authors'):
+        for aff in author.get('affiliations'):
+            index = int(aff)
+            if index not in range(1, 1+num_affiliations):
+                raise ValueError('Author affiliations out of range for author {}'.format(author.get('name', '')))
     return data
 
 if __name__ == '__main__':
