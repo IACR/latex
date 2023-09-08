@@ -24,8 +24,6 @@ def run_engine(eng, filelist, tmpdirpath):
     ending = str(f).split('.')[-1]
     if ending in ['abstract', 'aux', 'out', 'bbl', 'pdf', 'blg', 'log', 'fls', 'fdb_latexmk', 'xmpdata', 'meta', 'bcf', 'xml']:
       f.unlink()
-    else:
-      print(str(f))
   try:
     os.chdir(tmpdir)
     proc = subprocess.run(['latexmk', '-f', '-interaction=nonstopmode', '-g', eng, 'main'], capture_output=True)
@@ -1199,17 +1197,49 @@ def test28_test():
       assert meta['affiliations'][0]['state'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
       assert meta['affiliations'][0]['country'] == 'ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx'
 
-# Check that the user may not use \pagestyle in their paper.
+# check file opening and closing.
 def test29_test():
   path = Path('test29')
   for option in ['-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
+      assert res['proc'].returncode == 0
+      assert 'log' in res
+      lines = res['log'].splitlines()
+      patt = re.compile('^iacrcc:(?P<action>opened|closed) (with|as) (?P<file>.*)')
+      # a stack of files that have been opened. Note that a file can be opened while it is already
+      # opened, because it might be opened from another package.
+      opened_files = []
+      for line in lines:
+        m = patt.search(line)
+        if m:
+          thefile = m.group('file')
+          action = m.group('action')
+          if action == 'opened':
+            opened_files.append(thefile)
+          else:
+            try:
+              opened_files.pop()
+            except Exception as e:
+              # It doesn't show main.tex being opened because it is opened before
+              # currfile is loaded. It still shows up as closed. This test may
+              # fail unless the log file is allowed to be longer than 78 characters.
+              # This is done with max_print_line=2000 in the texmf.cnf file.
+              assert(thefile.endswith('main.tex'))
+      assert len(opened_files) == 0
+      assert r'Overfull \hbox' in res['log']
 
 # Check that the user may not use \bibliographystyle in their paper.
 def test30_test():
   path = Path('test30')
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+
+# Check that the user may not use \pagestyle in their paper.
+def test31_test():
+  path = Path('test31')
   for option in ['-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
