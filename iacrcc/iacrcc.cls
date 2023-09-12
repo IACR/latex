@@ -1,5 +1,5 @@
-\def\fileversion{0.43}
-\def\filedate{2023/09/01}
+\def\fileversion{0.44}
+\def\filedate{2023/09/11}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -966,6 +966,7 @@
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
 \def\pagestyle#1{\ClassError{iacrcc}{The pagestyle is set by iacrcc.cls and may not be changed by the author}{}}
+\def\pagenumbering#1{\ClassError{iacrcc}{The page numbering is set by iacrcc.cls and may not be changed by the author}{}}
 
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
