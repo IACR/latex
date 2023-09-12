@@ -1244,3 +1244,12 @@ def test31_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
+
+# Check that the user may not use \pagenumbering in their paper.
+def test32_test():
+  path = Path('test32')
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+      
