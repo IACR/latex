@@ -566,7 +566,7 @@
     \ifx\IACR@userdefinedrunningauthors\@empty
       \appto\IACR@runningauthors{,\space\unexpanded{#2}}%
     \fi
-    \appto\IACR@listofauthors{,\space\unexpanded{#2}}%
+    \appto\IACR@listofauthors{,\space #2}%
   \fi
   % Add the footnote text if present
   % Define two seperate macros for the institute
@@ -933,6 +933,7 @@
 \renewcommand{\markboth}[2]{}
 \pagestyle{fancy}
 \def\pagestyle#1{\ClassError{iacrcc}{The pagestyle is set by iacrcc.cls and may not be changed by the author}{}}
+\def\pagenumbering#1{\ClassError{iacrcc}{The page numbering is set by iacrcc.cls and may not be changed by the author}{}}
 
 % Abstract style, keywords
 \global\let\IACR@text@keywords\@empty
