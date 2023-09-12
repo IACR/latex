@@ -1,5 +1,5 @@
-\def\fileversion{0.43}
-\def\filedate{2023/09/01}
+\def\fileversion{0.44}
+\def\filedate{2023/09/12}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -159,15 +159,6 @@
   % hyperref: Extensive support for hypertext in LaTeX
   \RequirePackage{hyperref}
   %
-  % XMP (eXtensible Metadata Platform) is a mechanism proposed by Adobe
-  % for embedding document metadata within the document itself.
-  % We require a version later than 2019/03/14,
-  % and this will issue a warning if that is not satisfied.
-  % Load this *after* hyperref as a work-around for recent issues, see
-  % https://tex.stackexchange.com/questions/694586/why-does-hyperxmp-5-11-no-longer-generate-dccreator-for-authors-in-xmp
-  % for more information.
-  \RequirePackage{hyperxmp}[2019/03/14]
-  %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
@@ -181,26 +172,9 @@
              }
   \ifcsstring{@IACRversion}{final}{%
     \hypersetup{%
-      pdfpubstatus=VoR,
-      pdfdoi={\IACR@DOI},%
-      pdfissn={\IACR@EISSN},%
-      pdfpubtype=journal,%
-      pdfpublication={\publname},%
-      pdfvolumenum={\IACR@vol},%
-      pdfissuenum={\IACR@no},%
       pdfsubject={\publname{}, DOI:\IACR@DOI}%
     }
   }{}% final
-  \ifx\@IACR@License\@empty\else%
-    \hypersetup{pdflicenseurl={\doclicenseURL}}%
-     % doclicense added support for the macro \doclicenseLongTextForHyperref in version 3.1.0 (2022/04/27)
-    \ifcsdef{doclicenseLongTextForHyperref}{%
-      \hypersetup{pdfcopyright={\doclicenseLongTextForHyperref}}%
-    }{%
-      \hypersetup{pdfcopyright={This work is licensed under a \doclicenseLongName\space license.}}
-    }
-  \fi
-  %
   % Disable latexdiff commands in PDF links
   \pdfstringdefDisableCommands{%
     \def\DIFadd#1{#1}%
@@ -228,10 +202,6 @@
 \AtBeginDocument{%
   \ifcsstring{@IACRversion}{final}{%
     \gdef\IACR@lp{\ref*{TotPages}}
-    \hypersetup{%
-      pdfnumpages={\IACR@lp},%
-      pdfpagerange={\IACR@fp-\IACR@lp},%
-    }%
   }{}% final
 }
 
@@ -423,9 +393,6 @@
       \@writemeta{\IACRSS subtitle: \@IACR@title@subtitle}%
     \fi
     \hypersetup{pdftitle={\@plaintitle}}%
-    \ifdefined\@IACR@title@subtitle@defined
-      \hypersetup{pdfsubtitle={\@IACR@title@subtitle}}
-    \fi
     % Generic footnote and e-mails are displayed without markers
     \ifx\@genericfootnote\@empty\else
       \begingroup

@@ -260,18 +260,18 @@ def test11_test():
       assert meta['funders'][2]['fundref'] == '517622'
       assert meta['funders'][2]['grantid'] == '57821-3'
       assert 'country' not in meta['funders'][2]
-      pdfpath = tmpdirpath + '/main.pdf'
-      xmp = XMPParser(pdfpath)
-      description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
-      assert description == 'IACR Communications in Cryptology, DOI:XXXXXXXX'
-      assert xmp.get_string('.//dc:identifier') == 'info:doi/XXXXXXXX'
-      assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
-      assert xmp.get_string('.//prism:doi') == 'XXXXXXXX'
-      assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
-      assert xmp.get_string('.//prism:aggregationType') == 'journal'
-      assert xmp.get_string('.//dc:source') == 'main.tex'
-      authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
-      assert len(authors) == 2
+      #pdfpath = tmpdirpath + '/main.pdf'
+      #xmp = XMPParser(pdfpath)
+      #description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
+      #assert description == 'IACR Communications in Cryptology, DOI:XXXXXXXX'
+      #assert xmp.get_string('.//dc:identifier') == 'info:doi/XXXXXXXX'
+      #assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
+      #assert xmp.get_string('.//prism:doi') == 'XXXXXXXX'
+      #assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
+      #assert xmp.get_string('.//prism:aggregationType') == 'journal'
+      #assert xmp.get_string('.//dc:source') == 'main.tex'
+      #authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
+      #assert len(authors) == 2
 
 # TODO: Test12 fails with pdflatex
 # The problem seems to be in:
@@ -289,43 +289,43 @@ def test12_test():
       meta = meta_parse.parse_meta(res['meta'])
       assert meta['title'] == 'An example that is not anonymous'
       pdfpath = tmpdirpath + '/main.pdf'
-      xmp = XMPParser(pdfpath)
-      title = xmp.get_string('.//dc:title/rdf:Alt/rdf:li')
-      assert title == 'An example that is not anonymous'
-      authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
-      assert len(authors) == 2
-      assert authors[0] == 'Joppe W. Bös'
-      assert authors[1] == 'Kevin S. McCurley'
-      description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
-      assert description is None
-      marked = xmp.get_string('.//xmpRights:Marked')
-      assert marked == 'True'
-      webStatement = xmp.get_string('.//xmpRights:WebStatement')
-      assert webStatement == 'https://creativecommons.org/licenses/by/4.0/deed.en'
-      rights = xmp.get_string('.//dc:rights/rdf:Alt/rdf:li')
-      assert rights == 'This work is licensed under a Creative Commons "Attribution 4.0 International" license.'
-      if option == 'pdflua':
-        # this does not exist under pdflatex. See https://github.com/borisveytsman/acmart/issues/413
-        byteCount = xmp.get_string('.//prism:byteCount')
-        assert int(byteCount) > 40000
-      pageCount = xmp.get_string('.//prism:pageCount')
-      assert int(pageCount) == 1
-      source = xmp.get_string('.//dc:source')
-      assert source == 'main.tex'
-      keywords = xmp.get_string('.//pdf:Keywords')
-      assert keywords == 'stuff, other random'
-      subject = xmp.get_strings('.//dc:subject/rdf:Bag/rdf:li')
-      assert len(subject) == 2
-      assert subject[0] == 'stuff'
-      assert subject[1] == 'other random'
-      identifier = xmp.get_string('.//dc:identifier')
-      assert identifier is None
-      doi = xmp.get_string('.//prism:doi')
-      assert doi is None
-      pubname = xmp.get_string('.//prism:publicationName')
-      assert pubname is None
-      aggregation = xmp.get_string('.//prism:aggregationType')
-      assert aggregation is None
+      #xmp = XMPParser(pdfpath)
+      #title = xmp.get_string('.//dc:title/rdf:Alt/rdf:li')
+      #assert title == 'An example that is not anonymous'
+      #authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
+      #assert len(authors) == 2
+      #assert authors[0] == 'Joppe W. Bös'
+      #assert authors[1] == 'Kevin S. McCurley'
+      #description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
+      #assert description is None
+      #marked = xmp.get_string('.//xmpRights:Marked')
+      #assert marked == 'True'
+      #webStatement = xmp.get_string('.//xmpRights:WebStatement')
+      #assert webStatement == 'https://creativecommons.org/licenses/by/4.0/deed.en'
+      #rights = xmp.get_string('.//dc:rights/rdf:Alt/rdf:li')
+      #assert rights == 'This work is licensed under a Creative Commons "Attribution 4.0 International" license.'
+      #if option == 'pdflua':
+      #  # this does not exist under pdflatex. See https://github.com/borisveytsman/acmart/issues/413
+      #  byteCount = xmp.get_string('.//prism:byteCount')
+      #  assert int(byteCount) > 40000
+      #pageCount = xmp.get_string('.//prism:pageCount')
+      #assert int(pageCount) == 1
+      #source = xmp.get_string('.//dc:source')
+      #assert source == 'main.tex'
+      #keywords = xmp.get_string('.//pdf:Keywords')
+      #assert keywords == 'stuff, other random'
+      #subject = xmp.get_strings('.//dc:subject/rdf:Bag/rdf:li')
+      #assert len(subject) == 2
+      #assert subject[0] == 'stuff'
+      #assert subject[1] == 'other random'
+      #identifier = xmp.get_string('.//dc:identifier')
+      #assert identifier is None
+      #doi = xmp.get_string('.//prism:doi')
+      #assert doi is None
+      #pubname = xmp.get_string('.//prism:publicationName')
+      #assert pubname is None
+      #aggregation = xmp.get_string('.//prism:aggregationType')
+      #assert aggregation is None
 
       # Make sure author names appear in the paper with notanonymous
       with pdfplumber.open(pdfpath) as pdf:
@@ -344,12 +344,12 @@ def test13_test():
       meta = meta_parse.parse_meta(res['meta'])
       assert meta['title'] == 'An example that is not anonymous'
       pdfpath = tmpdirpath + '/main.pdf'
-      xmp = XMPParser(pdfpath)
-      assert xmp.get_string('.//dc:title/rdf:Alt/rdf:li') == 'An example that is not anonymous'
-      assert xmp.get_string('.//dc:creator/rdf:Seq/rdf:li') == 'hidden for submission'
-      assert xmp.get_string('.//pdf:Keywords') == 'stuff, other random'
-      assert xmp.get_string('.//dc:source') == 'main.tex'
-      assert xmp.get_string('.//xmpTPg:NPages') == str(1)
+      #xmp = XMPParser(pdfpath)
+      #assert xmp.get_string('.//dc:title/rdf:Alt/rdf:li') == 'An example that is not anonymous'
+      #assert xmp.get_string('.//dc:creator/rdf:Seq/rdf:li') == 'hidden for submission'
+      #assert xmp.get_string('.//pdf:Keywords') == 'stuff, other random'
+      #assert xmp.get_string('.//dc:source') == 'main.tex'
+      #assert xmp.get_string('.//xmpTPg:NPages') == str(1)
       # Make sure author names appear in the paper with notanonymous
       with pdfplumber.open(pdfpath) as pdf:
         first_page = pdf.pages[0].extract_text()
