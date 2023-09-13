@@ -22,7 +22,8 @@ class XMPParser(object):
             'crossmark': 'http://crossref.org/crossmark/1.0/',
             'rights': 'http://ns.adobe.com/xap/1.0/rights/',
             'xml': 'http://www.w3.org/XML/1998/namespace',
-            'xmpTPg': 'http://ns.adobe.com/xap/1.0/t/pg/'
+            'xmpTPg': 'http://ns.adobe.com/xap/1.0/t/pg/',
+            'pdfaid': 'http://www.aiim.org/pdfa/ns/id/'
         }
         with open(pdf_file_path, 'rb') as fp:
             parser = PDFParser(fp)
