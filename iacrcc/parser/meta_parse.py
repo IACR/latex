@@ -158,6 +158,8 @@ def parse_meta(metastr):
         elif line.startswith('keywords:'):
             data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
             index += 1
+        elif line.startswith('license:'):
+            data['license'] = line[8].strip()
         else:
             raise Exception('unexpected line {}'.format(line))
     # perform a sanity check on affiliations to make sure the indices are in range.
