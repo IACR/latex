@@ -1,5 +1,5 @@
-\def\fileversion{0.45}
-\def\filedate{2023/09/13}
+\def\fileversion{0.46}
+\def\filedate{2023/09/14}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -246,7 +246,7 @@
   }%
 }
 
-% Reciprocal of the height of the svg whose source is above.  The
+% Reciprocal of the height of the svg for the ORCID icon above.  The
 % original generates a 256pt high graphic; this macro holds 1/256.
 \newcommand{\@OrigHeightRecip}{0.00390625}
 
@@ -262,8 +262,45 @@
       \pic{orcidlogo};
     \end{tikzpicture}%
 }}}}{}}
-
 % End of macros for orcidlink
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This produces an icon for an external link. We use it as the external link
+% icon for onclick on authors.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{%
+  linkicon/.pic={%
+    \fill[blue] svg{M36 24c-1.2 0-2 0.8-2 2v12c0 1.2-0.8 2-2 2h-22c-1.2
+0-2-0.8-2-2v-22c0-1.2 0.8-2 2-2h12c1.2 0 2-0.8 2-2s-0.8-2-2-2h-12c-3.4
+0-6 2.6-6 6v22c0 3.4 2.6 6 6 6h22c3.4 0 6-2.6
+6-6v-12c0-1.2-0.8-2-2-2z};
+    \fill[blue] svg{M43.8 5.2c-0.2-0.4-0.6-0.8-1-1-0.2-0.2-0.6-0.2-0.8-0.2h-12c-1.2
+0-2 0.8-2 2s0.8 2 2 2h7.2l-18.6 18.6c-0.8 0.8-0.8 2 0 2.8 0.4 0.4 0.8
+0.6 1.4 0.6s1-0.2 1.4-0.6l18.6-18.6v7.2c0 1.2 0.8 2 2 2s2-0.8
+2-2v-12c0-0.2 0-0.6-0.2-0.8z};
+  }%
+}
+
+% The original external link icon was 48 pt, and this is approximately the
+% reciprocal of that height.
+\newcommand{\@OrigIconHeightRecip}{.02}
+
+% The macro for the link icon.
+\DeclareRobustCommand\linkicon{%
+  \setlength{\@curXheight}{\fontcharht\font`X}%
+  \mbox{%
+    \begin{tikzpicture}[yscale=-\@OrigIconHeightRecip*\@curXheight,%
+      xscale=\@OrigIconHeightRecip*\@curXheight,transform shape]%
+      \pic{linkicon};
+    \end{tikzpicture}%
+}}
+
+\DeclareRobustCommand\authorlink[1]{%
+  \texorpdfstring{%
+    \href{#1}{\XeTeXLinkBox{\mbox{\linkicon}}}}{}}
+
+% End of macros for linkicon and authorlink.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % pgfkeys: a flexible key management system
@@ -379,9 +416,6 @@
 % alphalph: Convert numbers to letters, 
 %           used for footnotes in addauthor
 \RequirePackage{alphalph}
-
-% fontawesome: Font containing web-related icons
-\RequirePackage{fontawesome}
 
 \AtBeginDocument{%
   % Use this \maketitle command to first write out 
@@ -587,7 +621,7 @@
     \@writemeta{\IACRSS orcid: \@IACR@author@orcid}%
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@onclick}\relax\else
-    \eappto\@author{~\noexpand\href{\@IACR@author@onclick}{\noexpand\color{black}{\noexpand\small\noexpand\faExternalLink}}}%
+    \eappto\@author{~\noexpand\authorlink{\@IACR@author@onclick}}%
   \fi
   \IACR@author@params@clearkeys%
 }
