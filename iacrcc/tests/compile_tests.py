@@ -233,6 +233,7 @@ def test10_test():
   res = get_output('-pdf', Path('test10/main.tex'))
   assert res['proc'].returncode != 0
 
+# This checks XMP produced by the pdfmanagement package.
 def test11_test():
   # should pass with lualatex and pdflatex
   for option in ['-pdflua', '-pdf']:
@@ -258,18 +259,39 @@ def test11_test():
       assert meta['funders'][2]['fundref'] == '517622'
       assert meta['funders'][2]['grantid'] == '57821-3'
       assert 'country' not in meta['funders'][2]
-      #pdfpath = tmpdirpath + '/main.pdf'
-      #xmp = XMPParser(pdfpath)
-      #description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
-      #assert description == 'IACR Communications in Cryptology, DOI:XXXXXXXX'
+      pdfpath = tmpdirpath + '/main.pdf'
+      xmp = XMPParser(pdfpath)
+      description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
+      assert description == 'IACR Communications in Cryptology'
+      title = xmp.get_strings('.//dc:title/rdf:Alt/rdf:li')
+      assert len(title) == 1
+      assert title[0] == 'How not to use the IACR Communications in Cryptology Cláss'
+      subject = xmp.get_strings('.//dc:subject/rdf:Bag/rdf:li')
+      assert len(subject) == 1
+      assert subject[0] == 'Dirac delta function, unit impulse'
+      rights = xmp.get_strings('.//dc:rights/rdf:Alt/rdf:li')
+      assert len(rights) == 1
+      assert rights[0] == 'This work is licensed under a Creative Commons "Attribution 4.0 International" license.'
+      webRights = xmp.get_string('.//xmpRights:WebStatement')
+      assert webRights == 'https://creativecommons.org/licenses/by/4.0/deed.en'
+      pdfaidpart = xmp.get_string('.//pdfaid:part')
+      assert pdfaidpart == '2'
+      pdfaidconf = xmp.get_string('.//pdfaid:conformance')
+      assert pdfaidconf == 'U'
+      pdfaidyear = xmp.get_string('.//pdfaid:year')
+      assert pdfaidyear == '2011'
+      pagecount = xmp.get_string('.//prism:pageCount')
+      assert pagecount == '1'
+      # these were previously provided by hyperxmp.
       #assert xmp.get_string('.//dc:identifier') == 'info:doi/XXXXXXXX'
       #assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
       #assert xmp.get_string('.//prism:doi') == 'XXXXXXXX'
       #assert xmp.get_string('.//prism:publicationName') == 'IACR Communications in Cryptology'
       #assert xmp.get_string('.//prism:aggregationType') == 'journal'
       #assert xmp.get_string('.//dc:source') == 'main.tex'
-      #authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
-      #assert len(authors) == 2
+      authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
+      assert len(authors) == 1
+      assert authors[0] == 'Joppe W. Bös, Kevin S. McCurley'
 
 # TODO: Test12 fails with pdflatex
 # The problem seems to be in:
@@ -287,13 +309,12 @@ def test12_test():
       meta = meta_parse.parse_meta(res['meta'])
       assert meta['title'] == 'An example that is not anonymous'
       pdfpath = tmpdirpath + '/main.pdf'
-      #xmp = XMPParser(pdfpath)
-      #title = xmp.get_string('.//dc:title/rdf:Alt/rdf:li')
-      #assert title == 'An example that is not anonymous'
-      #authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
-      #assert len(authors) == 2
-      #assert authors[0] == 'Joppe W. Bös'
-      #assert authors[1] == 'Kevin S. McCurley'
+      xmp = XMPParser(pdfpath)
+      title = xmp.get_string('.//dc:title/rdf:Alt/rdf:li')
+      assert title == 'An example that is not anonymous'
+      authors = xmp.get_strings('.//dc:creator/rdf:Seq/rdf:li')
+      assert len(authors) == 1
+      assert authors[0] == 'Joppe W. Bös, Kevin S. McCurley'
       #description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
       #assert description is None
       #marked = xmp.get_string('.//xmpRights:Marked')
