@@ -1,5 +1,5 @@
-\def\fileversion{0.44}
-\def\filedate{2023/09/12}
+\def\fileversion{0.45}
+\def\filedate{2023/09/13}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -875,6 +875,7 @@
   \else
     \ClassError{iacrcc}{Invalid license: only acceptable license is CC-by}{}%
   \fi
+  \@writemeta{license: \@IACR@License}%
 }
 
 \fancypagestyle{title}{%
