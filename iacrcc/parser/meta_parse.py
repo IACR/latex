@@ -84,7 +84,7 @@ def parse_meta(metastr):
     args:
        metastr: UTF-8 string from a .meta file.
     Returns:
-        a dict with authors, affiliations, funders and (optionally) editors
+        a dict with fields for a Meta object.
     # TODO: define a JSON schema for this file, or return a pydantic object.
     """
     decoder = get_decoder()
@@ -159,7 +159,8 @@ def parse_meta(metastr):
             data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
             index += 1
         elif line.startswith('license:'):
-            data['license'] = line[8].strip()
+            data['license'] = line[8:].strip()
+            index += 1
         else:
             raise Exception('unexpected line {}'.format(line))
     # perform a sanity check on affiliations to make sure the indices are in range.
