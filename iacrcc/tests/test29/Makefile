@@ -1,9 +1,6 @@
-TEXFILES=main.tex intro.tex other.tex main.bib
+TEXFILES=main.tex
 
 pdflatex: $(TEXFILES)
-	pdflatex -recorder main
-	bibtex main
-	pdflatex -recorder main
 	pdflatex -recorder main
 
 clean:
