@@ -1,19 +1,12 @@
 # Migrating from `llncs` to `iacrcc`
 
-Converting a paper from Springer’s `llncs` LaTeX style file (as used
-in Crypto, Eurocrypt, Asiacrypt, TCC and PKC) to IACR’s `iacrcc` LaTeX
-style file means adjusting how some of the meta-data is provided.
-Concretely, the biggest change involves adjusting the title, author
-and affiliation information. This guide doesn't cover every detail,
-and the full documentation is
-[located here](https://publish.iacr.org/iacrcc).
+Converting a paper from Springer’s `llncs` LaTeX style file (as used in Crypto, Eurocrypt, Asiacrypt, TCC and PKC) to IACR’s `iacrcc` LaTeX style file means adjusting how some of the meta-data is provided. Concretely, the biggest change involves adjusting the title, author and affiliation information. This guide doesn't cover every detail, and the full documentation is [located here](https://publish.iacr.org/iacrcc).
 
 ### Our starting point
 
-Let’s use a slightly adjusted version of the LNCS template as an
-example:
+Let’s use a slightly adjusted version of the [LNCS template](https://www.springer.com/gp/computer-science/lncs/new-latex-templates-available/15634678) as an example:
 
-```
+```latex
 
 \documentclass[runningheads]{llncs}
 \begin{document}
@@ -58,36 +51,34 @@ Where we assume a file mybibliography.bib exists which contains:
 
 ### Document class
 
-The conversion starts by changting the `llncs` document class to the `iacrcc`
-document class. Simply change
-```
+The conversion starts by changting the `llncs` document class to the `iacrcc` document class. Simply change
+
+```latex
 \documentclass[runningheads]{llncs}
 ```
 to
-```
+```latex
 \documentclass{iacrcc}
 ```
 
 ### Title
 
 The title and related information should be provided differently using a number of options. Instead of:
-```
+```latex
 \title{Contribution Title}
 \titlerunning{Abbreviated paper title}
 ```
 One should use
-```
+```latex
 \title[running={Abbreviated paper title}]{Contribution Title}.
 ```
-If macros (or math) are used in the title then make sure to provide a plaintext version using the `plaintext` option
-on `\title`.
+If macros (or math) are used in the title then make sure to provide a plaintext version using the `plaintext` option on `\title`.
 
 ### Author and affiliations
 
-Author and affiliation information are provided one at-a-time. Moreover, e-mail addresses and webpages are linked
-to an author (not the affiliation). So the `llncs` code
+Author and affiliation information are provided one at-a-time. Moreover, e-mail addresses and webpages are linked to an author (not the affiliation). So the `llncs` code
 
-```
+```latex
 \author{First Author\inst{1}\orcidID{0000-1111-2222-3333} \and
 Second Author\inst{2,3}\orcidID{1111-2222-3333-4444} \and
 Third Author\inst{3}\orcidID{2222-3333-4444-5555}}
@@ -100,7 +91,7 @@ ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
 ```
 needs to be converted into
 
-```
+```latex
 \addauthor[inst=1,
            orcid={0000-1111-2222-3333},
            email={lncs@springer.com},
@@ -113,7 +104,7 @@ needs to be converted into
            email={lncs@uni-heidelberg.de}]{Third Author}
 ```
 and the affiliations become
-```
+```latex
 \addaffiliation[city={Princeton},
                 state={NJ},
                 postcode={08544},
@@ -130,25 +121,22 @@ and the affiliations become
 ### Keywords, abstract, and bibliography
 
 Keywords are defined before the abstract and separated by a comma. This means
-```
+```latex
 \keywords{First keyword \and Second keyword \and Another keyword.}
 ```
 needs to be changed to
-```
+```latex
 \keywords{First keyword, Second keyword, Another keyword}
 ```
-The abstract is still typeset using `\begin{abstract}` and authors are free to
-use whatever macros they like.
+The abstract is still typeset using `\begin{abstract}` and authors are free to use whatever macros they like.
 
-The style for the references is defined by the journal style, so remove
-`\bibliographystyle{splncs04}`.
+The style for the references is defined by the journal style, so remove `\bibliographystyle{splncs04}`.
 
 ### The final conversion.
 
-Putting everything together we end up with the converted llncs template to the `iacrcc` style.
+Putting everything together we end up with the converted `llncs` template to the `iacrcc` style.
 
-```
-
+```latex
 \documentclass{iacrcc}
 \begin{document}
 \title[running={Abbreviated paper title}]{Contribution Title}
@@ -186,7 +174,5 @@ We use RSA~\cite{RSA78}.
 ```
 ### What else is there?
 
-This was designed to get you started in the basic conversion from
-`llncs` to `iacrcc`.  There are other features for anonymous
-submission versions and final versions. These are mentioned in [the
+This was designed to get you started in the basic conversion from `llncs` to `iacrcc`.  There are other features for anonymous submission versions and final versions. These are mentioned in [the
 full documentation](https://publish.iacr.org/iacrcc).
