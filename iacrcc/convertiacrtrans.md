@@ -8,7 +8,8 @@ Let’s use a slightly adjusted version of the `iacrtrans` [template](https://gi
 
 ```latex
 \documentclass{iacrtrans}
-\author{Jane Doe\inst{1,2} \and John Doe\inst{1}}
+\usepackage{orcidlink}
+\author{Jane Doe\,\orcidlink{0000-1111-2222-3333}\inst{1,2} \and John Doe\,\orcidlink{1111-2222-3333-4444}\inst{1}}
 \institute{
   Institute A, City, Country, \email{jane@institute}
   \and
@@ -65,7 +66,7 @@ The title and related information should be provided in the same way (although `
 Author and affiliation information are provided one at-a-time. The `iacrtrans` code
 
 ```latex
-\author{Jane Doe\inst{1,2} \and John Doe\inst{1}}
+\author{Jane Doe\,\orcidlink{0000-1111-2222-3333}\inst{1,2} \and John Doe\,\orcidlink{1111-2222-3333-4444}\inst{1}}
 \institute{
   Institute A, City, Country, \email{jane@institute}
   \and
@@ -76,9 +77,11 @@ needs to be converted into
 
 ```latex
 \addauthor[inst={1,2},
-           email={jane@institute}]{Jane Doe}
+           email={jane@institute},
+           orcid={0000-1111-2222-3333}]{Jane Doe}
 \addauthor[inst=1,
-           email={john@institute}]{John Doe}
+           email={john@institute},
+           orcid={1111-2222-3333-4444}]{John Doe}
 ```
 and the affiliations become
 ```latex
@@ -109,9 +112,11 @@ Putting everything together we end up with the converted `iacrtrans` template to
 ```latex
 \documentclass{iacrcc}
 \addauthor[inst={1,2},
-           email={jane@institute}]{Jane Doe}
+           email={jane@institute},
+           orcid={0000-1111-2222-3333}]{Jane Doe}
 \addauthor[inst=1,
-           email={john@institute}]{John Doe}
+           email={john@institute},
+           orcid={1111-2222-3333-4444}]{John Doe}
 \addaffiliation[city={City},
                 country={Country}]{Institute A}
 \addaffiliation[city={City},

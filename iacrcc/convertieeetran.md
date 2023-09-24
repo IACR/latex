@@ -14,13 +14,13 @@ Let’s use a slightly adjusted version of the [IEEE template](https://www.ieee.
 \IEEEauthorblockA{\textit{department one} \\
 \textit{organization one}\\
 City, Country \\
-email address or ORCID}
+author1@mail.com, 0000-1111-2222-3333}
 \and
 \IEEEauthorblockN{Second Author}
 \IEEEauthorblockA{\textit{department two} \\
 \textit{organization two}\\
 City, Country \\
-email address or ORCID}
+author2@mail.com, 1111-2222-3333-4444}
 }
 \maketitle
 \begin{abstract}
@@ -76,23 +76,23 @@ Author and affiliation information are provided one at-a-time in separate blocks
 \IEEEauthorblockA{\textit{department one} \\
 \textit{organization one}\\
 City one, Country one \\
-author1@mail.com or ORCID-author-one}
+author1@mail.com, 0000-1111-2222-3333}
 \and
 \IEEEauthorblockN{Second Author}
 \IEEEauthorblockA{\textit{department two} \\
 \textit{organization two}\\
 City two, Country two \\
-author2@mail.com or ORCID-author-two}
+author2@mail.com, 1111-2222-3333-4444}
 }
 ```
 needs to be converted into
 
 ```latex
 \addauthor[inst=1,
-           orcid={ORCID-author-one},
+           orcid={0000-1111-2222-3333},
            email={author1@mail.com}]{First Author}
 \addauthor[inst=2,
-           orcid={ORCID-author-two},
+           orcid={1111-2222-3333-4444},
            email={author2@mail.com}]{Second Author}
 ```
 and the affiliations become
