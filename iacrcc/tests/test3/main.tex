@@ -2,13 +2,16 @@
 
 \license{CC-by}
 \title{Another example with biblatex}
-\addauthor[orcid    = {0000-0002-0599-0192},
+\addauthor[inst     = {1},
+           orcid    = {0000-0002-0599-0192},
            onclick  = {https://www.theonion.com/},
            footnote = {This is an example footnote.},
            email    = {nobody@example.com},
-          surname  = {Bestertester}
+           surname  = {Bestertester}
           ]{Fester Bestertester}
-\addauthor[surname={McTesterface}]{Chester McTesterface}
+\addauthor[inst     = {1},
+           surname  = {McTesterface}]{Chester McTesterface}
+\addaffiliation[country={USA}]{My university}
 \usepackage{xcolor}
 \addbibresource{biblatex-examples.bib}
 \addbibresource{test3.bib}
