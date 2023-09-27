@@ -1,5 +1,5 @@
-\def\fileversion{0.46}
-\def\filedate{2023/09/14}
+\def\fileversion{0.47}
+\def\filedate{2023/09/25}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -195,6 +195,11 @@
     % totpages: count pages in a document, and report last page number
     % The documentation recommends to load this package last.
     \RequirePackage{totpages}
+  }{}% final
+  \ifcsstring{@IACRversion}{final}{%
+    \ifnum\theIACR@inst@cnt<1\relax
+      \ClassError{iacrcc}{Specify at least one affiliation for the final version}{}%
+    \fi%
   }{}% final
 }
 
@@ -792,7 +797,7 @@
 \let\store@title\title% Save macro away
 
 \newcommand\addaffiliation[2][]{%
-  \stepcounter{IACR@inst@cnt}%  
+  \stepcounter{IACR@inst@cnt}%
   % If a affiliation name is provided does some basic sanity checking on the string
   \MathAllowedInCheckStringfalse
   \checkstring{#2}{Affiliation name should not contain macros or math}% 
