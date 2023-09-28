@@ -1,5 +1,5 @@
-\def\fileversion{0.47}
-\def\filedate{2023/09/25}
+\def\fileversion{0.48}
+\def\filedate{2023/09/28}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -195,11 +195,6 @@
     % totpages: count pages in a document, and report last page number
     % The documentation recommends to load this package last.
     \RequirePackage{totpages}
-  }{}% final
-  \ifcsstring{@IACRversion}{final}{%
-    \ifnum\theIACR@inst@cnt<1\relax
-      \ClassError{iacrcc}{Specify at least one affiliation for the final version}{}%
-    \fi%
   }{}% final
 }
 
@@ -407,6 +402,11 @@
       \ClassWarningNoLine{iacrcc}{^^JYour final version will need the textabstract environment.^^J}%
     }
   }{}
+  \ifcsstring{@IACRversion}{final}{%
+    \ifnum\theIACR@inst@cnt<1\relax
+      \ClassError{iacrcc}{Specify at least one affiliation for the final version}{}%
+    \fi%
+  }{}% final
 }
 \let\storeprotect\protect
 
