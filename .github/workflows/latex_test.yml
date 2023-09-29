@@ -25,6 +25,7 @@ jobs:
       with:
         packages: >-
           scheme-basic
+          filehook
           currfile
           expl3
           xkeyval
