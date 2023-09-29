@@ -59,6 +59,11 @@ jobs:
           microtype
           lipsum
           latexmk
+          xifthen
+          ccicons
+          verbatim
+          kvoptions
+          ragged2e
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
