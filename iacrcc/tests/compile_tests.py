@@ -44,7 +44,8 @@ def test1_test():
   for option in ['-pdflua', '-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
-      print(res)
+      output = res['proc'].stdout.decode('UTF-8', errors='replace')
+      print(output[-4000:])
       assert res['proc'].returncode == 0
       assert 'meta' in res
       meta = meta_parse.parse_meta(res['meta'])
