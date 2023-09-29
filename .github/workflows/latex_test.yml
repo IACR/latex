@@ -38,7 +38,6 @@ jobs:
           geometry
           afterpage
           sectsty
-          tikz
           pgfkeys
           xpatch
           alphalph
@@ -50,8 +49,6 @@ jobs:
           biblatex
           doclicense
           fancyvrb
-          amsmath
-          amssymb
           amsthm
           mathtools
           floatrow
@@ -59,7 +56,6 @@ jobs:
           float
           lineno
           microtype
-          lmodern
           lipsum
     - name: Check `tlmgr` version
       run: tlmgr --version
