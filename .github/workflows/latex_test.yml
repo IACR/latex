@@ -57,6 +57,7 @@ jobs:
           lineno
           microtype
           lipsum
+          latexmk
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
@@ -69,4 +70,4 @@ jobs:
     - name: Test for compile_tests.py
       working-directory: iacrcc/tests
       run: |
-        pytest compile_tests.py
+        pytest -vv compile_tests.py
