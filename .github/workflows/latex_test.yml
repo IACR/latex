@@ -67,6 +67,8 @@ jobs:
           kvoptions
           ragged2e
           ifmtarg
+          babel
+          urlbst
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
