@@ -34,6 +34,8 @@ jobs:
           iftex
           luatex85
           fontenc
+          fontspec
+          pdfmanagement-testphase
           hyperref
           totpages
           geometry
