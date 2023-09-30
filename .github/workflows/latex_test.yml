@@ -64,6 +64,7 @@ jobs:
           verbatim
           kvoptions
           ragged2e
+          ifmtarg
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
