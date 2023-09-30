@@ -28,6 +28,8 @@ jobs:
           filehook
           currfile
           expl3
+          l3bitset
+          cleveref
           xkeyval
           etoolbox
           xstring
@@ -50,6 +52,7 @@ jobs:
           graphicx
           csquotes
           biblatex
+          biber
           doclicense
           fancyvrb
           amsthm
