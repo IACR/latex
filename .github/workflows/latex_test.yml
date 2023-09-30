@@ -28,7 +28,7 @@ jobs:
           filehook
           currfile
           expl3
-          l3bitset
+          l3experimental
           cleveref
           xkeyval
           etoolbox
