@@ -883,13 +883,10 @@
 % graphicx: enhanced support for graphics
 \RequirePackage{graphicx}
 
-% datetime2: Formats for dates, times and time zones
-\RequirePackage{datetime2}
-
 \global\let\@IACR@docdate\@empty%
 \newcommand{\documentdate}[1]{%
-  \gdef\@IACR@docdate{1}%
-  \DTMsavedate{IACR@docdate}{#1}%
+  \gdef\@IACR@docdate{#1}%
+  \gdef\@IACR@docdate@defined{1}%
 }
 
 % if the author decides to use biblatex, then we pass options for the style to enforce
@@ -952,11 +949,16 @@
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
         \if@IACR@Received\else
-          \ifx\@IACR@docdate\@empty
-            Date of this document: \DTMtoday%
+          \ifdefined\@IACR@docdate@defined%
+            \ifx\@IACR@docdate\@empty%
+              % an empty string was passed to indicate to
+              % *not* display any date
+            \else
+              Date of this document: \@IACR@docdate.%
+            \fi% !if \@IACR@docdate = \@empty
           \else%
-            Date of this document: \DTMusedate{IACR@docdate}%
-          \fi%
+            Date of this document: \today.%
+          \fi% !if \@IACR@docdate@defined is defined
         \fi%
       }%
     }% !if @IACRversion != submission
