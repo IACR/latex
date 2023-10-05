@@ -30,7 +30,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.48)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.49)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -148,6 +148,10 @@ properly with the \texttt{[version=final]} option
 and check that the author names and affiliations are
 correct and a text version of the abstract is provided
 in the \texttt{textabstract} environment.
+
+The current date of compilation time is automatically added to the
+footer of the front page. If you want to adjust this date you can
+use the \verb+\documentdate+ macro (e.g. \verb+\documentdate{2023-10-05}+).
 
 The \texttt{iacrcc} class automatically loads \texttt{hyperref}
 after all other packages.  If you need some packages to be loaded

@@ -1,5 +1,5 @@
-\def\fileversion{0.48}
-\def\filedate{2023/09/28}
+\def\fileversion{0.49}
+\def\filedate{2023/10/05}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -883,6 +883,15 @@
 % graphicx: enhanced support for graphics
 \RequirePackage{graphicx}
 
+% datetime2: Formats for dates, times and time zones
+\RequirePackage{datetime2}
+
+\global\let\@IACR@docdate\@empty%
+\newcommand{\documentdate}[1]{%
+  \gdef\@IACR@docdate{1}%
+  \DTMsavedate{IACR@docdate}{#1}%
+}
+
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
 \if@optbiblatex
@@ -942,6 +951,13 @@
         \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
+        \if@IACR@Received\else
+          \ifx\@IACR@docdate\@empty
+            Date of this document: \DTMtoday%
+          \else%
+            Date of this document: \DTMusedate{IACR@docdate}%
+          \fi%
+        \fi%
       }%
     }% !if @IACRversion != submission
   \fi% !\@IACR@License
