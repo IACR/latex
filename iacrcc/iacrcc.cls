@@ -1,5 +1,5 @@
-\def\fileversion{0.48}
-\def\filedate{2023/09/28}
+\def\fileversion{0.49}
+\def\filedate{2023/10/05}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -883,6 +883,12 @@
 % graphicx: enhanced support for graphics
 \RequirePackage{graphicx}
 
+\global\let\@IACR@docdate\@empty%
+\newcommand{\documentdate}[1]{%
+  \gdef\@IACR@docdate{#1}%
+  \gdef\@IACR@docdate@defined{1}%
+}
+
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
 \if@optbiblatex
@@ -942,6 +948,18 @@
         \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
         \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
         \if@IACR@Published Published: \IACR@Published\fi%
+        \if@IACR@Received\else
+          \ifdefined\@IACR@docdate@defined%
+            \ifx\@IACR@docdate\@empty%
+              % an empty string was passed to indicate to
+              % *not* display any date
+            \else
+              Date of this document: \@IACR@docdate.%
+            \fi% !if \@IACR@docdate = \@empty
+          \else%
+            Date of this document: \today.%
+          \fi% !if \@IACR@docdate@defined is defined
+        \fi%
       }%
     }% !if @IACRversion != submission
   \fi% !\@IACR@License
