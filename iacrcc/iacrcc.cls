@@ -1,4 +1,4 @@
-\def\fileversion{0.49}
+\def\fileversion{0.50}
 \def\filedate{2023/10/05}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -150,6 +150,8 @@
   }}
 
 \AtEndPreamble{%
+  \@ifpackageloaded{natbib}{%
+    \ClassError{iacrcc}{The natbib package is not supported}{}}{}
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
