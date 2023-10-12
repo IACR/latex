@@ -1,5 +1,5 @@
-\def\fileversion{0.50}
-\def\filedate{2023/10/05}
+\def\fileversion{0.51}
+\def\filedate{2023/12/05}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -925,6 +925,8 @@
   \@writemeta{license: \@IACR@License}%
 }
 
+\def\ymdtoday{\leavevmode\hbox{\the\year-\twodigits\month-\twodigits\day}}\def\twodigits#1{\ifnum#1<10 0\fi\the#1}
+
 \fancypagestyle{title}{%
   \fancyhf{} % clear all header and footer fields
   \ifcsstring{@IACRversion}{final}{%
@@ -959,7 +961,7 @@
               Date of this document: \@IACR@docdate.%
             \fi% !if \@IACR@docdate = \@empty
           \else%
-            Date of this document: \today.%
+            Date of this document: \ymdtoday.%
           \fi% !if \@IACR@docdate@defined is defined
         \fi%
       }%
