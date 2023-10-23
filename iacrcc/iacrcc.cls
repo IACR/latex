@@ -1,5 +1,5 @@
-\def\fileversion{0.51}
-\def\filedate{2023/12/05}
+\def\fileversion{0.52}
+\def\filedate{2023/10/23}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -40,7 +40,7 @@
 \RequirePackage{expl3} % used for text_purify on metadata.
 
 % xkeyval: extension of the keyval package
-%          This offers additional macros for setting keys and 
+%          This offers additional macros for setting keys and
 %          declaring and setting class or package options.
 \RequirePackage{xkeyval}
 
@@ -107,7 +107,7 @@
   \PassOptionsToClass{final}{article}
 }{}
 
-% xstring: provides macros for manipulating strings - testing a string’s 
+% xstring: provides macros for manipulating strings - testing a string’s
 %          contents, extracting substrings, substitution of substrings and
 %          providing numbers such as string length, position of, or number
 %          of recurrences of, a substring.
@@ -156,7 +156,7 @@
     % TU encoding is only available with XeTeX and LuaTeX.
     % Defaulting to T1 encoding.
     % fontenc: Standard package for selecting font encodings
-    \RequirePackage[T1]{fontenc} 
+    \RequirePackage[T1]{fontenc}
   \fi
   % hyperref: Extensive support for hypertext in LaTeX
   \RequirePackage{hyperref}
@@ -226,7 +226,7 @@
 \robustify\addtolength
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This provides a command to insert the ORCiD logo, which is hyperlinked to 
+% This provides a command to insert the ORCiD logo, which is hyperlinked to
 % the URL of the researcher whose iD was specified.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This copies over definition of the orcidlink from the orcidlink style file
@@ -420,13 +420,13 @@
 \xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
 \newcommand\@writemeta[1]{\protected@iwrite\iacrmeta{}{#1}}%
 
-% alphalph: Convert numbers to letters, 
+% alphalph: Convert numbers to letters,
 %           used for footnotes in addauthor
 \RequirePackage{alphalph}
 
 \AtBeginDocument{%
-  % Use this \maketitle command to first write out 
-  % the necessary meta-information 
+  % Use this \maketitle command to first write out
+  % the necessary meta-information
   \renewcommand\maketitle{\par
     \@writemeta{version: \@IACRversion}%
     \@writemeta{title: \@plaintitle}%
@@ -446,14 +446,14 @@
       \endgroup
     \fi
     \ifcsstring{@IACRversion}{final}{%
-      % When we produce the final version we need at least one e-mail address  
+      % When we produce the final version we need at least one e-mail address
       \ifnum\theIACR@email@cnt<1\relax
         \ClassError{iacrcc}{Provide at least one e-mail address for the final version}{}%
       \fi
     }{}%
     \begingroup
       \global\@topnum\z@   % Prevents figures from going at top of page.
-      % Ensure we use alphabetical numbering for the author footnotes 
+      % Ensure we use alphabetical numbering for the author footnotes
       \renewcommand*{\thefootnote}{\alphalph{\value{footnote}}}%
       \@maketitle
       \thispagestyle{title}\@thanks
@@ -477,7 +477,7 @@
   }%
 }
 
-% Add support to display the provided e-mail addresses 
+% Add support to display the provided e-mail addresses
 % in the footnote of the front page
 \global\let\IACR@displayemails\@empty
 
@@ -512,12 +512,12 @@
             \ifnum\theIACR@cnt=\theIACR@author@cnt\unskip\space and \ignorespaces\else\unskip, \ignorespaces\fi%
           }%
           % Display the list of authors
-          % Note that affiliations and footnotes are picked up within 
+          % Note that affiliations and footnotes are picked up within
           % the definition of \@author
           \@author%
           \vskip 1em\par
           \small
-          \setcounter{IACR@cnt}{1}%        
+          \setcounter{IACR@cnt}{1}%
           % When there is only one author with one or more affiliations
           % do not display the affiliation counter
           % Redefine \and to make sure we print the affiliation numbers
@@ -561,7 +561,7 @@
   % No newline is allowed in addauthor
   \noexpandarg\IfSubStr{#2}{\\}{%
     \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
-  }{}% 
+  }{}%
   %
   \stepcounter{IACR@author@cnt}%
   %
@@ -588,9 +588,9 @@
   % the provided e-mail addresses
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@email}\relax\else
     \if\relax\expandafter\detokenize\expandafter{\IACR@displayemails}\relax
-      \edef\IACR@displayemails{E-mail: \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{\mbox{#2}})}%
+      \edef\IACR@displayemails{E-mail: \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{#2})}%
     \else
-      \eappto\IACR@displayemails{, \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{\mbox{#2}})}%
+      \eappto\IACR@displayemails{, \noexpand\href{mailto:\@IACR@author@email}{\noexpand\nolinkurl{\@IACR@author@email}} (\unexpanded{#2})}%
     \fi
     \@writemeta{\IACRSS email: \@IACR@author@email}%
     \stepcounter{IACR@email@cnt}%
@@ -658,7 +658,7 @@
   \fi
   \IACR@funding@params@clearkeys%
 }
- 
+
 % This is a complicated implementation to test whether a token list is
 % appropriate to use as metadata. It is intended to make sure that
 % \write will produce a string without macros, except that macros are
@@ -696,7 +696,7 @@
 \cs_new_eq:NN \IfUITFEight \iacr_check_uitfeight:nTF
 \ExplSyntaxOff
 
-% Macro which specifies if math is allowed in the 
+% Macro which specifies if math is allowed in the
 % first argument to \checkstring
 \newif\ifMathAllowedInCheckString
 \MathAllowedInCheckStringtrue
@@ -725,7 +725,7 @@
 }
 
 % #1 is a string to check as just text. No macros are allowed except accents
-%    that are easily converted downstream and except in math mode. 
+%    that are easily converted downstream and except in math mode.
 % #2 is an error message prefix.
 \newcommand\checkstring[2]{%
   % Since tokcycle treats the math toggle character $ as just another character,
@@ -733,7 +733,7 @@
   % to allow macros and groups in math mode but not in text mode.
   \newif\ifInMathMode
   \tokcycle{% character handler
-    %\typeout{CHARACTER: ##1} 
+    %\typeout{CHARACTER: ##1}
     \if##1$% Check if we see a math toggle catcode 3
       \ifMathAllowedInCheckString
         \ifInMathMode % toggle this
@@ -802,7 +802,7 @@
   \stepcounter{IACR@inst@cnt}%
   % If a affiliation name is provided does some basic sanity checking on the string
   \MathAllowedInCheckStringfalse
-  \checkstring{#2}{Affiliation name should not contain macros or math}% 
+  \checkstring{#2}{Affiliation name should not contain macros or math}%
   \@writemeta{affiliation:}%
   \@writemeta{\IACRSS name: #2}%
   % Set and retrieve all the parameters passed
@@ -878,7 +878,7 @@
     \fi
   \fi
 }
-  
+
 % fancyhdr: extensive control of page headers and footers in LATEX2ε
 \RequirePackage{fancyhdr}
 
@@ -1027,7 +1027,7 @@
 \RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
 
 % See: https://tex.stackexchange.com/questions/596323/unicode-characters-within-verbatimout-of-fancyvrb
-% The fancyvrb package uses \immediate\write, but this has the consequence 
+% The fancyvrb package uses \immediate\write, but this has the consequence
 % that active characters not explicitly inactivated are expanded.
 % Patch to use a “protected” immediate write.
 % Define the same as \protected@write, but with \immediate
