@@ -1,5 +1,5 @@
-\def\fileversion{0.52}
-\def\filedate{2023/10/23}
+\def\fileversion{0.53}
+\def\filedate{2023/10/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -48,8 +48,8 @@
 \def\IACR@vol{0}
 \def\IACR@no{0}
 \def\IACR@fp{1}
-\def\IACR@EISSN{XXXX-XXXX}
-\def\IACR@DOI{XXXXXXXX}
+\def\IACR@EISSN{}
+\def\IACR@DOI{}
 \def\IACR@Received{20XX-XX-XX}
 \def\IACR@Revised{20XX-XX-XX}
 \def\IACR@Accepted{20XX-XX-XX}
@@ -173,9 +173,9 @@
               linkcolor=black!70!red%
              }
   \ifcsstring{@IACRversion}{final}{%
-    \hypersetup{%
-      pdfsubject={\publname{}, DOI:\IACR@DOI}%
-    }
+    \ifx\IACR@DOI\@empty\hypersetup{pdfsubject={\publname}}\else%
+    \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}%
+    \fi%
   }{}% final
   % Disable latexdiff commands in PDF links
   \pdfstringdefDisableCommands{%
@@ -936,8 +936,9 @@
       \fancyhead[L]{%
         \small%
         \publname{}\\
-        ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
-        \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}%
+        \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
+        Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp.%
+        \ifx\IACR@DOI\@empty\else\hfill{}\href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}\fi%
       }
   }{}% final
   \ifx\@IACR@License\@empty\else%
