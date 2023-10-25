@@ -1,4 +1,4 @@
-\def\fileversion{0.53}
+\def\fileversion{0.54}
 \def\filedate{2023/10/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -937,7 +937,7 @@
         \small%
         \publname{}\\
         \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
-        Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp.%
+        Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.%
         \ifx\IACR@DOI\@empty\else\hfill{}\href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}\fi%
       }
   }{}% final
