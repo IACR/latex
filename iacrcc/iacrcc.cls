@@ -1,5 +1,5 @@
-\def\fileversion{0.54}
-\def\filedate{2023/10/24}
+\def\fileversion{0.55}
+\def\filedate{2023/11/28}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -173,8 +173,10 @@
               linkcolor=black!70!red%
              }
   \ifcsstring{@IACRversion}{final}{%
-    \ifx\IACR@DOI\@empty\hypersetup{pdfsubject={\publname}}\else%
-    \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}%
+    \ifx\IACR@DOI\@empty%
+      \hypersetup{pdfsubject={\publname}}%
+    \else%
+      \hypersetup{pdfsubject={\publname{}, DOI:\IACR@DOI}}%
     \fi%
   }{}% final
   % Disable latexdiff commands in PDF links
@@ -938,7 +940,7 @@
         \publname{}\\
         \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
         Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.%
-        \ifx\IACR@DOI\@empty\else\hfill{}\href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}\fi%
+        \ifx\IACR@DOI\@empty\else\hfill{}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\fi%
       }
   }{}% final
   \ifx\@IACR@License\@empty\else%
