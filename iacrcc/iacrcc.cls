@@ -1,5 +1,5 @@
-\def\fileversion{0.55}
-\def\filedate{2023/11/28}
+\def\fileversion{0.56}
+\def\filedate{2023/12/09}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -214,12 +214,6 @@
 
 % afterpage: execute command after the next page break
 \RequirePackage{afterpage}
-
-% secsty: control sectional headers
-\RequirePackage{sectsty}
-\allsectionsfont{\sffamily\boldmath}
-\renewcommand*\descriptionlabel[1]{\hspace\labelsep
-                                   \normalfont\bfseries\sffamily\boldmath #1}
 
 % Make some counters robust that are made fragile by `calc` needed for orcidlink
 \robustify\setcounter
