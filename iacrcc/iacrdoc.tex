@@ -30,7 +30,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.56)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.57)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -302,28 +302,61 @@ support for a visit.
 The complete list of optional arguments for \texttt{\textbackslash addfunding} is:
 \begin{center}
   \begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+    {\tt country} & The country of the funding agency. \\
     {\tt fundref} & An identifier from the
                     \href{https://publish.iacr.org/funding}{Crossref funder registry}.\\
+    {\tt grantid} & The identifier of the grant that is assigned by the agency 
+                    who provided it.\\
     {\tt ror}     & An identifier from the 
                     \href{https://publish.iacr.org/funding}{Research Organization Registry} 
                     (ROR). A \texttt{fundref} identifier is preferred 
                     for \texttt{\textbackslash addfunding}.\\
-    {\tt country} & The country of the funding agency. \\
-    {\tt grantid} & The identifier of the grant that is assigned by the agency 
-                    who provided it.
+    {\tt text}    & The specific text used to acknowledge this funding. 
+                    This text is inserted in a dedicated ``Funding Acknowledgements''
+                    section just before the References.\\
+    {\tt mode}    & The display mode of the ``Funding Acknowledgements'' section.
+                    When omitted the regular Section style is used. 
+                    Currently, the only option which can be used is ``EU'' to insert 
+                    the official EU emblem per the
+                    \href{https://rea.ec.europa.eu/communicating-about-your-eu-funded-project_en#acknowledge-eu-funding}{EU funding rules}.
   \end{tabular}
 \end{center}
 \noindent You can use the online tool at 
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
 help you find \texttt{fundref} and \texttt{ror} identifiers.
 
-Note that \cmd{addfunding} \textbf{does not} automatically create footnotes or
-an acknowledgements section to identify funding - it only collects the
-metadata for indexing. If you wish to include such visible
-annotations, you can use the \texttt{footnote} option on
-\cmd{addauthor}, or the \cmd{genericfootnote}, or add a separate
-acknowledgements section. Some funding agencies have specific
-requirements for how they want to be acknowledged in the paper.
+Note that \cmd{addfunding} collects the
+metadata for indexing. When the \texttt{text} option is used then a dedicated
+``Funding Acknowledgements'' section at the end of the paper before the References
+with the provided text is created. When \texttt{mode=EU} is used then 
+the official EU emblem is displayed. Note that you can omit using this \texttt{text}
+option if you want to provide the funding information yourself using the 
+\texttt{footnote} option on \cmd{addauthor}, or the \cmd{genericfootnote}, or add a separate
+acknowledgements section. 
+
+The following example funding text
+\begin{verbatim}
+\addfunding[country  = {europe},
+            grantid  = {H2020-ICT-2014-1 644209},
+            fundref  = {100010661},
+            text     = {The research leading to these results has received 
+                        funding from the European Union's Horizon 2020 
+                        research and innovation programme with contract 
+                        H2020-ICT-2014-1 644209 HEAT.},
+            mode      = {EU}
+           ]{Horizon 2020 Framework Programme}
+\end{verbatim}
+created the Section below at the end of the paper.
+\section*{Funding Acknowledgements}
+\noindent\begin{minipage}{\textwidth}
+  \begin{minipage}{0.1\textwidth}
+    {\fontsize{32}{0}\selectfont\euflag}
+  \end{minipage}\hfill
+  \begin{minipage}{0.87\textwidth}
+    The research leading to these results has received funding
+    from the European Union's Horizon 2020 research and innovation
+    programme with contract H2020-ICT-2014-1 644209 HEAT.  \end{minipage}
+\end{minipage}
 
 \subsection{Footnotes}\label{footnotes}
 Authors may be accustomed to using \cmd{thanks} for footnotes
