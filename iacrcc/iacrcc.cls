@@ -301,6 +301,10 @@
 % End of macros for linkicon and authorlink.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+% euflag – A command to reproduce the flag of the European Union
+\RequirePackage{euflag}
+
 % pgfkeys: a flexible key management system
 \RequirePackage{pgfkeys}
 
@@ -339,9 +343,11 @@
   grantid/.initial={},
   fundref/.initial={},
   ror/.initial={},
+  text/.initial={},
+  mode/.initial={},
 }
 \def\IACR@funding@params@set@keys#1{\pgfkeys{/IACR-funding/entities/.cd,#1}}
-\newcommand\IACR@funding@params@clearkeys{\IACR@funding@params@set@keys{country={},grantid={},fundref={},ror={}}}
+\newcommand\IACR@funding@params@clearkeys{\IACR@funding@params@set@keys{country={},grantid={},fundref={},ror={},text={},mode={}}}
 
 % Title/Author/affiliations
 % Running author list for in the header
@@ -638,6 +644,8 @@
   \pgfkeysgetvalue{/IACR-funding/entities/grantid}{\@IACR@funding@grantid}%
   \pgfkeysgetvalue{/IACR-funding/entities/fundref}{\@IACR@funding@fundref}%
   \pgfkeysgetvalue{/IACR-funding/entities/ror}{\@IACR@funding@ror}%
+  \pgfkeysgetvalue{/IACR-funding/entities/text}{\@IACR@funding@text}%
+  \pgfkeysgetvalue{/IACR-funding/entities/mode}{\@IACR@funding@mode}%
   \@writemeta{funding:}%
   \@writemeta{\IACRSS name: \@IACR@funding@name}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@country}\relax\else
@@ -651,6 +659,15 @@
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@ror}\relax\else
     \@writemeta{\IACRSS ror: \@IACR@funding@ror}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@text}\relax\else
+    \@writemeta{\IACRSS text: \@IACR@funding@text}%
+    \eappto\@IACR@funding@displaytext{ \@IACR@funding@text}%
+  \fi
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@mode}\relax\else
+    \@writemeta{\IACRSS mode: \@IACR@funding@mode}%
+    % Currently we support only a single mode (if enabled)
+    \edef\@IACR@funding@displaymode{\@IACR@funding@mode}%
   \fi
   \IACR@funding@params@clearkeys%
 }
@@ -887,6 +904,38 @@
   \gdef\@IACR@docdate@defined{1}%
 }
 
+\gdef\@IACR@fundingsectiontitle{Funding Acknowledgements}%
+\gdef\@IACR@funding@displaytext{}%
+\gdef\@IACR@funding@displaymode{}%
+
+\newcommand\IACR@displayfundinginfo{%
+  % If funding information text is provided alter the bibliography
+  % (when bibtex is used) to display a section right *before* this
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@displaytext}\relax\else%
+    \section*{\@IACR@fundingsectiontitle}%
+    \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@displaymode}\relax%
+      \@IACR@funding@displaytext%
+    \else%
+      \def\@IACR@funding@modes@EU{EU}%
+      \ifx\@IACR@funding@displaymode\@IACR@funding@modes@EU%
+        \noindent%
+        \begin{minipage}{\textwidth}
+          \begin{minipage}{0.1\textwidth}
+            {\fontsize{32}{0}\selectfont\euflag}%
+          \end{minipage}\hfill
+          \begin{minipage}{0.87\textwidth}
+            \@IACR@funding@displaytext%
+          \end{minipage}
+        \end{minipage}
+      \else
+        \ClassError{iacrcc}{Invalid funding mode: only acceptable mode is EU}{}%
+      \fi
+    \fi
+  \fi
+}
+
+\BeforeBeginEnvironment{thebibliography}{\IACR@displayfundinginfo}%
+
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
 \if@optbiblatex
@@ -898,6 +947,16 @@
   \DeclareNameFormat{author}{%
     \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
   }%
+  % If funding information text is provided alter the bibliography to
+  % display a section right *before* this
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@funding@displaytext}\relax%
+    \defbibheading{iacrbiblatexheading}[\refname]{%
+      \IACR@displayfundinginfo%
+      \section*{#1}%
+      \markboth{#1}{#1}%
+    }%
+    \DeclarePrintbibliographyDefaults{heading=iacrbiblatexheading}%
+  \fi
 \else % did not invoke \documentclass[biblatex]{iacrcc}
   \AtBeginDocument{%
     \@ifpackageloaded{biblatex}{%
