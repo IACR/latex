@@ -1,5 +1,5 @@
-\def\fileversion{0.56}
-\def\filedate{2023/12/09}
+\def\fileversion{0.57}
+\def\filedate{2023/12/20}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -887,6 +887,8 @@
   \gdef\@IACR@docdate@defined{1}%
 }
 
+\apptocmd{\thebibliography}{\csname phantomsection\endcsname\addcontentsline{toc}{section}{\refname}}{}{}
+
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
 \if@optbiblatex
@@ -895,6 +897,7 @@
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   % biblatex: sophisticated Bibliographies in LaTeX
   \RequirePackage[backend=biber,style=alphabetic,maxcitenames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
+  \DeclarePrintbibliographyDefaults{heading=bibintoc}%
   \DeclareNameFormat{author}{%
     \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
   }%
