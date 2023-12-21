@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import pdfplumber
+import pypdf
 import pytest
 import re
 import tempfile
@@ -1282,4 +1283,21 @@ def test33_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
+      
+def test34_test():
+  # We test for presence of "References" in the outline using pypdf.
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      path = Path('test34')
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      pdfpath = tmpdirpath + '/main.pdf'
+      pdfreader = pypdf.PdfReader(pdfpath)
+      outline = pdfreader.outline
+      assert len(outline) == 5
+      assert outline[0]['/Title'] == 'First section'
+      assert outline[1][0]['/Title'] == 'Some subsection'
+      assert outline[2]['/Title'] == 'Second section'
+      assert outline[3]['/Title'] == 'Third Section'
+      assert outline[4]['/Title'] == 'References'
       
