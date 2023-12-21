@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import pdfplumber
+import pypdf
 import pytest
 import re
 import tempfile
@@ -156,7 +157,7 @@ def test6_test():
   assert output[0] == 'Insertstuff.'
   assert output[1] == 'With space:Insert\\ stuff.'
   assert output[2] == 'With braces:Insert{} stuff.'
-  assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+  assert output[3] == 'With tilde: Insert~stuff.'
   assert output[4] == 'accented: å ü \\TU\\DJ '
   assert output[5] == 'With math $\\alpha $'
   assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$'
@@ -176,7 +177,7 @@ def test7_test():
   assert output[0] == 'Insertstuff.'
   assert output[1] == 'With space:Insert\\ stuff.'
   assert output[2] == 'With braces:Insert{} stuff.'
-  assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+  assert output[3] == 'With tilde: Insert~stuff.'
   assert output[4] == 'accented: å ü \\T1\\DJ ' # note encoding
   assert output[5] == 'With math $\\alpha $'
   print(output[6])
@@ -197,7 +198,7 @@ def test8_test():
   assert output[0] == 'Insertstuff.'
   assert output[1] == 'With space:Insert\\ stuff.'
   assert output[2] == 'With braces:Insert{} stuff.'
-  assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+  assert output[3] == 'With tilde: Insert~stuff.'
   assert output[4] == 'accented: å ü \\TU\\DJ ' # note encoding
   assert output[5] == 'With math $\\alpha $' # extra space in math after macro \alpha
   assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$' # gobble space after Pure
@@ -213,7 +214,7 @@ def test9_test():
   assert output[0] == 'Insertstuff.'
   assert output[1] == 'With space:Insert\\ stuff.'
   assert output[2] == 'With braces:Insert{} stuff.'
-  assert output[3] == 'With tilde: Insert\\protect \\unhbox \\voidb@x \\protect \\penalty \\@M \\ {}stuff.'
+  assert output[3] == 'With tilde: Insert~stuff.'
   assert output[4] == 'accented: å ü \\TU\\DJ ' # note encoding
   assert output[5] == 'With math $\\alpha $' # extra space in math after macro \alpha
   assert output[6] == 'Puret:Āā Ēē Īī Ōō Ūū Ȳȳ ü alpha with $a=b$' # gobble space after Pure
@@ -643,7 +644,7 @@ def test23_test():
       assert line[144] == r"title: Cover and Decomposition Index Calculus on Elliptic Curves made practical. Application to a seemingly secure curve over $F_{p^6}$"
       assert line[145] == r"title: A Construction of A New Class of Knapsack-Type Public Key Cryptosystem, K(III)$\Sigma $PKC"
       assert line[146] == r"title: Ergodic Theory Over ${F}_2[[T]]$"
-      assert line[147] == r"title: Computing $(\ell ,\ell )$-isogenies in polynomial time on Jacobians of genus\protect \nobreakspace  {}$2$ curves"
+      assert line[147] == r"title: Computing $(\ell ,\ell )$-isogenies in polynomial time on Jacobians of genus~$2$ curves"
       assert line[148] == r"title: Linear Diophantine Equation Discrete Log Problem, Matrix Decomposition Problem and the AA{\beta }-cryptosystem"
       assert line[149] == r"title: On the relation between the MXL family of algorithms and Gröbner basis algorithms"
       assert line[150] == r"title: Security Analysis of $LMAP^{++}$, an RFID Authentication Protocol"
@@ -1282,4 +1283,21 @@ def test33_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
+      
+def test34_test():
+  # We test for presence of "References" in the outline using pypdf.
+  for option in ['-pdflua', '-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      path = Path('test34')
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      pdfpath = tmpdirpath + '/main.pdf'
+      pdfreader = pypdf.PdfReader(pdfpath)
+      outline = pdfreader.outline
+      assert len(outline) == 5
+      assert outline[0]['/Title'] == 'First section'
+      assert outline[1][0]['/Title'] == 'Some subsection'
+      assert outline[2]['/Title'] == 'Second section'
+      assert outline[3]['/Title'] == 'Third Section'
+      assert outline[4]['/Title'] == 'References'
       
