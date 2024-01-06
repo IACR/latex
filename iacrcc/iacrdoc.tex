@@ -220,6 +220,15 @@ name is the surname: this is used for meta-data collection and is
 especially useful for cases with middle names \emph{and} double
 surnames which might be confusing.
 
+When the URL provided to the {\tt onclick} option contain characters
+with a ``special'' meaning in \LaTeX{} they might render incorrectly.
+An example with some of the common characters \string~, \%, and \# is
+\begin{verbatim}
+  onclick = {https://www.webpage.com/\string~\%\#/}
+\end{verbatim}
+\noindent which displays \authorlink{https://www.webpage.com/\string~\%\#/}
+next to the author name.
+
 An example using all the optional arguments is given below. In this case
 the author has \verb+inst={1,2}+ to indicate that they are affiliated with
 the first and second affiliations that are entered with
