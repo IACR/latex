@@ -1,5 +1,5 @@
 % IACR Communications CLASS DOCUMENTATION
-% Written by Joppe W. Bos and Kevin S. McCurley (2022-2023),
+% Written by Joppe W. Bos and Kevin S. McCurley (2022-2024),
 % based on prior work on the iacrtrans class by
 % Gaetan Leurent gaetan.leurent@inria.fr (2016-2018).
 %
@@ -30,7 +30,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.57)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.58)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -69,12 +69,8 @@
 \end{abstract}
 
 \begin{textabstract}
-This is a quick introduction to the iacrcc.cls LaTeX class for
-The IACR Communications in Cryptology. No macros are allowed in
-the textabstract, but you may use unicode such as Paul Erdős, or
-diacriticals like F\"ur Elise.
-
-Multiple paragraphs are allowed.
+  This document is a quick introduction to the iacrcc.cls
+  LaTex class for the IACR Communications in Cryptology.
 \end{textabstract}
 
 \section*{Introduction}
@@ -392,18 +388,30 @@ of abstracts. The first (traditional) form of abstract is entered with the
 \texttt{abstract} environment as usual.  Note that the keywords should
 be given before starting the \texttt{abstract} environment.
 
-For \texttt{final} versions of papers, an additional text-only
+For \texttt{final} versions of papers, an additional ``text-only''
 abstract is required. This abstract is contained in the
-\texttt{textabstract} environment, and should be just
-plain text (i.e., it should not contain macros).
+\texttt{textabstract} environment, and should not contain
+user-defined macros.
 It will be used for indexing and production of
 {HTML} pages to describe the paper. As such, it is just as important
 as the classical \texttt{abstract} of a paper because it contains a
 textual summary that readers will use to decide if the paper is worth
 reading. The only difference is that the contents of the
-\texttt{textabstract} is constrained on what it may contain.  The
-contents of this environment will be written to a file that ends with
-\texttt{.abstract} when you compile your \LaTeX, but will not be
+\texttt{textabstract} is constrained on what it may contain.
+
+You may use unicode such as in \verb+Paul Erdős+ or
+diacriticals like \verb+F\"ur Elise+.
+You may also use inline or display mathematics
+in the \texttt{textabstract} environment as well as
+(for example) the  \texttt{itemize} environment.
+User-defined macros are \emph{not} allowed.
+We do not have a complete list of allowed
+\LaTeX (which can be succesfully converted to HTML) but
+but you will find out when you upload your final version
+at \url{https://publish.iacr.org}.
+
+The contents of this environment will be written to a file that ends
+with \texttt{.abstract} when you compile your \LaTeX, but will not be
 displayed in the final PDF except as metadata. Note that
 \verb+\begin{textabstract}+ must appear on a line by itself.
 
