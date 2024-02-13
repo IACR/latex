@@ -972,22 +972,23 @@
         \doclicenseText%
         \hfill{}%
         \doclicenseImage[imagewidth=4em]\\[.1em]%
-        \if@IACR@Received Received: \IACR@Received \hfill{}\fi%
-        \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
-        \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
-        \if@IACR@Published Published: \IACR@Published\fi%
-        \if@IACR@Received\else
+        \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
+          \if@IACR@Received Received: \IACR@Received \hfill{}\fi%
+          \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
+          \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
+          \if@IACR@Published Published: \IACR@Published\fi%
+        }{%
           \ifdefined\@IACR@docdate@defined%
             \ifx\@IACR@docdate\@empty%
-              % an empty string was passed to indicate to
-              % *not* display any date
+              % an empty string was passed \documentdate to
+              % indicate to *not* display any date
             \else
               Date of this document: \@IACR@docdate.%
             \fi% !if \@IACR@docdate = \@empty
           \else%
             Date of this document: \ymdtoday.%
           \fi% !if \@IACR@docdate@defined is defined
-        \fi%
+        }%
       }%
     }% !if @IACRversion != submission
   \fi% !\@IACR@License
