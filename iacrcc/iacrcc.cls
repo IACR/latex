@@ -50,6 +50,7 @@
 \def\IACR@fp{1}
 \def\IACR@EISSN{}
 \def\IACR@DOI{}
+\def\IACR@CROSSMARKURL{}
 \def\IACR@Received{20XX-XX-XX}
 \def\IACR@Revised{20XX-XX-XX}
 \def\IACR@Accepted{20XX-XX-XX}
@@ -263,6 +264,26 @@
 % End of macros for orcidlink
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Macro for crossmark image.
+\definecolor{c948f8f}{RGB}{148,143,143}
+\definecolor{cd0d0d0}{RGB}{208,208,208}
+\definecolor{ca0a0a0}{RGB}{192,192,192}
+\definecolor{c535353}{RGB}{83,83,83}
+\definecolor{cc72914}{RGB}{199,41,20}
+\definecolor{cef3340}{RGB}{239,51,64}
+\definecolor{c3eb1c8}{RGB}{62,177,200}
+\definecolor{cffc72c}{RGB}{255,199,44}
+\usepgflibrary{shadings}
+\newcommand\crossmarkimage[1]{%
+\begin{tikzpicture}[scale=#1, every node/.append style={scale=#1}, inner sep=0pt, outer sep=0pt]
+  \path[draw=c948f8f,top color=white,bottom color=ca0a0a0,fill=cd0d0d0,line width=0.0198cm,miter limit=10.0,rounded corners=0.0529cm] (0.1058, -0.1058) rectangle (7.0, -1.5875);
+  \node[text=c535353,anchor=south west] (text235) at (1.8, -1.15){\fontfamily{phv}\fontseries{sx}\selectfont \LARGE Check for updates};
+  \path[fill=cc72914] (0.6599, -1.1044) -- (1.1393, -0.7848) -- (1.1393, -0.4011) -- (0.6599, -0.4011) -- (0.6599, -1.1044) -- (0.6599, -1.1044)-- cycle;;
+  \path[fill=cef3340] (1.1393, -1.1044) -- (0.6599, -0.7848) -- (0.6599, -0.4011) -- (1.1393, -0.4011) -- (1.1393, -1.1044) -- (1.1393, -1.1044)-- cycle;;
+  \path[fill=c3eb1c8] (0.8996, -0.3175)arc(90.0:360.0:0.5292)arc(0.0:90.0:0.5292) -- cycle(0.8996, -1.2462)arc(270.0:0.0:0.3995)arc(0.0:-90.0:0.3995) -- cycle;
+  \path[fill=cffc72c] (1.193, -1.1173)arc(317.2441:158.1926:0.3993) -- (0.418, -0.6281)arc(155.807:319.67:0.5292) -- cycle;
+\end{tikzpicture}}
+% end of crossmark image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This produces an icon for an external link. We use it as the external link
 % icon for onclick on authors.
@@ -936,9 +957,10 @@
         \small%
         \publname{}\\
         \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
-        Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.%
-        \ifx\IACR@DOI\@empty\else\hfill{}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\fi%
-      }
+        Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.}
+      \ifx\IACR@DOI\@empty\else\fancyhead[R]{\small%
+        \begin{tabular}{r}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\ifx\IACR@CROSSMARKURL\@empty\else\vspace{2px}\\%
+        \href{\IACR@CROSSMARKURL}{\crossmarkimage{.35}}\fi\end{tabular}}\fi%
   }{}% final
   \ifx\@IACR@License\@empty\else%
     % If \license is provided show this for preprint and final (not for submission)
