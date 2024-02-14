@@ -273,10 +273,9 @@
 \definecolor{cef3340}{RGB}{239,51,64}
 \definecolor{c3eb1c8}{RGB}{62,177,200}
 \definecolor{cffc72c}{RGB}{255,199,44}
-\usepgflibrary{shadings}
 \newcommand\crossmarkimage[1]{%
   \begin{tikzpicture}[scale=#1, every node/.append style={scale=#1}, inner sep=0pt, outer sep=0pt]
-  \path[draw=c948f8f,top color=white,bottom color=ca0a0a0,fill=cd0d0d0,line width=0.0198cm,miter limit=10.0,rounded corners=0.0529cm] (0.1058, -0.1058) rectangle (7.0, -1.5875);
+  \path[draw=c948f8f,shading=axis,top color=white,bottom color=ca0a0a0,fill=cd0d0d0,line width=0.0198cm,miter limit=10.0,rounded corners=0.0529cm] (0.1058, -0.1058) rectangle (7.0, -1.5875);
   \node[text=c535353,anchor=south west] (text235) at (1.8, -1.15){\fontfamily{phv}\selectfont \LARGE Check for updates};
   \path[fill=cc72914] (0.6599, -1.1044) -- (1.1393, -0.7848) -- (1.1393, -0.4011) -- (0.6599, -0.4011) -- (0.6599, -1.1044) -- (0.6599, -1.1044)-- cycle;
   \path[fill=cef3340] (1.1393, -1.1044) -- (0.6599, -0.7848) -- (0.6599, -0.4011) -- (1.1393, -0.4011) -- (1.1393, -1.1044) -- (1.1393, -1.1044)-- cycle;
