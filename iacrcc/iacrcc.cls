@@ -51,14 +51,9 @@
 \def\IACR@EISSN{}
 \def\IACR@DOI{}
 \def\IACR@CROSSMARKURL{}
-\def\IACR@Received{20XX-XX-XX}
-\def\IACR@Revised{20XX-XX-XX}
-\def\IACR@Accepted{20XX-XX-XX}
-\def\IACR@Published{20XX-XX-XX}
-\newif\if@IACR@Received \@IACR@Receivedfalse
-\newif\if@IACR@Revised \@IACR@Revisedfalse
-\newif\if@IACR@Accepted \@IACR@Acceptedfalse
-\newif\if@IACR@Published \@IACR@Publishedfalse
+\global\let\IACR@Received\@empty
+\global\let\IACR@Accepted\@empty
+\global\let\IACR@Published\@empty
 
 % etoolbox: is a toolbox of programming facilities geared primarily
 %           towards LaTeX class and package authors.
@@ -74,7 +69,7 @@
 % The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
 % \IACR@Published, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
-  \@IACR@Receivedtrue\@IACR@Acceptedtrue\@IACR@Publishedtrue\typeout{Inserted DOI into PDF}%
+  \typeout{Inserted DOI into PDF}%
 }{}
 \newif\if@optbiblatex
 \@optbiblatexfalse
@@ -972,10 +967,9 @@
         \hfill{}%
         \doclicenseImage[imagewidth=4em]\\[.1em]%
         \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
-          \if@IACR@Received Received: \IACR@Received \hfill{}\fi%
-          \if@IACR@Revised Revised: \IACR@Revised \hfill{}\fi%
-          \if@IACR@Accepted Accepted: \IACR@Accepted \hfill{}\fi%
-          \if@IACR@Published Published: \IACR@Published\fi%
+          \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
+          \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted \hfill{}\fi%
+          \ifx\IACR@Published\@empty\else Published: \IACR@Published\fi%
         }{%
           \ifdefined\@IACR@docdate@defined%
             \ifx\@IACR@docdate\@empty%
