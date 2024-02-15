@@ -1,5 +1,5 @@
-\def\fileversion{0.58}
-\def\filedate{2024/01/23}
+\def\fileversion{0.59}
+\def\filedate{2024/02/14}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -59,9 +59,6 @@
 %           towards LaTeX class and package authors.
 \RequirePackage{etoolbox}
 
-\newcommand{\setvolume}[1]{\def\IACR@vol{#1}}
-\newcommand{\setnumber}[1]{\def\IACR@no{#1}}
-\newcommand{\setEISSN}[1]{\def\IACR@EISSN{#1}}
 % See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
 \tracinglostchars=3
 
