@@ -1,5 +1,5 @@
-\def\fileversion{0.59}
-\def\filedate{2024/02/14}
+\def\fileversion{0.60}
+\def\filedate{2024/03/14}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -567,8 +567,8 @@
 \prg_new_conditional:Npnn \iacr_check_inst:n #1 { T, F, TF }
 {
   \cs_generate_variant:Nn \regex_match:nnTF {nV}
-  % An institute index should be a number:
-  \regex_match:nnTF {^\d+$} { #1 }
+  % An institute index should be a number, multiple institutes are separated by a comma:
+  \regex_match:nnTF {^[,\d]+$} { #1 }
   { \prg_return_true:  }
   { \prg_return_false: }
 }
@@ -583,7 +583,6 @@
   % Digits 0 to 9;
   % Hyphen -, and brackets []
   % for the domain part
-  % [a-zA-Z0-9.]+$
   \regex_match:nnTF {.*?@[a-zA-Z0-9\.\-\[\]]+$} { #1 }
   { \prg_return_true:  }
   { \prg_return_false: }
