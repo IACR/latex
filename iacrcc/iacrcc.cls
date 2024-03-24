@@ -1,5 +1,5 @@
-\def\fileversion{0.59}
-\def\filedate{2024/02/14}
+\def\fileversion{0.61}
+\def\filedate{2024/03/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -152,7 +152,10 @@
     \RequirePackage[T1]{fontenc}
   \fi
   % hyperref: Extensive support for hypertext in LaTeX
-  \RequirePackage{hyperref}
+  % bookmarksopen: If Acrobat bookmarks are requested,
+  %                show them with all the subtrees expanded
+  % bookmarksopenlevel: parameter level to which bookmarks are open
+  \RequirePackage[bookmarksopen=true,bookmarksopenlevel=2]{hyperref}
   %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
