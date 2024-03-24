@@ -1,5 +1,5 @@
-\def\fileversion{0.59}
-\def\filedate{2024/02/14}
+\def\fileversion{0.62}
+\def\filedate{2024/03/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -901,7 +901,15 @@
   \gdef\@IACR@docdate@defined{1}%
 }
 
-\apptocmd{\thebibliography}{\csname phantomsection\endcsname\addcontentsline{toc}{section}{\refname}}{}{}
+% Ensure the bookmark for the reference points to the section header
+% Insert a PDF anchor into the beginning of \refname
+\let\oldrefname\refname%
+\def\refname{\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
+
+\apptocmd{\thebibliography}{%
+  \def\@currentHref{references}\relax%
+  \addcontentsline{toc}{section}{References}%
+}{}{}
 
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
