@@ -1,5 +1,5 @@
-\def\fileversion{0.59}
-\def\filedate{2024/02/14}
+\def\fileversion{0.60}
+\def\filedate{2024/03/24}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -922,6 +922,10 @@
     }%
   }
 \fi%!biblatex
+
+% xurl: Allow URL breaks at any alphanumerical character
+% Load xurl *after* biblatex to ensure the same behavior
+\RequirePackage{xurl}
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{%
