@@ -152,7 +152,10 @@
     \RequirePackage[T1]{fontenc}
   \fi
   % hyperref: Extensive support for hypertext in LaTeX
-  \RequirePackage{hyperref}
+  % bookmarksopen: If Acrobat bookmarks are requested,
+  %                show them with all the subtrees expanded
+  % bookmarksopenlevel: parameter level to which bookmarks are open
+  \RequirePackage[bookmarksopen=true,bookmarksopenlevel=2]{hyperref}
   %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
@@ -930,6 +933,10 @@
     }%
   }
 \fi%!biblatex
+
+% xurl: Allow URL breaks at any alphanumerical character
+% Load xurl *after* biblatex to ensure the same behavior
+\RequirePackage{xurl}
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{%
