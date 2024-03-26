@@ -1,5 +1,5 @@
-\def\fileversion{0.62}
-\def\filedate{2024/03/24}
+\def\fileversion{0.63}
+\def\filedate{2024/03/26}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -53,7 +53,6 @@
 \def\IACR@CROSSMARKURL{}
 \global\let\IACR@Received\@empty
 \global\let\IACR@Accepted\@empty
-\global\let\IACR@Published\@empty
 
 % etoolbox: is a toolbox of programming facilities geared primarily
 %           towards LaTeX class and package authors.
@@ -63,8 +62,8 @@
 \tracinglostchars=3
 
 % Options
-% The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
-% \IACR@Published, and \IACR@DOI.
+% The jobname.iacrmetadata file will contain
+% \IACR@Received, \IACR@Accepted, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
   \typeout{Inserted DOI into PDF}%
 }{}
@@ -981,7 +980,6 @@
         \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
           \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
           \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted \hfill{}\fi%
-          \ifx\IACR@Published\@empty\else Published: \IACR@Published\fi%
         }{%
           \ifdefined\@IACR@docdate@defined%
             \ifx\@IACR@docdate\@empty%
