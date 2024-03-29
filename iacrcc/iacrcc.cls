@@ -1,5 +1,5 @@
-\def\fileversion{0.63}
-\def\filedate{2024/03/26}
+\def\fileversion{0.64}
+\def\filedate{2024/03/29}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -906,7 +906,7 @@
 % Ensure the bookmark for the reference points to the section header
 % Insert a PDF anchor into the beginning of \refname
 \let\oldrefname\refname%
-\def\refname{\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
+\def\refname{\leavevmode\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
 
 \apptocmd{\thebibliography}{%
   \def\@currentHref{references}\relax%
