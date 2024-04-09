@@ -803,7 +803,7 @@
   \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
-    \StrLen{#2}[\IACR@tmp]%
+    \noexpandarg\StrLen{#2}[\IACR@tmp]%
     \ifnumgreater{\IACR@tmp}{70}{%
       \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
     }{}
