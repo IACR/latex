@@ -1,5 +1,5 @@
-\def\fileversion{0.64}
-\def\filedate{2024/03/29}
+\def\fileversion{0.66}
+\def\filedate{2024/04/09}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -179,6 +179,10 @@
     \def\DIFadd#1{#1}%
     \def\DIFdel#1{}%
   }
+  % When the ulem package is loaded make sure to enable \normalem:
+  % this makes sure ulem does not replace italics with underlining
+  % in text emphasized by \emph, and to some extent by \em
+  \@ifpackageloaded{ulem}{\normalem}{}%
   % The hyperref package is used to handle cross-referencing commands in
   % LaTeX to produce hypertext links in the document. hyperref is fussy about
   % the order in which it is loaded, and the official documentation recommends
