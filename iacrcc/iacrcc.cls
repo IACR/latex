@@ -1,5 +1,5 @@
-\def\fileversion{0.64}
-\def\filedate{2024/03/29}
+\def\fileversion{0.65}
+\def\filedate{2024/04/09}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -799,7 +799,7 @@
   \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
-    \StrLen{#2}[\IACR@tmp]%
+    \noexpandarg\StrLen{#2}[\IACR@tmp]%
     \ifnumgreater{\IACR@tmp}{70}{%
       \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
     }{}
