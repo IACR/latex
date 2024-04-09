@@ -33,8 +33,9 @@
        subtitle = {A Template}
       ]{How to Use the IACR Communications in Cryptology Class}
 % Where the options in square brackets “[ ]” are optional and control the following:
-% running: the running title displayed in the headers
-% subtitle: provide a subtitle
+% running:   the running title displayed in the headers
+% subtitle:  provide a subtitle
+% plaintext: a text version of the title (mandatory if macros are used in the title)
 
 % Define authors and affiliations
 % Authors are listed individually using the \addauthor tag followed by a list of affiliations.
@@ -52,6 +53,7 @@
 % orcid:    create a small clickable orcid logo next to the authors name 
 %           linking to the authors ORCID iD see: orcid.org.
 % footnote: create an author-specific footnote.
+% surname:  indicate the surname of the author for indexing purposes.
 % onclick:  define what to do when clicking on the external link logo
 %           next to the author name: e.g., can point to the academic webpage.
 % email:    define the e-mail address of this author.
@@ -94,8 +96,7 @@
 % city:       city name
 % state:      state or province name
 % postcode:   zip or postal code
-% country:    country name
-
+% country:    country name. Required for [version=final]
 \addaffiliation[ror     = 031v4g827,
                 street  = {Interleuvenlaan 80},
                 city    = {Leuven},
