@@ -26,8 +26,6 @@ jobs:
         version: 2023
         packages: |
           scheme-basic
-          latex-tools
-          latex-graphics
           filehook
           currfile          
           l3experimental
