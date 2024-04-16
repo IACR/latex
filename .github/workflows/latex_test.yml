@@ -72,6 +72,8 @@ jobs:
           ifmtarg
           babel
           urlbst
+          everyshi
+          tagpdf
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages

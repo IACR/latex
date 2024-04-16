@@ -1,5 +1,5 @@
-\def\fileversion{0.60}
-\def\filedate{2024/03/14}
+\def\fileversion{0.67}
+\def\filedate{2024/04/16}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -53,7 +53,6 @@
 \def\IACR@CROSSMARKURL{}
 \global\let\IACR@Received\@empty
 \global\let\IACR@Accepted\@empty
-\global\let\IACR@Published\@empty
 
 % etoolbox: is a toolbox of programming facilities geared primarily
 %           towards LaTeX class and package authors.
@@ -63,8 +62,8 @@
 \tracinglostchars=3
 
 % Options
-% The jobname.iacrmetadata file will contain accepted \IACR@Received,  \IACR@Accepted,
-% \IACR@Published, and \IACR@DOI.
+% The jobname.iacrmetadata file will contain
+% \IACR@Received, \IACR@Accepted, and \IACR@DOI.
 \InputIfFileExists{\jobname.iacrmetadata}{
   \typeout{Inserted DOI into PDF}%
 }{}
@@ -152,7 +151,10 @@
     \RequirePackage[T1]{fontenc}
   \fi
   % hyperref: Extensive support for hypertext in LaTeX
-  \RequirePackage{hyperref}
+  % bookmarksopen: If Acrobat bookmarks are requested,
+  %                show them with all the subtrees expanded
+  % bookmarksopenlevel: parameter level to which bookmarks are open
+  \RequirePackage[bookmarksopen=true,bookmarksopenlevel=2]{hyperref}
   %
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
@@ -177,6 +179,10 @@
     \def\DIFadd#1{#1}%
     \def\DIFdel#1{}%
   }
+  % When the ulem package is loaded make sure to enable \normalem:
+  % this makes sure ulem does not replace italics with underlining
+  % in text emphasized by \emph, and to some extent by \em
+  \@ifpackageloaded{ulem}{\normalem}{}%
   % The hyperref package is used to handle cross-referencing commands in
   % LaTeX to produce hypertext links in the document. hyperref is fussy about
   % the order in which it is loaded, and the official documentation recommends
@@ -632,7 +638,7 @@
   % Check the format of the inst
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@inst}\relax\else
     \expandafter\IfValidInst\expandafter{\@IACR@author@inst}{}{%
-      \ClassErr{The provided inst in \string\addauthor\space does not look valid: \@IACR@author@inst. Is this a valid index?}%
+      \ClassErr{The provided inst in \string\addauthor\space does not look valid: \@IACR@author@inst. Did you forget a comma?}%
     }{}%
   \fi
   % Check the format of the email
@@ -854,7 +860,7 @@
   \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
-    \StrLen{#2}[\IACR@tmp]%
+    \noexpandarg\StrLen{#2}[\IACR@tmp]%
     \ifnumgreater{\IACR@tmp}{70}{%
       \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
     }{}
@@ -958,7 +964,15 @@
   \gdef\@IACR@docdate@defined{1}%
 }
 
-\apptocmd{\thebibliography}{\csname phantomsection\endcsname\addcontentsline{toc}{section}{\refname}}{}{}
+% Ensure the bookmark for the reference points to the section header
+% Insert a PDF anchor into the beginning of \refname
+\let\oldrefname\refname%
+\def\refname{\leavevmode\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
+
+\apptocmd{\thebibliography}{%
+  \def\@currentHref{references}\relax%
+  \addcontentsline{toc}{section}{References}%
+}{}{}
 
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
@@ -979,6 +993,10 @@
     }%
   }
 \fi%!biblatex
+
+% xurl: Allow URL breaks at any alphanumerical character
+% Load xurl *after* biblatex to ensure the same behavior
+\RequirePackage{xurl}
 
 \global\let\@IACR@License\@empty%
 \newcommand\license[1]{%
@@ -1023,7 +1041,6 @@
         \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
           \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
           \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted \hfill{}\fi%
-          \ifx\IACR@Published\@empty\else Published: \IACR@Published\fi%
         }{%
           \ifdefined\@IACR@docdate@defined%
             \ifx\@IACR@docdate\@empty%
