@@ -21,41 +21,37 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install texlive
-      uses: teatimeguest/setup-texlive-action@v2
+      uses: teatimeguest/setup-texlive-action@v3
       with:
-        packages: >-
+        version: 2023
+        packages: |
           scheme-basic
           filehook
-          currfile
-          expl3
+          currfile          
           l3experimental
           cleveref
           xkeyval
           etoolbox
           xstring
           iftex
-          luatex85
-          fontenc
+          luatex85          
           fontspec
           pdfmanagement-testphase
           hyperref
           totpages
-          geometry
-          afterpage
+          geometry          
           sectsty
-          pgfkeys
+          pgf
           xpatch
           alphalph
           tokcycle
           listofitems
-          fancyhdr
-          graphicx
+          fancyhdr          
           csquotes
           biblatex
           biber
           doclicense
-          fancyvrb
-          amsthm
+          fancyvrb          
           mathtools
           floatrow
           caption
@@ -65,13 +61,15 @@ jobs:
           lipsum
           latexmk
           xifthen
-          ccicons
-          verbatim
+          ccicons          
           kvoptions
           ragged2e
           ifmtarg
           babel
           urlbst
+          everyshi
+          tagpdf
+          xurl
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages

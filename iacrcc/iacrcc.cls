@@ -1,5 +1,5 @@
-\def\fileversion{0.66}
-\def\filedate{2024/04/09}
+\def\fileversion{0.67}
+\def\filedate{2024/04/16}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -558,6 +558,44 @@
   \ClassError{iacrcc}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
 }
 
+\ExplSyntaxOn
+\prg_new_conditional:Npnn \iacr_check_orcid:n #1 { T, F, TF }
+{
+  \cs_generate_variant:Nn \regex_match:nnTF {nV}
+  % An Orcid consists of:
+  % 4 digits, "-", 4 digits, "-", 4 digits, "-", 3 digits, 1 digit or "x" or "X"
+  \regex_match:nnTF {^\d{4}-\d{4}-\d{4}-\d{3}[Xx\d]$} { #1 }
+  { \prg_return_true:  }
+  { \prg_return_false: }
+}
+\cs_new_eq:NN \IfValidOrcid \iacr_check_orcid:nTF
+
+\prg_new_conditional:Npnn \iacr_check_inst:n #1 { T, F, TF }
+{
+  \cs_generate_variant:Nn \regex_match:nnTF {nV}
+  % An institute index should be a number, multiple institutes are separated by a comma:
+  \regex_match:nnTF {^[,\d]+$} { #1 }
+  { \prg_return_true:  }
+  { \prg_return_false: }
+}
+\cs_new_eq:NN \IfValidInst \iacr_check_inst:nTF
+
+\prg_new_conditional:Npnn \iacr_check_email:n #1 { T, F, TF }
+{
+  \cs_generate_variant:Nn \regex_match:nnTF {nV}
+  % The format of e-mail addresses is complicated (see: https://en.wikipedia.org/wiki/Email_address)
+  % We lazy match all characters until the '@' (the local part) and then we only allow dot-seperated
+  % uppercase and lowercase Latin letters A to Z and a to z;
+  % Digits 0 to 9;
+  % Hyphen -, and brackets []
+  % for the domain part
+  \regex_match:nnTF {.*?@[a-zA-Z0-9\.\-\[\]]+$} { #1 }
+  { \prg_return_true:  }
+  { \prg_return_false: }
+}
+\cs_new_eq:NN \IfValidEmail \iacr_check_email:nTF
+\ExplSyntaxOff
+
 \newcommand\addauthor[2][]{%
   \MathAllowedInCheckStringfalse
   \checkstring{#2}{author names should not contain macros or math}%
@@ -591,6 +629,25 @@
   \pgfkeysgetvalue{/IACR-author/entities/inst}{\@IACR@author@inst}%
   \pgfkeysgetvalue{/IACR-author/entities/email}{\@IACR@author@email}%
   \expandafter\let\csname IACR@author@footnote\alphalph{\theIACR@author@cnt} \endcsname\@IACR@author@footnote% Copy the pgf key
+  % Check the format of the Orcid
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@orcid}\relax\else
+    \expandafter\IfValidOrcid\expandafter{\@IACR@author@orcid}{}{%
+      \ClassErr{The provided ORCID in \string\addauthor\space does not look valid: \@IACR@author@orcid. Did you forget a comma?}%
+    }{}%
+  \fi
+  % Check the format of the inst
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@inst}\relax\else
+    \expandafter\IfValidInst\expandafter{\@IACR@author@inst}{}{%
+      \ClassErr{The provided inst in \string\addauthor\space does not look valid: \@IACR@author@inst. Did you forget a comma?}%
+    }{}%
+  \fi
+  % Check the format of the email
+  \if\relax\expandafter\detokenize\expandafter{\@IACR@author@email}\relax\else
+    \expandafter\IfValidEmail\expandafter{\@IACR@author@email}{}{%
+      \ClassErr{The provided email in \string\addauthor\space does not look valid: \@IACR@author@email. Did you forget a comma?}%
+    }{}%
+  \fi
+  %
   \@writemeta{\IACRSS name: #2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@author@surname}\relax\else
     % If a surname is provided does some basic sanity checking on the string
