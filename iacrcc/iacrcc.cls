@@ -1,5 +1,5 @@
-\def\fileversion{0.67}
-\def\filedate{2024/04/16}
+\def\fileversion{0.68}
+\def\filedate{2024/06/12}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -973,6 +973,17 @@
   \def\@currentHref{references}\relax%
   \addcontentsline{toc}{section}{References}%
 }{}{}
+
+\AtEndPreamble{%
+  \@ifpackageloaded{babel}{%
+    % Ensure the bookmark for the reference points to the section header
+    % Insert a PDF anchor into the beginning of \refname
+    % Add this to captionsenglish to avoid problems when babel is used
+    \addto\captionsenglish{%
+      \gdef\refname{\leavevmode\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
+    }%
+  }{}%
+}
 
 % if the author decides to use biblatex, then we pass options for the style to enforce
 % consistent look and feel.
