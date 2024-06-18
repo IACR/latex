@@ -1310,3 +1310,55 @@ def test35_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
+
+def test36_test():
+  path = Path('test36')
+  labels = [('algorand', 'alg'),
+            ('website', 'DFi20'),
+            ('DHMR08', 'DHMR08'),
+            ('ong', 'EAK{$^{+'),
+            ('art2', 'Gro20'),
+            ('art1', 'GT20'),
+            ('EPRINT:KleOneAki23', 'K{\\"O'),
+            ('hand', 'MvOV01'),
+            ('sealcrypto', 'SEA20'),
+            ('turing', 'Tur53')]
+  with tempfile.TemporaryDirectory() as tmpdirpath:
+    bibtex_trigger = tmpdirpath / Path('usebibtex')
+    bibtex_trigger.touch()
+    files = [path / Path('main.tex'), path / Path('main.bib'), path / Path('iacrcc.cls')]
+    res = run_engine('-pdf', files, tmpdirpath)
+    assert res['proc'].returncode == 0
+    auxpath = tmpdirpath / Path('main.aux')
+    auxlines = [line for line in auxpath.read_text().splitlines() if '\\bibcite' in line]
+    bibtex_keys = []
+    for line in auxlines:
+      m = re.search(r'\\bibcite\{([^}]+)\}\{([^}]*)\}', line)
+      bibtex_keys.append((m.group(1), m.group(2)))
+    for i in range(len(labels)):
+      assert bibtex_keys[i][0] == labels[i][0]
+      assert bibtex_keys[i][1] == labels[i][1]
+    assert len(auxlines) == 10
+  # now run with biblatex. We extract the references from main.bbl,
+  # which has a different format than with bibtex.
+  BIBLATEX_PATT = r'\\entry{([^}]+)}(?:.*\\field{labelalpha}{([^}]+)})?(?:.*\\field{extraalpha}{([^}]+)})?'
+  # biblatex produces a slightly different label here that is visually identical
+  labels[3] = ('ong', 'EAK\\textsuperscript {+')
+  labels[6] = ('EPRINT:KleOneAki23', 'KÖA23')
+  with tempfile.TemporaryDirectory() as tmpdirpath:
+    files = [path / Path('main.tex'), path / Path('main.bib'), path / Path('iacrcc.cls')]
+    res = run_engine('-pdf', files, tmpdirpath)
+    assert res['proc'].returncode == 0
+    bbl_path = tmpdirpath / Path('main.bbl')
+    bbl_str = ' '.join(bbl_path.read_text().splitlines())
+    entryparts = re.split(r'\\endentry', bbl_str)
+    bibtex_keys = []
+    for part in entryparts:
+      m = re.search(BIBLATEX_PATT, part)
+      if m:
+        bibtex_keys.append((m.group(1), m.group(2)))
+    for i in range(len(labels)):
+      assert bibtex_keys[i][0] == labels[i][0]
+      assert bibtex_keys[i][1] == labels[i][1]
+    assert len(bibtex_keys) == 10
+    
