@@ -1,5 +1,5 @@
-\def\fileversion{0.68}
-\def\filedate{2024/06/12}
+\def\fileversion{0.69}
+\def\filedate{2024/06/17}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -992,11 +992,20 @@
   % csquotes: context sensitive quotation facilities
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   % biblatex: sophisticated Bibliographies in LaTeX
-  \RequirePackage[backend=biber,style=alphabetic,maxcitenames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
+  \RequirePackage[backend=biber,style=trad-alpha,minalphanames=3,maxalphanames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
   \DeclarePrintbibliographyDefaults{heading=bibintoc}%
-  \DeclareNameFormat{author}{%
-    \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
-  }%
+  \DeclareLabelalphaTemplate{
+    \labelelement{
+      \field[strwidth=3,strside=left]{label}
+      \field[strwidth=3,strside=left,ifnames=1]{labelname}
+      \field[strwidth=1,strside=left]{labelname}
+      \field[strwidth=3,strside=left]{citekey}
+    }
+    \labelelement{\field[strwidth=2,strside=right]{year}}
+  }
+  %% \DeclareNameFormat{author}{%
+  %%   \usebibmacro{name:given-family}{\namepartfamily}{\namepartgiven}{\namepartprefix}{\namepartsuffix}%
+  %% }%
 \else % did not invoke \documentclass[biblatex]{iacrcc}
   \AtBeginDocument{%
     \@ifpackageloaded{biblatex}{%
