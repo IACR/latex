@@ -49,6 +49,7 @@ jobs:
           fancyhdr          
           csquotes
           biblatex
+          biblatex-trad
           biber
           doclicense
           fancyvrb          
