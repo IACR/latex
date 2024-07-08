@@ -1,5 +1,5 @@
-\def\fileversion{0.70}
-\def\filedate{2024/06/27}
+\def\fileversion{0.71}
+\def\filedate{2024/07/08}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -601,7 +601,8 @@
   \checkstring{#2}{author names should not contain macros or math}%
   % Some additional checks on the if addauthor is used correctly
   % Check if the name contains an ","
-  \noexpandarg\IfSubStr{\detokenize{#2}}{,}{%
+  \saveexpandmode\noexpandarg % set \noexpandarg locally
+  \IfSubStr{\detokenize{#2}}{,}{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % Affiliations should be defined *after* addauthor
@@ -609,13 +610,14 @@
     \ClassError{iacrcc}{Affiliations must follow authors}%
   \fi
   % Do not use " and " in your author name: this might indicate incorrect usage
-  \noexpandarg\IfSubStr{#2}{ and }{%
+  \IfSubStr{#2}{ and }{%
     \ClassError{iacrcc}{Do not put several authors in the same \string\addauthor\space macro}{}%
   }{}%
   % No newline is allowed in addauthor
-  \noexpandarg\IfSubStr{#2}{\\}{%
+  \IfSubStr{#2}{\\}{%
     \ClassError{iacrcc}{Do not put a newline in the \string\addauthor\space macro}{}%
   }{}%
+  \restoreexpandmode % restore the previous mode
   %
   \stepcounter{IACR@author@cnt}%
   %
@@ -860,7 +862,9 @@
   \gdef\@title{#2}%
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@running}\relax
     \gdef\@IACR@title@running{\@plaintitle}%
-    \noexpandarg\StrLen{#2}[\IACR@tmp]%
+    \saveexpandmode\noexpandarg % set \noexpandarg locally
+    \StrLen{#2}[\IACR@tmp]%
+    \restoreexpandmode % restore the previous mode
     \ifnumgreater{\IACR@tmp}{70}{%
       \ClassWarning{iacrcc}{The title appears to be very long. Please define a running title by passing running=<runningtitle> to the \string\title\string macro}{}%
     }{}
@@ -1113,9 +1117,11 @@
 % \IACR@text@keywords is the plain text version used for PDF and metadata.
 
 \newcommand{\keywords}[2][\@empty]{%
-  \noexpandarg\IfSubStr{#2}{ \and }{%
+  \saveexpandmode\noexpandarg % set \noexpandarg locally
+  \IfSubStr{#2}{ \and }{%
     \ClassError{iacrcc}{Do not use the \string\and\space macro in \string\keywords: use "," instead}{}%
   }%
+  \restoreexpandmode % restore the previous mode
   \gdef\IACR@keywords{#2}%
   \ifx#1\@empty
     \checkstring{#2}{Keywords should be free of macros. Use optional argument to \string\keywords}
