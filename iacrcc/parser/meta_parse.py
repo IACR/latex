@@ -153,7 +153,7 @@ def parse_meta(metastr):
             if index < numlines and lines[index].startswith('  '):
                 k,v = get_key_val(lines[index])
                 if k == 'subtitle':
-                    data['subtitle'] = v
+                    data['subtitle'] = decoder.latex_to_text(v)
                     index += 1
         elif line.startswith('keywords:'):
             data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
