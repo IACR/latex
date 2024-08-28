@@ -1,23 +1,31 @@
 # IACR Communications on Cryptology
 
-## 🔧 This is a work in progress 🔧
+This directory contains a LaTeX class file for the [IACR Communications in Cryptology](https://cic.iacr.org/).
 
-This directory contains a LaTeX cls file for the new IACR
-Communications on Cryptology journal.  The user documentation is
-contained in iacrdoc.tex, and this README currently holds only
-development details.
+* The user documentation can be found [here](https://publish.iacr.org/iacrcc).
 
+* A template can be found [here](https://github.com/IACR/latex/blob/main/iacrcc/template.tex).
+
+* There are also quick start guides to
+
+  * [convert from `llncs`](https://publish.iacr.org/iacrcc/convertllncs)
+
+  * [convert from `ieeetran`](https://publish.iacr.org/iacrcc/convertieeetran)
+
+  * [convert from `iacrtrans`](https://publish.iacr.org/iacrcc/convertiacrtrans)
+
+This README currently holds only development details.
 The purpose of this style is to facilitate proper capture of author metadata
 for the publication editing workflow. Typically a LaTeX class is concerned with
 only the layout of the document, but we have added some additional requirements:
+
 1. when the user runs (pdf|lua|xe)latex on their document, it should produce a parsable text
    file that contains structured metadata about the paper, including title, authors,
    their affiliations, their funding, and the paper citations.
 2. the author should only have to enter this metadata once, in properly formatted
    LaTeX macros that conform to the required cls.
 
-This LaTeX style is based on the previous [iacrtrans](https://github.com/Cryptosaurus/iacrtrans)
-class used to ToSC and TCHES.
+This LaTeX style is based on the previous [iacrtrans](https://github.com/Cryptosaurus/iacrtrans) class used for [ToSC](https://tosc.iacr.org/) and [TCHES](https://tches.iacr.org/).
 
 The text file format is similar to yaml, and there is a parser for this
 file format in the `parser` subdirectory.
@@ -36,8 +44,7 @@ about authors and affiliations. Some are listed below.
    author has multiple affiliations.
  - [apa7](https://ctan.math.illinois.edu/macros/latex/contrib/apa7/apa7.pdf) uses a
    silly comma separated list, but the mapping from authors to affiliations is many to many as it
-   should be.
-  Their format is:
+   should be. Their format is:
   ```
   \authorsnames[1,{2,3},1]{Savannah C. St. John, Fen-Lei Chang, Carlos O. Vásquez III}
   \authorsaffiliations{{Education Testing Service, Princeton, New Jersey, ...},
