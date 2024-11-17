@@ -870,6 +870,7 @@
     }{}
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
+    \expandafter\checkstring\expandafter{\@IACR@title@subtitle}{subtitle argument to title must be plain text}%
     \gdef\@IACR@title@subtitle@defined{}%
   \fi
 }
