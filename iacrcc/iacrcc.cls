@@ -1,4 +1,4 @@
-\def\fileversion{0.71}
+\def\fileversion{0.72}
 \def\filedate{2024/07/08}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -870,6 +870,7 @@
     }{}
   \fi
   \if\relax\expandafter\detokenize\expandafter{\@IACR@title@subtitle}\relax\else
+    \expandafter\checkstring\expandafter{\@IACR@title@subtitle}{subtitle argument to title must be plain text}%
     \gdef\@IACR@title@subtitle@defined{}%
   \fi
 }
