@@ -1293,29 +1293,8 @@
 
 \newcommand\IACR@linenumbers{%
   % lineno: line numbers on paragraphs
-  \RequirePackage[mathlines]{lineno}
-  \def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
-  % Taken from http://phaseportrait.blogspot.fr/2007/08/lineno-and-amsmath-compatibility.html
-  \newcommand*\patchAmsMathEnvironmentForLineno[1]{%
-    \expandafter\let\csname old##1\expandafter\endcsname\csname ##1\endcsname
-    \expandafter\let\csname oldend##1\expandafter\endcsname\csname end##1\endcsname
-    \renewenvironment{##1}%
-    {\linenomathWithnumbersforAMS\csname old##1\endcsname}%
-    {\csname oldend##1\endcsname\endlinenomath}%
-  }%
-  \newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
-    \patchAmsMathEnvironmentForLineno{##1}%
-    \patchAmsMathEnvironmentForLineno{##1*}%
-  }%
-  \AtBeginDocument{%
-    \linenumbers
-    \patchAmsMathEnvironmentForLineno{equation*}%
-    \patchBothAmsMathEnvironmentsForLineno{align}%
-    \patchBothAmsMathEnvironmentsForLineno{flalign}%
-    \patchBothAmsMathEnvironmentsForLineno{alignat}%
-    \patchBothAmsMathEnvironmentsForLineno{gather}%
-    \patchBothAmsMathEnvironmentsForLineno{multline}%
-  }
+  \RequirePackage[mathlines,sep=11pt,width=11pt]{lineno}
+  \linenumbers%
 }
 \ifcsstring{@IACRversion}{submission}{\IACR@linenumbers}{}
 \ifcsstring{@IACRversion}{final}{%
