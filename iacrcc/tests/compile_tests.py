@@ -1361,4 +1361,12 @@ def test36_test():
       assert bibtex_keys[i][0] == labels[i][0]
       assert bibtex_keys[i][1] == labels[i][1]
     assert len(bibtex_keys) == 10
+
+def test37_test():
+  path = Path('test37')
+  with tempfile.TemporaryDirectory() as tmpdirpath:
+    files = [path / Path('main.tex'), path / Path('iacrcc.cls')]
+    res = run_engine('-pdf', files, tmpdirpath)
+    # It should fail because of a bad subtitle.
+    assert res['proc'].returncode == 12
     
