@@ -1,5 +1,5 @@
-\def\fileversion{0.73}
-\def\filedate{2024/11/28}
+\def\fileversion{0.74}
+\def\filedate{2024/12/09}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -1277,25 +1277,12 @@
   \restylefloat{figure}
 \fi
 
-% Line # for submission
-\newcommand\linenomathWithnumbersforAMS{%
-  \ifLineNumbers
-    \ifnum\interlinepenalty>-\linenopenaltypar
-      \global\holdinginserts\thr@@
-      \advance\interlinepenalty \linenopenalty
-      \ifhmode                                   % v4.3
-        \advance\predisplaypenalty \linenopenalty
-      \fi
-      \advance\interdisplaylinepenalty \linenopenalty
-    \fi
-  \fi
-  \ignorespaces
-}
-
 \newcommand\IACR@linenumbers{%
   % lineno: line numbers on paragraphs
   \RequirePackage[mathlines,sep=11pt,width=11pt]{lineno}
-  \linenumbers%
+  \AtBeginDocument{%
+    \linenumbers%
+  }%
 }
 \ifcsstring{@IACRversion}{submission}{\IACR@linenumbers}{}
 \ifcsstring{@IACRversion}{final}{%
