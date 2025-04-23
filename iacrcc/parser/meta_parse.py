@@ -120,7 +120,7 @@ def parse_meta(metastr):
                         author['familyName'] = parts[-1]
                 elif k == 'email':
                     author['email'] = v
-                elif k == 'affil':
+                elif k == 'affil' or k == 'inst':
                     author['affiliations'] = [a.strip() for a in v.split(',') if a.strip()]
                     for i in author['affiliations']:
                         if not i.isdigit():
@@ -146,6 +146,9 @@ def parse_meta(metastr):
                 index += 1
         elif line.startswith('version:'):
             data['version'] = line[8:].strip()
+            index += 1
+        elif line.startswith('schema:'):
+            data['schema'] = line[7:].strip()
             index += 1
         elif line.startswith('title:'):
             data['title'] = decoder.latex_to_text(line[6:].strip())
