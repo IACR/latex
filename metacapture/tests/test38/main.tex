@@ -1,0 +1,59 @@
+\documentclass[journal=tches]{iacrtrans}
+\usepackage{hyperref}
+\usepackage{metacapture}
+\newcommand{\pkgname}{metacapture}
+\newcommand{\pkgversion}{0.9}
+\title[plaintext={The metacapture LaTeX package},
+       running={The \pkgname\ \LaTeX\ package v\pkgversion},
+      ]{The \pkgname\ \textrm{\LaTeX} package v\pkgversion\footnote{Probably not ready for use by others yet.}}
+\subtitle{A demo for different maketitle styles and classes}
+\addauthor[orcid   = {0000-1111-2222-3333},
+           inst    = {1,2},
+           footnote= {Paul has a footnote},
+	   email   = {erdos@att.com},
+	   surname = {Erdős},
+          ]{Paul Erdős}
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           footnote = {Another remarkable Hungarian mathematician},
+           email   = {latex@digicrime.com},
+	   surname = {Turan},
+          ]{Pal Turan}
+\addauthor[inst={2,3},
+email={notgonnawork@google.com},
+           footnote={Home page at \url{https://theonion.com/}},
+           orcid={1111-2222-3333-4444}]{Third Author}
+\addauthor[inst={1},
+           email={fourth@example.com},
+           onclick = {https://example.com/first}]{Fourth author}
+\addauthor[inst={1},
+           email={fifth@example.com},
+           footnote={Fifth doesn't even know that he is an author}]{Fifth Author}
+\addauthor[inst={3},footnote={Sixth is last}
+]{Sixth Author}
+%\addauthor[inst={1},email={first@example.com}]{Seventh Author}
+\addaffiliation[ror        = 0168r3w48,
+                department = {Computer Science Department},
+                country={United States}]{University of California, San Diego}
+\addaffiliation[department={Department of Redundancy Department},
+                city={Sunnydale},
+                state={California},
+                country={Elbonia}]{Mega Corporation}
+\addaffiliation[country={Absurdistan},
+                department={Department of Unfundable Research},
+                city={Gottaknow}]{Faber College}
+\addkeywords[Metadata, publishing, LaTeX]{Metadata, publishing, \LaTeX}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  This is an abstract.
+\end{abstract}
+\begin{textabstract}
+In this paper we prove that the One-Time-Pad has perfect security, unless you use
+double encryption with a single key.
+\end{textabstract}
+\section{Just a section}
+With not much in it.
+\end{document}	

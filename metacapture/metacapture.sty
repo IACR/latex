@@ -1,0 +1,1580 @@
+%% metacapture package for metadata extraction.
+%%
+%% This was designed so that article metadata will be extracted
+%% to a plain text file named \jobname.meta during compilation.
+%% This is used within a publishing pipeline to keep article metadata
+%% consistent within the LaTeX file and the external system.
+%% The authoritative source is github.com/IACR/latex/iacrcj/metacapture
+%%
+%% To the extent possible under law, the author(s) have dedicated all
+%% copyright and related and neighboring rights to this software to the
+%% public domain worldwide. This software is distributed without any
+%% warranty.
+%%
+%% You should have received a copy of the CC0 Public Domain Dedication
+%% along with this software. If not, see
+%% <http://creativecommons.org/publicdomain/zero/1.0/>.
+%%
+%% Package-specific variables are defined with the \METAC@ prefix.
+%% Some variables are also defined in expl3 style with the metac module name.
+
+\def\METAC@fileversion{0.9}
+\def\METAC@filedate{2025/04/22}
+
+% It's not clear what we really need.
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\typeout{^^J  ***  LaTeX package for metadata capture v\METAC@fileversion\space ***^^J}
+% This enables 
+\ProvidesPackage{metacapture}[\METAC@filedate]
+
+%%%%%%%%%%%%%%%%%% Set package options. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% package options are stored with a @metacapture prefix.
+%% define a token list to store an option for emailreq.
+\ExplSyntaxOn
+\tl_new:N \g_metac_emailreq_tl % stores none, one, or all
+\tl_new:N \g_metac_maketitle_tl % stores a type of maketitle
+\tl_new:N \g_metac_affilstring_tl
+\prop_new:N \g_metac_author_prop
+\prop_new:N \g_metac_affil_prop
+
+\DeclareKeys[metacapture]{%
+  anonymous.if = @metacapture@anonymous,  % whether to conceal author information.
+  licensereq.if = @metacapture@licensereq, % whether to require a license.
+  textabstract.if = @metacapture@textabstract, % whether to demand a text abstract
+  maketitle .choices:nn = {none,iacrj,acmsmall,acmconf,ams,lipics,inv,jems} {\tl_set_eq:NN \g_metac_maketitle_tl \l_keys_choice_tl }, 
+  maketitle .initial:n = {none},
+  emailreq .choices:nn = {none, one, all}    {\tl_set_eq:NN \g_metac_emailreq_tl \l_keys_choice_tl },
+  emailreq .initial:n = {none},
+  orcidreq.if = @metacapture@orcidreq, % whether every author needs an orcid.
+  countryrequired.if = @metacapture@countryrequired, % Whether every affiliation requires a country.
+  notitlefootnote.if = @metacapture@notitlefootnote, % whether to allow footnotes on titles.
+  footnotesymbols.if = @metacapture@footnotesymbols, % title and author footnotes with symbols.
+}
+
+\ProcessKeyOptions[metacapture]
+
+% This holds the sequence of authors. Each entry is a serialized prop.
+\seq_new:N \g_metac_author_seq
+% This holds the sequence of affiliations. Each entry is a serialized prop.
+\seq_new:N \g_metac_affil_seq
+% This holds the list of funders. Each entry is a serialized prop.
+\seq_new:N \g_metac_funders_seq
+% boolean that determines whether affiliations are listed by number in
+% maketitle. It will be set to true if either there is more than one
+% author or more than one affiliation. This can only be calculated
+% after authors and affiliations have been added so we do it after
+% begin{document}.
+\bool_new:N \g_metac_affindex_bool
+\bool_set_true:N \g_metac_affindex_bool
+\AtBeginDocument{
+  \int_compare:nTF  {\seq_count:N \g_metac_author_seq = 1 } {
+    \bool_set_false:N \g_metac_affindex_bool
+  } {
+    \int_compare:nT {\seq_count:N \g_metac_affil_seq = 1 } {
+      \bool_set_false:N \g_metac_affindex_bool
+    }
+  }
+  % build sequence of authors with emails in \l_tmpa_seq
+  \seq_clear:N \l_tmpa_seq 
+  \seq_map_inline:Nn \g_metac_author_seq {
+    \tl_clear:N \l_tmpa_tl
+    \tl_clear:N \l_tmpb_tl
+    \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
+    \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
+      \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
+        % \seq_put_right:Nn \l_tmpa_seq {\href{mailto:\l_tmpa_tl}{\l_tmpa_tl}~{}~(\l_tmpb_tl)}
+        \seq_put_right:Nn \l_tmpa_seq {#1}
+      }{
+        \PackageError{metacapture}{All authors must have a name}
+      }
+    } {}
+  }
+  % now build the comma-separated list of email (name) entries
+  % for \g_metac_displayemails_tl
+  \int_case:nnF {\seq_count:N \l_tmpa_seq} {
+    0 {\tl_set:Nn \g_metac_displayemails_tl {} }
+    1 {\tl_set:Nn \g_metac_displayemails_tl {Email:~}}
+  } {
+    \tl_set:Nn \g_metac_displayemails_tl {Emails:~}
+  }
+  \seq_map_indexed_inline:Nn \l_tmpa_seq {
+    \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
+    \prop_get:NnN \l_tmpa_prop {email} \l_metac_email_tl
+    \prop_get:NnN \l_tmpa_prop {name} \l_metac_name_tl
+    \int_compare:nTF {#1 > 1} {
+      \tl_put_right:Ne \g_metac_displayemails_tl {,~\noexpand\href {mailto:\l_metac_email_tl} {\l_metac_email_tl}~(\l_metac_name_tl)}
+    } {
+      \tl_put_right:Ne \g_metac_displayemails_tl {\noexpand\href {mailto:\l_metac_email_tl} {\l_metac_email_tl}~(\l_metac_name_tl)}
+    }
+  }
+}
+
+% There are two lists of keywords, namely raw and plaintext. raw
+% keywords are allowed to contain macros, but plaintext keywords are
+% not. Both are stored in a clist data structure.
+\clist_new:N \g_metac_keywords_raw_clist
+\clist_new:N \g_metac_keywords_plaintext_clist
+
+% variables for title
+\tl_new:N \g_metac_titleplain_tl
+\tl_new:N \g_metac_titleraw_tl
+\tl_new:N \g_metac_titlerunning_tl
+
+\keys_define:nn { metacapture / title } {
+  plaintext .tl_set:N = \g_metac_titleplain_tl,
+  plaintext .default:n = {},
+  running .tl_set:N = \g_metac_titlerunning_tl,
+  running .default:n = {},
+  unknown .code:n = \PackageWarning{metacapture}{Unknown~key~for~title:'\l_keys_key_str'~=~'#1'.^^J}
+}
+% variables for subtitle
+\tl_new:N \g_metac_subtitleraw_tl
+\tl_new:N \g_metac_subtitleplain_tl
+\keys_define:nn { metacapture / subtitle } {
+  plaintext .tl_set:N = \g_metac_subtitleplain_tl,
+  plaintext .default:n = {}
+}
+
+% These keys are used only to validate what is supplied through
+% \addauthor. Nothing is stored when they are set.
+\keys_define:nn { metacapture / author } {
+  inst      .code:n = {},
+  orcid     .code:n = {},
+  email     .code:n = {},
+  surname   .code:n = {},
+  footnote  .code:n = {},
+  surname   .code:n = {},
+  onclick   .code:n = {},
+  name      .code:n = {},
+  name      .value_required:n = true,
+  unknown   .code:n = \PackageError{metacapture}{Unknown~key~for~author:'\l_keys_key_str'}
+}
+% Similarly, these keys are used only to validate what is supplied
+% through \addaffiliation. Nothing is stored when they are set.
+\keys_define:nn { metacapture / affiliation } {
+  ror        .code:n = {},
+  department .code:n = {},
+  street     .code:n = {},
+  city       .code:n = {},
+  state      .code:n = {},
+  postcode   .code:n = {},
+  country    .code:n = {}, % Can be found from \g_metac_countries_prop
+  countrycode .choices:nn = {AF,AX,AL,DZ,AS,AD,AO,AI,AQ,AG,AR,AM,AW,AU,AT,AZ,
+    BS,BH,BD,BB,BY,BE,BZ,BJ,BM,BT,BO,BQ,BA,BW,BV,BR,IO,BN,BG,BF,BI,CV,KH,CM,
+    CA,KY,CF,TD,CL,CN,CX,CC,CO,KM,CG,CD,CK,CR,CI,HR,CU,CW,CY,CZ,DK,DJ,DM,DO,
+    EC,EG,SV,GQ,ER,EE,SZ,ET,FK,FO,FJ,FI,FR,GF,PF,TF,GA,GM,GE,DE,GH,GI,GR,GL,
+    GD,GP,GU,GT,GG,GN,GW,GY,HT,HM,VA,HN,HK,HU,IS,IN,ID,IR,IQ,IE,IM,IL,IT,JM,
+    JP,JE,JO,KZ,KE,KI,KP,KR,KW,KG,LA,LV,LB,LS,LR,LY,LI,LT,LU,MO,MG,MW,MY,MV,
+    ML,MT,MH,MQ,MR,MU,YT,MX,FM,MD,MC,MN,ME,MS,MA,MZ,MM,NA,NR,NP,NL,NC,NZ,NI,
+    NE,NG,NU,NF,MK,MP,NO,OM,PK,PW,PS,PA,PG,PY,PE,PH,PN,PL,PT,PR,QA,RE,RO,RU,
+    RW,BL,SH,KN,LC,MF,PM,VC,WS,SM,ST,SA,SN,RS,SC,SL,SG,SX,SK,SI,SB,SO,ZA,GS,
+    SS,ES,LK,SD,SR,SJ,SE,CH,SY,TW,TJ,TZ,TH,TL,TG,TK,TO,TT,TN,TR,TM,TC,TV,UG,
+    UA,AE,GB,US,UM,UY,UZ,VU,VE,VN,VG,VI,WF,EH,YE,ZM,ZW} {}, % ISO-3166 Alpha-2 codes
+  name       .code:n = {},
+  name       .value_required:n = true,
+  unknown .code:n = \PackageError{metacapture}{Unknown~key~for~affiliation:'\l_keys_key_str'}
+}
+% Similarly, these keys are used only to validate what is supplied
+% through \addfunding. Nothing is stored when they are set, but validation
+% is performed on required and unknown keys.
+\keys_define:nn { metacapture / funding } {
+  ror .code:n = {},
+  fundref .code:n = {},
+  grantid .code:n = {},
+  country .code:n = {},
+  countrycode .choices:nn = {AF,AX,AL,DZ,AS,AD,AO,AI,AQ,AG,AR,AM,AW,AU,AT,AZ,
+    BS,BH,BD,BB,BY,BE,BZ,BJ,BM,BT,BO,BQ,BA,BW,BV,BR,IO,BN,BG,BF,BI,CV,KH,CM,
+    CA,KY,CF,TD,CL,CN,CX,CC,CO,KM,CG,CD,CK,CR,CI,HR,CU,CW,CY,CZ,DK,DJ,DM,DO,
+    EC,EG,SV,GQ,ER,EE,SZ,ET,FK,FO,FJ,FI,FR,GF,PF,TF,GA,GM,GE,DE,GH,GI,GR,GL,
+    GD,GP,GU,GT,GG,GN,GW,GY,HT,HM,VA,HN,HK,HU,IS,IN,ID,IR,IQ,IE,IM,IL,IT,JM,
+    JP,JE,JO,KZ,KE,KI,KP,KR,KW,KG,LA,LV,LB,LS,LR,LY,LI,LT,LU,MO,MG,MW,MY,MV,
+    ML,MT,MH,MQ,MR,MU,YT,MX,FM,MD,MC,MN,ME,MS,MA,MZ,MM,NA,NR,NP,NL,NC,NZ,NI,
+    NE,NG,NU,NF,MK,MP,NO,OM,PK,PW,PS,PA,PG,PY,PE,PH,PN,PL,PT,PR,QA,RE,RO,RU,
+    RW,BL,SH,KN,LC,MF,PM,VC,WS,SM,ST,SA,SN,RS,SC,SL,SG,SX,SK,SI,SB,SO,ZA,GS,
+    SS,ES,LK,SD,SR,SJ,SE,CH,SY,TW,TJ,TZ,TH,TL,TG,TK,TO,TT,TN,TR,TM,TC,TV,UG,
+    UA,AE,GB,US,UM,UY,UZ,VU,VE,VN,VG,VI,WF,EH,YE,ZM,ZW} {}, % ISO-3166 Alpha-2 codes
+  name    .code:n = {},
+  name    .value_required:n = true,
+  unknown .code:n = \PackageError{metacapture}{Unknown~key~for~funding:'\l_keys_key_str'}
+}
+\ExplSyntaxOff
+
+% See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
+\tracinglostchars=3
+
+% xstring: provides macros for manipulating strings - testing a string’s
+%          contents, extracting substrings, substitution of substrings and
+%          providing numbers such as string length, position of, or number
+%          of recurrences of, a substring.
+\RequirePackage{xstring} % Required for IfSubStr
+
+% This provides the savenotes macro to allow footnotes in boxes.
+\RequirePackage{footnotehyper}
+
+% comma-delimited list of author names.
+\global\let\METAC@listofauthors\@empty
+
+% Count the number of authors
+\newcounter{METAC@author@cnt}
+
+% Count the number of institutions
+\newcounter{METAC@affil@cnt}
+
+% Count the number of provided e-mail addresses. This must comply
+% with the emailreq option to the package.
+\newcounter{METAC@email@cnt}
+
+% Meta information is written out in [jobname].meta
+\newwrite\metacwrite
+\immediate\openout\metacwrite=\jobname.meta
+
+\AtEndDocument{%
+  \if@metacapture@licensereq
+    \ifx\METAC@license\@empty
+      \PkgErr{A license is required to be supplied via \string\license}
+    \fi
+  \fi
+  \if@metacapture@anonymous\else
+    % Check that emails were correctly recorded.
+  \fi
+  \immediate\closeout\metacwrite%
+  % Check if either \title, \addauthor or \addaffiliation macros were redefined
+  % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
+  % Throw an error if so, these are needed for meta-data collection
+  \ifx\store@addauthor\addauthor\else
+    \PkgErr{The \string\addauthor\space macro seems to be redefined}%
+  \fi
+  \ifx\store@title\title\else
+    \ifx\title\relax\else
+      \PkgErr{The \string\title\space macro seems to be redefined}%
+    \fi
+  \fi
+  \ifx\store@addaffiliation\addaffiliation\else
+    \PkgErr{The \string\addaffiliation\space macro seems to be redefined}%
+  \fi
+  % Final version requires textabstract.
+  \if@metacapture@textabstract
+    \IfFileExists{\jobname.abstract}{}{%
+      \PkgErr{An abstract with textabstract environment is required}}
+    \fi
+}
+\let\storeprotect\protect
+
+% xpatch: Extending etoolbox patching commands
+\RequirePackage{xpatch}
+
+% create an immediate version of \protected@write
+\let\protected@iwrite\protected@write
+\xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
+\newcommand\@writemeta[1]{\protected@iwrite\metacwrite{}{#1}}%
+
+% alphalph: Convert numbers to letters. This is used for
+% footnotes in \addauthor and \title
+\RequirePackage{alphalph}
+
+% This is for indentation in meta file.
+\newcommand{\META@CSS}{\space\space}
+
+\ExplSyntaxOn
+\def\METAC@iacrj@maketitle{%
+  \null
+  \vskip 2em%
+  \begin{center}%
+  \if@metacapture@footnotesymbols
+     % use symbols for title and author footnotes.
+     \renewcommand{\thefootnote}{\fnsymbol{footnote}}%
+  \else
+  % Ensure we use alphabetical numbering for the author footnotes
+    \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}%
+  \fi
+  % Insert the title and subtitle (if defined)
+  {\LARGE \bfseries\sffamily\boldmath \g_metac_titleraw_tl\par%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \vskip .5em{\large\sffamily\bfseries\g_metac_subtitleraw_tl\par}
+    }
+  }
+  \vskip 1.5em%
+  \large
+  \lineskip .5em%
+  \if@metacapture@anonymous
+     Anonymous~Submission
+  \else
+    \begingroup
+    \if@metacapture@footnotesymbols
+      % use symbols for title and author footnotes.
+      \renewcommand{\thefootnote}{\fnsymbol{footnote}}%
+    \else
+      % Ensure we use alphabetical numbering for the author footnotes
+      \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}%
+    \fi
+    \seq_map_indexed_inline:Nn \g_metac_author_seq {
+      \prop_clear:N \l_tmpa_prop
+      \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
+      \int_compare:nT {##1 > 1} {
+        \int_compare:nTF {##1 = \seq_count:N \g_metac_author_seq} {~and~} {,~}
+      }
+      \prop_get:NnN \l_tmpa_prop {name} \l_metac_authbox_tl
+      % store the footnote marks (footnote and inst) in \l_tmpa_tl
+      \tl_clear:N \l_tmpa_tl
+      \tl_clear:N \l_metac_fn_tl
+      \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+        \tl_put_right:Nn \l_metac_authbox_tl {\footnotemark}
+      } {
+        \tl_set:Nn \l_metac_fn_tl {}
+      }
+      \prop_get:NnNTF \l_tmpa_prop {inst} \l_metac_inst_tl {
+        \tl_if_empty:NTF \l_metac_fn_tl {
+          \tl_set:Nn \l_tmpa_tl {\l_metac_inst_tl}
+        } {
+          \tl_put_right:Nn \l_tmpa_tl {,\l_metac_inst_tl}
+        }
+      } { %no inst!
+      }
+      \bool_if:nT \g_metac_affindex_bool {
+        \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
+      }
+      \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
+        \tl_put_right:Nn \l_metac_authbox_tl {~\orcidlink{\l_metac_orcid_tl}}
+      } {}
+      \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
+        \tl_put_right:Nn \l_metac_authbox_tl {~\authorlink{\l_metac_onclick_tl}}
+      } {}
+      \mbox{\l_metac_authbox_tl}
+      \tl_if_empty:NTF \l_metac_fn_tl {} {\footnotetext{\l_metac_fn_tl}}
+    }
+     \vskip 1em\par
+     \small
+     \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+        \bool_if:nT \g_metac_affindex_bool {$^{##1}$~}
+        \prop_clear:N \l_tmpa_prop
+        \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+        \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpa_tl {
+          \l_tmpa_tl,~\prop_item:Nn \l_tmpa_prop {name}} {
+          \prop_item:Nn \l_tmpa_prop {name}
+        }
+        \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpa_tl {,~\l_tmpa_tl} {}
+        \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpa_tl {,~\l_tmpa_tl} {}
+        \\
+     }
+     \endgroup
+     \setcounter{footnote}{\theMETAC@affil@cnt}
+  \fi%!anonymous
+  \end{center}%
+  \par
+  \vskip 1.5em%
+}
+
+\def\METAC@ams@maketitle{%
+  \null
+  \vskip 2em%
+  \begin{center}%
+    \if@metacapture@footnotesymbols\renewcommand{\thefootnote}{\fnsymbol{footnote}}\fi
+  % Insert the title and subtitle (if defined)
+  {\Large \scshape\boldmath \g_metac_titleraw_tl%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {\par} {
+      \\{\g_metac_subtitleraw_tl\par}
+    }
+  }
+  \vskip 1.5em%
+  \lineskip .5em%
+  \if@metacapture@anonymous
+     Anonymous~Submission
+  \else
+    \clist_clear:N \l_tmpa_clist
+    \seq_map_indexed_inline:Nn \g_metac_author_seq {
+      \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
+      \prop_get:NnN \l_tmpa_prop {name} \l_tmpb_tl
+      \clist_put_right:No \l_tmpa_clist {\l_tmpb_tl}
+      \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+        \renewcommand\thefootnote{}\footnotetext{\l_metac_fn_tl}%
+      } {}
+    }
+    {\scshape \clist_use:Nnnn \l_tmpa_clist { ~and~ } { ,~ } { ,~and~ }}
+    \tl_clear:N \l_metac_fn_tl
+     \vskip 1em\par
+     % It's not clear how AMS handles an author with multiple
+     % affiliations, since it's called an ``address'' rather than an
+     % affiliation. We just list the affiliations (without email
+     % addresses for now).
+     \AtEndDocument{
+       \footnotesize
+       \begin{list}{}{\leftmargin=0.5cm%\rightmargin=\leftmargin
+       \item\relax
+     }
+       % This is complicated. For each author we need to generate a
+       % list of affiliation addresses, that we look up by values in
+       % the inst for an author.  For this reason we create a prop
+       % l_tmpb_prop that maps the index to the affiliation string.
+       \prop_clear:N \l_tmpb_prop
+       \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+         \prop_clear:N \l_tmpa_prop
+         \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+         \tl_clear:N \l_tmpa_tl
+         \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpb_tl {
+           \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl,~}
+         } {}
+         \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
+           \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+         } {}
+         \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpb_tl {
+           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+         } {}
+         \prop_get:NnNTF \l_tmpa_prop {state} \l_tmpb_tl {
+           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+         } {}
+         \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpb_tl {
+           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+         } {}
+         \prop_put:Nne \l_tmpb_prop {##1} {\l_tmpa_tl}
+       }
+       % now go through the authors and append the affiliation addresses.
+       \seq_map_inline:Nn \g_metac_author_seq {
+         \prop_clear:N \l_tmpa_prop
+         \prop_set_from_keyval:Nn \l_tmpa_prop {##1}
+         %\prop_get:NnNTF \l_tmpa_prop {name} \l_metac_name_tl {
+         %  ~\tl_use:N \l_metac_name_tl
+         %} {}
+         {\scshape
+         \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
+           \clist_set:Ne \l_tmpa_clist \l_tmpa_tl
+           \int_set:Nn \l_tmpa_int {1}
+           \clist_map_inline:Nn \l_tmpa_clist {
+             \str_set:Ne \l_tmpa_str {####1}
+             \prop_get:NeNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
+               \int_compare:nTF {\l_tmpa_int > 1} {
+                 \int_compare:nTF {\l_tmpa_int == \clist_count:N \l_tmpa_clist} {
+                   {}~and~\l_tmpb_tl
+                 } {
+                   ,~\l_tmpb_tl
+                 }
+               } {
+                 \l_tmpb_tl
+               }
+               \int_incr:N \l_tmpa_int
+             } {NO~MATCH~}
+           }
+         } {}
+         }
+         \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
+           \\\textit{Email~address:}~\texttt{\l_tmpa_tl}
+         } {}
+         \prop_get:NnNTF \l_tmpa_prop {onclick} \l_tmpa_tl {
+           \\\textit{URL:}~\url{\l_tmpa_tl}
+         } {}
+         \\[6pt]
+       }
+       \end{list}
+     }
+  \fi%!anonymous
+  \end{center}%
+  \par
+  \vskip 1.5em%
+}
+
+\def\METAC@acmsmall@maketitle{%
+  \setlength\parindent{0pt}
+  \null
+  \vskip 2em%
+  % Insert the title and subtitle (if defined)
+  {\LARGE\sffamily\bfseries \g_metac_titleraw_tl\par%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \vskip .5em{\Large\sffamily\bfseries\g_metac_subtitleraw_tl\par}
+    }
+  }
+  \vskip 1.5em%
+  \large
+  \lineskip .5em%
+  \if@metacapture@anonymous
+     Anonymous~Submission
+  \else
+  % Display the list of authors with their affiliations.
+  \seq_map_indexed_inline:Nn \g_metac_author_seq {
+    \prop_clear:N \l_tmpa_prop
+    \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+    \prop_get:NnN \l_tmpa_prop {name} \l_tmpa_tl
+    \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpb_tl {
+      {\scshape \href{https://orcid.org/\l_tmpb_tl}{\l_tmpa_tl}}
+    } {
+      {\scshape \l_tmpa_tl}
+    }
+    \tl_clear:N \l_metac_fn_tl
+    \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+      \footnote{\l_metac_fn_tl}
+    } {}
+    \clist_clear:N \l_tmpa_clist
+    \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpb_tl {
+      \clist_set:Ne \l_tmpa_clist \l_tmpb_tl
+    } {}
+    % put affiliation strings into \l_tmpa_seq and output them
+    % as comma-delimited list.
+    \tl_clear:N \l_tmpc_tl
+    {\small
+       \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+         \clist_if_in:NnTF \l_tmpa_clist {####1} {
+           \prop_set_from_keyval:Nn \l_tmpa_prop {####2}
+           \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
+             \int_compare:nTF {\clist_count:N \l_tmpa_clist > 1} {
+               \int_compare:nTF {####1 = \clist_count:N \l_tmpa_clist} {~and~} {,~}
+             } {
+               ,~
+             }
+             \l_tmpb_tl
+           } {}
+           % We don't use city, state, in acmsmall.
+           %% \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpb_tl {
+           %%   {,~\l_tmpb_tl}
+           %% }{}
+           %% \prop_get:NnNTF \l_tmpa_prop {state} \l_tmpb_tl {
+           %%   {,~\l_tmpb_tl}
+           %% }{}
+           \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpb_tl {
+             {,~\l_tmpb_tl}
+           }{}
+          } {}
+        }
+       \l_tmpc_tl
+    }\\
+  }
+  \fi%!anonymous
+  %\if@metacapture@footnotesymbols\setcounter{footnote}{0}\fi
+  \par
+  \vskip 1.5em%
+}
+
+% Modeled after Cambridge University Press journals.
+\newcommand\METAC@inv@maketitle{%
+  \null
+  \vskip .5em
+  \setlength\parindent{0pt}
+  \begingroup
+  \if@metacapture@footnotesymbols%
+    % use symbols for title and author footnotes.
+    \renewcommand{\thefootnote}{\fnsymbol{footnote}}%
+  \else%
+    % Ensure we use alphabetical numbering for the author footnotes
+    \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}%
+  \fi%
+  % Insert the title and subtitle (if defined)
+  {\Large\sffamily\bfseries\mathversion{bold} \g_metac_titleraw_tl%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \\[.3em] \large\g_metac_subtitleraw_tl\par
+    }
+    \par
+  }
+  \vskip 1em%
+  \lineskip .5em%
+  \if@metacapture@anonymous
+    Anonymous~Submission
+  \else
+    \begingroup
+    \if@metacapture@footnotesymbols%
+       % use symbols for title and author footnotes.
+       \renewcommand{\thefootnote}{\fnsymbol{footnote}}%
+    \else%
+     % Ensure we use alphabetical numbering for the author footnotes
+      \renewcommand{\thefootnote}{\alphalph{\value{footnote}}}%
+    \fi%
+      \raggedright
+      \seq_map_indexed_inline:Nn \g_metac_author_seq {
+        \prop_clear:N \l_tmpa_prop
+        \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
+        \int_compare:nT {##1 > 1} {
+          \hspace{.5em}
+          \int_compare:nTF {##1 < \seq_count:N \g_metac_author_seq} {} {and~}
+        }
+        \tl_clear:N \l_metac_authbox_tl
+        \prop_get:NnNTF \l_tmpa_prop {name} \l_metac_name_tl {
+          \tl_put_right:Nn \l_metac_authbox_tl {\l_metac_name_tl}
+        } {}
+        \int_compare:nT {##1 < \seq_count:N \g_metac_author_seq - 1} {
+          \tl_put_right:Nn \l_metac_authbox_tl {,}
+        }
+        \prop_get:NnNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {} {
+         \tl_set:Nn \l_metac_fn_tl {}
+        }
+        \bool_if:nT \g_metac_affindex_bool {
+          \prop_get:NnNTF \l_tmpa_prop {inst} \l_metac_inst_tl {
+            \tl_if_empty:NTF \l_metac_fn_tl {
+              \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_metac_inst_tl}$}
+            } {
+              \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_metac_inst_tl,}$}
+            }
+          } { %no inst!
+          } 
+        }
+        \tl_if_empty:NTF \l_metac_fn_tl {}{\tl_put_right:Nn \l_metac_authbox_tl {\footnote{\l_metac_fn_tl}}}
+        \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
+          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\orcidlink{\l_metac_orcid_tl}}
+        } {}
+        \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
+          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\authorlink{\l_metac_onclick_tl}}
+        } {}
+        \mbox{\l_metac_authbox_tl}
+      }
+      \vskip 1em\par
+      \small
+      \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+        \bool_if:nT \g_metac_affindex_bool {$^{##1}$~}
+        \prop_clear:N \l_tmpa_prop
+        \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+        \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpa_tl {
+          \l_tmpa_tl,~\prop_item:Nn \l_tmpa_prop {name}} {
+          \prop_item:Nn \l_tmpa_prop {name}
+        }
+        \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpa_tl {,~\l_tmpa_tl} {}
+        \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpa_tl {,~\l_tmpa_tl} {}
+        \\
+      }
+      \ifnum\theMETAC@email@cnt>0\relax
+        \hypersetup{urlcolor=blue}
+        \begin{list}{\METAC@emailicon}{\leftmargin=1em\labelsep=0pt}\item
+          \seq_map_indexed_inline:Nn \g_metac_author_seq {
+            \prop_clear:N \l_tmpa_prop
+            \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
+            \tl_clear:N \l_metac_authbox_tl
+            \prop_get:NnNTF \l_tmpa_prop {email} \l_metac_email_tl {
+              \prop_get:NnN \l_tmpa_prop {name} \l_metac_name_tl
+              \tl_put_right:Nn \l_metac_authbox_tl {\begin{tabular}[t]{l}}
+              \tl_put_right:Ne \l_metac_authbox_tl {\l_metac_name_tl}
+              \tl_put_right:Nn \l_metac_authbox_tl {\\}
+              \tl_put_right:Ne \l_metac_authbox_tl {\noexpand\href {\l_metac_email_tl}{\l_metac_email_tl}}
+              \tl_put_right:Nn \l_metac_authbox_tl {\end{tabular}}
+              \mbox{\l_metac_authbox_tl}\hspace{.2em}
+            } {}
+          }
+        \end{list}
+      \fi
+    \endgroup
+  \fi%!anonymous
+  \endgroup
+  %\if@metacapture@footnotesymbols\setcounter{footnote}{0}\fi
+  \par
+  \vskip 1.5em%
+}
+
+% Modeled after Journal of the European Mathematical Society.
+\newcommand\METAC@jems@maketitle{%
+  \null
+  \vskip .5em
+  \setlength\parindent{0pt}
+  \if@metacapture@anonymous
+    Anonymous~Submission
+  \else
+    \seq_map_indexed_inline:Nn \g_metac_author_seq {
+      \prop_clear:N \l_tmpa_prop
+      \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
+      \int_compare:nT {##1 > 1} {
+        \hspace{.3em}\textperiodcentered\hspace{.3em}
+      }
+      \prop_item:Nn \l_tmpa_prop {name}
+    }
+    \addtolength{\footnotesep}{5pt}
+    \begingroup
+    \small
+    \renewcommand\thefootnote{}
+    \seq_map_inline:Nn \g_metac_author_seq {
+      \prop_set_from_keyval:Nn \l_tmpa_prop {##1}
+      \prop_get:NnN \l_tmpa_prop {name} \g_metac_affilstring_tl
+      \tl_put_right:Nn \g_metac_affilstring_tl {:~}
+      %\footnotetext{\l_tmpa_tl}
+      \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpb_tl {
+        %\tl_put_right:Nn \l_tmpa_tl {\metac_affilsfrominst:n \l_tmpb_tl}
+        \metac_affilstring:nn \l_tmpb_tl \g_metac_affilstring_tl
+      } {}
+      \prop_get:NnNTF \l_tmpa_prop {email} \l_metac_email_tl {
+        \tl_put_right:Nn \g_metac_affilstring_tl {;~\href{mailto:\l_metac_email_tl}{\texttt{\l_metac_email_tl}}}
+      } {
+        \typeout{no email \g_metac_affilstring_tl}
+      }
+      \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
+        \tl_put_right:Nn \g_metac_affilstring_tl {;~\url{\l_metac_onclick_tl}}
+      } {
+      }
+      \footnotetext{\g_metac_affilstring_tl\vskip 3pt}
+    }
+    \endgroup
+  \fi
+  \\
+  % Insert the title and subtitle (if defined)
+  {\vskip 1em
+    \LARGE\bfseries\mathversion{bold} \g_metac_titleraw_tl%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \\[.3em] \Large\g_metac_subtitleraw_tl\par
+    }
+    \par
+  }
+  \vskip 1em%
+  \lineskip .5em%
+  %\if@metacapture@footnotesymbols\setcounter{footnote}{0}\fi
+  \par
+  \vskip 1.5em%
+}
+
+\def\METAC@lipics@maketitle{%
+  \null\raggedright
+  \setlength\parindent{0pt}
+  % Insert the title and subtitle (if defined)
+  {\LARGE\sffamily\bfseries\mathversion{bold} \g_metac_titleraw_tl%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \\{\Large\sffamily\bfseries\mathversion{bold}\g_metac_subtitleraw_tl\par}
+    }
+    \par
+  }
+  \vskip 1em%
+  \large
+  \lineskip .5em%
+  \if@metacapture@anonymous
+     Anonymous~Submission
+  \else
+  % For each author we need to generate a list of affiliation
+  % addresses that we look up by values in the inst for an
+  % author.  For this reason we create a prop l_tmpb_prop
+  % that maps the index to the affiliations string.
+  \prop_clear:N \l_tmpb_prop
+  \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+    \prop_clear:N \l_tmpa_prop
+    \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+    \tl_clear:N \l_tmpa_tl
+    \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpb_tl {
+      \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl,~}
+    } {}
+    \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
+      \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+    } {}
+    \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpb_tl {
+      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+    } {}
+    \prop_get:NnNTF \l_tmpa_prop {state} \l_tmpb_tl {
+      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+    } {}
+    \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpb_tl {
+      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+    } {}
+    \prop_put:Nne \l_tmpb_prop {##1} {\l_tmpa_tl}
+  }
+  % now print out the author list with their affiliations.
+  \normalsize
+  \seq_map_inline:Nn \g_metac_author_seq {
+    \prop_clear:N \l_tmpa_prop
+    \prop_set_from_keyval:Nn \l_tmpa_prop {##1}
+    \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpa_tl {
+      {\large\bfseries \l_tmpa_tl}
+      \prop_get:NnNTF \l_tmpa_prop {footnote} \l_tmpa_tl {
+        \footnote{\l_tmpa_tl}
+      } {}
+      \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
+        \hspace{.4em}\METAC@emaillink{\l_tmpa_tl}
+      } {}
+      \prop_get:NnNTF \l_tmpa_prop {onclick} \l_tmpa_tl {
+        \hspace{.4em}\homelink{\l_tmpa_tl}
+      } {}
+      \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpa_tl {
+        \hspace{.4em} \orcidlink{\l_tmpa_tl}
+      } {}
+      \\
+    } {}
+    \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
+      \clist_set:Ne \l_tmpa_clist \l_tmpa_tl
+      \clist_map_inline:Nn \l_tmpa_clist {
+        \str_set:Ne \l_tmpa_str {####1}
+        \prop_get:NeNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
+          \l_tmpb_tl\\
+        } {}
+      }
+    } {}
+    \vspace{.75em}
+  }
+  \fi%!anonymous
+  %\if@metacapture@footnotesymbols\setcounter{footnote}{0}\fi
+  \par
+  \vskip 1.5em%
+}
+
+% Each author is displayed in a parbox. Title is allowed to have
+% multiple footnotes, and authors are allowed one footnote
+% each.
+\def\METAC@acmconf@maketitle{%
+  \null
+  \vskip 2em%
+  \begin{center}
+  % Insert the title and subtitle (if defined)
+  {\LARGE \bfseries\sffamily\boldmath \g_metac_titleraw_tl\par%
+    \tl_if_empty:NTF \g_metac_subtitleraw_tl {} {
+      \vskip .5em{\large\sffamily\bfseries\g_metac_subtitleraw_tl\par}
+    }
+  }
+  \vskip 1.5em%
+  \large
+  \lineskip .5em%
+  \if@metacapture@anonymous
+     Anonymous~Submission
+     \else
+     % we use \l_tmpa_int to keep track of how many footnotes are added to authors.
+     \int_set:Nn \l_tmpa_int {0}
+     % calculate width of an author box.
+     \dim_new:N \l_metac_authsep_dim
+     %\dim_set:Nn \l_authbox_sep {5pt + 5pt - 1pt}
+     \dim_set:Nn \l_metac_authsep_dim {10pt}
+     \dim_new:N \l_metac_authwidth_dim
+     \dim_set:Nn \l_metac_authwidth_dim {\textwidth}
+     \int_case:nnF {\seq_count:N \g_metac_author_seq} {
+       0 {}
+       1 {}
+       2 {\dim_set:Nn \l_metac_authwidth_dim {(\textwidth / 2) - \l_metac_authsep_dim}}
+       3 {\dim_set:Nn \l_metac_authwidth_dim {(\textwidth / 3) - 2\l_metac_authsep_dim}}
+       4 {\dim_set:Nn \l_metac_authwidth_dim {(\textwidth / 2) - \l_metac_authsep_dim}}
+     } {
+       \dim_set:Nn \l_metac_authwidth_dim {(\textwidth / 3) - 2\l_metac_authsep_dim}
+     }
+     % Display the list of authors
+     \seq_map_indexed_inline:Nn \g_metac_author_seq {
+       \tl_clear:N \l_metac_fn_tl
+       \int_compare:nTF {##1 > 1} {
+         \hskip \l_metac_authsep_dim % 1em \@plus.17fil%
+       } {}
+       \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
+       \prop_get:NnN \l_tmpa_prop {name} \l_tmpa_tl
+       \prop_get:NnNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+         \tl_put_right:Nn \l_tmpa_tl {\footnote{\l_metac_fn_tl}}
+       } {}
+       \prop_get:NnNTF \l_tmpa_prop {email} \l_metac_email_tl {
+         \tl_put_right:Nn \l_tmpa_tl {\\\small \l_metac_email_tl}
+       } {}
+       \clist_clear:N \l_tmpa_clist
+       \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpb_tl {
+         \clist_set:Ne \l_tmpa_clist \l_tmpb_tl
+       } {}
+       \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+         \clist_if_in:NnTF \l_tmpa_clist {####1} {
+           \prop_set_from_keyval:Nn \l_tmpa_prop {####2}
+           \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
+             \tl_put_right:Nn \l_tmpa_tl {\\\small}
+             \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+           } {}
+           \prop_get:NnNTF \l_tmpa_prop {country} \l_metac_country_tl {
+             \tl_put_right:Nn \l_tmpa_tl {\\\small}
+             \tl_put_right:Ne \l_tmpa_tl {\l_metac_country_tl}
+           }{}
+         } {}
+       }
+       \parbox[t]{\l_metac_authwidth_dim}{
+         \begin{center}
+           \l_tmpa_tl
+         \end{center}
+       }
+     }
+  \fi%!anonymous
+  \end{center}
+  \par
+  \vskip 1.5em%
+}
+
+% We prohibit \thanks because footnotes are added as attributes rather than part of the
+% content for title and author.
+\tl_if_eq:NnTF \g_metac_maketitle_tl {none} {} {
+  \renewcommand{\thanks}[1]{\PackageError{metacapture}{The~\string\thanks\space macro~is~not~supported. ^^JSee~the~documentation~for~the~metacapture~package~on~how~to~use~footnotes.}{}}
+}
+
+% If the maketitle option is supplied, then \maketitle will be defined
+% as \METAC@maketitle
+\newcommand\METAC@maketitle{\par
+  % From footnotehyper package
+  \savenotes
+  \str_case_e:nnTF {\g_metac_maketitle_tl} {
+    {iacrj} {
+      \newcommand\METAC@atmaketitle{\METAC@iacrj@maketitle}
+    }
+    {ams} {
+      \newcommand\METAC@atmaketitle{\METAC@ams@maketitle}
+    }
+    {acmsmall} {
+      \newcommand\METAC@atmaketitle{\METAC@acmsmall@maketitle}
+    }
+    {acmconf} {
+      \newcommand\METAC@atmaketitle{\METAC@acmconf@maketitle}
+    }
+    {lipics} {
+      \newcommand\METAC@atmaketitle{\METAC@lipics@maketitle}
+    }
+    {inv} {
+      \newcommand\METAC@atmaketitle{\METAC@inv@maketitle}
+    }
+    {jems} {
+      \newcommand\METAC@atmaketitle{\METAC@jems@maketitle}
+    }
+  } {} {
+    \PackageError{metacapture}{Unknown~maketitle~argument}{}
+  }
+      
+  \if@twocolumn
+    \typeout{Two column detected}
+    \twocolumn[\METAC@atmaketitle]%
+  \else
+    \newpage
+    \global\@topnum\z@   % Prevents figures from going at top of page.
+    \METAC@atmaketitle%
+  \fi
+  \spewnotes
+  %\setcounter{footnote}{\int_eval:n \l_tmpa_int}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\@maketitle\relax
+  \global\let\@thanks\@empty
+  \global\let\@date\@empty
+  \global\let\date\relax
+  \global\let\and\relax
+}
+
+% In case no maketitle option is specified, we build a rudimentary version
+% of \@author for use in article class.
+\RenewDocumentCommand\@author{}{%
+  \seq_map_indexed_inline:Nn \g_metac_author_seq {
+    \prop_clear:N \g_metac_author_prop
+    \int_compare:nTF {##1 > 1} {
+      \and
+    } {}
+    \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
+    \prop_item:Nn \g_metac_author_prop {name}
+    \prop_get:NnNTF \g_metac_author_prop {footnote} \l_metac_fn_tl {
+      \footnote{\l_metac_fn_tl}
+    } {}
+    
+    \prop_get:NnNTF \g_metac_author_prop {orcid} \l_metac_orcid_tl {
+      \hspace{.5em}\orcidlink{\l_metac_orcid_tl}
+    } {}
+    \prop_get:NnNTF \g_metac_author_prop {onclick} \l_metac_onclick_tl {
+      \hspace{.3em}\homelink{\l_metac_onclick_tl}
+    } {}
+    \\
+    % Apparently the above newline closes a group, so we have to
+    % reconstruct \g_metac_author_prop
+    \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
+    \prop_get:NnNTF \g_metac_author_prop {inst} \l_metac_inst_tl {
+      \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+        \clist_set:Ne \l_tmpa_clist {\l_metac_inst_tl}
+        \clist_if_in:NnTF \l_tmpa_clist {####1} {
+          \prop_set_from_keyval:Nn \l_tmpb_prop {####2}
+          {\small \prop_item:Nn \l_tmpb_prop {name}}
+          \prop_if_in:NnTF \l_tmpb_prop {country} {
+            \\
+          } {}
+          \prop_set_from_keyval:Nn \l_tmpb_prop {####2}
+          {\small \prop_item:Nn \l_tmpb_prop {country}}
+        } {}
+      }
+    } {}
+    \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
+    \prop_if_in:NnTF \g_metac_author_prop {email} {
+      \\
+    } {}
+    \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
+    \prop_get:NnNTF \g_metac_author_prop {email} \l_metac_email_tl {
+      \small \l_metac_email_tl
+    } {}
+  }
+}
+
+% function returns affiliation list as a string for inst argument,
+% and put the result in the tl #2.
+\cs_new:Npn \metac_affilstring:nn #1#2 {}
+\cs_set:Npn \metac_affilstring:nn #1#2 {
+  \clist_set:No \l_tmpa_clist {#1}
+  \int_set:Nn \l_tmpa_int {0}
+  \seq_map_indexed_inline:Nn \g_metac_affil_seq {
+    \clist_if_in:NnTF \l_tmpa_clist {##1} {
+      \int_incr:N \l_tmpa_int
+      \int_compare:nTF {\l_tmpa_int > 1} {
+        \int_compare:nTF {\l_tmpa_int < \clist_count:N \l_tmpa_clist} {
+          \tl_put_right:Nn #2 {,~}
+        } {
+          \tl_put_right:Nn #2 {~and~}
+        }
+      } {}
+      \prop_set_from_keyval:Nn \g_metac_affil_prop {##2}
+      \prop_get:NnNTF \g_metac_affil_prop {department} \l_tmpa_tl {
+        \tl_put_right:Ne #2 {\l_tmpa_tl,~}
+      } {}
+      \prop_get:NnNTF \g_metac_affil_prop {name} \l_tmpa_tl {
+        \tl_put_right:Ne #2 {\l_tmpa_tl}
+      } {}
+      \prop_get:NnNTF \g_metac_affil_prop {city} \l_tmpa_tl {
+        \tl_put_right:Ne #2 {,~\l_tmpa_tl}
+      } {}
+      \prop_get:NnNTF \g_metac_affil_prop {country} \l_tmpa_tl {
+        \tl_put_right:Ne #2 {,~\l_tmpa_tl}
+      } {}
+    } {}
+  }
+}
+
+\AtBeginDocument{%
+  \@ifpackageloaded{hyperref}{
+    \hypersetup{colorlinks=true}
+    \clist_if_empty:NTF \g_metac_keywords_plaintext_clist {} {
+      \hypersetup{pdfkeywords={\clist_use:Nnnn \g_metac_keywords_plaintext_clist {,~} {,~} {,~}}}
+    }
+    \hypersetup{pdftitle={\g_metac_titleplain_tl}}%
+    \if@metacapture@anonymous
+      \hypersetup{pdfauthor={hidden~for~submission}}
+    \else
+      \hypersetup{pdfauthor={\METAC@listofauthors}}
+      \tl_if_eq:NnTF \g_metac_emailreq_tl {one}{%
+        % When we produce the final version we need at least one e-mail address
+        \ifnum\theMETAC@email@cnt<1\relax
+          \PackageError{metacapture}{At least one author must supply an e-mail address}
+        \fi
+      }{
+        \tl_if_eq:NnTF \g_metac_emailreq_tl {all}{%
+          \ifnum\theMETAC@email@cnt<\theMETAC@author@cnt\relax
+            \PackageError{metacapture}{All authors must supply an email address}{}%
+          \fi
+        } {}
+      }
+    \fi
+  } {}
+  \tl_if_eq:NnTF \g_metac_maketitle_tl {none} {
+    \typeout{Using~maketitle~from~document~class}
+  } {
+    \typeout{Using~maketitle~from~metacapture~package}
+    \renewcommand{\maketitle}{\METAC@maketitle}
+  }
+}
+
+% Add support to display the provided e-mail addresses
+% in the footnote of the front page
+\ExplSyntaxOff
+
+% We do not support \author, use \addauthor instead
+\renewcommand\author[2][]{%
+  \PackageError{metacapture}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
+}
+
+
+\ExplSyntaxOn
+\tl_new:N \g_metac_displayemails_tl
+\tl_set:Nn \g_metac_displayemails_tl {}
+\tl_new:N \l_metac_name_tl
+\tl_new:N \l_metac_fn_tl
+\tl_new:N \l_metac_country_tl
+\tl_new:N \l_metac_inst_tl
+\tl_new:N \l_metac_orcid_tl
+\tl_new:N \l_metac_email_tl
+\tl_new:N \l_metac_onclick_tl
+\tl_new:N \l_metac_authbox_tl
+
+\newcommand\addauthor[2][]{%
+  \ifx\METAC@listofauthors\@empty
+    \def\METAC@listofauthors{#2}%
+  \else
+    \appto\METAC@listofauthors{,\space #2}%
+  \fi
+  \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\addauthor\space may only be used before \string\begin{document}}{}\fi
+  \MathAllowedInCheckStringfalse
+  \checkstring{#2}{author names should not contain macros or math}%
+  % Some additional checks on the if addauthor is used correctly
+  % Check if the name contains an ","
+  \saveexpandmode\noexpandarg % set \noexpandarg locally
+  \IfSubStr{\detokenize{#2}}{,}{%
+    \PackageWarning{metacapture}{Do~not~separate~multiple~authors~by~comma~in~\string\addauthor\space~macro}%
+  }{}%
+  % Affiliations should be defined *after* addauthor
+  \ifnum\theMETAC@affil@cnt>0\relax
+    \PkgErr{Affiliations must follow authors}%
+  \fi
+  % Do not use " and " in your author name: this might indicate incorrect usage
+  \regex_match:nnTF { [\s]and[\s] } {#2} {
+    \PkgErr{Do not separate authors by 'and' in the same \string\addauthor\space macro}%
+  }{}%
+  % No newline is allowed in addauthor
+  \IfSubStr{#2}{\\}{%
+    \PkgErr{Do not put a newline in the \string\addauthor\space macro}%
+  }{}%
+  \restoreexpandmode % restore the previous mode
+  %
+  \stepcounter{METAC@author@cnt}%
+  \prop_clear:N \l_tmpa_prop
+  \keys_set:nn { metacapture / author } { #1 } % validate keys.
+  \seq_put_right:Nn \g_metac_author_seq { name={#2}, #1 }
+  \prop_set_from_keyval:Nn \l_tmpa_prop { name={#2}, #1 }
+  % Check the orcid value
+  \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpa_tl {
+    \regex_match:nVTF {^\d{4}-\d{4}-\d{4}-\d{3}[Xx\d]$} {\l_tmpa_tl} {} {
+      \PackageError{The provided ORCID in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}
+    }
+  } { % no orcid.
+    \if@metacapture@orcidreq\PkgErr{Every author must have an orcid set in \string\addauthor\space}\fi
+  }
+  \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
+    \regex_match:nVTF {^[,\d]+$} { \l_tmpa_tl } {} {
+      \PkgErr{The provided inst in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
+    }
+  } { % no inst
+    \typeout{No inst}
+  }
+  
+  % check email
+  \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
+    \regex_match:nVTF {.*?@[a-zA-Z0-9\.\-\[\]]+$} { \l_tmpa_tl } {} { % bad email
+      \PkgErr{The provided email in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
+    }
+    \stepcounter{METAC@email@cnt}%
+  } {}
+  % If a surname is provided does some basic sanity checking on the string
+  \prop_get:NnNTF \l_tmpa_prop {surname} \l_tmpa_tl {
+    \MathAllowedInCheckStringfalse
+    \expandafter\checkstring\expandafter{\l_tmpa_tl}{surname should not contain macros or math}%
+  } {}
+
+  % Write out the author in the meta file.
+  \@writemeta{author:}%
+  \clist_set:Nn \l_tmpa_clist {name,orcid,inst,surname,email}
+  \clist_map_inline:Nn \l_tmpa_clist {
+    \prop_get:NnNTF \l_tmpa_prop {##1} \l_tmpa_tl {
+      \@writemeta{\META@CSS ##1: \l_tmpa_tl}
+    } {}
+  }
+}
+
+\let\store@addauthor\addauthor% Save macro away
+
+% Define the \addfunding macro to capture funding meta-data
+\newcommand{\addfunding}[2][\@empty]{%
+  \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\addfunding\space may only be used before \string\begin{document}}{}\fi
+  \MathAllowedInCheckStringfalse
+  \checkstring{#2}{Funder name should not contain macros or math}%
+  \keys_set:nn { metacapture / funding } { name={#2}, #1 }
+  \seq_put_right:Nn \g_metac_funders_seq { name={#2}, #1 }
+  \prop_clear:N \l_tmpa_prop
+  \prop_set_from_keyval:Nn \l_tmpa_prop {name={#2}, #1}
+  \@writemeta{funding:}%
+  \prop_map_inline:Nn \l_tmpa_prop {
+    \@writemeta{\META@CSS ##1: ##2}%
+  }
+}
+\ExplSyntaxOff
+
+% This is a complicated implementation to test whether a token list is
+% appropriate to use as metadata. It is intended to make sure that
+% \write will produce a string without macros, except that macros are
+% allowed in math mode. In a previous implementation we compared the argument
+% to \text_purify:n applied to the argument, but this did not allow accents
+% to be applied. This implementation is based on tokcycle, which
+% provides handlers for four classes of tokens: character, group,
+% macro, and space.
+
+% tokcycle: Build tools to process tokens from an input stream
+\RequirePackage{tokcycle}
+
+% listofitems: Grab items in lists using user-specified sep char
+\RequirePackage{listofitems}
+
+% Just a shortcut for Errors
+\newcommand\PkgErr[1]{\PackageError{metacapture}{#1}{}}
+
+% TODO: Check if this is neccesary with new fixes.
+% Check if a token macro (in pdflatex) is a UTF-8 char
+\ExplSyntaxOn
+\prg_new_conditional:Npnn \METAC_check_uitfeight:n #1 { T, F, TF }
+{
+  % Define a regular expression where the second argument
+  % needs to be expanded.
+  % Look if the meaning of the token contains UTFviii
+  % In (pdf)latex UTF8 tokens look like:
+  % * \UTFviii@invalid@err
+  % * \UTFviii@two@octets (or three or four octets)
+  \cs_generate_variant:Nn \regex_match:nnTF {nV}
+  \regex_match:nVTF { UTFviii } { \token_to_meaning:N #1 }
+  { \prg_return_true:  }
+  { \prg_return_false: }
+}
+\cs_new_eq:NN \IfUITFEight \METAC_check_uitfeight:nTF
+\ExplSyntaxOff
+
+% Macro which specifies if math is allowed in the
+% first argument to \checkstring
+\newif\ifMathAllowedInCheckString
+\MathAllowedInCheckStringtrue
+
+\newif\ifTokenNotFound
+\newcommand\IsMacroAllowed[3]{%
+  \TokenNotFoundtrue
+  \setsepchar{,}% parsing-separator
+  % List of macros which are allowed
+  \readlist\phrase{\ ,\$,\#,\&,\%,\ss,\o,\O,\`,\',\^,\",\=,\~,\.,\u,\v,\H,\t,\c,\d,\b,\l,\L,\space,\{,\},\=,\\,\r}%
+  \def\METACtmp{#1}%
+  \foreachitem\word\in\phrase{%
+    \ifTokenNotFound
+      \ifx\METACtmp\word
+        \TokenNotFoundfalse
+      \fi
+    \fi
+  }%
+  \ifTokenNotFound
+    % Check if the macro is a UTF-8 character in pdflatex
+    % If so, we do not complain
+    \IfUITFEight{#1}{}{%
+      \PkgErr{#3:^^Jmacro \METACtmp not allowed in #2}%
+    }{}%
+  \fi
+}
+
+% #1 is a string to check as just text. No macros are allowed except accents
+%    that are easily converted downstream and except in math mode.
+% #2 is an error message prefix.
+\newcommand\checkstring[2]{%
+  % Since tokcycle treats the math toggle character $ as just another character,
+  % we keep track of whether we are in math mode using this if. This allows us
+  % to allow macros and groups in math mode but not in text mode.
+  \newif\ifInMathMode
+  \tokcycle{% character handler
+    %\typeout{CHARACTER: ##1}
+    \if##1$% Check if we see a math toggle catcode 3
+      \ifMathAllowedInCheckString
+        \ifInMathMode % toggle this
+          \InMathModefalse
+        \else
+          \InMathModetrue
+        \fi
+      \else
+        \PkgErr{#2:^^J math not allowed in ^^J #1}
+      \fi
+    \fi}% end of character handler
+    {% group handler
+    %\typeout{GROUP: ##1}
+    \ifInMathMode % groups are allowed in math mode.
+    \else
+      % Recurse and check this group: this allows things like {\`e}
+      \checkstring{##1}{#2}%
+    \fi}% end of group handler
+    {%  macro handler
+    %\typeout{MACRO: \string##1}
+    \ifInMathMode
+      \PackageWarning{metacapture}{^^JMacros are not recommended in the title^^J}
+    \else
+      \IsMacroAllowed{##1}{#1}{#2}%
+    \fi
+    }% end of macro handler
+    {% spaces are just ok.
+    }%
+    {#1}% argument to be parsed by tokcycle
+  % Reset the macro to check for math to the default (true) value
+  \MathAllowedInCheckStringtrue
+}
+
+% Provide the title of the paper with its various options. Note that this must be used in the preamble.
+\ExplSyntaxOn
+\renewcommand\title[2][]{%
+  \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\title\space may only be used before \string\begin{document}}{}\fi
+  \if@metacapture@notitlefootnote%
+    \saveexpandmode\noexpandarg % set \noexpandarg locally
+    \IfSubStr{#2}{\footnote}{\PackageError{metacapture}{The \string\footnote\space macro is disabled in the title}}
+    \restoreexpandmode % restore the previous mode
+  \fi
+  \tl_set:Nn \g_metac_titleraw_tl {#2}
+  \keys_set:nn { metacapture / title } { #1 }%
+  \tl_if_empty:NTF \g_metac_titlerunning_tl {\tl_set:Nn \g_metac_titlerunning_tl {\g_metac_titleraw_tl}} {}
+  \@ifclassloaded{amsart}{%
+    \def\shorttitle{\g_metac_titlerunning_tl}%
+  }{}
+  \tl_if_empty:NTF \g_metac_titleplain_tl {
+    \tl_set:Nn \g_metac_titleplain_tl {\g_metac_titleraw_tl}
+    \expandafter\checkstring\expandafter{#2}{plaintext~title~is~required}
+  } {
+    \expandafter\checkstring\expandafter{\g_metac_titleplain_tl}{plaintext~title~contains~macros}
+  }
+  \@writemeta{schema: \METAC@fileversion}
+  \@writemeta{title:~\g_metac_titleplain_tl}
+  \gdef\@title{#2}%
+}
+
+\providecommand{\subtitle}[2][]{}
+\renewcommand{\subtitle}[2][]{%
+  \if@metacapture@notitlefootnote%
+    \saveexpandmode\noexpandarg % set \noexpandarg locally
+    \IfSubStr{#2}{\footnote}{The \string\footnote\space macro is disabled in the subtitle}
+    \restoreexpandmode % restore the previous mode
+  \fi
+  \tl_set:Nn \g_metac_subtitleraw_tl {#2}
+  \keys_set:nn { metacapture / subtitle } { #1 }
+  \tl_if_empty:NTF \g_metac_subtitleplain_tl {
+    \tl_set_eq:NN \g_metac_subtitleplain_tl \g_metac_subtitleraw_tl
+%    \checkstring{\g_metac_subtitleplain_tl}{plaintext~subtitle~is~required}
+    \expandafter\checkstring\expandafter{\g_metac_subtitleplain_tl}{plaintext~subtitle~is~required}
+  } {
+    \expandafter\checkstring\expandafter{\g_metac_subtitleplain_tl}{plaintext~subtitle~contains~macros}
+  }
+  \@writemeta{\META@CSS subtitle:~\g_metac_subtitleplain_tl}
+  \appto{\@title}{\\#2}
+}
+
+\let\store@title\title% Save macro away to check if it was changed.
+
+\newcommand\addaffiliation[2][]{
+  \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\addaffiliation\space may only be used before \string\begin{document}}{}\fi
+  \stepcounter{METAC@affil@cnt}%
+  % If a affiliation name is provided does some basic sanity checking on the string
+  \MathAllowedInCheckStringfalse
+  \checkstring{#2}{Affiliation name should not contain macros or math}%
+  \keys_set:nn { metacapture / affiliation } { name={#2}, #1 }
+  \seq_put_right:Nn \g_metac_affil_seq { name={#2}, #1 }
+  \prop_clear:N \l_tmpa_prop
+  \prop_set_from_keyval:Nn \l_tmpa_prop {name={#2}, #1}
+  \@writemeta{affiliation:}%
+  \prop_map_inline:Nn \l_tmpa_prop {
+    \@writemeta{\META@CSS ##1: ##2}%
+  }
+  % Check for a country
+  \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpa_tl {} {
+    \ifcsstring{@METACversion}{final}{%
+      \PkgErr{Specify a country for each affiliation for the final version}%
+    }{}
+  }
+}
+\ExplSyntaxOff
+
+\let\store@addaffiliation\addaffiliation% Save macro away
+
+\if@metacapture@anonymous
+  \gdef\@author{Anonymous~Submission}%
+  \gdef\METAC@listofauthors{}%
+  \renewcommand{\addauthor}[2][]{}%
+  \renewcommand{\addaffiliation}[2][]{}%
+\fi
+
+\newcommand{\METAC@inst}[1]{%
+  \ifnum\theMETAC@author@cnt=1\relax\else
+    \ifnum\theMETAC@affil@cnt=1\relax\else
+      \unskip$^{#1}$%
+    \fi
+  \fi
+}
+
+\newcommand{\METAC@instwcomma}[1]{%
+  \ifnum\theMETAC@author@cnt=1\relax\else
+  \ifnum\theMETAC@affil@cnt=1\relax\else
+      \unskip$^{,\,#1}$%
+    \fi
+  \fi
+}
+
+\AtEndPreamble{%
+  \@ifpackageloaded{babel}{%
+    % Ensure the bookmark for the reference points to the section header
+    % Insert a PDF anchor into the beginning of \refname
+    % Add this to captionsenglish to avoid problems when babel is used
+    \addto\captionsenglish{%
+      \gdef\refname{\leavevmode\texorpdfstring{\vbox to 0pt{\vss\pdfdest name{references}XYZ\vskip\baselineskip}\relax\oldrefname}{\oldrefname}}%
+    }%
+  }{}%
+}
+
+% We are currently depending on the doclicense package for embedding
+% licenses into a document, but that has apparently fallen out of
+% maintenance. At present the \license macro takes an SPDX license
+% identifier.  In the future we may open this up to more licenses but
+% this would require cooperation with the PDF tagging project that is
+% working on XMP. There are potential problems with people who want to
+% specify a non-SPDX license (e.g., CC+). Lawyers will be creating new
+% licenses in perpetuity so we should expect demands to change this in
+% the future.
+\global\let\METAC@license\@empty%
+\ExplSyntaxOn
+\newcommand\license[1]{%
+  %\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}%
+  \ifx\@onlypreamble\@notprerr\PkgErr{\string\license\space must be used before \string\begin{document}}\else%
+    \ifx\METAC@license\@empty%
+       \str_set:Nx \l_tmpa_str { \str_casefold:n { #1 } }
+       \IfStrEq{#1}{CC-by}{
+         \typeout{Legacy~license~identifier~CC-by~replaced~by~CC-BY-4.0}
+         \str_set:Nx \l_tmpa_str {cc-by-4.0}
+       }{}
+       \global\def\METAC@license{\text_uppercase:n {\l_tmpa_str}}
+       % We delay setting the license until hyperref has been loaded.
+       \AtEndPreamble{
+         \str_case_e:nnTF {\METAC@license} {
+           {CC-BY-4.0} {
+             \RequirePackage[type={CC},modifier={by},version={4.0},hyperxmp=false]{doclicense}
+           }
+           {CC-BY-NC-4.0} {
+             \RequirePackage[type={CC},modifier={by-nc},version={4.0},hyperxmp=false]{doclicense}
+           }
+           {CC-BY-NC-ND-4.0} {
+             \RequirePackage[type={CC},modifier={by-nc-nd},version={4.0},hyperxmp=false]{doclicense}
+           }
+           {CC-BY-NC-SA-4.0} {
+             \RequirePackage[type={CC},modifier={by-nc-sa},version={4.0},hyperxmp=false]{doclicense}
+           }
+           {CC-BY-ND-4.0} {
+             \RequirePackage[type={CC},modifier={by-nd},version={4.0},hyperxmp=false]{doclicense}
+           }
+           {CC0-1.0} {
+             \RequirePackage[type={CC},modifier={zero},version={1.0},hyperxmp=false]{doclicense}
+           }
+         }{
+           \typeout{License\space was\space set\space to\space \METAC@license}
+           \@writemeta{license:~\METAC@license}
+         }{
+           \PkgErr{Invalid~license:~#1\space you~should~use~an~accepted~SPDX~identifier}
+           \global\def\METAC@license\@empty
+         }%
+       }
+    \else\PkgErr{License~has~already~been~set}\fi%
+  \fi% preamble check
+}
+
+\newcommand{\addkeywords}[2][\@empty]{%
+  \saveexpandmode\noexpandarg % set \noexpandarg locally
+  \IfSubStr{#2}{\and }{%
+    \PkgErr{Do~not~use~the~\string\and\space~macro~in~\string\addkeywords:~use~","~instead}%
+  }%
+  \restoreexpandmode % restore the previous mode
+  \ifx#1\@empty
+    \checkstring{#2}{Keywords~should~be~free~of~macros.~Use~optional~argument~to~\string\addkeywords}
+    \clist_set:Nn \g_metac_keywords_raw_clist {#2}
+    \clist_set:Nn \g_metac_keywords_plaintext_clist {#2}
+  \else
+    \checkstring{#1}{optional argument to keywords may not contain macros.}
+    \clist_set:Nn \g_metac_keywords_raw_clist {#2}
+    \clist_set:Nn \g_metac_keywords_plaintext_clist {#1}
+  \fi
+  \@writemeta{keywords:~\clist_use:Nnnn \g_metac_keywords_plaintext_clist {,~} {,~} {,~}}
+}
+\ExplSyntaxOff
+
+% fancyvrb: sophisticated verbatim text
+\RequirePackage{fancyvrb} % used to write the abstract into \jobname.abstract
+
+% See: https://tex.stackexchange.com/questions/596323/unicode-characters-within-verbatimout-of-fancyvrb
+% The fancyvrb package uses \immediate\write, but this has the consequence
+% that active characters not explicitly inactivated are expanded.
+% Patch to use a “protected” immediate write.
+% Define the same as \protected@write, but with \immediate
+\providecommand*\protected@iwrite@fancyvrb[3]{%
+  \begingroup
+  \let\thepage\relax
+  #2%
+  \let\protect\@unexpandable@protect
+  \edef\reserved@a{\immediate\write#1{#3}}\reserved@a
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi
+}
+\patchcmd{\FVB@VerbatimOut}
+  {\immediate\write\FV@OutFile}
+  {\protected@iwrite@fancyvrb\FV@OutFile{}}
+  {}{}
+
+% To be used by an author to provide a text abstract. This is required
+% for the final version.
+\newenvironment{textabstract}{%
+  \VerbatimOut{\jobname.abstract}}{\endVerbatimOut}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This provides a command to insert the ORCiD logo, which is hyperlinked to
+% the URL of the researcher whose iD was specified.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This copies over definition of the orcidlink from the orcidlink style file
+% by Leo C. Stein which in turn is a package around Milo's code on TeX.SE,
+% see https://tex.stackexchange.com/a/445583/34063
+
+% tikz: create PostScript and PDF graphics in TEX
+\RequirePackage{tikz}
+\usetikzlibrary{svg.path}
+
+\newcommand\homelink[1]{%
+\href{#1}{\begin{tikzpicture}[scale=.3]
+\draw[rounded corners=.06pt,fill=black]
+   (.2,0)--(.2,.3)--(.5,.55) -- (.8,.3) -- (.8,0) -- (.6,0) -- (.6,.25) -- (.4,.25) -- (.4,0) -- (.2,0);
+   \draw[line width=.8,rounded corners=.06pt,line cap=round] (.1,.36) -- (.5,.7) -- (.9,.36);
+   \draw[rounded corners=.06pt,fill=black] (.7,.5) -- (.7,.75) -- (.8,.75) -- (.8,.4) -- (.7,.5);
+\end{tikzpicture}}}
+
+
+\newcommand\METAC@emailicon{\begin{tikzpicture}[scale=.18]
+  \draw[thick,rounded corners=.2pt] (.05,1)--(1.6,1)--(1.6,0)--(0,0)--(0,1)--(1.6,1)--(.8,.4)--(.02,.99);
+  \end{tikzpicture}}
+\newcommand\METAC@emaillink[1]{%
+\href{mailto:#1}{\METAC@emailicon}}
+
+\definecolor{orcidlogocol}{HTML}{A6CE39}
+\tikzset{%
+  orcidlogo/.pic={%
+    \fill[orcidlogocol] svg{M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
+    \fill[white] svg{M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
+                 svg{M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
+                 svg{M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1C84.2,46.7,88.7,51.3,88.7,56.8z};
+  }%
+}
+
+% Reciprocal of the height of the svg for the ORCID icon above.  The
+% original generates a 256pt high graphic; this macro holds 1/256.
+\newcommand{\@OrigHeightRecip}{0.00390625}
+
+% We will compute the current X height to make the logo the right height
+\newlength{\@curXheight}
+
+\DeclareRobustCommand\orcidlink[1]{%
+  \texorpdfstring{%
+    \setlength{\@curXheight}{\fontcharht\font`X}%
+    \href{https://orcid.org/#1}{\XeTeXLinkBox{\mbox{%
+    \begin{tikzpicture}[yscale=-\@OrigHeightRecip*\@curXheight,%
+      xscale=\@OrigHeightRecip*\@curXheight,transform shape]%
+      \pic{orcidlogo};
+    \end{tikzpicture}%
+}}}}{}}
+% End of macros for orcidlink
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This produces an icon for an external link. We use it as the external link
+% icon for onclick on authors.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tikzset{%
+  linkicon/.pic={%
+    \fill[blue] svg{M36 24c-1.2 0-2 0.8-2 2v12c0 1.2-0.8 2-2 2h-22c-1.2
+0-2-0.8-2-2v-22c0-1.2 0.8-2 2-2h12c1.2 0 2-0.8 2-2s-0.8-2-2-2h-12c-3.4
+0-6 2.6-6 6v22c0 3.4 2.6 6 6 6h22c3.4 0 6-2.6
+6-6v-12c0-1.2-0.8-2-2-2z};
+    \fill[blue] svg{M43.8 5.2c-0.2-0.4-0.6-0.8-1-1-0.2-0.2-0.6-0.2-0.8-0.2h-12c-1.2
+0-2 0.8-2 2s0.8 2 2 2h7.2l-18.6 18.6c-0.8 0.8-0.8 2 0 2.8 0.4 0.4 0.8
+0.6 1.4 0.6s1-0.2 1.4-0.6l18.6-18.6v7.2c0 1.2 0.8 2 2 2s2-0.8
+2-2v-12c0-0.2 0-0.6-0.2-0.8z};
+  }%
+}
+
+% The original external link icon was 48 pt, and this is approximately the
+% reciprocal of that height.
+\newcommand{\@OrigIconHeightRecip}{.02}
+
+% The macro for the link icon.
+\DeclareRobustCommand\linkicon{%
+  \setlength{\@curXheight}{\fontcharht\font`X}%
+  \mbox{%
+    \begin{tikzpicture}[yscale=-\@OrigIconHeightRecip*\@curXheight,%
+      xscale=\@OrigIconHeightRecip*\@curXheight,transform shape]%
+      \pic{linkicon};
+    \end{tikzpicture}%
+}}
+
+\DeclareRobustCommand\authorlink[1]{%
+  \texorpdfstring{%
+    \href{#1}{\XeTeXLinkBox{\mbox{\linkicon}}}}{}}
+
+% End of macros for linkicon and authorlink.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some special cases
+\@ifclassloaded{acmart}{%
+%  \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}%
+}{% not acmart
+  \@ifclassloaded{sn-jnl}{%
+%    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}}%
+  }{% all other classes.
+    % This is required for \license
+    %\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}%
+  }%
+}%
+\ExplSyntaxOn
+\@ifclassloaded{acmart}{\providecommand{\shorttitle}{\g_metac_titlerunning_tl}}{}
+\ExplSyntaxOff
+\endinput
+%end of file metacapture.sty
+

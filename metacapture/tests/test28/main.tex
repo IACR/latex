@@ -1,0 +1,172 @@
+% IACR Communications in Cryptology template file
+% This file shows how to use the iacrcc class to write a paper.
+
+%% Document mode
+% [version=xxx] where xxx is preprint, submission, or final. The default is preprint.
+%               version=submission puts line numbers into the document and makes it
+%               anonymous (which can be overridden).
+%               version=final is for submitting the final version. This requires a license
+%               to be specified and must be compiled with lualatex.
+% [notanonymous]  Keep author names in submission mode
+%% Package options
+% [floatrow]      Load floatrow package with correct captions
+% [xcolor=xxx]    Pass xxx to xcolor package
+% [hyperref=xxx]  Pass xxx to hyperref package
+% [biblatex]      Use the biblatex package instead of bibtex. Note that options
+%                 may not be passed to biblatex at this time.
+\documentclass[journal=cic,version=preprint]{iacrj}
+
+\usepackage{lipsum}
+
+% When the *final* document mode is used
+% the authors need to provide a supported license.
+% In all other modes this information is ignored.
+% The currently provided ones are { CC-by }
+\license{CC-by}
+
+% Include LaTeX packages required by your paper
+% \usepackage{}
+
+% Provide the title of the paper
+% This should look like:
+\title[running  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+      ]{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+\subtitle[plaintext={Just a LaTeX subtitle}]{Just a \LaTeX\ subtitle}
+% Where the options in square brackets “[ ]” are optional and control the following:
+% running:   the running title displayed in the headers
+% onclick:   define what to do when clicking on the title. 
+%            This could be used to point to a webpage associated with this paper. 
+% subtitle:  provide a subtitle
+% plaintext: a text version of the title
+
+% Define authors and affiliations
+% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \addauthor[inst      = {1,2},
+%            orcid     = 0000-0000-0000-0000,
+%            footnote  = {Thanks to my supervisor for the support.},
+%            onclick   = {https://www.mypersonalwebpage.com}
+%           ]{Alice Accomplished}
+% Where the options in square brackets “[ ]” are optional 
+% and control the following:
+% inst:     a numerical list pointing to the index of the institution 
+%           in the affiliation array.
+% orcid:    create a small clickable orcid logo next to the authors name 
+%           linking to the authors ORCID iD see: orcid.org.
+% footnote: create an author-specific footnote.
+% onclick:  define what to do when clicking on the author name: 
+%           e.g., can point to the academic webpage.
+% email:    define the e-mail address of this author.
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+           footnote = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+           email    = {joppe.bos@nxp.com},
+           surname  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+          ]{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           email   = {mccurley@digicrime.com},
+           surname = {McCurley},
+          ]{Kevin S. McCurley}
+
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+	   footnote = {This is an example fö{\"o}tnote.},
+           email    = {joppe.bos@nxp.com},
+           surname  = {B{\"o}s}
+          ]{Joppe W. B{\"o}s}
+          
+% The following command controls the running header for authors
+% This is optional for <= 4 authors and mandatory for > 4 authors
+\authorrunning{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+
+% Affiliations are listed individually using the \addaffiliation command 
+% *after* the (list of) authors using \addauthor
+% This should look like (full example):
+% \addaffiliation[ror        = 05f950310,
+%                 onclick    = {http://www.kuleuven.be/english},
+%                 department = {Computer Security and Industrial Cryptography},              
+%                 street     = {Kasteelpark Arenberg 10, box 2452},
+%                 city       = {Leuven},
+%                 state      = {Vlaams-Brabant},
+%                 postcode   = {3001},
+%                 country    = {Belgium}
+%                ]{KU Leuven}
+% Where the options in square brackets “[ ]” are optional and control 
+% the following (optional information is mainly used for meta-data collection):
+% ror:        provide the Research Organization Registry (ROR) identifier 
+%             for this affiliation (see: ror.org). This is used for meta-data 
+%             collection only.
+% onclick:    define what to do when clicking on the affiliation name: 
+%             e.g., can point to the affiliation webpage.
+% department: department or suborganization name
+% street:     street address
+% city:       city name
+% state:      state or province name
+% postcode:   zip or postal code
+% country:    country name
+
+\addaffiliation[ror     = 031v4g827,
+                street  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+                city    = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+                postcode= {3001},
+                country = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+                department = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+                state = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+               ]{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+\addaffiliation{Self}
+
+% Add funding information if applicable
+% NOTE: This is only used in meta-data collection, 
+%       this is *not* used to display anything in the PDF
+\addfunding[country  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
+            grantid  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}, 
+            fundref  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+           ]{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+\genericfootnote{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
+
+\begin{document}
+
+\maketitle
+
+% Provide the keywords *before* the abstract
+% When keywords contain macros provide the text version as the optional argument
+\newcommand{\Dirac}{Dirac}
+\keywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
+
+% Provide the abstract of your paper
+\begin{abstract}
+  Abstract goes here.
+\end{abstract}
+\begin{textabstract}
+  Text abstract goes here.
+\end{textabstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+See the ``How to Use the IACR Communications in Cryptology Class'' for more details.
+
+\section{Bibliography}
+Citing papers is done in the usual way using BibTeX or \texttt{biblatex}
+commands. For example: the RSA paper~\cite{RSA78}.
+
+It is highly encouraged to use CyptoBib from \url{https://cryptobib.di.ens.fr}
+
+\lipsum[1-20]
+
+% This sample uses bibtex rather than biblatex.
+% \bibliography{template}
+
+% NOTES
+% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
+% - Use bilbio.bib for additional references not in the cryptobib database.
+%   If possible, take them from DBLP.
+
+\end{document}

@@ -1,0 +1,163 @@
+\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7,lang=en,debug={xmp-export}}
+\def\pkgname{metacapture}
+\def\pkgversion{0.9}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This document will work with many different choices of documentclass
+%\documentclass[draft]{article}
+% title footnotes don't work in twocolumn.
+%\documentclass[twocolumn]{article}
+\documentclass{scrarticle}
+%\documentclass[journal=tches,submission]{iacrtrans}
+% taken from overleaf
+%\documentclass[sigconf,authordraft,twocolumn]{acmart}
+%\documentclass[twocolumn]{acmart}
+% this fails with footnotes
+%\documentclass{acmart}
+%\documentclass{lipics-v2021}
+%\documentclass[format=acmsmall]{acmart}
+%\documentclass[conference,compsoc]{IEEEtran}
+%\documentclass{IEEEconf}
+% abstract is supposed to be before \title in amsart, even
+% though it is typeset after title.
+%\documentclass{amsart}
+% revtex4-2 does not work (with various failure modes).
+%\documentclass[aps,prl,preprint,nofootinbib]{revtex4-2}
+%\documentclass{revtex4-2}
+% This looks weird to me, with subsections in italics.
+%\documentclass[preprint,1p]{elsarticle}
+%\documentclass{llncs}
+%\documentclass{jacow}
+%\documentclass{icsv}
+% semproc does not work because of a bug in biblatex and load order.
+%\documentclass{semproc}
+%\documentclass{limap}
+%\documentclass{isodoc}
+% ejpecp does not work.
+%\documentclass[EJP]{ejpecp}
+% jwjournal does not work
+%\documentclass{jwjournal}
+%\documentclass{spie}
+%\documentclass{active-conf}
+%\documentclass{paper}
+% This almost works.
+%\documentclass{aomart}
+%\documentclass{ecca}
+% does not work because of natbib.
+% \documentclass{jmlr}
+% %This does not work
+%\documentclass{asmejour}
+%\documentclass{aiaa-tc}
+%\documentclass{verifica}
+%\documentclass{SFEE}
+%\documentclass{apa}
+% clash on \license
+%\documentclass{emisa}
+%\documentclass{jpsj2}
+% requires biblatex
+%\documentclass{nwejmart}
+% requires biblatex
+%\documentclass{gztarticle}
+%\documentclass{ltugboat}
+%\documentclass{nature}
+% requires \shorttitle
+%\documentclass{ijmart}
+%\documentclass{sn-jnl}
+\usepackage{manyfoot}
+\usepackage{amsmath}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{metacapture}
+%\usepackage[maketitle=iacrj]{metacapture}
+%\usepackage[maketitle=iacrj,footnotesymbols]{metacapture}
+%\usepackage[maketitle=acmsmall]{metacapture}
+%\usepackage[maketitle=acmconf,footnotesymbols]{metacapture}
+%\usepackage[maketitle=lipics,footnotesymbols]{metacapture}
+%\usepackage[maketitle=inv]{metacapture}
+%\usepackage[maketitle=ams,footnotesymbols]{metacapture}
+%\usepackage[maketitle=ams]{metacapture}
+% ems-journal-jems redefines \subtitle, so there is a conflict.
+%\usepackage[journal=JEMS]{ems-journal-jems}
+\usepackage[maketitle=jems,footnotesymbols]{metacapture}
+
+\newcommand{\acmd}[2][]{%
+  \def\FirstArg{#1}%
+  \ifx\FirstArg\empty%
+    \texttt{\textbackslash{}#2}%
+  \else%
+    \texttt{\textbackslash{}#2\{#1\}}%
+  \fi
+}
+\bibliographystyle{plainurl}
+\usepackage{kantlipsum}
+\usepackage{hyperref}
+\newcommand{\pkg}[1]{\texttt{#1}}
+\title[plaintext={The metacapture LaTeX package},
+       running={The \pkgname\ \LaTeX\ package v\pkgversion},
+      ]{The \pkgname\ \textrm{\LaTeX} package v\pkgversion\footnote{Probably not ready for use by others yet.}}
+\subtitle{A demo for different maketitle styles and classes}
+\addauthor[orcid   = {0000-1111-2222-3333},
+           inst    = {1,2},
+           footnote= {Paul has a footnote},
+	   email   = {erdos@att.com},
+	   surname = {Erdős},
+          ]{Paul Erdős}
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           footnote = {Another remarkable Hungarian mathematician},
+           email   = {latex@digicrime.com},
+	   surname = {Tur\'an},
+          ]{P\'al Tur\'an}
+\addauthor[inst={2,3},
+email={notgonnawork@google.com},
+           footnote={Home page at \url{https://theonion.com/}},
+           orcid={1111-2222-3333-4444}]{Third Author}
+\addauthor[inst={1},
+           email={fourth@example.com},
+           onclick = {https://example.com/first}]{Fourth author}
+\addauthor[inst={1},
+           email={fifth@example.com},
+           footnote={Fifth doesn't even know that he is an author}]{Fifth Author}
+\addauthor[inst={3},footnote={Sixth is last}
+]{Sixth Author}
+%\addauthor[inst={1},email={first@example.com}]{Seventh Author}
+\addaffiliation[ror        = 0168r3w48,
+                department = {Computer Science Department},
+                country={United States}]{University of California, San Diego}
+\addaffiliation[department={Department of Redundancy Department},
+                city={Sunnydale},
+                state={California},
+                country={Elbonia}]{Mega Corporation}
+\addaffiliation[country={Absurdistan},
+                department={Department of Unfundable Research},
+                city={Gottaknow}]{Faber College}
+\addkeywords[Metadata, publishing, LaTeX]{Metadata, publishing, \LaTeX}
+\license{CC-BY-4.0}
+%\license{CC0-1.0}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end of preamble %%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\hypersetup{colorlinks=true}
+\maketitle
+\begin{abstract}
+
+You can mix and match different document classes and maketitle styles to see what the result
+is. Note that the abstract is under control of the document class, and is not affected
+by the \pkgname\ package. Some document classes require the abstract to appear before
+\acmd{maketitle}. There is a \texttt{textabstract} environment
+that will cause a \acmd{jobname}\texttt{.abstract} file to be written, and is
+intended to be a pure text abstract.
+\end{abstract}
+\begin{textabstract}
+  This is the textabstract. It does not show up in the document itself, but can
+  be used to create an HTML abstract.
+\end{textabstract}
+
+\section{Motivation}
+This is just an example of a document that uses \pkgname\ with a variety of document
+classes.\footnote{This footnote is first in the text, and numbered starting after affiliations.}
+You can try commenting out various
+\acmd{documentclass} commands and \acmd[maketitle=\textless{style}\textgreater]{usepackage}
+combinations and see what it looks like. See~\cite{tugboat,falsehoods}.
+  
+\section{Boilerplate by Kant}
+\kant[1-4]
+\bibliography{metadoc}
+\end{document}

@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{expl3}
+%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fontspec}
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+UTF-8 input: Ââ Êê Îî Ôô Ŵŵ Ŷŷ Ïï Ăă Ĕĕ Ĭĭ Ŏŏ Ŭŭ Āā Ēē Īī Ōō Ūū Ȳȳ ü
+
+Accented characters: \=Y\=y \r{a} \"u \i\ \DJ.
+
+\ExplSyntaxOn
+\newcommand\justtext[1]{Pure t: \text_purify:n{#1}}
+\ExplSyntaxOff
+\newcommand\Insert{Insert}
+\newwrite\afile
+\immediate\openout\afile=main.output
+\immediate\write\afile{\Insert stuff.}
+\immediate\write\afile{With space:\Insert\ stuff.}
+\immediate\write\afile{With braces:\Insert{} stuff.}
+\immediate\write\afile{With tilde: \Insert~stuff.}
+\immediate\write\afile{accented: \r{a} \"u \DJ}
+\immediate\write\afile{With math $\alpha$}
+\immediate\write\afile{\justtext{Āā Ēē Īī Ōō Ūū Ȳȳ \"u \textbf{alpha}} with $a=b$}
+\immediate\write\afile{\r{a} and Š \"u \i \DJ}
+\immediate\write\afile{\justtext{\r{a} and Š \"u \i \DJ}}
+\immediate\closeout\afile
+
+\end{document}
