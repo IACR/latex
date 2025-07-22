@@ -158,6 +158,10 @@ def parse_meta(metastr):
                 if k == 'subtitle':
                     data['subtitle'] = decoder.latex_to_text(v)
                     index += 1
+        # metacapture writes out subtitle by itself. May occur before title:
+        elif line.startswith('subtitle:'):
+            data['subtitle'] = decoder.latex_to_text(line[9:].strip())
+            index += 1
         elif line.startswith('keywords:'):
             data['keywords'] = [k.strip() for k in decoder.latex_to_text(line[9:].strip()).split(',')]
             index += 1

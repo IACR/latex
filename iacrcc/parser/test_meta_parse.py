@@ -1,6 +1,7 @@
 import pytest
 from pylatexenc.latex2text import LatexNodes2Text
-from .meta_parse import remove_macros, get_decoder
+from .meta_parse import remove_macros, get_decoder, parse_meta
+from pathlib import Path
 
 def test_frac_decoder():
     """Test encoding of \frac."""
@@ -680,3 +681,12 @@ def test_latex():
             decoder.latex_to_text(key)
     for key, output in titles.items():
         assert decoder.latex_to_text(key) == output
+
+def test_metacapture():
+    metatxt = Path('testdata/metadoc.meta').read_text(encoding='UTF-8')
+    data = parse_meta(metatxt)
+    assert data['schema'] == '0.9'
+    assert data['subtitle'] == 'Structured metadata from authors'
+    assert data['license'] == 'CC-BY-4.0'
+    assert len(data['affiliations']) == 2
+    assert data['affiliations'][0]['countrycode'] == 'BE'
