@@ -21,60 +21,20 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install texlive
-      uses: teatimeguest/setup-texlive-action@v3
+      uses: xu-cheng/texlive-action@v3
       with:
-        version: 2023
-        packages: |
-          scheme-basic
-          filehook
-          currfile          
-          l3experimental
-          cleveref
-          xkeyval
-          etoolbox
-          xstring
-          iftex
-          luatex85          
-          fontspec
-          pdfmanagement-testphase
-          hyperref
-          totpages
-          geometry          
-          sectsty
-          pgf
-          xpatch
-          alphalph
-          tokcycle
-          listofitems
-          fancyhdr          
-          csquotes
-          biblatex
-          biblatex-trad
-          biber
-          doclicense
-          fancyvrb          
-          mathtools
-          floatrow
-          caption
-          float
-          lineno
-          microtype
-          lipsum
-          latexmk
-          xifthen
-          ccicons          
-          kvoptions
-          ragged2e
-          ifmtarg
-          babel
-          urlbst
-          everyshi
-          tagpdf
-          xurl
+        scheme: medium
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
       run: tlmgr update --all
+    - name: Install packages
+      run: |
+        tlmgr install scheme-basic filehook currfile l3experimental cleveref xkeyval etoolbox xstring
+        tlmgr install iftex luatex85 fontspec pdfmanagement-testphase totpages geometry sectsty
+        tlmgr install pgf xpatch alphalph tokcycle listofitems fancyhdr csquotes biblatex biblatex-trad
+        tlmgr install biber doclicense fancyvrb mathtools floatrow caption float lineno microtype lipsum
+        tlmgr install latexmk xifthen ccicons kvoptions ragged2e ifmtarg babel urlbst everyshi tagpdf xurl
     - name: Install dependencies
       working-directory: iacrcc/tests
       run: |
