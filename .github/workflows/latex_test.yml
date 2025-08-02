@@ -23,7 +23,7 @@ jobs:
     - name: Install texlive
       uses: xu-cheng/texlive-action@v3
       with:
-        scheme: medium
+        scheme: full
     - name: Check `tlmgr` version
       run: tlmgr --version
     - name: Update all packages
