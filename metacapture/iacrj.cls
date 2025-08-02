@@ -180,6 +180,8 @@
   % bookmarksopenlevel: parameter level to which bookmarks are open
   \RequirePackage[hyperfootnotes=false,bookmarksopen=true,bookmarksopenlevel=2]{hyperref}
   \@ifpackageloaded{natbib}{%
+    % TODO: Note that latex now has the \disable@package@load method. It's not clear if we
+    % should use that instead.
     \ClassError{iacrj}{The natbib package is not supported}{}}{}
   \ifpdftex
     % TU encoding is only available with XeTeX and LuaTeX.

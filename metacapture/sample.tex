@@ -1,4 +1,4 @@
-\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7,lang=en,debug={xmp-export}}
+\DocumentMetadata{lang=en,debug={xmp-export}}
 \def\pkgname{metacapture}
 \def\pkgversion{0.9}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,7 +66,7 @@
 \usepackage{amsmath}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\usepackage{metacapture}
-%\usepackage[maketitle=iacrj]{metacapture}
+\usepackage[maketitle=iacrj]{metacapture}
 %\usepackage[maketitle=iacrj,footnotesymbols]{metacapture}
 %\usepackage[maketitle=acmsmall]{metacapture}
 %\usepackage[maketitle=acmconf,footnotesymbols]{metacapture}
@@ -76,7 +76,7 @@
 %\usepackage[maketitle=ams]{metacapture}
 % ems-journal-jems redefines \subtitle, so there is a conflict.
 %\usepackage[journal=JEMS]{ems-journal-jems}
-\usepackage[maketitle=jems,footnotesymbols]{metacapture}
+%\usepackage[maketitle=jems,footnotesymbols]{metacapture}
 
 \newcommand{\acmd}[2][]{%
   \def\FirstArg{#1}%
@@ -88,7 +88,7 @@
 }
 \bibliographystyle{plainurl}
 \usepackage{kantlipsum}
-\usepackage{hyperref}
+\usepackage[final]{hyperref}
 \newcommand{\pkg}[1]{\texttt{#1}}
 \title[plaintext={The metacapture LaTeX package},
        running={The \pkgname\ \LaTeX\ package v\pkgversion},
@@ -97,6 +97,7 @@
 \addauthor[orcid   = {0000-1111-2222-3333},
            inst    = {1,2},
            footnote= {Paul has a footnote},
+           onclick={https://iacr.org/},
 	   email   = {erdos@att.com},
 	   surname = {Erdős},
           ]{Paul Erdős}
@@ -118,6 +119,113 @@ email={notgonnawork@google.com},
            footnote={Fifth doesn't even know that he is an author}]{Fifth Author}
 \addauthor[inst={3},footnote={Sixth is last}
 ]{Sixth Author}
+
+%%%%%%%%%%%%%%%%%%%%% Lots of authors
+\iffalse
+\addauthor{Henri Cohen}
+\addauthor{Atsuko Miyaji}
+\addauthor{Takatoshi Ono}
+\addauthor{Leisa Condie}
+\addauthor{Scott Contini}
+\addauthor{Yiqun Lisa Yin}
+\addauthor{Rodney H. Cooper}
+\addauthor{Wayne Patterson}
+\addauthor{Helena Handschuh}
+\addauthor{David Naccache}
+\addauthor{François Koeune}
+\addauthor{Nicolas Courtois}
+\addauthor{Matthieu Finiasz}
+\addauthor{Nicolas Sendrier}
+\addauthor{Josef Pieprzyk}
+\addauthor{James Cowie}
+\addauthor{Bruce Dodson}
+\addauthor{R. Marije Elkenbracht-Huizing}
+\addauthor{Arjen K. Lenstra}
+\addauthor{Peter L. Montgomery}
+\addauthor{Jörg Zayer}
+\addauthor{Giovanni Di Crescenzo}
+\addauthor{Giuseppe Persiano}
+\addauthor{Ivan Visconti}
+\addauthor{Paolo D'Arco}
+\addauthor{Douglas R. Stinson}
+\addauthor{Carl D'Halluin}
+\addauthor{Gert Bijnens}
+\addauthor{Bart Preneel}
+\addauthor{Vincent Rijmen}
+\addauthor{Eli Biham}
+\addauthor{Orr Dunkelman}
+\addauthor{Nathan Keller}
+\addauthor{Michel Abdalla}
+\addauthor{Mihir Bellare}
+\addauthor{Olivier Billet}
+\addauthor{Henri Gilbert}
+\addauthor{Olivier Chevassut}
+\addauthor{Pierre-Alain Fouque}
+\addauthor{David Pointcheval}
+\addauthor{Alex Biryukov}
+\addauthor{Adi Shamir}
+\addauthor{Leonid Reyzin}
+\addauthor{Joan Daemen}
+\addauthor{Masayuki Abe}
+\addauthor{Simon R. Blackburn}
+\addauthor{Steven D. Galbraith}
+\addauthor{Ronald Cramer}
+\addauthor{Serge Fehr}
+\addauthor{Emmanuel Bresson}
+\addauthor{Eiichiro Fujisaki}
+\addauthor{Jørgen Brandt}
+\addauthor{Peter Landrock}
+\addauthor{Hikaru Morita}
+\addauthor{Miyako Ohkubo}
+\addauthor{Dario Catalano}
+\addauthor{Tatsuaki Okamoto}
+\addauthor{Andries E. Brouwer}
+\addauthor{Ruud Pellikaan}
+\addauthor{Eric R. Verheul}
+\addauthor{Koutarou Suzuki}
+\addauthor{Luca Breveglieri}
+\addauthor{Alessandra Cherubini}
+\addauthor{Marco Macchetti}
+\addauthor{Mehdi-Laurent Akkar}
+\addauthor{Régis Bevan}
+\addauthor{Paul Dischamp}
+\addauthor{Didier Moyart}
+\addauthor{Justin Brickell}
+\addauthor{Vitaly Shmatikov}
+\addauthor{Sattam S. Al-Riyami}
+\addauthor{Kenneth G. Paterson}
+\addauthor{Lawrence Brown}
+\addauthor{Matthew Kwan}
+\addauthor{Jennifer Seberry}
+\addauthor{Mohssen Alabbadi}
+\addauthor{Stephen B. Wicker}
+\addauthor{Vangalur S. Alagar}
+\addauthor{Mark Ames}
+\addauthor{Ahto Buldas}
+\addauthor{Ross J. Anderson}
+\addauthor{Serge Vaudenay}
+\addauthor{Mike Burmester}
+\addauthor{Yvo Desmedt}
+\addauthor{Martin Anthony}
+\addauthor{Keith M. Martin}
+\addauthor{Peter R. Wild}
+\addauthor{Jun Anzai}
+\addauthor{Natsume Matsuzaki}
+\addauthor{Tsutomu Matsumoto}
+\addauthor{Jan Camenisch}
+\addauthor{Kazumaro Aoki}
+\addauthor{Hiroki Ueda}
+\addauthor{Seigo Arita}
+\addauthor{Markus Michels}
+\addauthor{Gwénolé Ars}
+\addauthor{Jean-Charles Faugère}
+\addauthor{Hideki Imai}
+\addauthor{Mitsuru Kawazoe}
+\addauthor{Makoto Sugita}
+\fi
+%%%%%%%%%%%%%%%%%%%%% end lots of authors
+
+
 %\addauthor[inst={1},email={first@example.com}]{Seventh Author}
 \addaffiliation[ror        = 0168r3w48,
                 department = {Computer Science Department},
@@ -134,7 +242,7 @@ email={notgonnawork@google.com},
 %\license{CC0-1.0}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end of preamble %%%%%%%%%%%%%%%%%%%%
 \begin{document}
-\hypersetup{colorlinks=true}
+%\hypersetup{colorlinks=true}
 \maketitle
 \begin{abstract}
 
@@ -154,8 +262,8 @@ intended to be a pure text abstract.
 This is just an example of a document that uses \pkgname\ with a variety of document
 classes.\footnote{This footnote is first in the text, and numbered starting after affiliations.}
 You can try commenting out various
-\acmd{documentclass} commands and \acmd[maketitle=\textless{style}\textgreater]{usepackage}
-combinations and see what it looks like. See~\cite{tugboat,falsehoods}.
+\acmd{documentclass} commands and \texttt{\textbackslash{usepackage}[maketitle=\textless{style}\textgreater]\{metacapture\}}
+combinations to see what it looks like. See~\cite{tugboat,falsehoods}.
   
 \section{Boilerplate by Kant}
 \kant[1-4]

@@ -1,5 +1,16 @@
 """
 Library for handling output meta file from compiling latex.
+
+The exact syntax of the .meta file is a little unclear. The TeXbook
+states on page 228 that
+  ``Each write command produces output in the form that TeX always uses to display
+    token lists symbolically: Characters represent themselves (except that you get
+    duplicated characers like ## for macro parameter characters); unexpandable control
+    sequence tokens produce their names, preceded by the \escapechar and followed by a
+    space (unless the name is an active character or a control sequence formed from a
+    single nonletter).''
+That seems to imply that \$ and \% are special cases. Indeed the handling of \$ changed
+in texlive 2025 (perhaps due to this: https://github.com/latex3/latex2e/pull/1388).
 """
 
 import argparse
@@ -43,6 +54,14 @@ def frac_decoder(n, l2tobj):
         ans += '(' + arg2 + ')'
     return ans
 
+class LatexToText(LatexNodes2Text):
+    """There are some things that LatexNodes2Text cannot handle, like
+       removing T1 (it doesn't recognize those as a macro)."""
+    def _preclean(self, text):
+        return text.replace('\\T1', '')
+    def latex_to_text(self, v):
+        return super().latex_to_text(self._preclean(v))
+
 def get_decoder():
     r"""Special handling for output from \protected@write."""
     lt_context_db = get_default_latex_context_db()
@@ -58,15 +77,16 @@ def get_decoder():
                                                MacroTextSpec('sc', ''),
                                                MacroTextSpec('boldmath', ''),
                                                MacroTextSpec('bm', ''),
-                                               MacroTextSpec('sl', '')],
+                                               MacroTextSpec('sl', ''),
+                                               MacroTextSpec('TU', '')],
                                        prepend=True)
     lt_context_db.set_unknown_macro_spec(MacroTextSpec('',
                                                        simplify_repl=_raise_lt_unknown_macro))
-    return LatexNodes2Text(math_mode='with-delimiters',
-                           strict_latex_spaces=True,
-                           keep_braced_groups=True,
-                           keep_comments=False,
-                           latex_context=lt_context_db)
+    return LatexToText(math_mode='with-delimiters',
+                       strict_latex_spaces=True,
+                       keep_braced_groups=True,
+                       keep_comments=False,
+                       latex_context=lt_context_db)
 
 def remove_macros(txt):
     txt = txt.replace(r'\\[\s]+', ' ')

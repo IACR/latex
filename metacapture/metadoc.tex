@@ -1,4 +1,4 @@
-\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7,lang=en,debug={xmp-export}}
+\DocumentMetadata{lang=en,debug={xmp-export}}
 \def\pkgversion{0.9}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % It should work with many choices of documentclass.
@@ -159,7 +159,7 @@ accents \verb+\"u+ to slip through because they are easily converted
 to just text in a post-processing step. We also allow mathematics
 inside titles and abstracts. One of the purposes for the \pkgname\
 package is to check that authors comply with the restriction to avoid
-macros in their metadata. Authors are still able to use macros and
+user-defined macros in their metadata. Authors are still able to use macros and
 stylized text in their titles, subtitles, and abstracts, but we
 require authors to also supply ``plain text'' versions of all
 metadata.
@@ -236,7 +236,7 @@ funder ID.\footnote{See \url{https://www.crossref.org/services/funder-registry/}
 In the world of scholarly journal publishing, there have been several efforts to
 standarize schemas for metadata. One of the best examples
 of this is the schema used by \texttt{crossref.org} for requests to
-register a DOI.~\footnote{See
+register a DOI.\footnote{See
 \url{https://data.crossref.org/reports/help/schema_doc/5.4.0/index.html}}
 Another well-designed schema is described in the Journal Article Tag
 Standard
@@ -250,8 +250,8 @@ metadata associated with an article, but see
 section~\ref{missing}. Authors and affiliations are listed
 independently, with an \texttt{inst} argument for an author to indicate which
 affiliation is associated to an author. Funding is associated to the
-document itself rather than the author, in keeping with the schema
-provided by \texttt{crossref.org}.
+document itself rather than the author, in keeping with the schemas
+provided by \texttt{crossref.org} and JATS.
 
 \section{Our solution}
 The processing of metadata really has four parts to it:
@@ -267,10 +267,7 @@ All of the metadata can then be registered with indexing agencies and used to su
 structured data for the journal web pages and later harvesting agents.
 \item \label{xmp} The metadata may be embedded into the output PDF or HTML.
 \end{enumerate}
-This package addresses all four steps but is primarily focused on steps~\ref{supply}~and~\ref{extract}.
-Step~\ref{markup} is typically left to the document class to dictate the style,
-but we provide several partial solutions via custom \cmd{maketitle} implementations
-that can be invoked to provide the front matter with any existing document class.
+This package addresses all four steps, and they are addressed in the subsections that follow.
 
 \subsection{Author-supplied metadata}
 The primary macros used by authors are \cmd{title},
@@ -296,14 +293,14 @@ however they like.
 
 
 \subsection{Display of metadata}\label{maketitle}
-The document class is responsible for the display of front matter, and
-this is often (but not always) done with a custom \cmd{maketitle}
-macro. Despite the name, the  \texttt{maketitle} macro is is usually
-responsible for display of author information, and sometimes also
-responsible for display of abstract, keywords, and license. The
-display of front matter can be quite complicated, with authors having
-multiple affiliations, authors sharing affiliations, footnotes
-attached to titles and authors, etc. For
+The document class has complete control over the display of front matter.
+The display of metadata is often (but not always) done with
+a custom \cmd{maketitle} macro. Despite the name, the \cmd{maketitle}
+macro is usually responsible for display of author information, and
+sometimes also responsible for display of abstract, keywords, and
+license. The display of front matter can be quite complicated, with
+authors having multiple affiliations, authors sharing affiliations,
+footnotes attached to titles and authors, etc. For
 example, \url{https://arxiv.org/pdf/2210.03375} has hundreds of
 authors, 75 affiliations, and 12 footnotes on author names (not
 surprisingly, they omit email addresses).  The author metadata is
@@ -324,7 +321,8 @@ alphabetically or randomly). The \pkg{amsart} class places the
 affiliations {\em after} the body of the article as endnotes, and so
 does \pkg{OUP-EJ} for \emph{The Economic Journal}.
 
-This document is typeset with the standard \texttt{article} document
+This package supplies several ways to display the front matter of the document.
+This particular document is typeset with the standard \texttt{article} document
 class, for which default values of \cmd{@title} and \cmd{@author} are supplied to just
 work out of the box with the existing \cmd{maketitle}. The
 implementation of a \cmd{maketitle} is usually left to the document
@@ -332,7 +330,7 @@ class, but the \pkgname\ package provides implementations of
 several \cmd{maketitle} styles that can be invoked with the option
 \texttt{maketitle=\textless{style}\textgreater}. 
 At present, the styles consist of the following (visual appearance
-is displayed in Appendix~\ref{appendix}):
+of each is displayed in Appendix~\ref{appendix}):
 \begin{description}
 \item[\texttt{iacrj}] Author names are strung together in a list, with
 optional ORCID icons after their names, and footnotes to indicate
@@ -345,7 +343,8 @@ with one author per line in a vertical list, with author names in small caps fol
 by their affiliations and countries. See page~\pageref{acmsmall}.
 \item[\texttt{acmconf}] This is similar to the conference proceedings style
 of \texttt{acmart.cls}. Each author is listed in a block with their email and
-affiliations underneath their name. Shared affiliations are repeated under each author's name.
+affiliations underneath their name. Shared affiliations are repeated under each author's name,
+and links to home page and ORCID are omitted.
 See page~\pageref{acmconf}.
 \item[\texttt{jems}] Modeled after the style used for the {\em Journal of the European Mathematical Society},
 in which author names appear before the title, keywords after the
@@ -605,13 +604,16 @@ The display of these elements by a document class may be customized in
 any way the document designer sees fit. In some of the \cmd{maketitle}
 implementations provided by \pkgname, the presence of
 the \texttt{orcid} attribute creates a small clickable orcid logo next
-to the authors name looking like \orcidlink{0000-0003-1010-8157} that
-is a hyperlink to the authors ORCID
-(see: \url{https://orcid.org}). Similarly, some of our implementations
-of \cmd{maketitle} display the \texttt{onclick} attribute with an icon
-like \linkicon\ or \homelink{https://iacr.org}
-displayed next to the author's name that is an active
-link to the URL.
+to the authors name looking
+like \OrcidLink{0000-0003-1010-8157}[auth]~that is a hyperlink to the
+authors ORCID home page.  This is the authenticated logo for ORCID,
+but the unauthenticated
+version \OrcidLink{0000-0003-1010-8157}[unauth]~is also bundled into
+this package if your journal workflow requires it. Similarly, some of
+our implementations of \cmd{maketitle} display the \texttt{onclick}
+attribute with an icon like \AuthorLink{https://theonion.com/}
+or \homelink{https://theonion.com} displayed next to the author's name
+that is an active link to the URL.
 
 It's not obvious how to interpret the omission of the \texttt{inst} argument from
 \cmd{addauthor}.
@@ -1017,18 +1019,22 @@ publication, e.g.\ as a hyperlink to the DOI. We leave the handling of
 publisher-supplied metadata to the document class, but the \pkg{iacrj.cls}
 and our open-source workflow may prove useful as an example.
 
-The breadth of metadata for a publication has been growing in recent years.
-We have attempted to include only the minimal metadata elements that have clear
-definitions and are currently required in all disciplines, but we fully expect
-that others may be needed in the future. Some things include:
+The breadth of metadata for a publication has been growing in recent
+years.  We have attempted to include only the minimal metadata
+elements that have clear definitions, are reported to Crossref, and
+are currently required in all disciplines.  We expect that
+others may be needed in the future. This list is not complete, but
+some things include:
 \begin{description}
-\item[licenses] We currently only support a limited selection of licenses (e.g., we omit
+\item[Licenses] We currently only support a limited selection of licenses (e.g., we omit
 copyleft). It's possible that someone may wish to place different licenses on media embedded
 in the document. It's also possible that someone may wish to place different licenses on the \LaTeX\ source
 than the final document intended for readers. We do not cover these cases.
-\item[languages] We have no way for an author to express which languages are used in the document,
+\item[Languages] We have no way for an author to express which languages are used in the document,
 or to provide language-specific versions of title, keywords, affiliation name, abstract, etc.
-\item[affiliations] There are a number of other elements that might be associated with an affiliation,
+\item[Article categories] Some journals tag an article as a type, e.g, ``Commentary'', ``Research article'',
+``Book Review'', or ``Survey''. These appear as \texttt{\textless{article-categories}\textgreater} in JATS.
+\item[Affiliations] There are a number of other elements that might be associated with an affiliation,
 including address lines for a postal address, phone number, a URL, or other identifiers such as
 Grid, Ringgold, Scopus, etc.
 
@@ -1049,6 +1055,13 @@ announced that they will support something like this in version~5.5 of their sch
 \todok{The only identifiers for \CREDIT\ roles include things with spaces in them like \texttt{Funding acquisition}. We could add something like \texttt{credit=role} to author, but
 I'm worried that it isn't sufficiently expressive yet. In particular some people have complained
 \texttt{translation} is omitted. It also omits the degree of contribution in each role.}
+\item[Author bio] IEEE and other publishers may collect an author bio, and JATS
+also supports this. The model in JATS is pretty complex and supports titled sections.
+\item[Other author IDs] ORCID is pretty common now, but some authors may not have them (e.g., a deceased author) and
+a publisher may wish to use their own namespace (e.g., SCOPUS or MathSciNet Author ID).
+\item[Author notes] Sometimes a particular author will receive a designation (e.g., a ``contact author'',
+or the author responsible for supplying data). This is in the \texttt{\textless{author-notes}\textgreater} element of JATS, and
+may have multiple authors referencing a single note.
 \item[Bibliographic references] Since most users of \LaTeX\ use \texttt{bibtex} or \texttt{biblatex},
 it is natural to think of exporting bibliographic references as a
 structured part of the metadata for the article. There are several
@@ -1089,7 +1102,9 @@ two parts, namely first and last (or given and family name). We have
 attempted to comply by allowing an optional surname field on author
 names, but this approach is flawed since names cannot be assumed to
 have the same structure across all cultures. See~\cite{falsehoods}.
-We also do not support alternate names for authors.
+We also do not support alternate names for authors, and we do not support
+author-supplied \texttt{name-style} attribute that crossref supports for an author to report
+that they have only a given name.
 \item[Funding groups] We currently support the name, identifier, and award number for a funder,
 but we may wish to provide further information like the name of a PI or the
 program within a larger funding organization. This would be driven by downstream requirements.
@@ -1188,7 +1203,7 @@ This uses \texttt{maketitle=acmsmall}. Author names are in small caps.
 \begin{quote}
 This uses \texttt{maketitle=acmconf}. Each author is displayed in a block with repeated affiliations.
 It appears similar to the default \cmd{@author}, but the spacing is better for more than a couple of
-authors.
+authors and links for ORCID and author home pages are omitted.
 \end{quote}
 
 \newpage

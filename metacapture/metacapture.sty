@@ -334,10 +334,10 @@
         \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
       }
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
-        \tl_put_right:Nn \l_metac_authbox_tl {~\orcidlink{\l_metac_orcid_tl}}
+        \tl_put_right:Nn \l_metac_authbox_tl {~\OrcidLink{\l_metac_orcid_tl}}
       } {}
       \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
-        \tl_put_right:Nn \l_metac_authbox_tl {~\authorlink{\l_metac_onclick_tl}}
+        \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.3em}\AuthorLink{\l_metac_onclick_tl}}
       } {}
       \mbox{\l_metac_authbox_tl}
       \tl_if_empty:NTF \l_metac_fn_tl {} {\footnotetext{\l_metac_fn_tl}}
@@ -604,10 +604,10 @@
         }
         \tl_if_empty:NTF \l_metac_fn_tl {}{\tl_put_right:Nn \l_metac_authbox_tl {\footnote{\l_metac_fn_tl}}}
         \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
-          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\orcidlink{\l_metac_orcid_tl}}
+          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\OrcidLink{\l_metac_orcid_tl}}
         } {}
         \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
-          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\authorlink{\l_metac_onclick_tl}}
+          \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.2em}\AuthorLink{\l_metac_onclick_tl}}
         } {}
         \mbox{\l_metac_authbox_tl}
       }
@@ -769,7 +769,7 @@
         \hspace{.4em}\homelink{\l_tmpa_tl}
       } {}
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpa_tl {
-        \hspace{.4em} \orcidlink{\l_tmpa_tl}
+        \hspace{.4em} \OrcidLink{\l_tmpa_tl}
       } {}
       \\
     } {}
@@ -940,7 +940,7 @@
     } {}
     
     \prop_get:NnNTF \g_metac_author_prop {orcid} \l_metac_orcid_tl {
-      \hspace{.5em}\orcidlink{\l_metac_orcid_tl}
+      \hspace{.5em}\OrcidLink{\l_metac_orcid_tl}
     } {}
     \prop_get:NnNTF \g_metac_author_prop {onclick} \l_metac_onclick_tl {
       \hspace{.3em}\homelink{\l_metac_onclick_tl}
@@ -1108,8 +1108,8 @@
     \regex_match:nVTF {^[,\d]+$} { \l_tmpa_tl } {} {
       \PkgErr{The provided inst in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
     }
-  } { % no inst
-    \typeout{No inst}
+  } {
+    % no inst
   }
   
   % check email
@@ -1463,66 +1463,68 @@
   {\protected@iwrite@fancyvrb\FV@OutFile{}}
   {}{}
 
-% To be used by an author to provide a text abstract. This is required
-% for the final version.
+% To be used by an author to provide a text abstract. This is written to an external
+% file as part of metadata capture.
 \newenvironment{textabstract}{%
   \VerbatimOut{\jobname.abstract}}{\endVerbatimOut}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This provides a command to insert the ORCiD logo, which is hyperlinked to
-% the URL of the researcher whose iD was specified.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This copies over definition of the orcidlink from the orcidlink style file
-% by Leo C. Stein which in turn is a package around Milo's code on TeX.SE,
-% see https://tex.stackexchange.com/a/445583/34063
-
-% tikz: create PostScript and PDF graphics in TEX
 \RequirePackage{tikz}
 \usetikzlibrary{svg.path}
-
-\newcommand\homelink[1]{%
-\href{#1}{\begin{tikzpicture}[scale=.3]
-\draw[rounded corners=.06pt,fill=black]
-   (.2,0)--(.2,.3)--(.5,.55) -- (.8,.3) -- (.8,0) -- (.6,0) -- (.6,.25) -- (.4,.25) -- (.4,0) -- (.2,0);
-   \draw[line width=.8,rounded corners=.06pt,line cap=round] (.1,.36) -- (.5,.7) -- (.9,.36);
-   \draw[rounded corners=.06pt,fill=black] (.7,.5) -- (.7,.75) -- (.8,.75) -- (.8,.4) -- (.7,.5);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We include tikz implementations of icons for a home link, an external link, and various
+% versions of the ORCID logo. These are used in some maketitle implementations to provide
+% external hyperlinks.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We originally used the tikz version of the ORCID logo from the orcidlink style file,
+% by Leo C. Stein which in turn is a package around Milo's code on TeX.SE,
+% see https://tex.stackexchange.com/a/445583/34063. It turns out that SVG path was
+% in a ORCID image on wikimedia but is different than the official ORCID logo distributed
+% from orcid.org. The ORCID logos below are from the official svg as of July 2025. There are two
+% versions of the ORCID icon for authenticated ORCIDs and unauthenticated ORCIDs. Note that they
+% use different colors.
+\definecolor{unauthcolor}{HTML}{7FAA26} % for unauth
+\definecolor{authcolor}{HTML}{A6CE39} % for auth
+% usage: \AuthOrcidLogo[scale]. Here scale=1 is a width of 1em in current font.
+\NewDocumentCommand{\AuthOrcidLogo}{O{1}}{\resizebox{#1em}{!}{\begin{tikzpicture}[x=1em,y=1em,yscale=-1,every node/.append style={scale=#1}, inner sep=0pt, outer sep=0pt]
+  \fill[authcolor] svg {M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
+\fill[white] svg {M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
+ svg {M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5 c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
+ svg {M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1 C84.2,46.7,88.7,51.3,88.7,56.8z};
 \end{tikzpicture}}}
 
+% usage: \UnauthOrcidLogo[scale]. Here scale=1 is a width of 1em in current font.
+\NewDocumentCommand{\UnauthOrcidLogo}{O{1}}{\resizebox{#1em}{!}{\begin{tikzpicture}[yscale=-1,inner sep=0pt,outer sep=0pt,draw=unauthcolor,draw=none]
+  \draw[fill=white,color=white] svg {M29.474 16c0 7.442-6.032 13.474-13.474 13.474S2.526 23.442 2.526 16 8.558 2.526 16 2.526 29.474 8.558 29.474 16Z};
+  \draw[fill=unauthcolor,draw=none] svg {M32 16c0 8.837-7.163 16-16 16S0 24.837 0 16 7.163 0 16 0s16 7.163 16 16ZM16 29.474c7.442 0 13.474-6.032 13.474-13.474S23.442 2.526 16 2.526 2.526 8.558 2.526 16 8.558 29.474 16 29.474Z};
+  \draw[fill=unauthcolor,draw=none] svg {M18.22 10.973h-4.547v11.6h4.569c3.8 0 6.133-2.82 6.133-5.8 0-1.365-.469-2.815-1.478-3.925-1.013-1.115-2.557-1.875-4.676-1.875Zm-.177 9.732h-2.347v-7.864h2.264c1.521 0 2.603.46 3.304 1.167.703.709 1.046 1.688 1.046 2.765 0 .654-.2 1.641-.83 2.46-.621.808-1.677 1.473-3.437 1.473Zm-.083-8.073c3.13 0 4.558 1.898 4.558 4.141 0-2.243-1.429-4.141-4.558-4.141h-2.472 2.472Zm6.205 4.017.001.124c0 2.869-2.242 5.591-5.924 5.591h-4.36V11.182v11.182h4.36c3.682 0 5.924-2.722 5.924-5.591l-.001-.124ZM9.5 11.005v11.588h2.024V11.005H9.5Zm1.815.208v11.172-11.172H9.71h1.606ZM10.512 10.15c.7 0 1.262-.575 1.262-1.263 0-.687-.561-1.262-1.262-1.262-.7 0-1.262.563-1.262 1.262 0 .688.561 1.262 1.262 1.262Zm.614-.408a1.044 1.044 0 0 0 0 0Z};
+\end{tikzpicture}}}
 
-\newcommand\METAC@emailicon{\begin{tikzpicture}[scale=.18]
-  \draw[thick,rounded corners=.2pt] (.05,1)--(1.6,1)--(1.6,0)--(0,0)--(0,1)--(1.6,1)--(.8,.4)--(.02,.99);
-  \end{tikzpicture}}
-\newcommand\METAC@emaillink[1]{%
-\href{mailto:#1}{\METAC@emailicon}}
-
-\definecolor{orcidlogocol}{HTML}{A6CE39}
-\tikzset{%
-  orcidlogo/.pic={%
-    \fill[orcidlogocol] svg{M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
-    \fill[white] svg{M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
-                 svg{M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
-                 svg{M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1C84.2,46.7,88.7,51.3,88.7,56.8z};
+% Syntax is \OrcidLink{0000-1111-2222-3333}[auth] if you want the
+% authenticated ORCID logo, and \OrcidLink{0000-1111-2222-3333}[unauth] for
+% the unauthenticated logo.
+\NewDocumentCommand{\OrcidLink}{mO{auth}}{%
+  \IfStrEqCase{#2}{%
+    {auth}{\href{https://orcid.org/#1}{\XeTeXLinkBox{\AuthOrcidLogo[.8]}}}%
+    {unauth}{\href{https://orcid.org/#1}{\XeTeXLinkBox{\UnauthOrcidLogo[.8]}}}%
   }%
 }
 
-% Reciprocal of the height of the svg for the ORCID icon above.  The
-% original generates a 256pt high graphic; this macro holds 1/256.
-\newcommand{\@OrigHeightRecip}{0.00390625}
+\NewDocumentCommand{\METAC@homeicon}{O{1}}{\resizebox{#1em}{!}{\begin{tikzpicture}
+  \draw[rounded corners=.4pt,fill=black]
+   (.2,0)--(.2,.3)--(.5,.55) -- (.8,.3) -- (.8,0) -- (.6,0) -- (.6,.25) -- (.4,.25) -- (.4,0) -- (.2,0);
+   \draw[line width=2.5,rounded corners=.06pt,line cap=round] (.1,.36) -- (.5,.7) -- (.9,.36);
+   \draw[rounded corners=.06pt,fill=black] (.7,.55) -- (.7,.75) -- (.8,.75) -- (.8,.45) -- (.7,.55);
+\end{tikzpicture}}}
+% create a link to a home page using a home icon. TODO: scale with the current font.
+\newcommand\homelink[1]{\href{#1}{\XeTeXLinkBox{\METAC@homeicon[.8]}}}
 
-% We will compute the current X height to make the logo the right height
-\newlength{\@curXheight}
-
-\DeclareRobustCommand\orcidlink[1]{%
-  \texorpdfstring{%
-    \setlength{\@curXheight}{\fontcharht\font`X}%
-    \href{https://orcid.org/#1}{\XeTeXLinkBox{\mbox{%
-    \begin{tikzpicture}[yscale=-\@OrigHeightRecip*\@curXheight,%
-      xscale=\@OrigHeightRecip*\@curXheight,transform shape]%
-      \pic{orcidlogo};
-    \end{tikzpicture}%
-}}}}{}}
-% End of macros for orcidlink
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% create an email link with an email icon. TODO: scale with the current font.
+\NewDocumentCommand{\METAC@emailicon}{O{.8}}{\resizebox{#1em}{!}{\begin{tikzpicture}[line width=.25em]
+  %\draw[thick,rounded corners=.2pt] (.05,1)--(1.6,1)--(1.6,0)--(0,0)--(0,1)--(1.6,1)--(.8,.4)--(.02,.99);
+  \draw[rounded corners=.2pt] (.05,.7)--(1,.7)--(1,0)--(0,0)--(0,.7)--(1,.7)--(.5,.3)--(.02,.69);
+  \end{tikzpicture}}}
+\newcommand\METAC@emaillink[1]{%
+\href{mailto:#1}{\XeTeXLinkBox{\METAC@emailicon}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This produces an icon for an external link. We use it as the external link
@@ -1541,10 +1543,12 @@
   }%
 }
 
+%TODO: use 1em width instead of the height of an X.
 % The original external link icon was 48 pt, and this is approximately the
 % reciprocal of that height.
 \newcommand{\@OrigIconHeightRecip}{.02}
 
+\newlength{\@curXheight}
 % The macro for the link icon.
 \DeclareRobustCommand\linkicon{%
   \setlength{\@curXheight}{\fontcharht\font`X}%
@@ -1555,25 +1559,16 @@
     \end{tikzpicture}%
 }}
 
-\DeclareRobustCommand\authorlink[1]{%
+\DeclareRobustCommand\AuthorLink[1]{%
   \texorpdfstring{%
     \href{#1}{\XeTeXLinkBox{\mbox{\linkicon}}}}{}}
 
-% End of macros for linkicon and authorlink.
+% End of macros for OrcidLink, linkicon and AuthorLink.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Some special cases
-\@ifclassloaded{acmart}{%
-%  \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}%
-}{% not acmart
-  \@ifclassloaded{sn-jnl}{%
-%    \RequirePackage[type={CC},modifier={by},version={4.0}]{doclicense}}%
-  }{% all other classes.
-    % This is required for \license
-    %\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}%
-  }%
-}%
+% Any special cases
 \ExplSyntaxOn
-\@ifclassloaded{acmart}{\providecommand{\shorttitle}{\g_metac_titlerunning_tl}}{}
+% note that acmart also loads amsart.
+\@ifclassloaded{amsart}{\providecommand{\shorttitle}{\g_metac_titlerunning_tl}}{}
 \ExplSyntaxOff
 \endinput
 %end of file metacapture.sty
