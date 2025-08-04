@@ -1,5 +1,5 @@
-\def\fileversion{0.74}
-\def\filedate{2024/12/09}
+\def\fileversion{0.75}
+\def\filedate{2025/08/02}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -392,7 +392,7 @@
 \immediate\openout\iacrmeta=\jobname.meta
 
 \AtEndDocument{%
-  \immediate\closeout\iacrmeta%
+  \closeout\iacrmeta%
   % Check if either \title, \addauthor or \addaffiliation macros were redefined
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
@@ -429,10 +429,8 @@
 % xpatch: Extending etoolbox patching commands
 \RequirePackage{xpatch}
 
-% create an immediate version of \protected@write
-\let\protected@iwrite\protected@write
-\xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
-\newcommand\@writemeta[1]{\protected@iwrite\iacrmeta{}{#1}}%
+% We used to use an immediate version of \protected@write
+\newcommand\@writemeta[1]{\protected@write\iacrmeta{}{#1}}%
 
 % alphalph: Convert numbers to letters,
 %           used for footnotes in addauthor

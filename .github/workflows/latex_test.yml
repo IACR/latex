@@ -15,23 +15,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
     - name: Install texlive
-      uses: xu-cheng/texlive-action@v3
+      uses: paolobrasolin/setup-texlive-action@v1
       with:
-        scheme: full
-        run: |
-          tlmgr --version
-          tlmgr update --all
-          tlmgr install scheme-basic filehook currfile l3experimental cleveref xkeyval etoolbox xstring
-          tlmgr install iftex luatex85 fontspec pdfmanagement-testphase totpages geometry sectsty
-          tlmgr install pgf xpatch alphalph tokcycle listofitems fancyhdr csquotes biblatex biblatex-trad
-          tlmgr install biber doclicense fancyvrb mathtools floatrow caption float lineno microtype lipsum
-          tlmgr install latexmk xifthen ccicons kvoptions ragged2e ifmtarg babel urlbst everyshi tagpdf xurl
+        profile-path: ${{ github.workspace }}/.github/texlive.profile
+        packages-path: ${{ github.workspace }}/.github/texlive.packages
+        run: | 
+         tlmgr --version
+         tlmgr update --all
     - name: Install dependencies
       working-directory: iacrcc/tests
       run: |
