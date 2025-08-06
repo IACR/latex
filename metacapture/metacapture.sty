@@ -237,7 +237,7 @@
   \if@metacapture@anonymous\else
     % Check that emails were correctly recorded.
   \fi
-  \immediate\closeout\metacwrite%
+  \closeout\metacwrite%
   % Check if either \title, \addauthor or \addaffiliation macros were redefined
   % Also check if the font (\familydefault) or the margings (\paperwidth) were modified.
   % Throw an error if so, these are needed for meta-data collection
@@ -263,10 +263,8 @@
 % xpatch: Extending etoolbox patching commands
 \RequirePackage{xpatch}
 
-% create an immediate version of \protected@write
-\let\protected@iwrite\protected@write
-\xpatchcmd{\protected@iwrite}{\write}{\immediate\write}{}{}
-\newcommand\@writemeta[1]{\protected@iwrite\metacwrite{}{#1}}%
+% We used to use an immediate version of \protected@write.
+\newcommand\@writemeta[1]{\protected@write\metacwrite{}{#1}}%
 
 % alphalph: Convert numbers to letters. This is used for
 % footnotes in \addauthor and \title
