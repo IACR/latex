@@ -30,10 +30,14 @@
 %%%%%%%%%%%%%%%%%% Set package options. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % package options are stored with a @metacapture prefix.
 %% define a token list to store an option for emailreq.
+
+% switch TeX’s category codes so one can write LaTeX3 (expl3) code using its standard naming conventions
 \ExplSyntaxOn
+% declare new token list variables
 \tl_new:N \g_metac_emailreq_tl % stores none, one, or all
 \tl_new:N \g_metac_maketitle_tl % stores a type of maketitle
 \tl_new:N \g_metac_affilstring_tl
+% declare new property list variables
 \prop_new:N \g_metac_author_prop
 \prop_new:N \g_metac_affil_prop
 
@@ -43,70 +47,83 @@
   textabstract.if = @metacapture@textabstract, % whether to demand a text abstract
   maketitle .choices:nn = {none,iacrj,acmsmall,acmconf,ams,lipics,inv,jems} {\tl_set_eq:NN \g_metac_maketitle_tl \l_keys_choice_tl }, 
   maketitle .initial:n = {none},
-  emailreq .choices:nn = {none, one, all}    {\tl_set_eq:NN \g_metac_emailreq_tl \l_keys_choice_tl },
+  emailreq .choices:nn = {none, one, all} {\tl_set_eq:NN \g_metac_emailreq_tl \l_keys_choice_tl },
   emailreq .initial:n = {none},
   orcidreq.if = @metacapture@orcidreq, % whether every author needs an orcid.
   countryrequired.if = @metacapture@countryrequired, % Whether every affiliation requires a country.
   notitlefootnote.if = @metacapture@notitlefootnote, % whether to allow footnotes on titles.
   footnotesymbols.if = @metacapture@footnotesymbols, % title and author footnotes with symbols.
 }
-
 \ProcessKeyOptions[metacapture]
 
-% This holds the sequence of authors. Each entry is a serialized prop.
 \seq_new:N \g_metac_author_seq
-% This holds the sequence of affiliations. Each entry is a serialized prop.
 \seq_new:N \g_metac_affil_seq
-% This holds the list of funders. Each entry is a serialized prop.
 \seq_new:N \g_metac_funders_seq
-% boolean that determines whether affiliations are listed by number in
-% maketitle. It will be set to true if either there is more than one
-% author or more than one affiliation. This can only be calculated
-% after authors and affiliations have been added so we do it after
-% begin{document}.
+
+\tl_new:N \g_metac_displayemails_tl
+\tl_set:Nn \g_metac_displayemails_tl {}
+\tl_new:N \l_metac_name_tl
+\tl_new:N \l_metac_fn_tl
+\tl_new:N \l_metac_country_tl
+\tl_new:N \l_metac_inst_tl
+\tl_new:N \l_metac_orcid_tl
+\tl_new:N \l_metac_email_tl
+\tl_new:N \l_metac_onclick_tl
+\tl_new:N \l_metac_authbox_tl
+
 \bool_new:N \g_metac_affindex_bool
-\bool_set_true:N \g_metac_affindex_bool
+\bool_gset_true:N \g_metac_affindex_bool
+
+\prop_if_exist:NF \l_tmpa_prop { \prop_new:N \l_tmpa_prop }
+
+% Remove JWB 
+%        \msg_error:nnn {metacapture} { metacapture-authors-name } {All authors must have a name}
+
 \AtBeginDocument{
-  \int_compare:nTF  {\seq_count:N \g_metac_author_seq = 1 } {
-    \bool_set_false:N \g_metac_affindex_bool
-  } {
-    \int_compare:nT {\seq_count:N \g_metac_affil_seq = 1 } {
-      \bool_set_false:N \g_metac_affindex_bool
+  % Decide whether to number affiliations in maketitle:
+  % false if exactly one author OR exactly one affiliation.
+  \int_compare:nT { \seq_count:N \g_metac_author_seq = 1 }
+    { \bool_gset_false:N \g_metac_affindex_bool }
+  \int_compare:nT { \seq_count:N \g_metac_affil_seq = 1 }
+    { \bool_gset_false:N \g_metac_affindex_bool }
+
+  % Collect names + emails of all authors that have an email into \l_tmpa_seq
+  \seq_clear_new:N \l_tmpa_seq
+  \prop_clear:N \l_tmpa_prop
+  
+  \seq_map_inline:Nn \g_metac_author_seq
+    {
+      \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
+      \prop_if_in:NnT \l_tmpa_prop { email }
+        { \seq_put_right:Nn \l_tmpa_seq {#1} }
     }
-  }
-  % build sequence of authors with emails in \l_tmpa_seq
-  \seq_clear:N \l_tmpa_seq 
-  \seq_map_inline:Nn \g_metac_author_seq {
-    \tl_clear:N \l_tmpa_tl
-    \tl_clear:N \l_tmpb_tl
-    \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
-    \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
-      \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
-        % \seq_put_right:Nn \l_tmpa_seq {\href{mailto:\l_tmpa_tl}{\l_tmpa_tl}~{}~(\l_tmpb_tl)}
-        \seq_put_right:Nn \l_tmpa_seq {#1}
-      }{
-        \PackageError{metacapture}{All authors must have a name}
-      }
-    } {}
-  }
-  % now build the comma-separated list of email (name) entries
-  % for \g_metac_displayemails_tl
-  \int_case:nnF {\seq_count:N \l_tmpa_seq} {
-    0 {\tl_set:Nn \g_metac_displayemails_tl {} }
-    1 {\tl_set:Nn \g_metac_displayemails_tl {Email:~}}
-  } {
-    \tl_set:Nn \g_metac_displayemails_tl {Emails:~}
-  }
-  \seq_map_indexed_inline:Nn \l_tmpa_seq {
-    \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
-    \prop_get:NnN \l_tmpa_prop {email} \l_metac_email_tl
-    \prop_get:NnN \l_tmpa_prop {name} \l_metac_name_tl
-    \int_compare:nTF {#1 > 1} {
-      \tl_put_right:Ne \g_metac_displayemails_tl {,~\noexpand\href {mailto:\l_metac_email_tl} {\l_metac_email_tl}~(\l_metac_name_tl)}
-    } {
-      \tl_put_right:Ne \g_metac_displayemails_tl {\noexpand\href {mailto:\l_metac_email_tl} {\l_metac_email_tl}~(\l_metac_name_tl)}
+
+  % Build the header "Email:" / "Emails:" or empty, into \g_metac_displayemails_tl
+  \int_case:nnF { \seq_count:N \l_tmpa_seq }
+    {
+      {0} { \tl_gset:Nn \g_metac_displayemails_tl {} }
+      {1} { \tl_gset:Nn \g_metac_displayemails_tl { Email:~ } }
     }
-  }
+    { \tl_gset:Nn \g_metac_displayemails_tl { Emails:~ } }
+
+  % Append the comma-separated email (name) entries
+  \seq_map_indexed_inline:Nn \l_tmpa_seq
+    {
+      % #1 = index, #2 = keyval string for that author
+      \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
+      \prop_get:NnN \l_tmpa_prop { email } \l_metac_email_tl
+      \prop_get:NnN \l_tmpa_prop { name }  \l_metac_name_tl
+
+      \int_compare:nTF { #1 > 1 }
+        {
+          \tl_gput_right:Ne \g_metac_displayemails_tl
+            { ,~\noexpand\href{mailto:\l_metac_email_tl}{\l_metac_email_tl}~(\l_metac_name_tl) }
+        }
+        {
+          \tl_gput_right:Ne \g_metac_displayemails_tl
+            { \noexpand\href{mailto:\l_metac_email_tl}{\l_metac_email_tl}~(\l_metac_name_tl) }
+        }
+    }
 }
 
 % There are two lists of keywords, namely raw and plaintext. raw
@@ -1051,17 +1068,6 @@
 
 
 \ExplSyntaxOn
-\tl_new:N \g_metac_displayemails_tl
-\tl_set:Nn \g_metac_displayemails_tl {}
-\tl_new:N \l_metac_name_tl
-\tl_new:N \l_metac_fn_tl
-\tl_new:N \l_metac_country_tl
-\tl_new:N \l_metac_inst_tl
-\tl_new:N \l_metac_orcid_tl
-\tl_new:N \l_metac_email_tl
-\tl_new:N \l_metac_onclick_tl
-\tl_new:N \l_metac_authbox_tl
-
 \newcommand\addauthor[2][]{%
   \ifx\METAC@listofauthors\@empty
     \def\METAC@listofauthors{#2}%
