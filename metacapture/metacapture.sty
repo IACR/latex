@@ -138,12 +138,13 @@
 \tl_new:N \g_metac_titlerunning_tl
 
 \keys_define:nn { metacapture / title } {
-  plaintext .tl_set:N = \g_metac_titleplain_tl,
-  plaintext .default:n = {},
-  running .tl_set:N = \g_metac_titlerunning_tl,
-  running .default:n = {},
-  unknown .code:n = \PackageWarning{metacapture}{Unknown~key~for~title:'\l_keys_key_str'~=~'#1'.^^J}
+  plaintext.tl_set:N = \g_metac_titleplain_tl,
+  plaintext.default:n = {},
+  running  .tl_set:N = \g_metac_titlerunning_tl,
+  running  .default:n = {},
+  unknown  .code:n = \PackageWarning{metacapture}{Unknown~key~for~title:'\l_keys_key_str'~=~'#1'.^^J}
 }
+
 % variables for subtitle
 \tl_new:N \g_metac_subtitleraw_tl
 \tl_new:N \g_metac_subtitleplain_tl
@@ -167,7 +168,7 @@
   unknown   .code:n = \PackageError{metacapture}{Unknown~key~for~author:'\l_keys_key_str'}
 }
  
-% ISO-3166 Alpha-2 (constant comma list)
+% ISO-3166 Alpha-2
 \clist_const:Nn \c_metac_iso_clist
   {
     AF,AX,AL,DZ,AS,AD,AO,AI,AQ,AG,AR,AM,AW,AU,AT,AZ,
@@ -182,6 +183,12 @@
     SS,ES,LK,SD,SR,SJ,SE,CH,SY,TW,TJ,TZ,TH,TL,TG,TK,TO,TT,TN,TR,TM,TC,TV,UG,
     UA,AE,GB,US,UM,UY,UZ,VU,VE,VN,VG,VI,WF,EH,YE,ZM,ZW
   }
+
+\msg_new:nnn { metacapture } { invalid-countrycode }
+  {
+    The~country~code~'#1'~is~not~in~the~ISO-3166~Alpha-2~list.\\
+    Valid~codes~are:~\clist_use:Nn \c_metac_iso_clist {,~}
+  }
       
 % Similarly, these keys are used only to validate what is supplied
 % through \addaffiliation. Nothing is stored when they are set.
@@ -193,24 +200,28 @@
   state      .code:n = {},
   postcode   .code:n = {},
   country    .code:n = {}, % Can be found from \g_metac_countries_prop
-  countrycode .choices:Vn = \c_metac_iso_clist { },
+  countrycode.code:n = { \clist_if_in:NnF \c_metac_iso_clist {#1} 
+                         { \msg_error:nnn { metacapture } { invalid-countrycode } {#1} }
+                       },  
   name       .code:n = {},
   name       .value_required:n = true,
-  unknown .code:n = \PackageError{metacapture}{Unknown~key~for~affiliation:'\l_keys_key_str'}
+  unknown    .code:n = \PackageError{metacapture}{Unknown~key~for~affiliation:'\l_keys_key_str'}
 }
 
 % Similarly, these keys are used only to validate what is supplied
 % through \addfunding. Nothing is stored when they are set, but validation
 % is performed on required and unknown keys.
 \keys_define:nn { metacapture / funding } {
-  ror .code:n = {},
-  fundref .code:n = {},
-  grantid .code:n = {},
-  country .code:n = {},
-  countrycode .choices:Vn = \c_metac_iso_clist { },
-  name    .code:n = {},
-  name    .value_required:n = true,
-  unknown .code:n = \PackageError{metacapture}{Unknown~key~for~funding:'\l_keys_key_str'}
+  ror        .code:n = {},
+  fundref    .code:n = {},
+  grantid    .code:n = {},
+  country    .code:n = {},
+  countrycode.code:n = { \clist_if_in:NnF \c_metac_iso_clist {#1} 
+                         { \msg_error:nnn { metacapture } { invalid-countrycode } {#1} }
+                       },  
+  name       .code:n = {},
+  name       .value_required:n = true,
+  unknown    .code:n = \PackageError{metacapture}{Unknown~key~for~funding:'\l_keys_key_str'}
 }
 \ExplSyntaxOff
 
