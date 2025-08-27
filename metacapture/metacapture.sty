@@ -56,11 +56,6 @@
 }
 \ProcessKeyOptions[metacapture]
 
-\seq_new:N \g_metac_funders_seq
-
-% Remove JWB 
-%        \msg_error:nnn {metacapture} { metacapture-authors-name } {All authors must have a name}
-
 % There are two lists of keywords, namely raw and plaintext. raw
 % keywords are allowed to contain macros, but plaintext keywords are
 % not. Both are stored in a clist data structure.
@@ -247,6 +242,7 @@
 \seq_new:N \g_metac_affil_seq
 \bool_new:N \g_metac_affindex_bool
 \bool_gset_true:N \g_metac_affindex_bool
+\seq_clear_new:N \g_metac_funders_seq
 
 \tl_new:N \g_metac_displayemails_tl
 \tl_set:Nn \g_metac_displayemails_tl {}
@@ -278,47 +274,51 @@
   \int_compare:nT { \seq_count:N \g_metac_affil_seq = 1 }
     { \bool_gset_false:N \g_metac_affindex_bool }
 
-  % Collect names + emails of all authors that have an email into \l_tmpa_seq
-  \seq_clear_new:N \l_tmpa_seq
-  \prop_clear:N \l_tmpa_prop
+  % Collect authors having an 'email' key
+  \seq_clear_new:N  \l__metac_auth_with_email_seq
+  \prop_clear_new:N \l__metac_tmp_prop
+  \tl_clear_new:N   \l__metac_email_tl
+  \tl_clear_new:N   \l__metac_name_tl
 
   \seq_map_inline:Nn \g_metac_author_seq
-    {
-      \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
-      \prop_if_in:NnT \l_tmpa_prop { email }
-        { \seq_put_right:Nn \l_tmpa_seq {#1} }
-    }
+  {
+    \prop_set_from_keyval:Nn \l__metac_tmp_prop {#1}
+    \prop_if_in:NnT \l__metac_tmp_prop { email }
+      { \seq_put_right:Nn \l__metac_auth_with_email_seq {#1} }
+  }
 
-  % Build the header "Email:" / "Emails:" or empty, into \g_metac_displayemails_tl
-  \int_case:nnF { \seq_count:N \l_tmpa_seq }
-    {
-      {0} { \tl_gset:Nn \g_metac_displayemails_tl {} }
-      {1} { \tl_gset:Nn \g_metac_displayemails_tl { Email:~ } }
-    }
-    { \tl_gset:Nn \g_metac_displayemails_tl { Emails:~ } }
+  % Build the header "Email:" / "Emails:" / empty
+  % into \g_metac_displayemails_tl
+  \tl_gclear_new:N \g_metac_displayemails_tl
+  \int_set:Nn \l_tmpa_int { \seq_count:N \l__metac_auth_with_email_seq }
+  \int_case:nnF { \l_tmpa_int }
+  {
+    {0} { \tl_gset:Nn \g_metac_displayemails_tl {} }
+    {1} { \tl_gset:Nn \g_metac_displayemails_tl { Email:~ } }
+  }
+  { \tl_gset:Nn \g_metac_displayemails_tl { Emails:~ } }
 
   % Append the comma-separated email (name) entries
-  \seq_map_indexed_inline:Nn \l_tmpa_seq
+  \seq_if_empty:NF \l__metac_auth_with_email_seq
+  {
+    \seq_clear_new:N \l__metac_email_entries_seq
+    \seq_map_inline:Nn \l__metac_auth_with_email_seq
     {
-      % #1 = index, #2 = keyval string for that author
-      \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
-      \prop_get:NnN \l_tmpa_prop { email } \l_metac_email_tl
-      \prop_get:NnN \l_tmpa_prop { name }  \l_metac_name_tl
+      \prop_set_from_keyval:Nn \l__metac_tmp_prop {#1}
+      \prop_get:NnN \l__metac_tmp_prop { email } \l__metac_email_tl
+      \prop_get:NnN \l__metac_tmp_prop { name }  \l__metac_name_tl
 
-      \int_compare:nTF { #1 > 1 }
-        {
-          \tl_gput_right:Nx \g_metac_displayemails_tl
-            {,~\exp_not:N \href
-                            {mailto:\tl_use:N \l_metac_email_tl}
-                            {\tl_use:N \l_metac_email_tl}~(\tl_use:N \l_metac_name_tl)}
-        }
-        {
-          \tl_gput_right:Nx \g_metac_displayemails_tl
-            {\exp_not:N \href
-                        {mailto:\tl_use:N \l_metac_email_tl}
-                        {\tl_use:N \l_metac_email_tl}~(\tl_use:N \l_metac_name_tl)}
-        }
+      % Store one entry: \href{mailto:...}{...} (Name)
+      \seq_put_right:Nx \l__metac_email_entries_seq
+      {
+        \exp_not:N \href{mailto:\tl_use:N \l__metac_email_tl}
+                        {\tl_use:N \l__metac_email_tl}~(\tl_use:N \l__metac_name_tl)
+      }
     }
+    % Join with ",~" and append to the header
+    \tl_gput_right:Nx \g_metac_displayemails_tl
+                      { \seq_use:Nn \l__metac_email_entries_seq {,~} }
+  }
 }
 
 \def\METAC@iacrj@maketitle{%
