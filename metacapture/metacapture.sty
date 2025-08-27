@@ -231,11 +231,6 @@
 
 \ExplSyntaxOn
 
-\clist_if_exist:NF \l_tmpa_clist { \clist_new:N \l_tmpa_clist }
-\tl_if_exist:NF    \l_tmpa_tl    { \tl_new:N    \l_tmpa_tl }
-\tl_if_exist:NF    \l_tmpb_tl    { \tl_new:N    \l_tmpb_tl }
-\prop_if_exist:NF  \l_tmpa_prop  { \prop_new:N  \l_tmpa_prop }
-
 \tl_new:N \g_metac_titleraw_tl
 \tl_new:N \g_metac_subtitleraw_tl
 \seq_new:N \g_metac_author_seq
@@ -258,13 +253,7 @@
 
 % Check if \prop_get:NxNTF is undefined
 \cs_if_exist:NF \prop_get:NxNTF
-  {
-    % Define fallback using \prop_get:NnNTF and manual expansion
-    \cs_new_protected:Npn \prop_get:NxNTF #1#2#3#4#5
-      {
-        \prop_get:NnNTF #1 { \exp_not:n {#2} } #3 {#4} {#5}
-      }
-  }
+  { \cs_generate_variant:Nn \prop_get:NnNTF { Nx } }
 
 \AtBeginDocument{
   % Decide whether to number affiliations in maketitle:
@@ -376,7 +365,8 @@
       } { %no inst!
       }
       \bool_if:NT \g_metac_affindex_bool {
-        \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
+        %\tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
+        \tl_put_right:Nn \l_metac_authbox_tl {\textsuperscript{\l_tmpa_tl}}
       }
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
         \tl_put_right:Nn \l_metac_authbox_tl {~\OrcidLink{\l_metac_orcid_tl}}
@@ -402,7 +392,8 @@
         \\
      }
      \endgroup
-     \setcounter{footnote}{\theMETAC@affil@cnt}
+     %\setcounter{footnote}{\theMETAC@affil@cnt}     
+     \setcounter{footnote}{\value{METAC@affil@cnt}}
   \fi%!anonymous
   \end{center}%
   \par
@@ -990,7 +981,7 @@
     \prop_get:NnNTF \g_metac_author_prop {onclick} \l_metac_onclick_tl {
       \hspace{.3em}\homelink{\l_metac_onclick_tl}
     } {}
-    \\
+    \\ %problem
     % Apparently the above newline closes a group, so we have to
     % reconstruct \g_metac_author_prop
     \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
