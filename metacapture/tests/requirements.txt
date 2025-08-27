@@ -2,3 +2,5 @@ pypdf
 pdfplumber
 pytest
 python-xmp-toolkit
+nameparser
+pylatexenc

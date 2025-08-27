@@ -26,6 +26,11 @@
 
 \def\BibLaTeX{Bib\LaTeX}
 
+\DeclareRobustCommand\authorlink[1]{%
+  \texorpdfstring{%
+    \href{#1}{\XeTeXLinkBox{\mbox{\linkicon}}}}{}}
+
+
 \title[running  = {The iacrj document class}]{How to Use the IACR Journal Document Class}
 \subtitle{iacrj LaTeX Class Documentation (v0.90)}
 
@@ -222,7 +227,7 @@ optional arguments to {\tt \textbackslash{}addauthor}:
                      affiliation array (see below). These are used as footnote symbols
                      to link to affiliations.\\
     {\tt orcid}    & Create a small clickable orcid logo next to the authors name 
-                     looking like \orcidlink{0000-0003-1010-8157} and linking to 
+                     looking like \OrcidLink{0000-0003-1010-8157} and linking to 
 		     the authors ORCID (see: \url{https://orcid.org}).\\
     {\tt footnote} & Create an author-specific footnote. The \cmd{footnote} macro
     is disabled inside the \cmd{addauthor} macro.\\

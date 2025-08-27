@@ -679,9 +679,7 @@
   \fi
   \if@anonymous\else%
     \begingroup
-      \@ifpackageloaded{hyperref}{\begin{NoHyper}}{}%
       \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
-      \@ifpackageloaded{hyperref}{\end{NoHyper}}{}
     \endgroup
   \fi%
 }
