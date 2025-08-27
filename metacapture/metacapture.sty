@@ -56,75 +56,10 @@
 }
 \ProcessKeyOptions[metacapture]
 
-\seq_new:N \g_metac_author_seq
-\seq_new:N \g_metac_affil_seq
 \seq_new:N \g_metac_funders_seq
-
-\tl_new:N \g_metac_displayemails_tl
-\tl_set:Nn \g_metac_displayemails_tl {}
-\tl_new:N \l_metac_name_tl
-\tl_new:N \l_metac_fn_tl
-\tl_new:N \l_metac_country_tl
-\tl_new:N \l_metac_inst_tl
-\tl_new:N \l_metac_orcid_tl
-\tl_new:N \l_metac_email_tl
-\tl_new:N \l_metac_onclick_tl
-\tl_new:N \l_metac_authbox_tl
-
-\bool_new:N \g_metac_affindex_bool
-\bool_gset_true:N \g_metac_affindex_bool
-
-\prop_if_exist:NF \l_tmpa_prop { \prop_new:N \l_tmpa_prop }
 
 % Remove JWB 
 %        \msg_error:nnn {metacapture} { metacapture-authors-name } {All authors must have a name}
-
-\AtBeginDocument{
-  % Decide whether to number affiliations in maketitle:
-  % false if exactly one author OR exactly one affiliation.
-  \int_compare:nT { \seq_count:N \g_metac_author_seq = 1 }
-    { \bool_gset_false:N \g_metac_affindex_bool }
-  \int_compare:nT { \seq_count:N \g_metac_affil_seq = 1 }
-    { \bool_gset_false:N \g_metac_affindex_bool }
-
-  % Collect names + emails of all authors that have an email into \l_tmpa_seq
-  \seq_clear_new:N \l_tmpa_seq
-  \prop_clear:N \l_tmpa_prop
-  
-  \seq_map_inline:Nn \g_metac_author_seq
-    {
-      \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
-      \prop_if_in:NnT \l_tmpa_prop { email }
-        { \seq_put_right:Nn \l_tmpa_seq {#1} }
-    }
-
-  % Build the header "Email:" / "Emails:" or empty, into \g_metac_displayemails_tl
-  \int_case:nnF { \seq_count:N \l_tmpa_seq }
-    {
-      {0} { \tl_gset:Nn \g_metac_displayemails_tl {} }
-      {1} { \tl_gset:Nn \g_metac_displayemails_tl { Email:~ } }
-    }
-    { \tl_gset:Nn \g_metac_displayemails_tl { Emails:~ } }
-
-  % Append the comma-separated email (name) entries
-  \seq_map_indexed_inline:Nn \l_tmpa_seq
-    {
-      % #1 = index, #2 = keyval string for that author
-      \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
-      \prop_get:NnN \l_tmpa_prop { email } \l_metac_email_tl
-      \prop_get:NnN \l_tmpa_prop { name }  \l_metac_name_tl
-
-      \int_compare:nTF { #1 > 1 }
-        {
-          \tl_gput_right:Ne \g_metac_displayemails_tl
-            { ,~\noexpand\href{mailto:\l_metac_email_tl}{\l_metac_email_tl}~(\l_metac_name_tl) }
-        }
-        {
-          \tl_gput_right:Ne \g_metac_displayemails_tl
-            { \noexpand\href{mailto:\l_metac_email_tl}{\l_metac_email_tl}~(\l_metac_name_tl) }
-        }
-    }
-}
 
 % There are two lists of keywords, namely raw and plaintext. raw
 % keywords are allowed to contain macros, but plaintext keywords are
@@ -134,7 +69,6 @@
 
 % variables for title
 \tl_new:N \g_metac_titleplain_tl
-\tl_new:N \g_metac_titleraw_tl
 \tl_new:N \g_metac_titlerunning_tl
 
 \keys_define:nn { metacapture / title } {
@@ -146,7 +80,6 @@
 }
 
 % variables for subtitle
-\tl_new:N \g_metac_subtitleraw_tl
 \tl_new:N \g_metac_subtitleplain_tl
 \keys_define:nn { metacapture / subtitle } {
   plaintext .tl_set:N = \g_metac_subtitleplain_tl,
@@ -302,6 +235,92 @@
 \newcommand{\META@CSS}{\space\space}
 
 \ExplSyntaxOn
+
+\clist_if_exist:NF \l_tmpa_clist { \clist_new:N \l_tmpa_clist }
+\tl_if_exist:NF    \l_tmpa_tl    { \tl_new:N    \l_tmpa_tl }
+\tl_if_exist:NF    \l_tmpb_tl    { \tl_new:N    \l_tmpb_tl }
+\prop_if_exist:NF  \l_tmpa_prop  { \prop_new:N  \l_tmpa_prop }
+
+\tl_new:N \g_metac_titleraw_tl
+\tl_new:N \g_metac_subtitleraw_tl
+\seq_new:N \g_metac_author_seq
+\seq_new:N \g_metac_affil_seq
+\bool_new:N \g_metac_affindex_bool
+\bool_gset_true:N \g_metac_affindex_bool
+
+\tl_new:N \g_metac_displayemails_tl
+\tl_set:Nn \g_metac_displayemails_tl {}
+
+\tl_new:N \l_metac_name_tl
+\tl_new:N \l_metac_fn_tl
+\tl_new:N \l_metac_country_tl
+\tl_new:N \l_metac_inst_tl
+\tl_new:N \l_metac_orcid_tl
+\tl_new:N \l_metac_email_tl
+\tl_new:N \l_metac_onclick_tl
+\tl_new:N \l_metac_authbox_tl
+
+% Check if \prop_get:NxNTF is undefined
+\cs_if_exist:NF \prop_get:NxNTF
+  {
+    % Define fallback using \prop_get:NnNTF and manual expansion
+    \cs_new_protected:Npn \prop_get:NxNTF #1#2#3#4#5
+      {
+        \prop_get:NnNTF #1 { \exp_not:n {#2} } #3 {#4} {#5}
+      }
+  }
+
+\AtBeginDocument{
+  % Decide whether to number affiliations in maketitle:
+  % false if exactly one author OR exactly one affiliation.
+  \int_compare:nT { \seq_count:N \g_metac_author_seq = 1 }
+    { \bool_gset_false:N \g_metac_affindex_bool }
+  \int_compare:nT { \seq_count:N \g_metac_affil_seq = 1 }
+    { \bool_gset_false:N \g_metac_affindex_bool }
+
+  % Collect names + emails of all authors that have an email into \l_tmpa_seq
+  \seq_clear_new:N \l_tmpa_seq
+  \prop_clear:N \l_tmpa_prop
+
+  \seq_map_inline:Nn \g_metac_author_seq
+    {
+      \prop_set_from_keyval:Nn \l_tmpa_prop {#1}
+      \prop_if_in:NnT \l_tmpa_prop { email }
+        { \seq_put_right:Nn \l_tmpa_seq {#1} }
+    }
+
+  % Build the header "Email:" / "Emails:" or empty, into \g_metac_displayemails_tl
+  \int_case:nnF { \seq_count:N \l_tmpa_seq }
+    {
+      {0} { \tl_gset:Nn \g_metac_displayemails_tl {} }
+      {1} { \tl_gset:Nn \g_metac_displayemails_tl { Email:~ } }
+    }
+    { \tl_gset:Nn \g_metac_displayemails_tl { Emails:~ } }
+
+  % Append the comma-separated email (name) entries
+  \seq_map_indexed_inline:Nn \l_tmpa_seq
+    {
+      % #1 = index, #2 = keyval string for that author
+      \prop_set_from_keyval:Nn \l_tmpa_prop {#2}
+      \prop_get:NnN \l_tmpa_prop { email } \l_metac_email_tl
+      \prop_get:NnN \l_tmpa_prop { name }  \l_metac_name_tl
+
+      \int_compare:nTF { #1 > 1 }
+        {
+          \tl_gput_right:Nx \g_metac_displayemails_tl
+            {,~\exp_not:N \href
+                            {mailto:\tl_use:N \l_metac_email_tl}
+                            {\tl_use:N \l_metac_email_tl}~(\tl_use:N \l_metac_name_tl)}
+        }
+        {
+          \tl_gput_right:Nx \g_metac_displayemails_tl
+            {\exp_not:N \href
+                        {mailto:\tl_use:N \l_metac_email_tl}
+                        {\tl_use:N \l_metac_email_tl}~(\tl_use:N \l_metac_name_tl)}
+        }
+    }
+}
+
 \def\METAC@iacrj@maketitle{%
   \null
   \vskip 2em%
@@ -343,7 +362,7 @@
       % store the footnote marks (footnote and inst) in \l_tmpa_tl
       \tl_clear:N \l_tmpa_tl
       \tl_clear:N \l_metac_fn_tl
-      \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+      \prop_get:NnNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
         \tl_put_right:Nn \l_metac_authbox_tl {\footnotemark}
       } {
         \tl_set:Nn \l_metac_fn_tl {}
@@ -356,7 +375,7 @@
         }
       } { %no inst!
       }
-      \bool_if:nT \g_metac_affindex_bool {
+      \bool_if:NT \g_metac_affindex_bool {
         \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
       }
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
@@ -371,7 +390,7 @@
      \vskip 1em\par
      \small
      \seq_map_indexed_inline:Nn \g_metac_affil_seq {
-        \bool_if:nT \g_metac_affindex_bool {$^{##1}$~}
+        \bool_if:NT \g_metac_affindex_bool {$^{##1}$~}
         \prop_clear:N \l_tmpa_prop
         \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
         \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpa_tl {
@@ -411,7 +430,7 @@
       \prop_set_from_keyval:Nn \l_tmpa_prop { ##2 }
       \prop_get:NnN \l_tmpa_prop {name} \l_tmpb_tl
       \clist_put_right:No \l_tmpa_clist {\l_tmpb_tl}
-      \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+      \prop_get:NnNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
         \renewcommand\thefootnote{}\footnotetext{\l_metac_fn_tl}%
       } {}
     }
@@ -437,19 +456,19 @@
          \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
          \tl_clear:N \l_tmpa_tl
          \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpb_tl {
-           \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl,~}
+           \tl_put_right:Nx \l_tmpa_tl {\l_tmpb_tl,~}
          } {}
          \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
-           \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+           \tl_put_right:Nx \l_tmpa_tl {\l_tmpb_tl}
          } {}
          \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpb_tl {
-           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+           \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
          } {}
          \prop_get:NnNTF \l_tmpa_prop {state} \l_tmpb_tl {
-           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+           \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
          } {}
          \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpb_tl {
-           \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+           \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
          } {}
          \prop_put:Nne \l_tmpb_prop {##1} {\l_tmpa_tl}
        }
@@ -462,11 +481,11 @@
          %} {}
          {\scshape
          \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
-           \clist_set:Ne \l_tmpa_clist \l_tmpa_tl
+           \clist_set:Nn \l_tmpa_clist \l_tmpa_tl
            \int_set:Nn \l_tmpa_int {1}
            \clist_map_inline:Nn \l_tmpa_clist {
-             \str_set:Ne \l_tmpa_str {####1}
-             \prop_get:NeNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
+             \str_set:Nx \l_tmpa_str {####1}
+             \prop_get:NxNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
                \int_compare:nTF {\l_tmpa_int > 1} {
                  \int_compare:nTF {\l_tmpa_int == \clist_count:N \l_tmpa_clist} {
                    {}~and~\l_tmpb_tl
@@ -524,12 +543,12 @@
       {\scshape \l_tmpa_tl}
     }
     \tl_clear:N \l_metac_fn_tl
-    \prop_get:NeNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
+    \prop_get:NnNTF \l_tmpa_prop {footnote} \l_metac_fn_tl {
       \footnote{\l_metac_fn_tl}
     } {}
     \clist_clear:N \l_tmpa_clist
     \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpb_tl {
-      \clist_set:Ne \l_tmpa_clist \l_tmpb_tl
+      \clist_set:Nn \l_tmpa_clist \l_tmpb_tl
     } {}
     % put affiliation strings into \l_tmpa_seq and output them
     % as comma-delimited list.
@@ -661,9 +680,9 @@
             \prop_get:NnNTF \l_tmpa_prop {email} \l_metac_email_tl {
               \prop_get:NnN \l_tmpa_prop {name} \l_metac_name_tl
               \tl_put_right:Nn \l_metac_authbox_tl {\begin{tabular}[t]{l}}
-              \tl_put_right:Ne \l_metac_authbox_tl {\l_metac_name_tl}
+              \tl_put_right:Nx \l_metac_authbox_tl {\l_metac_name_tl}
               \tl_put_right:Nn \l_metac_authbox_tl {\\}
-              \tl_put_right:Ne \l_metac_authbox_tl {\noexpand\href {\l_metac_email_tl}{\l_metac_email_tl}}
+              \tl_put_right:Nx \l_metac_authbox_tl {\noexpand\href {\l_metac_email_tl}{\l_metac_email_tl}}
               \tl_put_right:Nn \l_metac_authbox_tl {\end{tabular}}
               \mbox{\l_metac_authbox_tl}\hspace{.2em}
             } {}
@@ -762,19 +781,19 @@
     \prop_set_from_keyval:Nn \l_tmpa_prop {##2}
     \tl_clear:N \l_tmpa_tl
     \prop_get:NnNTF \l_tmpa_prop {department} \l_tmpb_tl {
-      \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl,~}
+      \tl_put_right:Nx \l_tmpa_tl {\l_tmpb_tl,~}
     } {}
     \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
-      \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+      \tl_put_right:Nx \l_tmpa_tl {\l_tmpb_tl}
     } {}
     \prop_get:NnNTF \l_tmpa_prop {city} \l_tmpb_tl {
-      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+      \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
     } {}
     \prop_get:NnNTF \l_tmpa_prop {state} \l_tmpb_tl {
-      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+      \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
     } {}
     \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpb_tl {
-      \tl_put_right:Ne \l_tmpa_tl {,~\l_tmpb_tl}
+      \tl_put_right:Nx \l_tmpa_tl {,~\l_tmpb_tl}
     } {}
     \prop_put:Nne \l_tmpb_prop {##1} {\l_tmpa_tl}
   }
@@ -800,10 +819,10 @@
       \\
     } {}
     \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
-      \clist_set:Ne \l_tmpa_clist \l_tmpa_tl
+      \clist_set:Nn \l_tmpa_clist \l_tmpa_tl
       \clist_map_inline:Nn \l_tmpa_clist {
-        \str_set:Ne \l_tmpa_str {####1}
-        \prop_get:NeNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
+        \str_set:Nx \l_tmpa_str {####1}
+        \prop_get:NxNTF \l_tmpb_prop {\l_tmpa_str} \l_tmpb_tl {
           \l_tmpb_tl\\
         } {}
       }
@@ -868,18 +887,18 @@
        } {}
        \clist_clear:N \l_tmpa_clist
        \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpb_tl {
-         \clist_set:Ne \l_tmpa_clist \l_tmpb_tl
+         \clist_set:Nn \l_tmpa_clist \l_tmpb_tl
        } {}
        \seq_map_indexed_inline:Nn \g_metac_affil_seq {
          \clist_if_in:NnTF \l_tmpa_clist {####1} {
            \prop_set_from_keyval:Nn \l_tmpa_prop {####2}
            \prop_get:NnNTF \l_tmpa_prop {name} \l_tmpb_tl {
              \tl_put_right:Nn \l_tmpa_tl {\\\small}
-             \tl_put_right:Ne \l_tmpa_tl {\l_tmpb_tl}
+             \tl_put_right:Nx \l_tmpa_tl {\l_tmpb_tl}
            } {}
            \prop_get:NnNTF \l_tmpa_prop {country} \l_metac_country_tl {
              \tl_put_right:Nn \l_tmpa_tl {\\\small}
-             \tl_put_right:Ne \l_tmpa_tl {\l_metac_country_tl}
+             \tl_put_right:Nx \l_tmpa_tl {\l_metac_country_tl}
            }{}
          } {}
        }
@@ -977,7 +996,7 @@
     \prop_set_from_keyval:Nn \g_metac_author_prop {##2}
     \prop_get:NnNTF \g_metac_author_prop {inst} \l_metac_inst_tl {
       \seq_map_indexed_inline:Nn \g_metac_affil_seq {
-        \clist_set:Ne \l_tmpa_clist {\l_metac_inst_tl}
+        \clist_set:Nn \l_tmpa_clist \l_metac_inst_tl
         \clist_if_in:NnTF \l_tmpa_clist {####1} {
           \prop_set_from_keyval:Nn \l_tmpb_prop {####2}
           {\small \prop_item:Nn \l_tmpb_prop {name}}
@@ -1018,16 +1037,16 @@
       } {}
       \prop_set_from_keyval:Nn \g_metac_affil_prop {##2}
       \prop_get:NnNTF \g_metac_affil_prop {department} \l_tmpa_tl {
-        \tl_put_right:Ne #2 {\l_tmpa_tl,~}
+        \tl_put_right:Nx #2 {\l_tmpa_tl,~}
       } {}
       \prop_get:NnNTF \g_metac_affil_prop {name} \l_tmpa_tl {
-        \tl_put_right:Ne #2 {\l_tmpa_tl}
+        \tl_put_right:Nx #2 {\l_tmpa_tl}
       } {}
       \prop_get:NnNTF \g_metac_affil_prop {city} \l_tmpa_tl {
-        \tl_put_right:Ne #2 {,~\l_tmpa_tl}
+        \tl_put_right:Nx #2 {,~\l_tmpa_tl}
       } {}
       \prop_get:NnNTF \g_metac_affil_prop {country} \l_tmpa_tl {
-        \tl_put_right:Ne #2 {,~\l_tmpa_tl}
+        \tl_put_right:Nx #2 {,~\l_tmpa_tl}
       } {}
     } {}
   }
@@ -1037,7 +1056,7 @@
   \@ifpackageloaded{hyperref}{
     \hypersetup{colorlinks=true}
     \clist_if_empty:NTF \g_metac_keywords_plaintext_clist {} {
-      \hypersetup{pdfkeywords={\clist_use:Nnnn \g_metac_keywords_plaintext_clist {,~} {,~} {,~}}}
+      \hypersetup{pdfkeywords={\clist_use:Nn \g_metac_keywords_plaintext_clist {,\space}}}
     }
     \hypersetup{pdftitle={\g_metac_titleplain_tl}}%
     \if@metacapture@anonymous
@@ -1077,6 +1096,11 @@
 
 
 \ExplSyntaxOn
+
+% Create \regex_match:nVTF if it's missing
+\cs_if_exist:NF \regex_match:nVTF
+  { \cs_generate_variant:Nn \regex_match:nnTF { nV } }
+
 \newcommand\addauthor[2][]{%
   \ifx\METAC@listofauthors\@empty
     \def\METAC@listofauthors{#2}%
@@ -1282,7 +1306,7 @@
   \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\title\space may only be used before \string\begin{document}}{}\fi
   \if@metacapture@notitlefootnote%
     \saveexpandmode\noexpandarg % set \noexpandarg locally
-    \IfSubStr{#2}{\footnote}{\PackageError{metacapture}{The \string\footnote\space macro is disabled in the title}}
+    \IfSubStr{#2}{\footnote}{\PackageError{metacapture}{The~\string\footnote\space macro~is~disabled~in~the~title}}
     \restoreexpandmode % restore the previous mode
   \fi
   \tl_set:Nn \g_metac_titleraw_tl {#2}
