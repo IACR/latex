@@ -279,9 +279,6 @@
 \end{tikzpicture}}
 % end of crossmark image
 
-% pgfkeys: a flexible key management system
-%\RequirePackage{pgfkeys}
-
 \global\let\@author\@empty%
 \global\let\@affiliation\@empty%
 
@@ -301,6 +298,7 @@
 \newwrite\iacrmeta
 \immediate\openout\iacrmeta=\jobname.meta
 
+\ExplSyntaxOn
 \AtEndDocument{%
   % Final version requires textabstract.
   \IfFileExists{\jobname.abstract}{}{%
@@ -310,12 +308,12 @@
     }
   }{}
   \ifcsstring{@IACRversion}{final}{%
-    \ifnum\theMETAC@affil@cnt<1\relax
-      \ClassError{iacrj}{Specify at least one affiliation for the final version}{}%
-    \fi%
+    \int_compare:nT { \g_metac_affil_cnt_int < 1 }
+    { \ClassError{iacrj}{Specify at least one affiliation for the final version}{} }
   }{}% final
 }
 \let\storeprotect\protect
+\ExplSyntaxOff
 
 % xpatch: Extending etoolbox patching commands
 \RequirePackage{xpatch}

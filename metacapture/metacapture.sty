@@ -33,13 +33,25 @@
 
 % switch TeX’s category codes so one can write LaTeX3 (expl3) code using its standard naming conventions
 \ExplSyntaxOn
+
 % declare new token list variables
 \tl_new:N \g_metac_emailreq_tl % stores none, one, or all
 \tl_new:N \g_metac_maketitle_tl % stores a type of maketitle
 \tl_new:N \g_metac_affilstring_tl
+
 % declare new property list variables
 \prop_new:N \g_metac_author_prop
 \prop_new:N \g_metac_affil_prop
+
+% Count the number of authors
+\int_new:N \g_metac_author_cnt_int
+
+% Count the number of institutions
+\int_new:N \g_metac_affil_cnt_int
+
+% Count the number of provided e-mail addresses. This must comply
+% with the emailreq option to the package.
+\int_new:N \g_metac_email_cnt_int
 
 \DeclareKeys[metacapture]{%
   anonymous.if = @metacapture@anonymous,  % whether to conceal author information.
@@ -154,6 +166,13 @@
 \ExplSyntaxOff
 
 % See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
+% "In 2021 all TEX engines were enhanced so that
+% \tracinglostchars supported the value 3 to turn
+% missing characters into errors and not just warnings
+% [...] we recommend
+% setting \tracinglostchars=3, in either a package or
+% the preamble of your documents: this is because having
+% missing glyphs in the output is definitely an error"
 \tracinglostchars=3
 
 % xstring: provides macros for manipulating strings - testing a string’s
@@ -167,16 +186,6 @@
 
 % comma-delimited list of author names.
 \global\let\METAC@listofauthors\@empty
-
-% Count the number of authors
-\newcounter{METAC@author@cnt}
-
-% Count the number of institutions
-\newcounter{METAC@affil@cnt}
-
-% Count the number of provided e-mail addresses. This must comply
-% with the emailreq option to the package.
-\newcounter{METAC@email@cnt}
 
 % Meta information is written out in [jobname].meta
 \newwrite\metacwrite
@@ -365,7 +374,6 @@
       } { %no inst!
       }
       \bool_if:NT \g_metac_affindex_bool {
-        %\tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
         \tl_put_right:Nn \l_metac_authbox_tl {\textsuperscript{\l_tmpa_tl}}
       }
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
@@ -392,8 +400,7 @@
         \\
      }
      \endgroup
-     %\setcounter{footnote}{\theMETAC@affil@cnt}     
-     \setcounter{footnote}{\value{METAC@affil@cnt}}
+     \setcounter{footnote}{\int_use:N \g_metac_affil_cnt_int}
   \fi%!anonymous
   \end{center}%
   \par
@@ -661,7 +668,8 @@
         \prop_get:NnNTF \l_tmpa_prop {country} \l_tmpa_tl {,~\l_tmpa_tl} {}
         \\
       }
-      \ifnum\theMETAC@email@cnt>0\relax
+      \int_compare:nT { \g_metac_email_cnt_int > 0 }
+      {
         \hypersetup{urlcolor=blue}
         \begin{list}{\METAC@emailicon}{\leftmargin=1em\labelsep=0pt}\item
           \seq_map_indexed_inline:Nn \g_metac_author_seq {
@@ -679,7 +687,7 @@
             } {}
           }
         \end{list}
-      \fi
+      }
     \endgroup
   \fi%!anonymous
   \endgroup
@@ -974,7 +982,6 @@
     \prop_get:NnNTF \g_metac_author_prop {footnote} \l_metac_fn_tl {
       \footnote{\l_metac_fn_tl}
     } {}
-    
     \prop_get:NnNTF \g_metac_author_prop {orcid} \l_metac_orcid_tl {
       \hspace{.5em}\OrcidLink{\l_metac_orcid_tl}
     } {}
@@ -1049,21 +1056,19 @@
     \clist_if_empty:NTF \g_metac_keywords_plaintext_clist {} {
       \hypersetup{pdfkeywords={\clist_use:Nn \g_metac_keywords_plaintext_clist {,\space}}}
     }
-    \hypersetup{pdftitle={\g_metac_titleplain_tl}}%
+    \hypersetup{pdftitle={\g_metac_titleplain_tl}}
     \if@metacapture@anonymous
       \hypersetup{pdfauthor={hidden~for~submission}}
     \else
       \hypersetup{pdfauthor={\METAC@listofauthors}}
-      \tl_if_eq:NnTF \g_metac_emailreq_tl {one}{%
+      \tl_if_eq:NnTF \g_metac_emailreq_tl {one}{
         % When we produce the final version we need at least one e-mail address
-        \ifnum\theMETAC@email@cnt<1\relax
-          \PackageError{metacapture}{At least one author must supply an e-mail address}
-        \fi
+        \int_compare:nT { \g_metac_email_cnt_int < 1 }
+                        { \PackageError{metacapture}{At least one author must supply an e-mail address} }
       }{
-        \tl_if_eq:NnTF \g_metac_emailreq_tl {all}{%
-          \ifnum\theMETAC@email@cnt<\theMETAC@author@cnt\relax
-            \PackageError{metacapture}{All authors must supply an email address}{}%
-          \fi
+        \tl_if_eq:NnTF \g_metac_emailreq_tl {all}{
+          \int_compare:nT { \g_metac_email_cnt_int < \g_metac_author_cnt_int }
+                          { \PackageError{metacapture}{All authors must supply an email address} }
         } {}
       }
     \fi
@@ -1076,15 +1081,12 @@
   }
 }
 
-% Add support to display the provided e-mail addresses
-% in the footnote of the front page
 \ExplSyntaxOff
 
 % We do not support \author, use \addauthor instead
 \renewcommand\author[2][]{%
-  \PackageError{metacapture}{Do not use the \string\author\space macro: use the \string\addauthor\space macro instead}{}%
+  \PackageError{metacapture}{Do~not~use~the~\string\author\space macro:~use~the \string\addauthor\space macro~instead}{}%
 }
-
 
 \ExplSyntaxOn
 
@@ -1106,11 +1108,10 @@
   \saveexpandmode\noexpandarg % set \noexpandarg locally
   \IfSubStr{\detokenize{#2}}{,}{%
     \PackageWarning{metacapture}{Do~not~separate~multiple~authors~by~comma~in~\string\addauthor\space~macro}%
-  }{}%
+  }{}
   % Affiliations should be defined *after* addauthor
-  \ifnum\theMETAC@affil@cnt>0\relax
-    \PkgErr{Affiliations must follow authors}%
-  \fi
+  \int_compare:nT { \g_metac_affil_cnt_int > 0 }
+                  { \PkgErr{Affiliations must follow authors} }
   % Do not use " and " in your author name: this might indicate incorrect usage
   \regex_match:nnTF { [\s]and[\s] } {#2} {
     \PkgErr{Do not separate authors by 'and' in the same \string\addauthor\space macro}%
@@ -1121,7 +1122,7 @@
   }{}%
   \restoreexpandmode % restore the previous mode
   %
-  \stepcounter{METAC@author@cnt}%
+  \int_gincr:N \g_metac_author_cnt_int
   \prop_clear:N \l_tmpa_prop
   \keys_set:nn { metacapture / author } { #1 } % validate keys.
   \seq_put_right:Nn \g_metac_author_seq { name={#2}, #1 }
@@ -1141,20 +1142,18 @@
   } {
     % no inst
   }
-  
   % check email
   \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
     \regex_match:nVTF {.*?@[a-zA-Z0-9\.\-\[\]]+$} { \l_tmpa_tl } {} { % bad email
       \PkgErr{The provided email in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
     }
-    \stepcounter{METAC@email@cnt}%
+    \int_gincr:N \g_metac_email_cnt_int
   } {}
   % If a surname is provided does some basic sanity checking on the string
   \prop_get:NnNTF \l_tmpa_prop {surname} \l_tmpa_tl {
     \MathAllowedInCheckStringfalse
     \expandafter\checkstring\expandafter{\l_tmpa_tl}{surname should not contain macros or math}%
   } {}
-
   % Write out the author in the meta file.
   \@writemeta{author:}%
   \clist_set:Nn \l_tmpa_clist {name,orcid,inst,surname,email}
@@ -1341,7 +1340,7 @@
 
 \newcommand\addaffiliation[2][]{
   \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\addaffiliation\space may only be used before \string\begin{document}}{}\fi
-  \stepcounter{METAC@affil@cnt}%
+  \int_gincr:N \g_metac_affil_cnt_int
   % If a affiliation name is provided does some basic sanity checking on the string
   \MathAllowedInCheckStringfalse
   \checkstring{#2}{Affiliation name should not contain macros or math}%
@@ -1371,21 +1370,27 @@
   \renewcommand{\addaffiliation}[2][]{}%
 \fi
 
-\newcommand{\METAC@inst}[1]{%
-  \ifnum\theMETAC@author@cnt=1\relax\else
-    \ifnum\theMETAC@affil@cnt=1\relax\else
-      \unskip$^{#1}$%
-    \fi
-  \fi
+\ExplSyntaxOn
+
+\NewDocumentCommand \METAC@inst { m }
+{
+  % print only if NOT (author=1 OR affil=1)
+  \bool_lazy_or:nnF
+    { \int_compare_p:n { \g_metac_author_cnt_int = 1 } }
+    { \int_compare_p:n { \g_metac_affil_cnt_int  = 1 } }
+    { \unskip$^{#1}$ }
 }
 
-\newcommand{\METAC@instwcomma}[1]{%
-  \ifnum\theMETAC@author@cnt=1\relax\else
-  \ifnum\theMETAC@affil@cnt=1\relax\else
-      \unskip$^{,\,#1}$%
-    \fi
-  \fi
+\NewDocumentCommand \METAC@instwcomma { m }
+{
+  % print only if NOT (author=1 OR affil=1)
+  \bool_lazy_or:nnF
+    { \int_compare_p:n { \g_metac_author_cnt_int = 1 } }
+    { \int_compare_p:n { \g_metac_affil_cnt_int  = 1 } }
+    { \unskip$^{,\,#1}$ }
 }
+
+\ExplSyntaxOff
 
 \AtEndPreamble{%
   \@ifpackageloaded{babel}{%
@@ -1408,9 +1413,10 @@
 % licenses in perpetuity so we should expect demands to change this in
 % the future.
 \global\let\METAC@license\@empty%
+
 \ExplSyntaxOn
+
 \newcommand\license[1]{%
-  %\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}%
   \ifx\@onlypreamble\@notprerr\PkgErr{\string\license\space must be used before \string\begin{document}}\else%
     \ifx\METAC@license\@empty%
        \str_set:Nx \l_tmpa_str { \str_casefold:n { #1 } }
@@ -1596,10 +1602,12 @@
 % End of macros for OrcidLink, linkicon and AuthorLink.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Any special cases
+
 \ExplSyntaxOn
 % note that acmart also loads amsart.
 \@ifclassloaded{amsart}{\providecommand{\shorttitle}{\g_metac_titlerunning_tl}}{}
 \ExplSyntaxOff
+
 \endinput
 %end of file metacapture.sty
 
