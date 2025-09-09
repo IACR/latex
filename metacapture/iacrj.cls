@@ -173,6 +173,8 @@
   \RequirePackage[maketitle=iacrj,notitlefootnote]{metacapture}
 }
 \fi
+
+\ExplSyntaxOn
 \AtEndPreamble{%
   % hyperref: Extensive support for hypertext in LaTeX
   % bookmarksopen: If Acrobat bookmarks are requested,
@@ -193,7 +195,7 @@
   \if@anonymous
     \hypersetup{pdfauthor={hidden for submission}}
   \else
-    \hypersetup{pdfauthor={\METAC@listofauthors}}
+    \hypersetup{pdfauthor={\tl_use:N \g_metac_listofauthors_tl}}
   \fi
   \ifcsstring{@IACRjournal}{cic}{%
     \hypersetup{pdflang=en,%
@@ -241,6 +243,7 @@
   }{}% final
   \@ifpackageloaded{savetrees}{\ClassError{iacrj}{The~savetrees~package~is~not~allowed}{}}
 }
+\ExplSyntaxOff
 
 % The TotPages label is not defined until after the \begin{document}.
 \AtBeginDocument{%
@@ -479,7 +482,7 @@
     \renewcommand{\addauthor}[2][]{}%
     \renewcommand{\addaffiliation}[2][]{}%
   \else
-    \ifIACR@userdefinedrunningauthors\else\def\IACR@runningauthors{\METAC@listofauthors}\fi
+    \ifIACR@userdefinedrunningauthors\else\def\IACR@runningauthors{\tl_use:N \g_metac_listofauthors_tl}\fi
   \fi
   % maxrunningwidth is the maximum width we can tolerate for authors and title.
   \@maxrunningwidth=\textwidth%
@@ -675,11 +678,11 @@
     \@ifpackageloaded{hyperref}{\end{NoHyper}}{}
     \endgroup
   \fi
-  \if@anonymous\else%
-    \begingroup
-      \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
-    \endgroup
-  \fi%
+  %\if@anonymous\else%
+    %\begingroup
+    %  \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
+    %\endgroup
+  %\fi%
 }
 \ExplSyntaxOff
 

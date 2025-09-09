@@ -53,6 +53,10 @@
 % with the emailreq option to the package.
 \int_new:N \g_metac_email_cnt_int
 
+% comma-delimited list of author names.
+\tl_new:N \g_metac_listofauthors_tl
+\tl_gclear:N \g_metac_listofauthors_tl
+
 \DeclareKeys[metacapture]{%
   anonymous.if = @metacapture@anonymous,  % whether to conceal author information.
   licensereq.if = @metacapture@licensereq, % whether to require a license.
@@ -184,9 +188,6 @@
 % This provides the savenotes macro to allow footnotes in boxes.
 \RequirePackage{footnotehyper}
 
-% comma-delimited list of author names.
-\global\let\METAC@listofauthors\@empty
-
 % Meta information is written out in [jobname].meta
 \newwrite\metacwrite
 \immediate\openout\metacwrite=\jobname.meta
@@ -317,6 +318,16 @@
     \tl_gput_right:Nx \g_metac_displayemails_tl
                       { \seq_use:Nn \l__metac_email_entries_seq {,~} }
   }
+  %\begingroup
+  %\renewcommand\thefootnote{}%
+  %\footnotetext{\g_metac_displayemails_tl}%
+  %\endgroup
+}
+
+\AddToHook{cmd/maketitle/before}{%
+       \begingroup
+       \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
+       \endgroup
 }
 
 \def\METAC@iacrj@maketitle{%
@@ -1060,7 +1071,7 @@
     \if@metacapture@anonymous
       \hypersetup{pdfauthor={hidden~for~submission}}
     \else
-      \hypersetup{pdfauthor={\METAC@listofauthors}}
+      \hypersetup{pdfauthor={\tl_use:N \g_metac_listofauthors_tl}}
       \tl_if_eq:NnTF \g_metac_emailreq_tl {one}{
         % When we produce the final version we need at least one e-mail address
         \int_compare:nT { \g_metac_email_cnt_int < 1 }
@@ -1095,11 +1106,9 @@
   { \cs_generate_variant:Nn \regex_match:nnTF { nV } }
 
 \newcommand\addauthor[2][]{%
-  \ifx\METAC@listofauthors\@empty
-    \def\METAC@listofauthors{#2}%
-  \else
-    \appto\METAC@listofauthors{,\space #2}%
-  \fi
+  \tl_if_empty:NTF \g_metac_listofauthors_tl
+  { \tl_gset:Nn \g_metac_listofauthors_tl {#2} }
+  { \tl_gput_right:Nn \g_metac_listofauthors_tl {, #2} }
   \ifx\@onlypreamble\@notprerr\PackageError{metacapture}{\string\addauthor\space may only be used before \string\begin{document}}{}\fi
   \MathAllowedInCheckStringfalse
   \checkstring{#2}{author names should not contain macros or math}%
@@ -1365,7 +1374,7 @@
 
 \if@metacapture@anonymous
   \gdef\@author{Anonymous~Submission}%
-  \gdef\METAC@listofauthors{}%
+  \tl_gclear:N \g_metac_listofauthors_tl
   \renewcommand{\addauthor}[2][]{}%
   \renewcommand{\addaffiliation}[2][]{}%
 \fi
