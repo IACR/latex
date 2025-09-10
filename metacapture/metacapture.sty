@@ -1108,6 +1108,30 @@
 \cs_if_exist:NF \regex_match:nVTF
   { \cs_generate_variant:Nn \regex_match:nnTF { nV } }
 
+\msg_new:nnn { metacapture } { no-commas-in-addauthor }
+  { Do~not~separate~multiple~authors~by~comma~in~\string\addauthor\space~macro }
+
+\msg_new:nnn { metacapture } { newline-in-addauthor }
+  { Do~not~put~a~newline~in~the~\string\addauthor\space~macro }
+
+\msg_new:nnn { metacapture } { and-in-addauthor }
+  { Do~not~separate~authors~by~'and'~in~the~same~\string\addauthor\space macro}
+
+\msg_new:nnn { metacapture } { affiliations-order-in-addauthor }
+  { Affiliations~must~follow~authors }
+
+\msg_new:nnn { metacapture } { valid-orcid-in-addauthor }
+  { The~provided~ORCID~in \string\addauthor\space does~not~look~valid:~\l_tmpa_tl.~Did~you~forget~a~comma? }
+
+\msg_new:nnn { metacapture } { mandatory-orcid-in-addauthor }
+  { Every~author~must~have~an~orcid~set~in~\string\addauthor }
+
+\msg_new:nnn { metacapture } { invalid-inst-in-addauthor }
+  { The~provided~inst~in~\string\addauthor\space does~not~look~valid:~\l_tmpa_tl. Did~you~forget~a~comma? }
+
+\msg_new:nnn { metacapture } { invalid-email-in-addauthor }
+  { The~provided~email~in~\string\addauthor\space does~not~look~valid:~\l_tmpa_tl.~Did~you~forget~a~comma? }
+
 \newcommand\addauthor[2][]{%
   \tl_if_empty:NTF \g_metac_listofauthors_tl
   { \tl_gset:Nn \g_metac_listofauthors_tl {#2} }
@@ -1118,22 +1142,19 @@
   % Some additional checks on the if addauthor is used correctly
   % Check if the name contains an ","
   \saveexpandmode\noexpandarg % set \noexpandarg locally
-  \IfSubStr{\detokenize{#2}}{,}{%
-    \PackageWarning{metacapture}{Do~not~separate~multiple~authors~by~comma~in~\string\addauthor\space~macro}%
-  }{}
+  \str_if_in:nnT { \tl_to_str:n {#2} } { , }
+  { \msg_warning:nn { metacapture } { no-commas-in-addauthor } }
   % Affiliations should be defined *after* addauthor
   \int_compare:nT { \g_metac_affil_cnt_int > 0 }
-                  { \PkgErr{Affiliations must follow authors} }
+                  { \msg_error:nn { metacapture } { affiliations-order-in-addauthor } }
   % Do not use " and " in your author name: this might indicate incorrect usage
   \regex_match:nnTF { [\s]and[\s] } {#2} {
-    \PkgErr{Do not separate authors by 'and' in the same \string\addauthor\space macro}%
+    \msg_error:nn { metacapture } { and-in-addauthor }
   }{}%
   % No newline is allowed in addauthor
-  \IfSubStr{#2}{\\}{%
-    \PkgErr{Do not put a newline in the \string\addauthor\space macro}%
-  }{}%
+  \str_if_in:nnT { \tl_to_str:n {#2} } { \\ }
+  { \msg_error:nn { metacapture } { newline-in-addauthor } }
   \restoreexpandmode % restore the previous mode
-  %
   \int_gincr:N \g_metac_author_cnt_int
   \prop_clear:N \l_tmpa_prop
   \keys_set:nn { metacapture / author } { #1 } % validate keys.
@@ -1142,14 +1163,16 @@
   % Check the orcid value
   \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpa_tl {
     \regex_match:nVTF {^\d{4}-\d{4}-\d{4}-\d{3}[Xx\d]$} {\l_tmpa_tl} {} {
-      \PackageError{The provided ORCID in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}
+      \msg_error:nn { metacapture } { valid-orcid-in-addauthor }
     }
-  } { % no orcid.
-    \if@metacapture@orcidreq\PkgErr{Every author must have an orcid set in \string\addauthor\space}\fi
+  }{ % no orcid.
+    \if@metacapture@orcidreq
+      \msg_error:nn { metacapture } { mandatory-orcid-in-addauthor }
+    \fi
   }
   \prop_get:NnNTF \l_tmpa_prop {inst} \l_tmpa_tl {
     \regex_match:nVTF {^[,\d]+$} { \l_tmpa_tl } {} {
-      \PkgErr{The provided inst in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
+      \msg_error:nn { metacapture } { invalid-inst-in-addauthor }
     }
   } {
     % no inst
@@ -1157,14 +1180,14 @@
   % check email
   \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
     \regex_match:nVTF {.*?@[a-zA-Z0-9\.\-\[\]]+$} { \l_tmpa_tl } {} { % bad email
-      \PkgErr{The provided email in \string\addauthor\space does not look valid: \l_tmpa_tl. Did you forget a comma?}%
+      \msg_error:nn { metacapture } { invalid-email-in-addauthor }
     }
     \int_gincr:N \g_metac_email_cnt_int
   } {}
   % If a surname is provided does some basic sanity checking on the string
   \prop_get:NnNTF \l_tmpa_prop {surname} \l_tmpa_tl {
     \MathAllowedInCheckStringfalse
-    \expandafter\checkstring\expandafter{\l_tmpa_tl}{surname should not contain macros or math}%
+    \expandafter\checkstring\expandafter{\l_tmpa_tl}{surname~should~not~contain~macros~or~math}%
   } {}
   % Write out the author in the meta file.
   \@writemeta{author:}%
