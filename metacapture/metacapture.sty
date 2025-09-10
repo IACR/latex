@@ -1405,9 +1405,6 @@
   \renewcommand{\addauthor}[2][]{}%
   \renewcommand{\addaffiliation}[2][]{}%
 \fi
-\ExplSyntaxOff
-
-\ExplSyntaxOn
 
 \NewDocumentCommand \METAC@inst { m }
 {
@@ -1442,16 +1439,28 @@
 
 \ExplSyntaxOn
 
+\msg_new:nnn { metacapture } { license-before-document }
+  { \string\license\space must~be~used~before~\string\begin{document} }
+
+\msg_new:nnn { metacapture } { invalid-license }
+  { Invalid~license:~\tl_use:N \g_metac_license_tl\space you~should~use~an~accepted~SPDX~identifier }
+
+\msg_new:nnn { metacapture } { license-already-set }
+  { License~has~already~been~set }
+
 \newcommand\license[1]{%
-  \ifx\@onlypreamble\@notprerr\PkgErr{\string\license\space must be used before \string\begin{document}}\else%
+  \cs_if_eq:NNTF \@onlypreamble \@notprerr
+  { \msg_error:nn { metacapture } { license-before-document } }
+  {
     \tl_if_empty:NTF \g_metac_license_tl
     {
-       \str_set:Nx \l_tmpa_str { \str_casefold:n { #1 } }
-       \IfStrEq{#1}{CC-by}{
-         \typeout{Legacy~license~identifier~CC-by~replaced~by~CC-BY-4.0}
-         \str_set:Nx \l_tmpa_str {cc-by-4.0}
-       }{}
-       \tl_gset:Nx \g_metac_license_tl { \text_uppercase:n { \l_tmpa_str } }
+       \str_set:Nx \l_tmpa_str { \text_uppercase:n {#1} }
+       \str_if_eq:VnT {\l_tmpa_str} {CC-BY}
+       {
+         \iow_term:n { Legacy~license~identifier~CC-BY~replaced~by~CC-BY-4.0 }
+         \str_set:Nx \l_tmpa_str {CC-BY-4.0}
+       }
+       \tl_gset:Nx \g_metac_license_tl { \l_tmpa_str }
        % We delay setting the license until hyperref has been loaded.
        \AtEndPreamble{
          \str_case_e:nnTF {\g_metac_license_tl} {
@@ -1474,17 +1483,15 @@
              \RequirePackage[type={CC},modifier={zero},version={1.0},hyperxmp=false]{doclicense}
            }
          }{
-           \typeout{License\space was\space set\space to\space \tl_use:N \g_metac_license_tl}
+           \iow_term:x{License~was~set~to~\tl_use:N \g_metac_license_tl}
            \@writemeta{license:~\tl_use:N \g_metac_license_tl}
          }{
-           \PkgErr{Invalid~license:~#1\space you~should~use~an~accepted~SPDX~identifier}
+           \msg_error:nn { metacapture } { invalid-license }
            \tl_gclear:N \g_metac_license_tl
-         }%
+         }
        }
-    }{
-      \PkgErr{License~has~already~been~set}
-    }
-  \fi% preamble check
+    }{ \msg_error:nn { metacapture } { license-already-set } }
+  } % preamble check
 }
 
 \newcommand{\addkeywords}[2][\@empty]{%
@@ -1530,8 +1537,7 @@
 
 % To be used by an author to provide a text abstract. This is written to an external
 % file as part of metadata capture.
-\newenvironment{textabstract}{%
-  \VerbatimOut{\jobname.abstract}}{\endVerbatimOut}
+\newenvironment{textabstract}{\VerbatimOut{\jobname.abstract}}{\endVerbatimOut}
 
 \RequirePackage{tikz}
 \usetikzlibrary{svg.path}
