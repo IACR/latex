@@ -105,7 +105,6 @@
   email     .code:n = {},
   surname   .code:n = {},
   footnote  .code:n = {},
-  surname   .code:n = {},
   onclick   .code:n = {},
   name      .code:n = {},
   name      .value_required:n = true,
@@ -318,16 +317,6 @@
     \tl_gput_right:Nx \g_metac_displayemails_tl
                       { \seq_use:Nn \l__metac_email_entries_seq {,~} }
   }
-  %\begingroup
-  %\renewcommand\thefootnote{}%
-  %\footnotetext{\g_metac_displayemails_tl}%
-  %\endgroup
-}
-
-\AddToHook{cmd/maketitle/before}{%
-       \begingroup
-       \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
-       \endgroup
 }
 
 \def\METAC@iacrj@maketitle{%
