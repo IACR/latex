@@ -57,6 +57,18 @@
 \tl_new:N \g_metac_listofauthors_tl
 \tl_gclear:N \g_metac_listofauthors_tl
 
+% We are currently depending on the doclicense package for embedding
+% licenses into a document, but that has apparently fallen out of
+% maintenance. At present the \license macro takes an SPDX license
+% identifier.  In the future we may open this up to more licenses but
+% this would require cooperation with the PDF tagging project that is
+% working on XMP. There are potential problems with people who want to
+% specify a non-SPDX license (e.g., CC+). Lawyers will be creating new
+% licenses in perpetuity so we should expect demands to change this in
+% the future.
+\tl_new:N \g_metac_license_tl
+\tl_gclear:N \g_metac_license_tl
+
 \DeclareKeys[metacapture]{%
   anonymous.if = @metacapture@anonymous,  % whether to conceal author information.
   licensereq.if = @metacapture@licensereq, % whether to require a license.
@@ -191,11 +203,11 @@
 \newwrite\metacwrite
 \immediate\openout\metacwrite=\jobname.meta
 
+\ExplSyntaxOn
 \AtEndDocument{%
   \if@metacapture@licensereq
-    \ifx\METAC@license\@empty
-      \PkgErr{A license is required to be supplied via \string\license}
-    \fi
+    \tl_if_empty:NT \g_metac_license_tl
+    { \PkgErr{A~license~is~required~to~be~supplied~via~\string\license} }
   \fi
   \if@metacapture@anonymous\else
     % Check that emails were correctly recorded.
@@ -222,6 +234,8 @@
     \fi
 }
 \let\storeprotect\protect
+
+\ExplSyntaxOff
 
 % xpatch: Extending etoolbox patching commands
 \RequirePackage{xpatch}
@@ -1361,12 +1375,14 @@
 
 \let\store@addaffiliation\addaffiliation% Save macro away
 
+\ExplSyntaxOn
 \if@metacapture@anonymous
   \gdef\@author{Anonymous~Submission}%
   \tl_gclear:N \g_metac_listofauthors_tl
   \renewcommand{\addauthor}[2][]{}%
   \renewcommand{\addaffiliation}[2][]{}%
 \fi
+\ExplSyntaxOff
 
 \ExplSyntaxOn
 
@@ -1401,31 +1417,21 @@
   }{}%
 }
 
-% We are currently depending on the doclicense package for embedding
-% licenses into a document, but that has apparently fallen out of
-% maintenance. At present the \license macro takes an SPDX license
-% identifier.  In the future we may open this up to more licenses but
-% this would require cooperation with the PDF tagging project that is
-% working on XMP. There are potential problems with people who want to
-% specify a non-SPDX license (e.g., CC+). Lawyers will be creating new
-% licenses in perpetuity so we should expect demands to change this in
-% the future.
-\global\let\METAC@license\@empty%
-
 \ExplSyntaxOn
 
 \newcommand\license[1]{%
   \ifx\@onlypreamble\@notprerr\PkgErr{\string\license\space must be used before \string\begin{document}}\else%
-    \ifx\METAC@license\@empty%
+    \tl_if_empty:NTF \g_metac_license_tl
+    {
        \str_set:Nx \l_tmpa_str { \str_casefold:n { #1 } }
        \IfStrEq{#1}{CC-by}{
          \typeout{Legacy~license~identifier~CC-by~replaced~by~CC-BY-4.0}
          \str_set:Nx \l_tmpa_str {cc-by-4.0}
        }{}
-       \global\def\METAC@license{\text_uppercase:n {\l_tmpa_str}}
+       \tl_gset:Nx \g_metac_license_tl { \text_uppercase:n { \l_tmpa_str } }
        % We delay setting the license until hyperref has been loaded.
        \AtEndPreamble{
-         \str_case_e:nnTF {\METAC@license} {
+         \str_case_e:nnTF {\g_metac_license_tl} {
            {CC-BY-4.0} {
              \RequirePackage[type={CC},modifier={by},version={4.0},hyperxmp=false]{doclicense}
            }
@@ -1445,14 +1451,16 @@
              \RequirePackage[type={CC},modifier={zero},version={1.0},hyperxmp=false]{doclicense}
            }
          }{
-           \typeout{License\space was\space set\space to\space \METAC@license}
-           \@writemeta{license:~\METAC@license}
+           \typeout{License\space was\space set\space to\space \tl_use:N \g_metac_license_tl}
+           \@writemeta{license:~\tl_use:N \g_metac_license_tl}
          }{
            \PkgErr{Invalid~license:~#1\space you~should~use~an~accepted~SPDX~identifier}
-           \global\def\METAC@license\@empty
+           \tl_gclear:N \g_metac_license_tl
          }%
        }
-    \else\PkgErr{License~has~already~been~set}\fi%
+    }{
+      \PkgErr{License~has~already~been~set}
+    }
   \fi% preamble check
 }
 

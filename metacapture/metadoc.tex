@@ -471,7 +471,7 @@ system.
 a license with the \cmd{license} macro.  At present we only support a
 few licenses (see section~\ref{license}) If a document class wishes to
 further restrict which license is acceptable, they can check
-the \cmd{METAC@license} variable at the end of the preamble.
+the \cmd{g\_metac\_license\_tl} variable at the end of the preamble.
 \item[\texttt{textabstract}] if chosen, then the document must specify a
 separate ``text-only'' abstract that is free of macros other than
 mathematics in a \texttt{textabstract}
@@ -979,7 +979,7 @@ inside \cmd{makeatletter}...\cmd{makeatother} blocks.
 \vardesc{\cmd{g\_metac\_funders\_seq}}{the list of funders}
 \vardesc{\cmd{g\_metac\_keywords\_raw\_clist}}{The list of raw encoded keywords (may contain macros)}
 \vardesc{\cmd{g\_metac\_keywords\_plaintext\_clist}}{The list of plaintext keywords}
-\vardesc{\cmd{METAC@license}}{When \cmd{license} is called, this is set to the license identifier.
+\vardesc{\cmd{g\_metac\_license\_tl}}{When \cmd{license} is called, this is set to the license identifier.
 This is an SPDX identifier because of our dependence on the
 \texttt{doclicense} package. An example is \texttt{CC-BY-4.0}.}
 \vardesc{\cmd{if@metacapture@anonymous}}{Set if the anonymous option is used to load it.}

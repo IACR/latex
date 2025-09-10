@@ -393,71 +393,77 @@
 
 \def\ymdtoday{\leavevmode\hbox{\the\year-\twodigits\month-\twodigits\day}}\def\twodigits#1{\ifnum#1<10 0\fi\the#1}
 
+\ExplSyntaxOn
+
 % We delay this to after begin{document} because it depends upon stuff
 % from the license, which in turn depends on hyperref having been
 % loaded.
 \AtBeginDocument{
   \fancypagestyle{title}{%
   \fancyhf{} % clear all header and footer fields
-  \ifcsstring{@IACRversion}{final}{%
-    \ifx\METAC@license\@empty
-       \ClassError{iacrj}{Please specify a license when using version=final: using for example \string\license{CC-BY-4.0}}{}%
-    \fi
-    \IfStrEq{\@IACRjournal}{cic}{%
-      \fancyhead[L]{%
-        \small%
-        \publname{}\\
-        \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
-        Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.}
-      \ifx\IACR@DOI\@empty\else\fancyhead[R]{\small%
-        \begin{tabular}{r}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\ifx\IACR@CROSSMARKURL\@empty\else\vspace{2px}\\%
-          \href{\IACR@CROSSMARKURL}{\crossmarkimage{.35}}\fi\end{tabular}}\fi%
-    }{% only CiC uses crossref.
-    \fancyhead[L]{%
-      \small%
-      \publname{}\\
-      ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
-      \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}
-    }}%
-  }{}% final
-  \ifx\@METAC@license\@empty\else%
-    % If \license is provided show this for preprint and final (not for submission)
-    \ifcsstring{@IACRversion}{submission}{}{%
-      \fancyfoot[L]{%
-        \small%
-        \ifx\METAC@license\@empty\else
-        \doclicenseText%
-        \hfill{}%
-        % CiC uses a taller doclicense image.
-        \IfStrEq{\@IACRjournal}{cic}{%
-          \doclicenseImage[imagewidth=4em]%
-        }{\doclicenseImage[imagewidth=4em,imagemodifier={-80x15}]}%
-        \\[.1em]%
-        \fi
-        \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
-          \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
-          \ifx\IACR@Revised\@empty\else Revised: \IACR@Revised \hfill{}\fi%
-          \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted\fi%
-          \ifx\IACR@Published\@empty\else\IfStrEq{\@IACRjournal}{cic}{}{\hfill{}Published: \IACR@Published}\fi%
-        }{%
-          \ifdefined\@IACR@docdate@defined%
-            \ifx\@IACR@docdate\@empty%
-              % an empty string was passed \documentdate to
-              % indicate to *not* display any date
-            \else
-              Date of this document: \@IACR@docdate.%
-            \fi% !if \@IACR@docdate = \@empty
-          \else%
-            Date of this document: \ymdtoday.%
-          \fi% !if \@IACR@docdate@defined is defined
-        }%
+    \ifcsstring{@IACRversion}{final}{%
+      \tl_if_empty:NT \g_metac_license_tl
+      { \ClassError{iacrj}{Please specify a license when using version=final: using for example \string\license{CC-BY-4.0}}{} }
+      \IfStrEq{\@IACRjournal}{cic}{%
+        \fancyhead[L]{%
+          \small%
+          \publname{}\\
+          \ifx\IACR@EISSN\@empty\else{ISSN~\IACR@EISSN, }\fi%
+          Vol.~\IACR@vol, No.~\IACR@no, \IACR@lp\ pages.}
+        \ifx\IACR@DOI\@empty\else\fancyhead[R]{\small%
+          \begin{tabular}{r}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\ifx\IACR@CROSSMARKURL\@empty\else\vspace{2px}\\%
+            \href{\IACR@CROSSMARKURL}{\crossmarkimage{.35}}\fi\end{tabular}}\fi%
+      }{% only CiC uses crossref.
+        \fancyhead[L]{%
+          \small%
+          \publname{}\\
+          ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
+          \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}
+        }
       }%
-    }% !if @IACRversion != submission
-  \fi% !\@METAC@license
-  \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{0pt}
+    }{}% final
+    \tl_if_empty:NF \g_metac_license_tl
+    {
+      % If \license is provided show this for preprint and final (not for submission)
+      \ifcsstring{@IACRversion}{submission}{}{%
+        \fancyfoot[L]{%
+          \small%
+          \tl_if_empty:NF \g_metac_license_tl
+          {
+            \doclicenseText%
+            \hfill{}%
+            % CiC uses a taller doclicense image.
+            \IfStrEq{\@IACRjournal}{cic}{%
+              \doclicenseImage[imagewidth=4em]%
+            }{\doclicenseImage[imagewidth=4em,imagemodifier={-80x15}]}%
+            \\[.1em]%
+          }
+          \ifcsstring{@IACRversion}{final}{% Only show this information on the final version
+            \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
+            \ifx\IACR@Revised\@empty\else Revised: \IACR@Revised \hfill{}\fi%
+            \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted\fi%
+            \ifx\IACR@Published\@empty\else\IfStrEq{\@IACRjournal}{cic}{}{\hfill{}Published: \IACR@Published}\fi%
+          }{%
+            \ifdefined\@IACR@docdate@defined%
+              \ifx\@IACR@docdate\@empty%
+                % an empty string was passed \documentdate to
+                % indicate to *not* display any date
+              \else
+                Date of this document: \@IACR@docdate.%
+              \fi% !if \@IACR@docdate = \@empty
+            \else%
+              Date of this document: \ymdtoday.%
+            \fi% !if \@IACR@docdate@defined is defined
+          }%
+        }%
+      }% !if @IACRversion != submission
+    } %!\g_metac_license_tl
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{0pt}
   }
 }
+
+\ExplSyntaxOff
 
 \newbox\measurerunningauthors
 \newdimen\@maxrunningwidth%
@@ -678,11 +684,11 @@
     \@ifpackageloaded{hyperref}{\end{NoHyper}}{}
     \endgroup
   \fi
-  %\if@anonymous\else%
-    %\begingroup
-    %  \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
-    %\endgroup
-  %\fi%
+  \if@anonymous\else%
+    \begingroup
+      \renewcommand\thefootnote{}\footnotetext{\g_metac_displayemails_tl}%
+    \endgroup
+  \fi%
 }
 \ExplSyntaxOff
 
