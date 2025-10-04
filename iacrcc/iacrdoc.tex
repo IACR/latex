@@ -30,7 +30,7 @@
 \def\BibLaTeX{Bib\LaTeX}
 
 \title[running  = {The iacrcc class},
-       subtitle = {iacrcc LaTeX Class Documentation (v0.75)}
+       subtitle = {iacrcc LaTeX Class Documentation (v0.76)}
       ]{How to Use the IACR Communications in Cryptology Class}
 
 \genericfootnote{This is a generic footnote produced with \cmd[...]{genericfootnote}.}
@@ -108,11 +108,13 @@ unnecessary code.
 \item The default fonts are provided by the \verb+lmodern+ package. Do not
   change this.
 \item Avoid using too many packages. Many authors are lazy and just
-  copy what they used in the past. Some won't work - see the list of
-  acceptable packages at \url{https://publish.iacr.org}. Don't use any
-  package that changes fonts.
-\item Don't try to change the \texttt{hyperref} options, the bibliography style,
-  the page style, or the page numbering.
+  copy what they used in the past. The compile system used for
+  IACR CiC includes about 2000 packages, but not everything. Some packages
+  are explicitly forbidden, and these are listed at
+  \url{https://publish.iacr.org/forbidden}.
+\item Don't try to change the \texttt{hyperref} options, the bibliography
+  style, the page style, or the page numbering. \texttt{iacrcc.cls} already
+  loads the \texttt{hyperref} package.
 \item Don't use macros like \cmd{if} or \cmd{include} inside any
   metadata like the title or abstract.
 \item Footnotes are handled differently in this class, and in
@@ -356,7 +358,8 @@ overuse them.
 
 \subsection{License}
 When the \texttt{version=final} document mode is used, the author needs
-to provide a supported license.  In all other modes this information
+to provide a supported license using the \cmd{license} macro
+in the preamble of the document.  In all other modes this information
 is not required and is ignored if it is provided.  At present the only
 acceptable license is \texttt{CC-by}.  An example would look like:
 
@@ -489,27 +492,18 @@ Many authors use the \texttt{cryptobib} \BibTeX\ files, and you need
 not upload those with your paper. They can be referenced as
 \texttt{\textbackslash bibliography\{cryptobib/abbrev1,cryptobib/crypto\}}
 
-\section{Package load order}\label{sec:loadorder}
+\section{\texttt{hyperref}, \texttt{cleveref}, and package load order}\label{sec:loadorder}
 
-\LaTeX\ suffers from the weakness of having a global namespace for
-macros. As a result, it is possible that some packages may overwrite
-the definitions of another package that was loaded earlier. The
-biggest offender for this seems to be the \texttt{hyperref} package,
-which overwrites some basic macros in \LaTeX\ itself. The
-\texttt{iacrcc} document class loads \texttt{hyperref}, but it
-provides a mechanism for loading packages \emph{after} \texttt{hyperref}. If
-the file \texttt{after-hyperref.sty} exists in the directory of your
-main file, then it will be included after loading \texttt{hyperref}.
-As an example, to load \texttt{cleveref} after \texttt{hyperref}, you
-can create a file \texttt{after-hyperref.sty} that contains:
-\begin{verbatim}
-\RequirePackage{cleveref}
-\end{verbatim}
-A complete survey of the conflicts between packages is beyond the scope of this document, but
-some known conflicts between packages are documented in the
-\href{https://github.com/mhelvens/latex-pkgloader/blob/master/pkgloader-recommended.sty}{\texttt{pkgloader}}
-package. It is wise to read the documentation for any package you use to make sure
-there are no conflicts with other packages loaded by \texttt{iacrcc.cls}.
+The \texttt{iacrcc} document class loads \texttt{hyperref} after all
+other packages have been loaded (including those loaded by the user in
+the preamble). It's possible that you may wish to load some packages after
+\texttt{hyperref}. The way to do this is
+to create a file \texttt{after-hyperref.sty} in the same directory as
+your main file and load things from there. Note that we do {\em not}
+recommend use of the \texttt{cleveref} package because it is no longer
+maintained and has some bugs. We recommend using
+the \texttt{zref-clever} package instead if you desire the features of
+\texttt{cleveref}.
 
 \section{Some recommendations}\label{sec:options}
 

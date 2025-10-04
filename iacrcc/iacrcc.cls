@@ -1,5 +1,5 @@
-\def\fileversion{0.75}
-\def\filedate{2025/08/02}
+\def\fileversion{0.76}
+\def\filedate{2025/10/03}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
