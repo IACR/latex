@@ -1198,7 +1198,7 @@ def test27_test():
       logfile = tmpdirpath / Path('main.log')
       logtext = logfile.read_text('utf-8', errors='replace')
       assert 'Proof that I was loaded after hyperref' in logtext
-      assert 'Package: cleveref' in logtext
+      assert 'Package: zref-clever' in logtext
 
 # Check for writing to file and in pdf when unicode characters are used
 # in a lot of options
