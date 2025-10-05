@@ -1,3 +1,4 @@
+scheme-medium
 latex-bin
 filehook
 currfile
@@ -46,4 +47,3 @@ pdfmanagement-testphase
 latex-lab
 ltxcmds
 kvsetkeys
-afterpage
