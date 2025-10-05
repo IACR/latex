@@ -67,6 +67,7 @@ def test2_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       path = Path('test2')
       res = run_engine(option, path.iterdir(), tmpdirpath)
+      print(res['log'])
       assert res['proc'].returncode == 0
       meta = meta_parse.parse_meta(res['meta'])
       assert meta['title'] == 'How to Use the IACR Communications in Cryptology Clåss'
