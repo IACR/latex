@@ -21,13 +21,12 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install texlive
-      uses: paolobrasolin/setup-texlive-action@v1
+      uses: zauguin/install-texlive@v4
       with:
-        profile-path: ${{ github.workspace }}/.github/texlive.profile
-        packages-path: ${{ github.workspace }}/.github/texlive.packages
+        package_file: .github/workflows/texlive.packages
         run: | 
          tlmgr --version
-         tlmgr update --all
+#         tlmgr update --all
     - name: Install dependencies
       working-directory: iacrcc/tests
       run: |
@@ -36,4 +35,5 @@ jobs:
     - name: Test for compile_tests.py
       working-directory: iacrcc/tests
       run: |
+        echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
         pytest -vv compile_tests.py
