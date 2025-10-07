@@ -1,7 +1,33 @@
 import pytest
 from pylatexenc.latex2text import LatexNodes2Text
-from .meta_parse import remove_macros, get_decoder, parse_meta
+from .meta_parse import remove_macros, get_decoder, parse_meta, validate_orcid
 from pathlib import Path
+
+def test_orcid_check():
+    valid = ['0000-0002-9858-7713',
+             '0000-0002-7272-509X',
+             '0000-0002-1407-5893',
+             '0000-0003-2802-4939',
+             '0000-0001-5384-6710',
+             '0000-0002-4486-7947',
+             '0000-0002-4973-9012',
+             '0009-0006-6035-9391',
+             '0009-0004-3249-8250',
+             '0000-0002-1323-627X']
+    for orcid in valid:
+        validate_orcid(orcid)
+    with pytest.raises(ValueError, match='Invalid orcid should match xxxx-yyyy-zzzz-wwww: '):
+        validate_orcid('0000000298587713')
+    with pytest.raises(ValueError, match='Invalid orcid checksum:'):
+        validate_orcid('0000-0002-7227-509X')
+    with pytest.raises(ValueError, match='Invalid orcid checksum:'):
+        validate_orcid('0000-0002-1407-5891')
+    with pytest.raises(ValueError, match='Invalid orcid checksum:'):
+        validate_orcid('0000-0003-2802-4930')
+    with pytest.raises(ValueError, match='Invalid orcid checksum:'):
+        validate_orcid('0000-0001-5384-6714')
+    with pytest.raises(ValueError, match='Invalid orcid should match xxxx-yyyy-zzzz-wwww: '):
+        validate_orcid('https://orcid.org/0000-0001-5384-6714')
 
 def test_frac_decoder():
     """Test encoding of \frac."""

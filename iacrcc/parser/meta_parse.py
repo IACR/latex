@@ -6,10 +6,10 @@ states on page 228 that
   ``Each write command produces output in the form that TeX always uses to display
     token lists symbolically: Characters represent themselves (except that you get
     duplicated characers like ## for macro parameter characters); unexpandable control
-    sequence tokens produce their names, preceded by the \escapechar and followed by a
+    sequence tokens produce their names, preceded by the \\escapechar and followed by a
     space (unless the name is an active character or a control sequence formed from a
     single nonletter).''
-That seems to imply that \$ and \% are special cases. Indeed the handling of \$ changed
+That seems to imply that \\$ and \\% are special cases. Indeed the handling of \\$ changed
 in texlive 2025 (perhaps due to this: https://github.com/latex3/latex2e/pull/1388).
 """
 
@@ -98,6 +98,22 @@ def remove_macros(txt):
     return txt.strip()
 
 
+def validate_orcid(orcid):
+    """Implements algorithm on https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier"""
+    if not re.match(r'^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$', orcid):
+        raise ValueError('Invalid orcid should match xxxx-yyyy-zzzz-wwww: ' + orcid)
+    digits = orcid.replace('-', '')[:15]
+    total = 0
+    for c in digits:
+        total = ((total + int(c)) * 2) % 11
+    result = (12 - total) % 11
+    if result == 10:
+        checksum = 'X'
+    else:
+        checksum = chr(result+48)
+    if checksum != orcid[-1]:
+        raise ValueError('Invalid orcid checksum: ' + orcid)
+
 def parse_meta(metastr):
     """Read the meta file line by line. When we encounter author: or affiliation: or title: or
        funding: we know how to process subsequent lines that start with two spaces.
@@ -139,7 +155,10 @@ def parse_meta(metastr):
                         parts = author[k].split()
                         author['familyName'] = parts[-1]
                 elif k == 'email':
-                    author['email'] = v
+                    author['email'] = v.strip()
+                    # This is just a basic check - not a full validation.
+                    if not re.match(r'[^@]+@[^@]+\.[^@]+', author['email']):
+                        raise valueError('Invalid email: ' + author['email'])
                 elif k == 'affil' or k == 'inst':
                     author['affiliations'] = [a.strip() for a in v.split(',') if a.strip()]
                     for i in author['affiliations']:
@@ -147,6 +166,7 @@ def parse_meta(metastr):
                             raise ValueError('Invalid list of affiliations {}'.format(v))
                 elif k == 'orcid':
                     author['orcid'] = v.rstrip()
+                    validate_orcid(author['orcid'])
                 index += 1
         elif line.startswith('affiliation:'):
             affiliation = {}
