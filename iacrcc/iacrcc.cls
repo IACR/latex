@@ -999,6 +999,7 @@
   \DeclarePrintbibliographyDefaults{heading=bibintoc}%
   \DeclareLabelalphaTemplate{
     \labelelement{
+      \field[final]{shorthand}
       \field[strwidth=3,strside=left]{label}
       \field[strwidth=3,strside=left,ifnames=1]{labelname}
       \field[strwidth=1,strside=left]{labelname}
