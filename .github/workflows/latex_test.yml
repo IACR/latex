@@ -2,9 +2,7 @@ name: test of iacrcc LaTeX class.
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -25,7 +23,8 @@ jobs:
       uses: zauguin/install-texlive@v4
       with:
         package_file: .github/workflows/texlive.packages
-        run: | 
+    - name: Get TeXLive versoin
+      run: | 
          tlmgr --version
 #         tlmgr update --all
     - name: Install dependencies
