@@ -1,5 +1,5 @@
-\def\fileversion{0.76}
-\def\filedate{2025/10/03}
+\def\fileversion{0.77}
+\def\filedate{2025/12/09}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -995,7 +995,7 @@
   % csquotes: context sensitive quotation facilities
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   % biblatex: sophisticated Bibliographies in LaTeX
-  \RequirePackage[backend=biber,style=trad-alpha,minalphanames=3,maxalphanames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
+  \RequirePackage[backend=biber,style=trad-alpha,minalphanames=3,maxalphanames=4,maxbibnames=40,useprefix=true]{biblatex}[2019/12/01]
   \DeclarePrintbibliographyDefaults{heading=bibintoc}%
   \DeclareLabelalphaTemplate{
     \labelelement{
