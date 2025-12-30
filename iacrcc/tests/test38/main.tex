@@ -1,0 +1,74 @@
+%%%% 1. DOCUMENTCLASS %%%%
+\documentclass[version=final]{iacrcc}
+%%%% NOTES:
+\usepackage{listings}
+\usepackage{multicol}
+\newcommand\niceguy{Fester Bestertester}
+\license{CC-by}
+
+% NOTE: There are two affiliations, referred to by 1,2
+\addauthor[orcid={0000-0003-1010-8157},
+           email={Alice@example.com},
+           inst={1},
+           footnote={Work done while working for XYZ.}]{Alice Accomplished}
+\addaffiliation[ror=02t274463,country={United States}]{University of California, Santa Barbara}
+
+\title[running={Thoughts on binary functions},
+  subtitle={A story about Fester is here},
+  plaintext={Thoughts about "binary" functions and \$\ on $GF(p)$ by Fester Bestertester at 30°C}]{%
+  Thoughts about "binary" functions and \$\ on $GF(p)$ by \niceguy\ at 30°C}
+\begin{document}
+
+\maketitle
+
+%%%% 5. ABSTRACT %%%%
+\begin{abstract}
+  In this test we make sure that it will compile with line numbers in
+  the presence of the listings package.
+\end{abstract}
+\begin{textabstract}
+  In this test we make sure that it will compile with line numbers in
+  the presence of the listings package.
+\end{textabstract}
+\section{Just a section}
+With not much in it.
+
+This was an example from overleaf:
+\begin{lstlisting}
+import numpy as np
+    
+def incmatrix(genl1,genl2):
+    m = len(genl1)
+    n = len(genl2)
+    M = None #to become the incidence matrix
+    VT = np.zeros((n*m,1), int)  #dummy variable
+    
+    #compute the bitwise xor matrix
+    M1 = bitxormatrix(genl1)
+    M2 = np.triu(bitxormatrix(genl2),1) 
+
+    for i in range(m-1):
+        for j in range(i+1, m):
+            [r,c] = np.where(M2 == M1[i,j])
+            for k in range(len(r)):
+                VT[(i)*n + r[k]] = 1;
+                VT[(i)*n + c[k]] = 1;
+                VT[(j)*n + r[k]] = 1;
+                VT[(j)*n + c[k]] = 1;
+                
+                if M is None:
+                    M = np.copy(VT)
+                else:
+                    M = np.concatenate((M, VT), 1)
+                
+                VT = np.zeros((n*m,1), int)
+    
+    return M
+\end{lstlisting}
+This is a line after the listing.
+\begin{multicols}{4}
+\lstinputlisting{XORseq_RS}
+\end{multicols}
+This will resume having line numbers since it finished a block in \texttt{lstinputlisting}.
+Yet another line in the file to create yet another line number.
+\end{document}	
