@@ -1,5 +1,5 @@
-\def\fileversion{0.77}
-\def\filedate{2025/12/09}
+\def\fileversion{0.78}
+\def\filedate{2025/12/29}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
@@ -1280,6 +1280,9 @@
   \RequirePackage[mathlines,sep=11pt,width=11pt]{lineno}
   \AtBeginDocument{%
     \linenumbers%
+    \AddToHook{env/lstlisting/before}{\nolinenumbers}
+    \AddToHook{env/lstlisting/after}{\linenumbers}
+    \AddToHook{cmd/lstinputlisting/before}{\nolinenumbers}
   }%
 }
 \ifcsstring{@IACRversion}{submission}{\IACR@linenumbers}{}

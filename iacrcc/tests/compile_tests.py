@@ -1372,4 +1372,24 @@ def test37_test():
     res = run_engine('-pdf', files, tmpdirpath)
     # It should fail because of a bad subtitle.
     assert res['proc'].returncode == 12
+
+def test38_test():
+  path = Path('test38')
+  with tempfile.TemporaryDirectory() as tmpdirpath:
+    files = [path / Path('main.tex'),
+             path / Path('iacrcc.cls'),
+             path / Path('main.copyedit'),
+             path / Path('XORseq_RS.tex')]
+    res = run_engine('-pdf', files, tmpdirpath)
+    # It should fail because of a bad subtitle.
+    assert res['proc'].returncode == 0
+    pdfpath = tmpdirpath + '/main.pdf'
+    with pdfplumber.open(pdfpath) as pdf:
+      text = pdf.pages[0].extract_text()
+      print(text)
+      assert '8\nWith not much in it.' in text
+      assert '9\nThis was an example from overleaf:' in text
+      text = pdf.pages[2].extract_text()
+      print(text)
+      assert '11\nYet another line in the file to create yet another line number' in text
     
