@@ -44,7 +44,7 @@
 \newcommand{\pkg}[1]{\texttt{#1}}
 \makeatletter
 \@ifclassloaded{iacrj}{}{\bibliographystyle{plainurl}
-\usepackage{metacapture}
+\usepackage[cityrequired]{metacapture}
 }
 \makeatother
 \title[plaintext={The metacapture LaTeX package},
@@ -463,7 +463,8 @@ of the package. Note that the \cmd{maketitle} macro from \texttt{article.cls} wi
 work out of the box, because under the covers we implement the \cmd{@title} and
 \cmd{@author} macros. This document is typeset using those values. See Section~\ref{maketitle} and
 Appendix~\ref{appendix}.
-\item[\texttt{anonymous}] If chosen, then the \cmd{maketitle} macro does not disclose
+\item[\texttt{anonymous}] If chosen, then the implementations of \cmd{maketitle} that
+may be invoked with the texttt{maketitle} option will not disclose
 author names or affiliations in the PDF. A document class should load
 with this option if it is intending to format for a blind peer review
 system.
@@ -472,6 +473,10 @@ a license with the \cmd{license} macro.  At present we only support a
 few licenses (see section~\ref{license}) If a document class wishes to
 further restrict which license is acceptable, they can check
 the \cmd{METAC@license} variable at the end of the preamble.
+\item[\texttt{countryrequired}] if chosen, then every affiliation is
+required to declare a \texttt{country} attribute.
+\item[\texttt{cityrequired}] if chosen, then every affiliation is
+required to declare both a \texttt{city} and a \texttt{country} attribute.
 \item[\texttt{textabstract}] if chosen, then the document must specify a
 separate ``text-only'' abstract that is free of macros other than
 mathematics in a \texttt{textabstract}
@@ -905,6 +910,10 @@ This would be a pain to implement in \LaTeX, and we don't need the
 full generality of yaml.  The syntax of the \texttt{.meta} file is
 simplified by the fact that every value is on a single line.
 
+Note that the output format may contain macros in math mode, and also
+a few simple macros such as \cmd{'e}, The complete list of macros
+is defined in \texttt{IsMacroAllowed\{\}}.
+
 \section{Internal variables}\label{variables}
 \todok{This section needs review since the package has been converted to \texttt{expl3}.}
 For those seeking to implement their own document class based on this, you should
@@ -1150,6 +1159,38 @@ Both JATS and Crossref have support for keywords and/or subject classifications 
 their schemas. In both cases there is support for multiple classifications, with multiple
 vocabularies or assigning authorities.
 \end{description}
+\section{Package dependencies}
+This package depends directly on several other packages, including the following:
+\begin{description}
+\item[\texttt{xstring}] This is used for \cmd{IfSubStr}.
+\item[\texttt{footnote}] Authors are allowed to have footnotes attached to
+them, and these may be contained inside boxes in the \cmd{maketitle}
+implementations that the package provides. For this we use the
+\texttt{footnote} package for footnotes inside of boxes. We tried using the
+\texttt{footnotehyper} package but that package is too restrictive in how
+footnotes are defined.
+\item[\texttt{alphalph}] Footnote labels may be alphabetic, depending on the
+load options.
+\item[\texttt{tokcycle}] This is used to perform checks on metadata arguments
+to make sure that they contain ``only text'' that can safely be written to a plain
+text file.
+\item[\texttt{listofitems}] This is used to process a list of macros that are
+allowed to appear in ``text-only'' arguments to macros. We use \cmd{readlist} from
+\texttt{listofitems} to read that list. We might be able to switch to native
+\texttt{clist} from \texttt{expl3} instead.
+\item[\texttt{doclicense}] This is used to identify creative commons
+licenses in the \cmd{license} macro.
+\item[\texttt{hyperref}] This is used to provide hyperlinks on footnotes,
+ORCID links, and because \texttt{doclicense} requires it. We try to delay
+loading this as late as possible so as not to collide with any options from
+other packages or the document class.
+\item[\texttt{fancyvrb}] This is used to write out the \texttt{textabstract}
+environment to a file.
+\item[\texttt{tikz}] This is used with the \texttt{svg.path} library to draw
+some icons like the home link and the ORCID link.
+\end{description}
+
+
 \section{Feedback}
 Use the \pkgname\ github project to report bugs and submit feature
 requests.\footnote{See \url{https://github.com/IACR/latex/tree/main/metacapture}}
@@ -1171,12 +1212,13 @@ using \texttt{maketitle=none}).  In subsequent pages we show the
 appearance of the different styles for \cmd{maketitle}. A class designer can of
 course make their own \cmd{maketitle} to suit their own needs, and hopefully these
 examples will be useful.
-\makeatletter
 
 \newpage
 \phantomsection{}
 \setcounter{footnote}{0}
+\makeatletter
 \METAC@iacrj@maketitle
+\makeatother
 \begin{quote}
 This uses \texttt{maketitle=iacrj}. Footnotes for affiliations are numbered, but footnote symbols on
 title footnotes and author footnotes are alphabetic (they can also be symbols). The icon for a home page
@@ -1187,7 +1229,9 @@ is different than what is used in \cmd{@author}.
 \newpage
 \phantomsection{}
 \setcounter{footnote}{0}
+\makeatletter
 \METAC@acmsmall@maketitle
+\makeatother
 \begin{quote}
 This uses \texttt{maketitle=acmsmall}. Author names are in small caps.
 \end{quote}
@@ -1198,7 +1242,9 @@ This uses \texttt{maketitle=acmsmall}. Author names are in small caps.
 \label{acmconf}
 \setcounter{footnote}{0}
 \savenotes
+\makeatletter
 \METAC@acmconf@maketitle
+\makeatother
 \spewnotes
 \begin{quote}
 This uses \texttt{maketitle=acmconf}. Each author is displayed in a block with repeated affiliations.
@@ -1210,7 +1256,9 @@ authors and links for ORCID and author home pages are omitted.
 \phantomsection{}
 \label{jems}
 \setcounter{footnote}{0}
+\makeatletter
 \METAC@jems@maketitle
+\makeatother
 \begin{quote}
 This uses \texttt{maketitle=jems}. Author names appear above the title, and each author has an unnumbered footnote with their
 information. It's not clear what to do with footnotes on author names, and the journal class appears not to support
@@ -1222,7 +1270,9 @@ them.
 \label{inv}
 \setcounter{footnote}{0}
 \begin{savenotes}
+\makeatletter
 \METAC@inv@maketitle
+\makeatother
 \end{savenotes}
 
 \begin{quote}
@@ -1234,7 +1284,9 @@ affiliations. Emails are listed after affiliations in a block.
 \phantomsection{}
 \label{lipics}
 \setcounter{footnote}{0}
+\makeatletter
 \METAC@lipics@maketitle
+\makeatother
 \begin{quote}
 This uses \texttt{maketitle=lipics}. Author names have icons for email, home page, and ORCID.
 Affiliations are listed below each author name, and are repeated for shared
@@ -1245,12 +1297,13 @@ affiliations.
 \phantomsection{}
 \label{ams}
 \setcounter{footnote}{0}
+\makeatletter
 \METAC@ams@maketitle
+\makeatother
 \begin{quote}
 This uses \texttt{maketitle=ams}. Title and author names are in small caps.
 Author footnotes are unnumbered (for some reason this is the style
 for \texttt{amsart}). Each author's affiliation is listed at the end of the document as below.
 \end{quote}
 
-\makeatother
 \end{document}
