@@ -1431,7 +1431,7 @@ def test38_test():
         texfile = template.substitute(cls= cls[0],
                                       clsoptions=cls[1],
                                       metaopts= style)
-        print(texfile)
+        # too verbose in github. print(texfile)
         (tmpdirpath / Path('main.tex')).write_text(texfile, encoding='UTF-8')
         res = run_engine('-pdf', [], tmpdirpath)
         assert res['proc'].returncode == 0
@@ -1463,7 +1463,7 @@ def test39_test():
         texfile = template.substitute(cls= cls[0],
                                       clsoptions=cls[1],
                                       metaopts= style)
-        print(texfile)
+        # print(texfile) too verbose in github.
         (tmpdirpath / Path('main.tex')).write_text(texfile, encoding='UTF-8')
         res = run_engine('-pdf', [], tmpdirpath)
         assert res['proc'].returncode == 0

@@ -47,6 +47,7 @@ pdfmanagement-testphase
 latex-lab
 ltxcmds
 kvsetkeys
+cleveref
 zref-clever
 spie
 economic
