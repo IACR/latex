@@ -1468,6 +1468,8 @@ def test39_test():
         # print(texfile) too verbose in github.
         (tmpdirpath / Path('main.tex')).write_text(texfile, encoding='UTF-8')
         res = run_engine('-pdf', [], tmpdirpath)
+        if res['proc'].returncode != 0:
+          print('trunclog=', res['log'][-2000:0])
         assert res['proc'].returncode == 0
 
 def test41_city():
