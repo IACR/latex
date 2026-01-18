@@ -14,7 +14,6 @@ collection-latex
 collection-latexrecommended
 collection-luatex
 collection-mathscience
-IEEEconf
 latex-bin
 filehook
 currfile
@@ -80,3 +79,4 @@ helvetic
 endnotes
 amsfonts
 nimbus15
+ieeeconf
