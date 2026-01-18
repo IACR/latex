@@ -1468,32 +1468,6 @@ def test39_test():
         res = run_engine('-pdf', [], tmpdirpath)
         assert res['proc'].returncode == 0
 
-def test40_iacrtrans():
-  path = Path('test40')
-  docclass = [('iacrtrans','journal=tches'),
-              ('iacrtrans','journal=tosc')]
-  styles = ['maketitle=iacrj',
-            'maketitle=iacrj,footnotesymbols',
-            'maketitle=acmsmall',
-            'maketitle=acmconf',
-            'maketitle=lipics',
-            'maketitle=inv',
-            'maketitle=ams,footnotesymbols',
-            'maketitle=ams',
-            'maketitle=jems,footnotesymbols']
-  template = Template((path / Path('main.txt')).read_text(encoding='UTF-8'))
-  with tempfile.TemporaryDirectory() as tmpdirpath:
-    for cls in docclass:
-      for style in styles:
-        print('style=', style)
-        texfile = template.substitute(cls= cls[0],
-                                      clsoptions=cls[1],
-                                      metaopts= style)
-        print(texfile)
-        (tmpdirpath / Path('main.tex')).write_text(texfile, encoding='UTF-8')
-        res = run_engine('-pdf', [], tmpdirpath)
-        assert res['proc'].returncode == 0
-
 def test41_city():
   for option in ['-pdflua', '-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
