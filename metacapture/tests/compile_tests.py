@@ -1435,7 +1435,7 @@ def test38_test():
         (tmpdirpath / Path('main.tex')).write_text(texfile, encoding='UTF-8')
         res = run_engine('-pdf', [], tmpdirpath)
         if res['proc'].returncode != 0:
-          print(res['log'][-1000:])
+          print(res['log'][-2000:])
         assert res['proc'].returncode == 0
     
 def test39_test():
