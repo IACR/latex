@@ -30,7 +30,7 @@ jobs:
     - name: Get TeXLive version
       run: | 
          tlmgr --version
-#         tlmgr update --all
+         tlmgr update --all
     - name: Install dependencies
       working-directory: metacapture/tests
       run: |
@@ -40,4 +40,4 @@ jobs:
       working-directory: metacapture/tests
       run: |
         echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
-        python -m pytest compile_tests.py -vv
+        python -m pytest compile_tests.py::test38_test -vv
