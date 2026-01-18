@@ -61,3 +61,11 @@ acmart
 amscls
 environ
 helvetic
+textcomp
+calc
+ifthen
+url
+amssymb
+array
+bm
+graphicx

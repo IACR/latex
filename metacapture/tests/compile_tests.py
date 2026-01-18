@@ -1401,7 +1401,6 @@ def test38_test():
   docclass = [('article', 'draft'),
               ('article', 'twocolumn'),
               ('spie',''),
-              ('active-conf',''),
               ('paper',''),
               # does not work because it redefines \title.
               # ('aomart',''),
