@@ -41,4 +41,4 @@ jobs:
       working-directory: metacapture/tests
       run: |
         echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
-        python -m pytest compile_tests.py::test39_test -vv
+        python -m pytest compile_tests.py -vv
