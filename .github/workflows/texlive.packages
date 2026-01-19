@@ -77,12 +77,12 @@ enumitem
 cite
 tex-gyre
 hyperxmp
-manyfoot
+nctools
 draftwatermark
 xcolor
 cmap
 libertine
-zi4
+inconsolata
 comment
 pbalance
-balance
+preprint
