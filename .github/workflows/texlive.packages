@@ -68,3 +68,13 @@ ieeeconf
 titlesec
 etoolbox
 sttools
+footmisc
+newtxtt
+unicode-math
+textcomp
+lmodern
+tgtermes
+newtxmath
+enumitem
+cite
+
