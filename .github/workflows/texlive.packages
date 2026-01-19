@@ -71,10 +71,8 @@ sttools
 footmisc
 newtxtt
 unicode-math
-textcomp
-lmodern
-tgtermes
-newtxmath
+lm
+newtx
 enumitem
 cite
-
+tex-gyre
