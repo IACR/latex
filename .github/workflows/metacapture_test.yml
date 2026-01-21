@@ -1,12 +1,12 @@
-name: test of iacrcc LaTeX class.
+name: test of metacapture LaTeX package.
 
 on:
   push:
     paths:
-      'iacrcc/**'
+      'metacapture/**'
   pull_request:
     paths:
-      'iacrcc/**'
+      'metacapture/**'
 
 permissions:
   contents: read
@@ -27,17 +27,18 @@ jobs:
       uses: zauguin/install-texlive@v4
       with:
         package_file: .github/workflows/texlive.packages
-    - name: Get TeXLive versoin
+        texlive_version: 2025
+    - name: Get TeXLive version
       run: | 
          tlmgr --version
-#         tlmgr update --all
+         tlmgr update --all
     - name: Install dependencies
-      working-directory: iacrcc/tests
+      working-directory: metacapture/tests
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pdfplumber python-xmp-toolkit nameparser xmp pylatexenc pypdf
-    - name: Test for compile_tests.py
-      working-directory: iacrcc/tests
+        pip install pytest pdfplumber pdfminer python-xmp-toolkit nameparser xmp pylatexenc pypdf
+    - name: Tests for metacapture.sty
+      working-directory: metacapture/tests
       run: |
         echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
         python -m pytest compile_tests.py -vv

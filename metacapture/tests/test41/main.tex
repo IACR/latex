@@ -1,0 +1,62 @@
+\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7}
+\documentclass{article}
+\usepackage[cityrequired]{metacapture}
+\license{CC-by}
+%\usepackage[T1]{fontenc}
+\usepackage{lipsum}
+\title[running  = {The iacrcc class},
+%       subtitle = {A Template}
+      ]{How not to use this Cl\'ass with a soft ğ 30°C}
+
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+	   footnote = {This is an example fö{\"o}tnote.},
+           email    = {joppe.bos@nxp.com},
+	   surname  = {B{\"o}s}
+          ]{Joppe W. B{\"o}s}
+
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           email   = {test2@digicrime.com},
+           surname = {McCurley}   
+          ]{Kevin S. McCurley}
+
+\addaffiliation[ror     = 031v4g827,
+             street  = {Interleuvenlaan 80},
+             city    = {Leuven},
+             postcode= {3001},
+             country = {Belgium}
+	    ]{NXP S\v{e}mïc{\"o}ndúct\o{}rs}
+\addaffiliation[country={Elbonia}]{Self}
+\addfunding[fundref=1241171,
+  grantid=5211-2,
+  country=Elbonia]{Horizon 2020 Framework Programme}
+\addfunding[ror = 042c84f31,
+  country={United States}]{Just another foundation}
+\addfunding[fundref={517622},
+  grantid=57821-3]{National Fantasy Foundation}
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+\genericfootnote{This is the fool version of our paper.}
+%\genericfootnote{This is the f\d{u}ll version of our paper published at \c{c}rypto.}
+
+\newcommand{\impulse}{impulse}
+\keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
+\begin{document}
+\maketitle
+
+% Provide the abstract of your paper
+\begin{abstract}
+This is the abstract.
+\end{abstract}
+\begin{textabstract}
+This is the text abstract.
+\end{textabstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+
+\lipsum[1-20]
+\end{document}

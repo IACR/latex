@@ -297,10 +297,6 @@
   \fi
 }
 
-% Meta information is written out in [jobname].meta
-\newwrite\iacrmeta
-\immediate\openout\iacrmeta=\jobname.meta
-
 \AtEndDocument{%
   % Final version requires textabstract.
   \IfFileExists{\jobname.abstract}{}{%
