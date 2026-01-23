@@ -1,5 +1,5 @@
-% IACR Communications CLASS DOCUMENTATION
-% Written by Joppe W. Bos and Kevin S. McCurley (2022-2024),
+% iacrj CLASS DOCUMENTATION
+% Written by Joppe W. Bos and Kevin S. McCurley (2022-2026),
 % based on prior work on the iacrtrans class by
 % Gaetan Leurent gaetan.leurent@inria.fr (2016-2018).
 %
@@ -12,7 +12,10 @@
 % along with this software. If not, see
 % <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-\DocumentMetadata{pdfstandard=a-2u,pdfversion=1.7}
+\DocumentMetadata{
+  lang        = en-US,
+  pdfstandard = a-2a
+}
 \documentclass[journal=cic,version=preprint]{iacrj}
 \NewDocumentCommand{\cmd}{om}{%
   \IfNoValueTF{#1}{\texttt{\textbackslash{}#2}%
@@ -222,7 +225,7 @@ optional arguments to {\tt \textbackslash{}addauthor}:
                      affiliation array (see below). These are used as footnote symbols
                      to link to affiliations.\\
     {\tt orcid}    & Create a small clickable orcid logo next to the authors name 
-                     looking like \orcidlink{0000-0003-1010-8157} and linking to 
+                     looking like \OrcidLink{0000-0003-1010-8157} and linking to 
 		     the authors ORCID (see: \url{https://orcid.org}).\\
     {\tt footnote} & Create an author-specific footnote. The \cmd{footnote} macro
     is disabled inside the \cmd{addauthor} macro.\\
@@ -251,7 +254,7 @@ An example with some of the common characters \string~, \%, and \# is
 \begin{verbatim}
   onclick = {https://www.webpage.com/\string~\%\#/}
 \end{verbatim}
-\noindent which displays \authorlink{https://www.webpage.com/\string~\%\#/}
+\noindent which displays \AuthorLink{https://www.webpage.com/\string~\%\#/}
 next to the author name.
 
 An example of \cmd{addauthor} using all the optional arguments is given below. In this case
@@ -584,5 +587,10 @@ If you are a \LaTeX\ novice, you may wish to consult the following documents:
     documentation} is useful for learning how to typeset mathematics.
 \end{itemize}
 
-\bibliography{biblio}
+\section*{Acknowledgments}
+Some of the stylistic choices were inspired by IACR Transactions class
+file (the \texttt{iacrtrans} class v. 0.92) written by Ga{\"e}tan
+Leurent and Friedrich Wiemer with help from others.
+
+\bibliography{iacrdoc}
 \end{document}
