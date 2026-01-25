@@ -21,8 +21,8 @@
 % Just a shortcut for Errors
 \newcommand\PkgErr[1]{\PackageError{metacapture}{#1}{}}
 
-\def\METAC@fileversion{0.9}
-\def\METAC@filedate{2025/04/22}
+\def\METAC@fileversion{0.9.1}
+\def\METAC@filedate{2026/01/25}
 
 % It's not clear what we really need.
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
@@ -266,8 +266,8 @@
 }
 \let\storeprotect\protect
 
-% etoolbox: used for \AtEndPreamble
-%\RequirePackage{etoolbox}
+% etoolbox: used for \appto and maybe other things.
+\RequirePackage{etoolbox}
 
 \newcommand\@writemeta[1]{\protected@write\metacwrite{}{#1}}%
 
@@ -337,7 +337,7 @@
         \tl_put_right:Nn \l_metac_authbox_tl {${}^{\l_tmpa_tl}$}
       }
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_metac_orcid_tl {
-        \tl_put_right:Nn \l_metac_authbox_tl {~\OrcidLink{\l_metac_orcid_tl}}
+        \tl_put_right:Nn \l_metac_authbox_tl {\OrcidLink{\l_metac_orcid_tl}}
       } {}
       \prop_get:NnNTF \l_tmpa_prop {onclick} \l_metac_onclick_tl {
         \tl_put_right:Nn \l_metac_authbox_tl {\hspace{.3em}\AuthorLink{\l_metac_onclick_tl}}
@@ -761,14 +761,15 @@
       \prop_get:NnNTF \l_tmpa_prop {footnote} \l_tmpa_tl {
         \footnote{\l_tmpa_tl}
       } {}
+      \hspace{.4em}
       \prop_get:NnNTF \l_tmpa_prop {email} \l_tmpa_tl {
-        \hspace{.4em}\METAC@emaillink{\l_tmpa_tl}
+        \hspace{.2em}\METAC@emaillink{\l_tmpa_tl}
       } {}
       \prop_get:NnNTF \l_tmpa_prop {onclick} \l_tmpa_tl {
-        \hspace{.4em}\homelink{\l_tmpa_tl}
+        \hspace{.5em}\homelink{\l_tmpa_tl}
       } {}
       \prop_get:NnNTF \l_tmpa_prop {orcid} \l_tmpa_tl {
-        \hspace{.4em} \OrcidLink{\l_tmpa_tl}
+        \hspace{.2em} \OrcidLink{\l_tmpa_tl}
       } {}
       \\
     } {}
@@ -939,10 +940,10 @@
     } {}
     
     \prop_get:NnNTF \g_metac_author_prop {orcid} \l_metac_orcid_tl {
-      \hspace{.5em}\OrcidLink{\l_metac_orcid_tl}
+      \hspace{.2em}\OrcidLink{\l_metac_orcid_tl}
     } {}
     \prop_get:NnNTF \g_metac_author_prop {onclick} \l_metac_onclick_tl {
-      \hspace{.3em}\homelink{\l_metac_onclick_tl}
+      \hspace{.2em}\homelink{\l_metac_onclick_tl}
     } {}
     \\
     % Apparently the above newline closes a group, so we have to
@@ -1450,6 +1451,7 @@
 % that active characters not explicitly inactivated are expanded.
 % Patch to use a “protected” immediate write.
 % Define the same as \protected@write, but with \immediate
+\RequirePackage{xpatch}
 \providecommand*\protected@iwrite@fancyvrb[3]{%
   \begingroup
   \let\thepage\relax

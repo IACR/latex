@@ -1,5 +1,5 @@
 \DocumentMetadata{lang=en,debug={xmp-export}}
-\def\pkgversion{0.9}
+\def\pkgversion{0.9.1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % It should work with many choices of documentclass.
 \documentclass{article}
@@ -55,13 +55,12 @@
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
            onclick = {https://www.joppebos.com},
-           footnote={Authors are allowed to have footnotes on their name.},
 	   email   = {joppe.bos@nxp.com},
 	   surname = {Bos}
           ]{Joppe W. Bos}
 \addauthor[orcid   = {0000-0001-7890-5430},
            inst    = {2},
-           footnote = {Kevin is starting to like \pkg{LaTeX3} programming.},
+           footnote={Authors are allowed to have footnotes on their name.},
            email   = {latex@digicrime.com},
 %           onclick = {https://swcp.com/\%7Emccurley/index.html\#humor},
 	   surname = {McCurley},
@@ -1186,6 +1185,7 @@ loading this as late as possible so as not to collide with any options from
 other packages or the document class.
 \item[\texttt{fancyvrb}] This is used to write out the \texttt{textabstract}
 environment to a file.
+\item[\texttt{xpatch}] This is used to patch an output macro from \texttt{fancyvrb}.
 \item[\texttt{tikz}] This is used with the \texttt{svg.path} library to draw
 some icons like the home link and the ORCID link.
 \end{description}
@@ -1200,7 +1200,7 @@ the natural thing to do is to extend the \pkgname\ package and add
 additional fields. Adding too many fields and too much complexity can
 make the documentation hard to digest.
 
-\todok{Should we upload to CTAN?}
+\todok{When should we upload to CTAN?}
 
 %\printbibliography
 \bibliography{metadoc}
@@ -1215,6 +1215,7 @@ examples will be useful.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=iacrj }{iacrjdemo}
 \setcounter{footnote}{0}
 \makeatletter
 \METAC@iacrj@maketitle
@@ -1228,6 +1229,7 @@ is different than what is used in \cmd{@author}.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=acmsmall }{acmsmalldemo}
 \setcounter{footnote}{0}
 \makeatletter
 \METAC@acmsmall@maketitle
@@ -1239,6 +1241,7 @@ This uses \texttt{maketitle=acmsmall}. Author names are in small caps.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=acmconf }{acmconfdemo}
 \label{acmconf}
 \setcounter{footnote}{0}
 \savenotes
@@ -1254,6 +1257,7 @@ authors and links for ORCID and author home pages are omitted.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=jems }{jemsdemo}
 \label{jems}
 \setcounter{footnote}{0}
 \makeatletter
@@ -1267,6 +1271,7 @@ them.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=inv }{invdemo}
 \label{inv}
 \setcounter{footnote}{0}
 \begin{savenotes}
@@ -1282,6 +1287,7 @@ affiliations. Emails are listed after affiliations in a block.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=lipics }{lipicsdemo}
 \label{lipics}
 \setcounter{footnote}{0}
 \makeatletter
@@ -1295,6 +1301,7 @@ affiliations.
 
 \newpage
 \phantomsection{}
+\pdfbookmark[2]{Demo of maketitle=ams }{amsdemo}
 \label{ams}
 \setcounter{footnote}{0}
 \makeatletter

@@ -46,7 +46,7 @@ def run_engine(eng, filelist, tmpdirpath):
   finally:
     os.chdir(cwd)
 
-_VERSION = '0.9'
+_VERSION = '0.9.1'
 def test1_test():
   path = Path('test1')
   # should pass with lualatex and pdflatex
@@ -513,7 +513,7 @@ def test23_test():
         print('key=', key, res[key])
       print('meta=', res['meta'])
       line = res['meta'].splitlines()
-      assert line[0] == r'schema:0.9'
+      assert line[0] == r'schema:0.9.1'
       assert line[1] == r'title: How not to use the IACR Communications in Cryptology Cl\r {a}ss'
       assert line[2] == r'  subtitle: A Template'
       assert line[3] == r'keywords: Dirac delta function, unit impulse'
