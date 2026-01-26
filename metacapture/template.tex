@@ -1,0 +1,174 @@
+% IACR Journal template file.
+% This file shows how to use the iacrj document class to write a paper for
+% CiC, ToSC, or TCHES.
+
+%% Document mode
+% [journal=yyy] where yyy is one of cic, tosc, or tches. This selects the journal.
+% [version=xxx] where xxx is preprint, submission, or final. The default is preprint.
+%               version=submission puts line numbers into the document and makes it
+%               anonymous (which can be overridden).
+%               version=final is for submitting the final version. This requires a license
+%               to be specified.
+% [notanonymous]  Keep author names in submission mode
+%% Package options
+% [floatrow]      Load floatrow package with correct captions
+% [biblatex]      Use the biblatex package instead of bibtex. Note that options
+%                 may not be passed to biblatex at this time.
+
+% The LaTeX team is working to produce accessible PDF. As of 2025, they recommend
+% using the next line. See https://latex3.github.io/tagging-project/documentation/usage-instructions
+% \DocumentMetadata{pdfstandard=ua-2,lang=en,pdfstandard=a-4f,tagging=on,tagging-setup={math/setup=mathml-SE}}
+\documentclass[journal=tosc,version=preprint]{iacrj}
+
+% When the *final* document mode is used
+% the authors need to provide a supported license.
+% In all other modes this information is ignored.
+\license{CC-BY-4.0}
+
+% Include LaTeX packages required by your paper
+% \usepackage{}
+
+% Provide the title of the paper
+% This should look like:
+\title[running  = {The iacrj class}]{How to Use the IACR Journal Class}
+% Where the options in square brackets “[ ]” are optional and control the following:
+% running:   the running title displayed in the headers
+% plaintext: a text version of the title (mandatory if macros are used in the title)
+% A subtitle may also be supplied separately below.
+\subtitle{A Template}
+% if the subtitle contains macros, then you must also supply a plaintext argument
+% to subtitle.
+
+% Define authors and affiliations
+% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \addauthor[inst      = {1,2},
+%            email     = {alice@example.com},
+%            orcid     = 0000-0000-0000-0000,
+%            surname   = {Accomplished},
+%            footnote  = {Thanks to my supervisor for the support.},
+%            onclick   = {https://www.mypersonalwebpage.com}
+%           ]{Alice Accomplished}
+% Where the options in square brackets “[ ]” are optional 
+% and control the following:
+% inst:     a numerical list pointing to the index of the institution 
+%           in the affiliation array.
+% orcid:    create a small clickable orcid logo next to the authors name 
+%           linking to the authors ORCID iD see: orcid.org.
+% footnote: create an author-specific footnote.
+% surname:  indicate the surname of the author for indexing purposes.
+% onclick:  define what to do when clicking on the external link logo
+%           next to the author name: e.g., can point to the academic webpage.
+% email:    define the e-mail address of this author.
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+           footnote = {This is an example footnote.},
+           email    = {joppe.bos@nxp.com},
+           surname  = {Bos}
+          ]{Joppe W. Bos}
+
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           email   = {mccurley@digicrime.com},
+           surname = {McCurley},
+          ]{Kevin S. McCurley}
+
+% The following command controls the running header for authors
+% This is optional for <= 4 authors and mandatory for > 4 authors
+% \authorrunning{Joppe W. Bos and Kevin S. McCurley}
+
+% Affiliations are listed individually using the \addaffiliation command 
+% *after* the (list of) authors using \addauthor
+% This should look like (full example):
+% \addaffiliation[ror        = 05f950310,
+%                 department = {Computer Security and Industrial Cryptography},              
+%                 street     = {Kasteelpark Arenberg 10, box 2452},
+%                 city       = {Leuven},
+%                 state      = {Vlaams-Brabant},
+%                 postcode   = {3001},
+%                 country    = {Belgium}
+%                ]{KU Leuven}
+% Where the options in square brackets “[ ]” are optional and control 
+% the following (optional information is mainly used for meta-data collection):
+% ror:        provide the Research Organization Registry (ROR) identifier 
+%             for this affiliation (see: ror.org). This is used for meta-data 
+%             collection only.
+% department: department or suborganization name
+% street:     street address
+% city:       city name
+% state:      state or province name
+% postcode:   zip or postal code
+% country:    country name. Required for [version=final]
+\addaffiliation[ror     = 031v4g827,
+                street  = {Interleuvenlaan 80},
+                city    = {Leuven},
+                postcode= {3001},
+                country = {Belgium}
+               ]{NXP Semiconductors}
+\addaffiliation[city={San Jose},country={USA}]{Self}
+
+% Authors should use the \addfunding macro to make sure that funding agencies
+% can find papers published under their sponsorship.
+% You can use the online tool at
+% https://publish.iacr.org/funding
+% to help you find fundref and ror identifiers.
+% Note that \addfunding *does not* automatically create footnotes or
+% an acknowledgements section to identify funding - it only collects the
+% metadata for indexing.
+% An example is:
+
+% \addfunding[country  = {europe},
+%             grantid  = {1234},
+%             fundref = {100010661}
+%            ]{Horizon 2020 Framework Programme}
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+%\genericfootnote{This is the full version of our paper published at XX}
+
+\begin{document}
+
+\maketitle
+
+% Provide the keywords *before* the abstract
+% When keywords contain macros provide the text version as the optional argument
+\newcommand{\Dirac}{Dirac}
+\keywords[Dirac delta function, unit impulse]{\Dirac~$\delta$ function, unit impulse}
+
+% Provide the abstract of your paper
+\begin{abstract}
+  The abstract goes here. You may use mathematics and macros
+  in your abstract, but do not use \texttt{\textbackslash cite}
+  or footnotes. The abstract should be self-contained. When you create
+  your \texttt{final} version, you will also need to supply a text-only
+  abstract in the \texttt{textabstract} environment.
+\end{abstract}
+
+% A separate text-only abstract must be supplied in your final version.
+% This will be used for web pages and indexing and should not contain macros.
+\begin{textabstract}
+  For the final version of your paper, you will need a text-only abstract. Do
+  not use LaTeX macros inside this abstract.
+\end{textabstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Journal \LaTeX{} class \texttt{iacrj.cls}.
+See the ``How to Use the IACR Journal Class'' document (\texttt{iacrdoc.pdf})for more details.
+
+\section{Bibliography}
+Citing papers is done in the usual way using BibTeX or \texttt{biblatex}
+commands. For example: the RSA paper~\cite{RSA78}.
+
+It is highly encouraged to use CryptoBib from \url{https://cryptobib.di.ens.fr}
+
+% This sample uses bibtex rather than biblatex.
+\bibliography{template}
+
+% NOTES
+% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
+% - Use biblio.bib for additional references not in the cryptobib database.
+%   If possible, take them from DBLP.
+
+\end{document}
