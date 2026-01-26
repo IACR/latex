@@ -51,7 +51,12 @@
 
 \def\IACR@vol{0}
 \def\IACR@no{0}
-\def\IACR@fp{1}
+\def\IACR@lp{0}
+% if \IACR@fp is not 0, then it was set from \jobname.iacrmetadata and
+% we assume that \IACR@lp is also set so we display page numbers in the
+% header for tosc and tches. Otherwise we just display the number of
+% pages as "23 pages." in the header.
+\def\IACR@fp{0}
 \def\IACR@DOI{}
 \def\IACR@CROSSMARKURL{}
 \global\let\IACR@Published\@empty
@@ -101,7 +106,7 @@
   \def\publname{IACR Communications in Cryptology}%
   \def\IACR@EISSN{3006-5496}
 }{%
-  \ifx\IACR@fp{1}\else\AtBeginDocument{\setcounter{page}{\IACR@fp}}\fi%
+  \IfStrEq{\IACR@fp}{0}{}{\AtBeginDocument{\setcounter{page}{\IACR@fp}}}%
   \IfStrEq{\@IACRjournal}{tosc}{%
     \def\publname{IACR Transactions on Symmetric Cryptology}%
     \def\IACR@EISSN{2519-173X}%
@@ -244,9 +249,8 @@
 
 % The TotPages label is not defined until after the \begin{document}.
 \AtBeginDocument{%
-  \ifcsstring{@IACRversion}{final}{%
-    \def\IACR@lp{\pageref*{TotPages}}%
-  }{}% final
+  % if \IACR@fp was not changed in \jobname.iacrmetadata, then use the number of pages.
+  \IfStrEq{\IACR@fp}{0}{\gdef\IACR@lp{\pageref*{TotPages}}}{}
 }
 
 % Geometry: flexible and complete interface to document dimensions.
@@ -407,12 +411,14 @@
       \ifx\IACR@DOI\@empty\else\fancyhead[R]{\small%
         \begin{tabular}{r}\href{https://doi.org/\IACR@DOI}{https://doi.org/\IACR@DOI}\ifx\IACR@CROSSMARKURL\@empty\else\vspace{2px}\\%
           \href{\IACR@CROSSMARKURL}{\crossmarkimage{.35}}\fi\end{tabular}}\fi%
-    }{% only CiC uses crossref.
+    }{% only CiC uses crossref at this time.
     \fancyhead[L]{%
       \small%
       \publname{}\\
-      ISSN~\IACR@EISSN, Vol.~\IACR@vol, No.~\IACR@no, pp.~\IACR@fp--\IACR@lp. \hfill{}%
-      \href{https://doi.org/\IACR@DOI}{DOI:\IACR@DOI}
+      ISSN~\IACR@EISSN\IfStrEq{\IACR@vol}{0}{}{, Vol.~\IACR@vol}%
+      \IfStrEq{\IACR@no}{0}{}{, No.~\IACR@no}%
+      \IfStrEq{\IACR@fp}{0}{, \IACR@lp\ pages.}{, pp.~\IACR@fp--\IACR@lp.} \hfill{}%
+      \ifx\IACR@DOI\@empty\else\href{https://doi.org/\IACR@DOI}{DOI: \IACR@DOI}\fi
     }}%
   }{}% final
   \ifx\@METAC@license\@empty\else%
