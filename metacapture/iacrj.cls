@@ -67,6 +67,7 @@
 %          providing numbers such as string length, position of, or number
 %          of recurrences of, a substring.
 \RequirePackage{xstring} % Required for IfSubStr and IfStrEq
+% TODO: convert IfSubStr to \str_if_in and \IfStrEq to \str_if_eq
 
 % See https://www.latex-project.org/news/latex2e-news/ltnews34.pdf
 \tracinglostchars=3
@@ -145,6 +146,14 @@
 
 % article class
 \LoadClass[10pt,twoside]{article}[2007/10/19]
+\IfSubStr{tosc,tches}{\@IACRjournal}{%
+  % ToSC and TCHES use a different font in the section headings.
+  \RequirePackage{sectsty}
+  \allsectionsfont{\sffamily\boldmath}
+  % Also for descriptions
+  \renewcommand*\descriptionlabel[1]{\hspace\labelsep
+    \normalfont\bfseries\sffamily\boldmath #1}
+}{}
 
 % iftex: am I running under pdfTEX, XETEX or LuaTEX?
 \RequirePackage{iftex}
