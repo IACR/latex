@@ -1,12 +1,12 @@
 \DocumentMetadata{lang=en,debug={xmp-export}}
 \def\pkgname{metacapture}
-\def\pkgversion{0.9}
+\def\pkgversion{0.9.1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This document will work with many different choices of documentclass
 %\documentclass[draft]{article}
 % title footnotes don't work in twocolumn.
 %\documentclass[twocolumn]{article}
-\documentclass{scrarticle}
+%\documentclass{scrarticle}
 %\documentclass[journal=tches,submission]{iacrtrans}
 % taken from overleaf
 %\documentclass[sigconf,authordraft,twocolumn]{acmart}
@@ -19,12 +19,13 @@
 %\documentclass{IEEEconf}
 % abstract is supposed to be before \title in amsart, even
 % though it is typeset after title.
-%\documentclass{amsart}
+\documentclass{amsart}
 % revtex4-2 does not work (with various failure modes).
 %\documentclass[aps,prl,preprint,nofootinbib]{revtex4-2}
 %\documentclass{revtex4-2}
 % This looks weird to me, with subsections in italics.
 %\documentclass[preprint,1p]{elsarticle}
+\usepackage{hyperref}
 %\documentclass{llncs}
 %\documentclass{jacow}
 %\documentclass{icsv}
@@ -66,14 +67,14 @@
 \usepackage{amsmath}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\usepackage{metacapture}
-\usepackage[maketitle=iacrj]{metacapture}
+%\usepackage[maketitle=iacrj]{metacapture}
 %\usepackage[maketitle=iacrj,footnotesymbols]{metacapture}
 %\usepackage[maketitle=acmsmall]{metacapture}
 %\usepackage[maketitle=acmconf,footnotesymbols]{metacapture}
 %\usepackage[maketitle=lipics,footnotesymbols]{metacapture}
 %\usepackage[maketitle=inv]{metacapture}
 %\usepackage[maketitle=ams,footnotesymbols]{metacapture}
-%\usepackage[maketitle=ams]{metacapture}
+\usepackage[maketitle=ams]{metacapture}
 % ems-journal-jems redefines \subtitle, so there is a conflict.
 %\usepackage[journal=JEMS]{ems-journal-jems}
 %\usepackage[maketitle=jems,footnotesymbols]{metacapture}
@@ -86,9 +87,17 @@
     \texttt{\textbackslash{}#2\{#1\}}%
   \fi
 }
-\bibliographystyle{plainurl}
+\makeatletter
+\@ifclassloaded{amsart}{
+  \typeout{Using~amsalpha}
+  \bibliographystyle{amsalpha}
+}{
+  \typeout{Using~plainurl}
+  \bibliographystyle{plainurl}
+}
+\makeatother
 \usepackage{kantlipsum}
-\usepackage[final]{hyperref}
+%\usepackage[final]{hyperref}
 \newcommand{\pkg}[1]{\texttt{#1}}
 \title[plaintext={The metacapture LaTeX package},
        running={The \pkgname\ \LaTeX\ package v\pkgversion},
@@ -238,21 +247,26 @@ email={notgonnawork@google.com},
                 department={Department of Unfundable Research},
                 city={Gottaknow}]{Faber College}
 \addkeywords[Metadata, publishing, LaTeX]{Metadata, publishing, \LaTeX}
-\license{CC-BY-4.0}
+%\license{CC-BY-4.0}
 %\license{CC0-1.0}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end of preamble %%%%%%%%%%%%%%%%%%%%
 \begin{document}
 %\hypersetup{colorlinks=true}
-\maketitle
+\IfClassLoadedTF{acmart}{}{%
+  \IfClassLoadedTF{amsart}{}{%
+    \IfClassLoadedTF{elsarticle}{}{\maketitle}}}
 \begin{abstract}
-
 You can mix and match different document classes and maketitle styles to see what the result
 is. Note that the abstract is under control of the document class, and is not affected
 by the \pkgname\ package. Some document classes require the abstract to appear before
-\acmd{maketitle}. There is a \texttt{textabstract} environment
+\acmd{maketitle}. We provide support this in \texttt{acmart}, \texttt{amsart}, and \texttt{elsarticle}.
+There is a \texttt{textabstract} environment
 that will cause a \acmd{jobname}\texttt{.abstract} file to be written, and is
 intended to be a pure text abstract.
 \end{abstract}
+\IfClassLoadedTF{acmart}{\maketitle}{
+   \IfClassLoadedTF{amsart}{\maketitle}{%
+      \IfClassLoadedTF{elsarticle}{\maketitle}{}}}
 \begin{textabstract}
   This is the textabstract. It does not show up in the document itself, but can
   be used to create an HTML abstract.

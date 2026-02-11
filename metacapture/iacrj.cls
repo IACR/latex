@@ -1,21 +1,25 @@
 % IACR Journal document class. This can be used for
-% CiC (replacing iacrj.cls)
+% CiC (replacing iacrcc.cls)
 % ToSC (replacing iacrtrans.cls)
 % TCHES (replacing iacrtrans.cls)
 %
-% The authoritative source is github.com/IACR/latex/iacrj
-%
-% To the extent possible under law, the author(s) have dedicated all
-% copyright and related and neighboring rights to this software to the
-% public domain worldwide. This software is distributed without any
-% warranty.
-%
-% You should have received a copy of the CC0 Public Domain Dedication
-% along with this software. If not, see
-% <http://creativecommons.org/publicdomain/zero/1.0/>.
-%
+%% Copyright 2026, Joppe W. Bos and Kevin S. McCurley
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Kevin S. McCurley,
+%% <latex-admin@iacr.org>
+%%
+%% This work consists of the files metacapture.sty, iacrj.cls, metadoc.tex,
+%% metadoc.pdf, iacrdoc.tex, iacrdoc.pdf, template.tex, and sample.tex.
 
-\def\fileversion{0.90}
+\def\fileversion{0.9.1}
 \def\filedate{2025/01/28}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -182,7 +186,7 @@
   \RequirePackage[maketitle=iacrj,anonymous,notitlefootnote]{metacapture}
 \else
 \ifcsstring{@IACRversion}{final}{
-  \RequirePackage[countryrequired,emailreq=one,maketitle=iacrj,notitlefootnote]{metacapture}
+  \RequirePackage[cityrequired,emailreq=one,maketitle=iacrj,notitlefootnote]{metacapture}
 }{ 
   \RequirePackage[maketitle=iacrj,notitlefootnote]{metacapture}
 }

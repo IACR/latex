@@ -4,22 +4,30 @@
 %% to a plain text file named \jobname.meta during compilation.
 %% This is used within a publishing pipeline to keep article metadata
 %% consistent within the LaTeX file and the external system.
-%% The authoritative source is github.com/IACR/latex/iacrcj/metacapture
+%% The authoritative source is currently maintained under
+%% github.com/IACR/latex/
 %%
-%% To the extent possible under law, the author(s) have dedicated all
-%% copyright and related and neighboring rights to this software to the
-%% public domain worldwide. This software is distributed without any
-%% warranty.
+%% Copyright 2026, Joppe W. Bos and Kevin S. McCurley
 %%
-%% You should have received a copy of the CC0 Public Domain Dedication
-%% along with this software. If not, see
-%% <http://creativecommons.org/publicdomain/zero/1.0/>.
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
 %%
-%% Package-specific variables are defined with the \METAC@ prefix.
-%% Some variables are also defined in expl3 style with the metac module name.
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Kevin S. McCurley,
+%% <latex-admin@iacr.org>
+%%
+%% This work consists of the files metacapture.sty, iacrj.cls, metadoc.tex,
+%% metadoc.pdf, iacrdoc.tex, iacrdoc.pdf, template.tex, and sample.tex.
 
 % Just a shortcut for Errors
 \newcommand\PkgErr[1]{\PackageError{metacapture}{#1}{}}
+
+%% Package-specific variables are defined with the \METAC@ prefix.
+%% Some variables are also defined in expl3 style with the metac module name.
 
 \def\METAC@fileversion{0.9.1}
 \def\METAC@filedate{2026/01/25}
@@ -370,6 +378,9 @@
 \def\METAC@ams@maketitle{%
   \null
   \vskip 2em%
+  \clist_if_empty:NTF \g_metac_keywords_raw_clist {}{
+    \renewcommand\thefootnote{}\footnotetext{\textit{Key~words~and~phrases.}~\clist_use:Nnnn \g_metac_keywords_raw_clist {
+        ~and~ }{ ,~ } {, ~and~}}}
   \begin{center}%
     \if@metacapture@footnotesymbols\renewcommand{\thefootnote}{\fnsymbol{footnote}}\fi
   % Insert the title and subtitle (if defined)
@@ -867,6 +878,10 @@
   \end{center}
   \par
   \vskip 1.5em%
+  \clist_if_empty:NTF \g_metac_keywords_raw_clist {}{
+    \noindent\textbf{Keywords}\par
+
+    \noindent\clist_use:Nnnn \g_metac_keywords_raw_clist { ,~ }{ ,~ } { ,~ }\vskip 1em}
 }
 
 % We prohibit \thanks because footnotes are added as attributes rather than part of the
@@ -923,6 +938,19 @@
   \global\let\@date\@empty
   \global\let\date\relax
   \global\let\and\relax
+  % Fix for classes that have abstract before maketitle.
+  \@ifclassloaded{acmart}{%
+    \@ifundefined{@mkabstract}{\PkgErr{acmart has changed internally.}}{}%
+    \noindent\textbf{Abstract}\par\@mkabstract\vspace*{1em}%
+    \ifx\@translatedabstracts\@empty\else\@translatedabstracts\fi%
+  }{%
+    \@ifclassloaded{amsart}{%
+      \@ifundefined{@setabstract}{\PkgErr{amsart has changed internally.}}{}%
+      \@setabstract\vspace*{1em}%
+    }{%
+      \@ifclassloaded{elsarticle}{%
+        \ifvoid\absbox\else\unvbox\absbox\par\vskip10pt\fi
+      }{}}}
 }
 
 % In case no maketitle option is specified, we build a rudimentary version

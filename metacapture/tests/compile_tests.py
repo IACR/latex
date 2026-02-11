@@ -1496,3 +1496,12 @@ def test43_latin():
       assert res['proc'].returncode != 0
       assert r'! Package metacapture Error: Only utf8 is allowed for input encoding.' in res['log']
   
+def test44_toscnocity():
+  """This is a test to make sure that city is required for ToSC."""
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      path = Path('toscnocity')
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+      print(res['log'])
+      assert r'! Package metacapture Error: A city is required for each affiliation.' in res['log']

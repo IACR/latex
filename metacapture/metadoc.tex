@@ -1,26 +1,24 @@
+%
+%% Copyright 2026, Joppe W. Bos and Kevin S. McCurley
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3c
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Kevin S. McCurley,
+%% <latex-admin@iacr.org>
+%%
+%% This work consists of the files metacapture.sty, iacrj.cls, metadoc.tex,
+%% metadoc.pdf, iacrdoc.tex, iacrdoc.pdf, template.tex, and sample.tex.
 \DocumentMetadata{lang=en,debug={xmp-export}}
 \def\pkgversion{0.9.1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % It should work with many choices of documentclass.
 \documentclass{article}
-%\documentclass[twocolumn]{article}
-%\documentclass[journal=tches,submission]{iacrtrans}
-%\documentclass[twocolumn]{acmart}
-%\documentclass{acmart}
-%\documentclass[format=acmsmall]{acmart}
-%\documentclass[onecolumn,conference,compsoc]{IEEEtran}
-% maketitle is a style mismatch for amsart.
-%\documentclass{amsart}
-% This puts footnotes as endnotes. and maketitle does not work.
-%\documentclass[aps,prl,preprint,nofootinbib]{revtex4-2}
-%\documentclass{revtex4-2}
-% This looks weird to me, with subsections in italics.
-%\documentclass[preprint,1p]{elsarticle}
-%\documentclass{llncs}
-% The wiley template is a mess. See https://tex.stackexchange.com/questions/701988/failed-to-compile-wiley-njd-v5-latex-template-zip-downloaded-from-wiley-official
-%\documentclass{sn-jnl}
-% sn-jnl has an external dependency.
-%\documentclass[journal=tches,version=final]{iacrj}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{tcolorbox}
@@ -209,8 +207,16 @@ intervening macros such
 as \cmd{orcid}, \cmd{affiliation}, \cmd{email}, etc.\ to describe the
 metadata for each author.  The \pkg{acmart} package also defines a
 \cmd{additionalaffiliation} macro in case the layout of affiliations
-takes too much space, but this places the burden of layout back on
-the author instead of the document class.
+takes too much space, but this places the burden of layout back on the
+author instead of the document class.  The \pkg{elsarticle} document
+class also uses a sequence of \cmd{author} macros for the authors, but
+the main argument contains embedded footnote marks.  Email addresses
+and home page links are inserted by intervening \cmd{ead}
+macros. Affiliations are specified with a main argument that consists
+of a set of key-value pairs. This bears some resemblance to our
+approach, but the style of metadata entry determines the styling of
+frontmatter, which once again violates the separation of concerns
+principle.
 
 There have been several packages such
 as \pkg{titling}\footnote{See \url{https://ctan.org/pkg/titling}}
@@ -257,7 +263,9 @@ The processing of metadata really has four parts to it:
 \begin{enumerate}
 \item \label{supply}Authors use \LaTeX\ macros to supply their metadata in a well-structured format.
 \item \label{markup}When compiled, the metadata is used to perform visual markup of
-the front matter (e.g., title, authors, affiliations, keywords, etc).
+the front matter (e.g., title, authors, affiliations, keywords, etc). This is completely under
+the control of the document class, but this package supplies multiple versions of the
+\cmd{maketitle} macro to assist in the process.
 \item \label{extract}When the article is published, the metadata is {\em extracted}
 from the author-supplied document and used in the publishing workflow. This author-supplied
 metadata is combined with publisher-supplied metadata such as volume number,
@@ -290,20 +298,55 @@ of metadata. This completes the separation of metadata capture from
 document formatting, and allows document classes to style their documents
 however they like.
 
+\subsubsection{Abstracts}
+There is a bit of ambiguity in what constitutes ``metadata'' about an
+article. While we have attempted to cover the most important elements,
+we also list some additional elements in Section~\ref{missing}. One
+element that is problematic is abstracts. These are supported metadata
+in the Crossref schema, and they have encouraged publishers to submit
+them as part of the Initiative for Open Abstracts (I4OA).  While
+abstracts can be useful for summarization and discovery, there are a
+few problems associated with treating abstracts as metadata. For
+one thing, some
+journals treat them as copyrighted material, whereas many institutions
+like the Research Library Association argue that metadata should be
+made available under a CC0 license. Quite a few publishers incuding
+ACM, Elsevier, and Springer
+were \href{https://www.crossref.org/blog/open-abstracts-where-are-we/}{withholding
+abstracts} from their metadata in 2020.
+
+Another complication that arises with abstracts is in formatting. The
+crossref schema an abstract to be formatted in JATS format, and the
+conversion from \LaTeX\ to JATS can be problematic. Some authors treat
+their abstracts as mini-articles and use all sorts of
+formatting including displayed equations, bibliographic references,
+tables, bulleted lists, etc. They also often use user-defined macros
+in their abstracts. For this reason, it can be compilicated to encode
+abstracts as metadata.
+
+Due to the complications associated with abstracts, we have decided to
+pursue a middle ground between trying to restrict author content in
+abstracts and successfully capturing an abstract that can easily be
+encoded as metadata. We do not modify the \texttt{abstract}
+environment, but instead have a load-time option to require
+a \texttt{textabstract} environment that will result in the contents
+being captured to an external file.
 
 \subsection{Display of metadata}\label{maketitle}
-The document class has complete control over the display of front matter.
-The display of metadata is often (but not always) done with
-a custom \cmd{maketitle} macro. Despite the name, the \cmd{maketitle}
-macro is usually responsible for display of author information, and
-sometimes also responsible for display of abstract, keywords, and
-license. The display of front matter can be quite complicated, with
-authors having multiple affiliations, authors sharing affiliations,
-footnotes attached to titles and authors, etc. For
-example, \url{https://arxiv.org/pdf/2210.03375} has hundreds of
-authors, 75 affiliations, and 12 footnotes on author names (not
-surprisingly, they omit email addresses).  The author metadata is
-inherently {\em relational}, with authors related to their
+When it is displayed, the metadata of an article is called the ``front
+matter'', and there are many different styles for this to be
+displayed, often with a custom \cmd{maketitle} macro. Despite the
+name, the \cmd{maketitle} macro is often responsible for display of
+author information, and sometimes also responsible for display of
+abstract, keywords, and license. The display of front matter can be
+quite complicated, with authors having multiple affiliations, authors
+sharing affiliations, footnotes attached to titles and authors,
+etc. For example, \url{https://arxiv.org/pdf/2210.03375} has hundreds
+of authors, 75 affiliations, and 12 footnotes on author names (not
+surprisingly, they omit email addresses).
+
+The author
+metadata is inherently {\em relational}, with authors related to their
 affiliations, and other attributes. These relationships are often
 represented visually with footnote structures.\footnote{One problem
 with this is that the standard
@@ -320,14 +363,16 @@ alphabetically or randomly). The \pkg{amsart} class places the
 affiliations {\em after} the body of the article as endnotes, and so
 does \pkg{OUP-EJ} for \emph{The Economic Journal}.
 
-This package supplies several ways to display the front matter of the document.
-This particular document is typeset with the standard \texttt{article} document
-class, for which default values of \cmd{@title} and \cmd{@author} are supplied to just
-work out of the box with the existing \cmd{maketitle}. The
-implementation of a \cmd{maketitle} is usually left to the document
-class, but the \pkgname\ package provides implementations of
-several \cmd{maketitle} styles that can be invoked with the option
-\texttt{maketitle=\textless{style}\textgreater}. 
+This package supplies several ways to display the front matter of the
+document.  This is done by having various implementations
+of \cmd{maketitle} that can be selected at load time. This particular
+document is typeset with the standard \texttt{article} document class,
+for which default values of \cmd{@title} and \cmd{@author} are
+supplied to just work out of the box with the
+existing \cmd{maketitle}. Document classes are free to use one of the
+built-in implementations of \cmd{maketitle}, but they can also provide
+their own.
+
 At present, the styles consist of the following (visual appearance
 of each is displayed in Appendix~\ref{appendix}):
 \begin{description}
@@ -377,12 +422,18 @@ internal variables documented in Section~\ref{variables}. We believe
 that this should simplify the construction of a \cmd{maketitle} macro,
 since the variables hold only metadata without formatting.
 
-\todok{The \texttt{amsart} and \texttt{acmart} document classes consider the
-\texttt{abstract} to be part of the front matter, and annoyingly require \cmd{begin}\texttt{\{abstract\}}
-to appear before \cmd{maketitle}. If we are trying to provide a
-\cmd{maketitle} that is consistent to these, then maybe we should capture the
-abstract and output it when \cmd{maketitle} is called. This feels
-silly to me.}
+\subsubsection{Abstracts}
+In the original \LaTeX\ document classes, the abstract was considered
+merely as a preliminary section of the document with special
+styling, and it would appear after the \cmd{maketitle} macro.  Some document
+classes have started treating the abstract as part of the frontmatter,
+and delegate the display of it to \cmd{maketitle}. As a result, some document classes like
+\texttt{amsart}, \texttt{acmart}, \texttt{elsarticle}, and \texttt{REVTeX}
+now require the \texttt{abstract} environment to appear before the
+\cmd{maketitle} macro. Our implementations of \cmd{maketitle} can adapt
+to the \texttt{amsart}, \texttt{acmart}, and \texttt{elsarticle} document
+classes by invoking their internal commands to display the abstract when
+\cmd{maketitle} is invoked.
 
 There are other metadata elements that may need to be displayed, such
 as license, keywords, abstract, etc.
@@ -522,14 +573,6 @@ A title is added using the \cmd{title} macro, which has a number of optional arg
     \argrow{plaintext}{A text version of the title (mandatory if macros are used in the title).}
 %    \argrow{footnote}{Add a footnote to the title. Only one is allowed.}
 \end{arglist}
-\todok{Some document classes override \cmd{title} macro in different ways from the
-\pkgname\ package - notably \texttt{amsart} and classes such as \texttt{acmart}
-that extend it. \texttt{amsart} accepts two arguments to \cmd{title} and then
-defines \cmd{shorttitle} inside \cmd{title}. Without this, you cannot use
-the standard \cmd{maketitle} of \texttt{amsart}. I inserted a special case to check of \texttt{amsart}
-was loaded and then set \cmd{shorttitle}, but I wouldn't want to see a lot of special cases
-like this. Should we call ours \cmd{addtitle} and then disable \cmd{title} the
-same way we did for \cmd{author}? }
 
 \noindent An example using all the optional arguments is shown below.
 
@@ -595,7 +638,7 @@ arguments shown in Figure~\ref{addauthor}.
 format \texttt{xxxx-xxxx-xxxx-xxxx}.}
 \argrow{footnote}{Create an author-specific footnote.}
 \argrow{surname}{Indicate the surname of the author for indexing purposes.}
-\argrow{onclick}{Provide a URL for the author, e.g., a home page.\todok{I don't like this option, since home page links can always be put into a footnote. A document style could choose to make the author name clickable, but it's not clear if that would lead to the ORCID or the home page.}}
+\argrow{onclick}{Provide a URL for the author, e.g., a home page.}
 \argrow{email}{Define the e-mail address of this author. Note that the load
    option \texttt{emailreq} may place restrictions on whether an author needs
    to supply an e-mail address.}
@@ -665,8 +708,6 @@ be encoded as
 \begin{verbatim}
   onclick = {https://web.com/\%7Efoo/the\%20best\#zoo}
 \end{verbatim}
-\todok{I don't think we really need the \texttt{onclick} attribute, since these can be
-included in footnotes where the URL is displayed in print.}
 
 An example using all the optional arguments is given below. In this case
 the author has \verb+inst={1,2}+ to indicate that they are affiliated with
@@ -683,11 +724,6 @@ the first and second affiliations that are entered with
           ]{Alice Accomplished}
 \end{Verbatim}
 
-\todok{It might be better to use explicit \texttt{label=abc} in \cmd{addaffiliation} and
-then use \texttt{inst={abc}} in \cmd{addauthor}. This would remove any dependency on
-the order in which affiliations are listed in the file, so if an author is added then we
-wouldn't have to renumber the affiliation references. Unfortunately it would require us to
-have a two-pass process to generate the footnote number.}
 The \cmd{thanks} macro is disabled
 inside \cmd{addauthor}, so use the \verb+footnote+ option
 on \cmd{addauthor} instead. In fact, if an author attempts to use any
@@ -775,9 +811,6 @@ annotations, you can use the \texttt{footnote} option on
 \cmd{addauthor} or add a separate
 acknowledgements section. Some funding agencies have specific
 requirements for how they want to be acknowledged in the article.
-\todok{It occurs to me that we could include an optional \texttt{text} attribute
-that is optionally displayed by the document class either as a footnote or in an
-acknowledgements section.}
 
 \subsection{Footnotes}\label{footnotes}
 Authors may be accustomed to using \cmd{thanks} for footnotes
@@ -855,10 +888,11 @@ displayed in the final PDF except as metadata. Note also that
 The \texttt{metadoc.meta} file that is created when a \LaTeX\ document
 is compiled is similar to yaml. An example is shown
 in Figure~\ref{samplemeta}.
+\newtcolorbox{smalltcolorbox}{fontupper=\footnotesize,colback=blue!5!white,boxrule=0.7pt}
 \begin{figure*}
-\begin{tcolorbox}[colback=blue!2!white,boxrule=.7pt]
+\begin{smalltcolorbox}
 \begin{verbatim}
-schema:0.9
+schema:0.9.1
 title: The metacapture LaTeX package
   subtitle: A demo with different styles and classes
 author:
@@ -899,7 +933,7 @@ The \texttt{schema} attribute indicates a version of \pkgname\ that
 was used to create the file. The resst of the format should be fairly
 clear.}
 \label{samplemeta}
-\end{tcolorbox}
+\end{smalltcolorbox}
 \end{figure*}
 While this looks like yaml, it's not quite the same. The reader
 might wonder why we don't write yaml, and the real reason is that yaml
@@ -914,7 +948,6 @@ a few simple macros such as \cmd{'e}, The complete list of macros
 is defined in \texttt{IsMacroAllowed\{\}}.
 
 \section{Internal variables}\label{variables}
-\todok{This section needs review since the package has been converted to \texttt{expl3}.}
 For those seeking to implement their own document class based on this, you should
 make use of some internal variables.
 If a document class wishes to provide additional restrictions on the
@@ -979,7 +1012,7 @@ inside \cmd{makeatletter}...\cmd{makeatother} blocks.
 
 \newcommand{\vardesc}[2]{\item[#1]\hfill\\#2}
 \begin{table*}\label{othervariables}
-\begin{tcolorbox}[colback=blue!5!white,boxrule=0.7pt]
+\begin{smalltcolorbox}
 \begin{description}
 \setlength\itemsep{0pt}
 \vardesc{\cmd{g\_metac\_author\_seq}}{the list of authors, each of which is a serialized key-value \texttt{prop}}
@@ -991,15 +1024,16 @@ inside \cmd{makeatletter}...\cmd{makeatother} blocks.
 This is an SPDX identifier because of our dependence on the
 \texttt{doclicense} package. An example is \texttt{CC-BY-4.0}.}
 \vardesc{\cmd{if@metacapture@anonymous}}{Set if the anonymous option is used to load it.}
-\vardesc{\cmd{METAC@displayemails}}{This is a comma-delimited list of \texttt{email,(name)} values
+\vardesc{\cmd{g\_metac\_display\_emails\_tl}}{This is a comma-delimited list of \texttt{email,(name)} values
 that were constructed from calls to the \cmd{addauthor} macro.}
 \vardesc{\cmd{@title}}{The formatted title supplied by the author as argument \texttt{\#2}
 of \cmd{title}. This does not include anything from \cmd{subtitle}.}
-\vardesc{\cmd{METAC@title@running}}{Optional running title supplied by the author.}
-\vardesc{\cmd{METAC@title@plaintext}}{Optional plain text title.}
-\vardesc{\cmd{METAC@title@footnote}}{Optional footnote for the title.}
-\vardesc{\cmd{METAC@subtitle}}{Optional subtitle.}
-\vardesc{\cmd{METAC@subtitle@plaintext}}{Optional plain text version of subtitle.}
+\vardesc{\cmd{g\_metac\_titleraw\_tl}}{The raw title supplied as the main argument to \cmd{title}.}
+\vardesc{\cmd{g\_metac\_titlerunning\_tl}}{Optional running title supplied by the author.}
+\vardesc{\cmd{g\_metac\_titleplain\_tl}}{Optional plain text title.}
+%\vardesc{\cmd{METAC@title@footnote}}{Optional footnote for the title.\todok{no replacement?}}
+\vardesc{\cmd{g\_metac\_subtitleraw\_tl}}{Optional subtitle.}
+\vardesc{\cmd{g\_metac\_subtitleplain\_tl}}{Optional plaintext version of subtitle.}
 \vardesc{\cmd{METAC@listofauthors}}{A list of author names separated by ', '}
 %\vardesc{\cmd{@author}}{A marked up list of authors that is used internally by the \cmd{maketitle} of the package.}
 \vardesc{\texttt{METAC@author@cnt}}{A counter for the number of authors. It is incremented each time \cmd{addauthor} is called.}
@@ -1007,7 +1041,7 @@ of \cmd{title}. This does not include anything from \cmd{subtitle}.}
 \vardesc{\texttt{METAC@affil@cnt}}{A counter for the number of affiliations. It is incremented each time \cmd{addaffiliation} is called.}
 \end{description}
 
-\end{tcolorbox}
+\end{smalltcolorbox}
 
 \caption{Internal variables that are set by calls to \cmd{addauthor}, \cmd{addaffiliation}, \cmd{addfunder},
 \cmd{addkeywords}, \cmd{title}, \cmd{subtitle}, and \cmd{license}. Some of these are LaTeX3-specific, as indicated
@@ -1038,6 +1072,16 @@ some things include:
 copyleft). It's possible that someone may wish to place different licenses on media embedded
 in the document. It's also possible that someone may wish to place different licenses on the \LaTeX\ source
 than the final document intended for readers. We do not cover these cases.
+\item[Copyright] The \texttt{acmart} document class provides the \cmd{setcopyright} macro to stipulate
+addtional copyright conditions such as \texttt{usgovmixed} to
+stipulate that some authors are employees of the US
+government. Authors may also wish to declare copyright limitations on
+selected portions of the document. Both JATS and the crossref schema currently supports the elements
+\texttt{\textless{copyright-holder}\textgreater},
+\texttt{\textless{copyright-statement}\textgreater}, and
+\texttt{\textless{copyright-year}\textgreater} that contain structured data. Both schemas allow
+them to be applied to subsections of the document so that a document may recognize copyright
+of a third party for embedded elements.
 \item[Languages] We have no way for an author to express which languages are used in the document,
 or to provide language-specific versions of title, keywords, affiliation name, abstract, etc.
 \item[Article categories] Some journals tag an article as a type, e.g, ``Commentary'', ``Research article'',
@@ -1059,10 +1103,9 @@ They do not appear to report this information to crossref.
 Perhaps the best known definition of contributor roles is \CREDIT, which stands for
 Contributor Role Taxonomy, and has now become an ISO
 standard.\footnote{See \url{https://credit.niso.org/}} Crossref has
-announced that they will support something like this in version~5.5 of their schema.
-\todok{The only identifiers for \CREDIT\ roles include things with spaces in them like \texttt{Funding acquisition}. We could add something like \texttt{credit=role} to author, but
-I'm worried that it isn't sufficiently expressive yet. In particular some people have complained
-\texttt{translation} is omitted. It also omits the degree of contribution in each role.}
+announced that they will support something like this in version~5.5 of their schema. There
+are several things that remain to be determined, like the role of AI agents in authorship,
+the degree of a role, whether ``translator'' is a recognized role, etc.
 \item[Author bio] IEEE and other publishers may collect an author bio, and JATS
 also supports this. The model in JATS is pretty complex and supports titled sections.
 \item[Other author IDs] ORCID is pretty common now, but some authors may not have them (e.g., a deceased author) and
@@ -1113,6 +1156,10 @@ have the same structure across all cultures. See~\cite{falsehoods}.
 We also do not support alternate names for authors, and we do not support
 author-supplied \texttt{name-style} attribute that crossref supports for an author to report
 that they have only a given name.
+\item[Funding text] Some funding agencies have specific text that they want to
+be displayed to acknowledge them. Ideally this would appear in both the document itself but
+also as part of the metadata on an HTML landing page. We could address this by including an optional
+\texttt{text} attribute on \cmd{addfunder}
 \item[Funding groups] We currently support the name, identifier, and award number for a funder,
 but we may wish to provide further information like the name of a PI or the
 program within a larger funding organization. This would be driven by downstream requirements.
@@ -1137,15 +1184,6 @@ here, but they seem like natural extensions.
 other documents or media. This could include supplementary material,
 former versions of the document, translations, related media,
 data, code, clinical information, etc. 
-\todok{Perhaps we should supply a way to extend the schema, say with a
-macro like \texttt{\textbackslash{@addmetafield}\{fieldname\}} that
-could be called from a class file, or something more sophisicated
-based on \texttt{xkeyval}. This could be used in a document class to
-ask for things like clinical trials or domain-specific keywords or
-other metadata.  My fear is that
-this would not be expressive enough for hierarchical structures or
-lists, and we may have to supply domain-specific rules for what values
-are accepted.}
 \item[Keywords and taxonomies]
 Some disciplines also use specific taxonomies or keyword vocabularies (e.g.,
 ACM Computing Classification System, AMS Mathematics Subject
@@ -1199,8 +1237,6 @@ your feature is only relevant to a specific discipline, then perhaps
 the natural thing to do is to extend the \pkgname\ package and add
 additional fields. Adding too many fields and too much complexity can
 make the documentation hard to digest.
-
-\todok{When should we upload to CTAN?}
 
 %\printbibliography
 \bibliography{metadoc}
