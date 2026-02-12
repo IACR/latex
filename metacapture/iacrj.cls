@@ -16,8 +16,8 @@
 %% The Current Maintainer of this work is Kevin S. McCurley,
 %% <latex-admin@iacr.org>
 %%
-%% This work consists of the files metacapture.sty, iacrj.cls, metadoc.tex,
-%% metadoc.pdf, iacrdoc.tex, iacrdoc.pdf, template.tex, and sample.tex.
+%% This work consists of the files metacapture.sty, metacapture-doc.tex,
+%% metacapture-doc.pdf, and metacapture-sample.tex.
 
 \def\fileversion{0.9.1}
 \def\filedate{2025/01/28}
