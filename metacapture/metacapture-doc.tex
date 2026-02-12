@@ -12,8 +12,9 @@
 %% The Current Maintainer of this work is Kevin S. McCurley,
 %% <latex-admin@iacr.org>
 %%
-%% This work consists of the files metacapture.sty, iacrj.cls, metadoc.tex,
-%% metadoc.pdf, iacrdoc.tex, iacrdoc.pdf, template.tex, and sample.tex.
+%% This work consists of the files metacapture.sty, metacapture-doc.tex,
+%% metacapture-doc.bib, metacapture-doc.pdf, and metacapture-sample.tex.
+
 \DocumentMetadata{lang=en,debug={xmp-export}}
 \def\pkgversion{0.9.1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,7 +92,7 @@
 %\def\linenumberfont{\normalfont\tiny\sffamily\color{gray}}
 %\AtBeginDocument{\linenumbers}
 %%%%%%%%%%%%
-%\addbibresource{metadoc.bib}
+%\addbibresource{metacapture-doc.bib}
 \begin{document}
 \hypersetup{colorlinks=true}
 \maketitle
@@ -885,7 +886,7 @@ displayed in the final PDF except as metadata. Note also that
 %%   the contents of the \texttt{textabstract} environment.
 
 \section{Format of the \texttt{.meta} file}\label{metafile}
-The \texttt{metadoc.meta} file that is created when a \LaTeX\ document
+The \texttt{metacapture-doc.meta} file that is created when a \LaTeX\ document
 is compiled is similar to yaml. An example is shown
 in Figure~\ref{samplemeta}.
 \newtcolorbox{smalltcolorbox}{fontupper=\footnotesize,colback=blue!5!white,boxrule=0.7pt}
@@ -1239,7 +1240,7 @@ additional fields. Adding too many fields and too much complexity can
 make the documentation hard to digest.
 
 %\printbibliography
-\bibliography{metadoc}
+\bibliography{metacapture-doc}
 \appendix
 \section{Appendix: Example styles for \cmd{maketitle}\label{appendix}}
 This document was typeset with \texttt{article} class and the
