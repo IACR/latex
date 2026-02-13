@@ -1,5 +1,6 @@
-\documentclass[journal=tches,version=submission]{iacrj}
-
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage[orcidreq,maketitle={iacrj}]{metacapture}
 \title[running  = {The iacrcc class},
 %       subtitle = {A Template}
       ]{An example that is not anonymous}
@@ -11,8 +12,7 @@
            email    = {joppe.bos@nxp.com}
 	  ]{Joppe W. B{\"o}s}
 
-\addauthor[orcid   = {0000-0001-7890-5430},
-           inst    = {2},
+\addauthor[inst    = {2},
            email   = {test2@digicrime.com},
 	   surname = {McCurley}
           ]{Kevin S. McCurley}
@@ -29,7 +29,7 @@
 \maketitle
 
 % Provide the keywords *before* the abstract
-\keywords{stuff, other random}
+\addkeywords{stuff, other random}
 
 % Provide the abstract of your paper
 \begin{abstract}

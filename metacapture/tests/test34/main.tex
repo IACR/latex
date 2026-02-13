@@ -1,5 +1,6 @@
-\documentclass[journal=tosc,version=preprint]{iacrj}
-
+\documentclass{article}
+\usepackage{metacapture}
+\bibliographystyle{plainurl}
 \usepackage{lipsum}
 \license{CC-by}
 \title[running  = {Short title},
@@ -19,7 +20,6 @@
            surname = {McCurley},
           ]{Kevin S. McCurley}
 
-\authorrunning{Nobody and Nobody Else}
 \addaffiliation[ror     = 031v4g827,
                 street  = {1313 Mockingbird Lane},
                 city    = {Urbana},
@@ -35,14 +35,13 @@
             fundref  = {112233},
            ]{Foundation for Theoretical Nonsense}
 
-\genericfootnote{What would we say in a footnote?}
 \begin{document}
 
 \maketitle
 % Provide the keywords *before* the abstract
 % When keywords contain macros provide the text version as the optional argument
 \newcommand{\Dirac}{Dirac}
-\keywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
+\addkeywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
 
 % Provide the abstract of your paper
 \begin{abstract}
@@ -67,7 +66,7 @@ I wonder if this will show up.
 \lipsum[5-15]
 
 \section{Third Section}
-This is a short section.
+This is a short section. Also \cite{EC:Matsui93}.
 
 \bibliography{main}
 

@@ -1,4 +1,6 @@
-\documentclass[journal=tosc,version=preprint]{iacrj}
+\documentclass{llncs}
+\usepackage{hyperref}
+\usepackage[maketitle=acmconf]{metacapture}
 
 \usepackage{lipsum}
 \license{CC-by}
@@ -27,7 +29,6 @@
            surname  = {B{\"o}s}
           ]{Joppe W. B{\"o}s}
           
-\authorrunning{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
 \addaffiliation[ror     = 031v4g827,
                 street  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
                 city    = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx},
@@ -43,8 +44,6 @@
             fundref  = {ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
            ]{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
 
-\genericfootnote{ÌÏÎncrëdíblé cóòömplíìîcáàäâtêd üúùûber látéx}
-
 \begin{document}
 
 \maketitle
@@ -52,7 +51,7 @@
 % Provide the keywords *before* the abstract
 % When keywords contain macros provide the text version as the optional argument
 \newcommand{\Dirac}{Dirac}
-\keywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
+\addkeywords[Dirac delta function, unit impulse]{\Dirac $\delta$ function, unit impulse}
 
 % Provide the abstract of your paper
 \begin{abstract}

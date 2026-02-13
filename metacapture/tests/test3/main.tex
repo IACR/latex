@@ -1,5 +1,9 @@
-\documentclass[journal=cic,version=final,biblatex]{iacrj}
-
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage{xifthen}
+\usepackage{csquotes}
+\usepackage{biblatex}
+\usepackage{metacapture}
 \license{CC-by}
 \title{Another example with biblatex}
 \addauthor[inst     = {1},
@@ -13,9 +17,10 @@
            surname  = {McTesterface}]{Chester McTesterface}
 \addaffiliation[country={USA},city={San Jose}]{My university}
 \usepackage{xcolor}
-\addbibresource{biblatex-examples.bib}
+%\addbibresource{biblatex-examples.bib}
 \addbibresource{test3.bib}
 
+\usepackage[T1]{fontenc}
 \begin{document}
 \maketitle
 \begin{abstract}

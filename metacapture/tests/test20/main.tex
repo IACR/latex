@@ -1,4 +1,6 @@
-\documentclass[journal=cic,version=preprint]{iacrj}
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage[maketitle=jems]{metacapture}
 
 \license{CC-by}
 
@@ -11,14 +13,12 @@
 \addaffiliation{Company}
 \addaffiliation{University}
 
-\genericfootnote{Generic footnote on the main page.}
-
 \begin{document}
 
 \maketitle
 
 % Provide the keywords *before* the abstract
-\keywords{stuff, other random}
+\addkeywords{stuff, other random}
 
 % Provide the abstract of your paper
 \begin{abstract}

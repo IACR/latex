@@ -1,61 +1,88 @@
-% This is from biblatex-samples.bib but previously had \emph in the title,
-% which causes an error.
-@inproceedings{noemph,
-  author       = {Moraux, Paul},
-  editor       = {Lloyd, G. E. R. and Owen, G. E. L.},
-  title        = {Le {De Anima} dans la tradition gr{\`e}cque},
-  date         = 1979,
-  booktitle    = {Aristotle on Mind and the Senses},
-  subtitle     = {Quelques aspects de l'interpretation du trait{\'e}, de
-                  Theophraste {\`a} Themistius},
-  booktitleaddon= {Proceedings of the Seventh Symposium Aristotelicum},
-  eventdate    = 1975,
-  publisher    = cup,
-  location     = {Cambridge},
-  pages        = {281-324},
-  keywords     = {secondary},
-  langid       = {french},
-  indexsorttitle= {De Anima dans la tradition grecque},
-  indextitle   = {{De Anima} dans la tradition gr{\`e}cque, Le},
-  shorttitle   = {{De Anima} dans la tradition gr{\`e}cque},
-  annotation   = {This is a typical \texttt{inproceedings} entry. Note the
-                  \texttt{booksubtitle}, \texttt{shorttitle},
-                  \texttt{indextitle}, and \texttt{indexsorttitle} fields. Also
-                  note the \texttt{eventdate} field.},
-}
+% This is intended to be used with biblatex and biber since it is in UTF-8.
+@string{mar = {March}}
 
 @article{sample,
-  author       = {Jan Erik Frantsvåg and Gayle Gaži and Jean-Sébastien Jørgensen},
-  title        = {The proof that $\zeta(s) != 0$, and a paper by Großschädl},
-  journal      = {Annals of Fake Research},
+  author        = {Jan Erik Frantsvag and Gayle Gazi and Jean-Sébastien Jorgensen},
+  title        = {On a result by Großschädl},
+  journal      = {Publications Mathématiques de l'IHÉS},
   volume       = {437},
   month        = {April},
   year         = 1937,
-  note         = {Work was unsupported},
+  note         = {Work supported by Institut des Hautes Études Scientifiques},
   publisher    = {Springer},
   doi          = {10.5281/foo.bar},
   url          = {https://theonion.com/}
 }
 
-@book{deNeville1999,
-  author    = {Isabel de Neville},
-  title     = {{Handbook of Something Important}},
-  publisher = {Science Publishers},
-  series    = {Foundations of Interesting Things},
-  year      = 1999
+@article{DBLP:journals/joc/ChillottiGGI20,
+  author    = {Ilaria Chillotti and
+               Nicolas Gama and
+               Mariya Georgieva and
+               Malika Izabach{\`{e}}ne},
+  title     = {{TFHE:} Fast Fully Homomorphic Encryption Over the Torus},
+  journal   = {Journal of Cryptology},
+  issn      = {0933-2790},
+  url       = {https://eprint.iacr.org/2018/421.pdf},
+  volume    = {33},
+  number    = {1},
+  pages     = {34--91},
+  year      = {2020},
+  url       = {https://doi.org/10.1007/s00145-019-09319-x},
+  doi       = {10.1007/s00145-019-09319-x},
 }
 
-@book{vanDyke2007,
-  author    = {Harry van Dyke and Bob Brown},
-  title     = {{Handbook of Something Else}},
-  publisher = {Science Publishers},
-  series    = {Foundations of Interesting Things},
-  year      = 2007
+@misc{latexproject,
+  title = {The LaTeX project},
+  author = {Frank Mittelbach and Ulrike Fischer},
+  howpublished = {https://ctan.math.washington.edu/tex-archive/macros/latex-dev/required/latex-lab/documentmetadata-support-code.pdf},
+  organization={The LaTeX Project}
 }
 
-@book{DickVanDyke2015,
-  author    = {Dick Van Dyke},
-  title     = {{Keep Moving}},
-  publisher = {Hachette Books},
-  year      = 2015
+@article{RSA78,
+  author    = {Ronald L. Rivest and Adi Shamir and Leonard M. Adleman},
+  title     = {A Method for Obtaining Digital Signatures and Public-Key Cryptosystems},
+  pages     = {120--126},
+  year      = {1978},
+  journal   = {Communications of the ACM},
+  volume    = {21},
+  number    = {2},
+  publisher = {ACM New York, NY, USA},
+  doi       = {10.1145/359340.359342},
+}
+
+@book{fancynames,
+  author       = {Jeroen von B\"ucher and
+                  Jan Erik Frantsvag and
+                  Oznur Kucukkubas and
+                  Bianca Kramer Jr. and
+                  Pierre-Carl Lange and
+                  Prouder, Vanessa},
+  title        = {Something about mathematics $x^n+y^n=z^n$ when $n=2$},
+  month        = mar,
+  year         = 2021,
+  note         = {This report was supported by Science Europe and
+                   cOAlition S},
+  publisher    = {Lapis Publishing},
+  isbn         = {978-0201362992},
+  url          = {https://example.com/nothing}
+}
+
+@inproceedings{DBLP:conf/crypto/Kocher96,
+  author    = {Paul C. Kocher},
+  editor    = {Neal Koblitz},
+  title     = {Timing Attacks on Implementations of Diffie-Hellman, RSA, DSS, and
+               Other Systems},
+  booktitle = {Advances in Cryptology - {CRYPTO} '96, 16th Annual International Cryptology
+               Conference, Santa Barbara, California, USA, August 18-22, 1996, Proceedings},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1109},
+  pages     = {104--113},
+  publisher = {Springer},
+  location  = {Santa Barbara, California},
+  year      = {1996},
+  url       = {https://doi.org/10.1007/3-540-68697-5\_9},
+  doi       = {10.1007/3-540-68697-5\_9},
+  timestamp = {Tue, 14 May 2019 10:00:48 +0200},
+  biburl    = {https://dblp.org/rec/conf/crypto/Kocher96.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }

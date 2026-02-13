@@ -1,14 +1,7 @@
-%%%% IACR Transactions TEMPLATE %%%%
-% This file shows how to use the iacrtrans class to write a paper.
-% Written by Gaetan Leurent gaetan.leurent@inria.fr (2020)
-% Public Domain (CC0)
-
-
-%%%% 1. DOCUMENTCLASS %%%%
-\documentclass[journal=cic,version=final]{iacrj}
-%%%% NOTES:
-% - Add "spthm" for LNCS-like theorems
-
+\documentclass{article}
+\bibliographystyle{plainurl}
+\usepackage{xifthen}
+\usepackage[emailreq=one]{metacapture}
 \errorcontextlines=5
 \newcommand\niceguy{Fester Bestertester}
 
@@ -32,11 +25,6 @@
 \addaffiliation[country={Elbonia}]{University of Antartica}
 \addaffiliation[country={Turkey}]{Bo{\u g}azi{\c c}i University}
 
-\genericfootnote{This is the full-version of our previous work.}
-
-%%%% 4. TITLE %%%%
-% Note that \thanks and \footnote are forbidden in \title. Please use
-% \genericfootnote.
 \title[plaintext={Thoughts on binary functions}]{Thoughts about "binary" functions on $GF(p)$ by \niceguy\ at 30°C}
 \begin{document}
 
@@ -78,11 +66,5 @@ title~\cite{ACISP:MurPla19,ACISP:LYLF19,ACISP:WeiSteSha03,CCS:BHKNRS19,ACNS:DurH
 This\footnote{is a footnote}.
 
 This is the unicode degree symbol: 30°
-%%%% 8. BILBIOGRAPHY %%%%
-\bibliography{test1}
-%%%% NOTES
-% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
-% - Use biblio.bib for additional references not in the cryptobib database.
-%   If possible, take them from DBLP.
-
+\bibliography{test4}
 \end{document}

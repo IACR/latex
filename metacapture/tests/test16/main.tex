@@ -1,4 +1,6 @@
-\documentclass[journal=tches,version=submission,notanonymous]{iacrj}
+\documentclass{llncs}
+\usepackage{hyperref}
+\usepackage[maketitle=ams]{metacapture}
 
 \license{CC-by}
 
@@ -80,14 +82,12 @@
 \addaffiliation{Uni 29}
 \addaffiliation{Uni 30}
 
-\genericfootnote{Generic footnote on the main page.}
-
 \begin{document}
 
 \maketitle
 
 % Provide the keywords *before* the abstract
-\keywords{stuff, other random}
+\addkeywords{stuff, other random}
 
 % Provide the abstract of your paper
 \begin{abstract}

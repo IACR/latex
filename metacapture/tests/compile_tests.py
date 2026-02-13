@@ -20,7 +20,6 @@ def run_engine(eng, filelist, tmpdirpath):
     if f.is_file():
       shutil.copy(f, tmpdirpath)
   shutil.copy('../metacapture.sty', tmpdirpath)
-  shutil.copy('../iacrj.cls', tmpdirpath)
   # remove any temporary files
   tmpdir = Path(tmpdirpath)
   for f in tmpdir.iterdir():
@@ -271,8 +270,6 @@ def test11_test():
       assert 'country' not in meta['funders'][2]
       pdfpath = tmpdirpath + '/main.pdf'
       xmp = XMPParser(pdfpath)
-      description = xmp.get_string('.//dc:description/rdf:Alt/rdf:li')
-      assert description == 'IACR Communications in Cryptology'
       title = xmp.get_strings('.//dc:title/rdf:Alt/rdf:li')
       assert len(title) == 2
       assert title[0] == 'How not to use the IACR Communications in Cryptology Cláss'
@@ -366,45 +363,22 @@ def test12_test():
         assert 'Joppe W. Bös' in first_page
 
 def test13_test():
-  # should pass with lualatex and pdflatex
+  # should fail with lualatex and pdflatex because orcid is lacking.
   for option in ['-pdflua', '-pdf']:
     # Check for absence of author name with submission without notanonymous
     with tempfile.TemporaryDirectory() as tmpdirpath:
       path = Path('test13')
       res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode == 0
-      meta = meta_parse.parse_meta(res['meta'])
-      assert meta['title'] == 'An example that is not anonymous'
-      pdfpath = tmpdirpath + '/main.pdf'
-      #xmp = XMPParser(pdfpath)
-      #assert xmp.get_string('.//dc:title/rdf:Alt/rdf:li') == 'An example that is not anonymous'
-      #assert xmp.get_string('.//dc:creator/rdf:Seq/rdf:li') == 'hidden for submission'
-      #assert xmp.get_string('.//pdf:Keywords') == 'stuff, other random'
-      #assert xmp.get_string('.//dc:source') == 'main.tex'
-      #assert xmp.get_string('.//xmpTPg:NPages') == str(1)
-      # Make sure author names appear in the paper with notanonymous
-      with pdfplumber.open(pdfpath) as pdf:
-        first_page = pdf.pages[0].extract_text()
-        assert 'Kevin S. McCurley' not in first_page
-        assert 'Joppe W. Bös' not in first_page
+      assert res['proc'].returncode != 0
 
 def test14_test():
-  # should pass with lualatex and pdflatex
+  # should fail with lualatex and pdflatex because email is lacking for one.
   for option in ['-pdflua', '-pdf']:
     # Check for line numbers in copyedit version
     with tempfile.TemporaryDirectory() as tmpdirpath:
       path = Path('test14')
       res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode == 0
-      logpath = tmpdirpath + '/main.log'
-      log = Path(logpath).read_text(encoding='UTF-8')
-      assert 'lineno.sty' in log
-      pdfpath = tmpdirpath + '/main.pdf'
-      with pdfplumber.open(pdfpath) as pdf:
-        text = pdf.pages[1].extract_text()
-        print(text)
-        assert '39' in text
-        assert '78' in text
+      assert res['proc'].returncode != 0
 
 # Negative test.
 # Check if we detect a newline using "\newline" in the addauthor command
@@ -483,12 +457,17 @@ def test20_test():
         assert '2 University' not in text
             
 def test21_test():
-  # Check that we need \runningauthors
+  # Check for anonymity.
   for option in ['-pdflua', '-pdf']:
     with tempfile.TemporaryDirectory() as tmpdirpath:
       path = Path('test21')
       res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
+      assert res['proc'].returncode == 0
+      pdfpath = tmpdirpath + '/main.pdf'
+      with pdfplumber.open(pdfpath) as pdf:
+        first_page = pdf.pages[0].extract_text()
+        assert 'Kevin S. McCurley' not in first_page
+        assert 'Joppe W. Bos' not in first_page
 
 def test22_test():
   # should pass with lualatex and pdflatex
@@ -1217,10 +1196,6 @@ def test27_test():
       assert meta['affiliations'][2]['name'] == 'Boğaziçi University'
       assert meta['affiliations'][2]['country'] == 'Turkey'
       assert meta['schema'] == _VERSION
-      logfile = tmpdirpath / Path('main.log')
-      logtext = logfile.read_text('utf-8', errors='replace')
-      assert 'Proof that I was loaded after hyperref' in logtext
-      assert 'Package: cleveref' in logtext
 
 # Check for writing to file and in pdf when unicode characters are used
 # in a lot of options
@@ -1276,38 +1251,6 @@ def test29_test():
       assert len(opened_files) == 0
       assert r'Overfull \hbox' in res['log']
 
-# Check that the user may not use \bibliographystyle in their paper.
-def test30_test():
-  path = Path('test30')
-  for option in ['-pdf']:
-    with tempfile.TemporaryDirectory() as tmpdirpath:
-      res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
-
-# Check that the user may not use \pagestyle in their paper.
-def test31_test():
-  path = Path('test31')
-  for option in ['-pdf']:
-    with tempfile.TemporaryDirectory() as tmpdirpath:
-      res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
-
-# Check that the user may not use \pagenumbering in their paper.
-def test32_test():
-  path = Path('test32')
-  for option in ['-pdf']:
-    with tempfile.TemporaryDirectory() as tmpdirpath:
-      res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
-      
-# Check that the user may not use natbib package in their paper.
-def test33_test():
-  path = Path('test33')
-  for option in ['-pdf']:
-    with tempfile.TemporaryDirectory() as tmpdirpath:
-      res = run_engine(option, path.iterdir(), tmpdirpath)
-      assert res['proc'].returncode != 0
-      
 def test34_test():
   # We test for presence of "References" in the outline using pypdf.
   for option in ['-pdflua', '-pdf']:
@@ -1318,12 +1261,12 @@ def test34_test():
       pdfpath = tmpdirpath + '/main.pdf'
       pdfreader = pypdf.PdfReader(pdfpath)
       outline = pdfreader.outline
-      assert len(outline) == 5
+      assert len(outline) == 4
+      print(outline)
       assert outline[0]['/Title'] == 'First section'
       assert outline[1][0]['/Title'] == 'Some subsection'
       assert outline[2]['/Title'] == 'Second section'
       assert outline[3]['/Title'] == 'Third Section'
-      assert outline[4]['/Title'] == 'References'
 
 # Negative test.
 # Check if we detect an omission of a comma after orcid in \addauthor
@@ -1335,57 +1278,6 @@ def test35_test():
     with tempfile.TemporaryDirectory() as tmpdirpath:
       res = run_engine(option, path.iterdir(), tmpdirpath)
       assert res['proc'].returncode != 0
-
-def test36_test():
-  path = Path('test36')
-  labels = [('algorand', 'alg'),
-            ('website', 'DFi20'),
-            ('DHMR08', 'DHMR08'),
-            ('ong', 'EAK{$^{+'),
-            ('art2', 'Gro20'),
-            ('art1', 'GT20'),
-            ('EPRINT:KleOneAki23', 'K{\\"O'),
-            ('hand', 'MvOV01'),
-            ('sealcrypto', 'SEA20'),
-            ('turing', 'Tur53')]
-  with tempfile.TemporaryDirectory() as tmpdirpath:
-    bibtex_trigger = tmpdirpath / Path('usebibtex')
-    bibtex_trigger.touch()
-    files = [path / Path('main.tex'), path / Path('main.bib'), path / Path('iacrcc.cls')]
-    res = run_engine('-pdf', files, tmpdirpath)
-    assert res['proc'].returncode == 0
-    auxpath = tmpdirpath / Path('main.aux')
-    auxlines = [line for line in auxpath.read_text().splitlines() if '\\bibcite' in line]
-    bibtex_keys = []
-    for line in auxlines:
-      m = re.search(r'\\bibcite\{([^}]+)\}\{([^}]*)\}', line)
-      bibtex_keys.append((m.group(1), m.group(2)))
-    for i in range(len(labels)):
-      assert bibtex_keys[i][0] == labels[i][0]
-      assert bibtex_keys[i][1] == labels[i][1]
-    assert len(auxlines) == 10
-  # now run with biblatex. We extract the references from main.bbl,
-  # which has a different format than with bibtex.
-  BIBLATEX_PATT = r'\\entry{([^}]+)}(?:.*\\field{labelalpha}{([^}]+)})?(?:.*\\field{extraalpha}{([^}]+)})?'
-  # biblatex produces a slightly different label here that is visually identical
-  labels[3] = ('ong', 'EAK\\textsuperscript {+')
-  labels[6] = ('EPRINT:KleOneAki23', 'KÖA23')
-  with tempfile.TemporaryDirectory() as tmpdirpath:
-    files = [path / Path('main.tex'), path / Path('main.bib'), path / Path('iacrcc.cls')]
-    res = run_engine('-pdf', files, tmpdirpath)
-    assert res['proc'].returncode == 0
-    bbl_path = tmpdirpath / Path('main.bbl')
-    bbl_str = ' '.join(bbl_path.read_text().splitlines())
-    entryparts = re.split(r'\\endentry', bbl_str)
-    bibtex_keys = []
-    for part in entryparts:
-      m = re.search(BIBLATEX_PATT, part)
-      if m:
-        bibtex_keys.append((m.group(1), m.group(2)))
-    for i in range(len(labels)):
-      assert bibtex_keys[i][0] == labels[i][0]
-      assert bibtex_keys[i][1] == labels[i][1]
-    assert len(bibtex_keys) == 10
 
 def test37_test():
   path = Path('test37')

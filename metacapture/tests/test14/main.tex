@@ -1,4 +1,7 @@
-\documentclass[journal=cic,version=final]{iacrj}
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[maketitle=acmsmall,emailreq=all]{metacapture}
 \license{CC-by}
 \title[running  = {The iacrcc class},
 %       subtitle = {A Template}
@@ -15,7 +18,6 @@
 
 \addauthor[orcid   = {0000-0001-7890-5430},
            inst    = {2,3},
-           email   = {test2@digicrime.com},
            surname = {McCurley}
           ]{Kevin S. McCurley}
 
@@ -36,11 +38,8 @@
 \addfunding[fundref={517622},
   grantid=57821-3]{National Fantasy Foundation}
 
-% A footnote can be placed on the front page without a symbol / numbering using:
-\genericfootnote{This is the f\d{u}ll version of our paper published at \c{c}rypto.}
-
 \newcommand{\impulse}{impulse}
-\keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
+\addkeywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
 \begin{document}
 \maketitle
 

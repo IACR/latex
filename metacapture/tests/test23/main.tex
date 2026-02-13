@@ -1,4 +1,7 @@
-\documentclass[journal=cic]{iacrj}
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[maketitle=iacrj]{metacapture}
 \usepackage{amsfonts}
 \title[running  = {The iacrcc class},
       ]{How not to use the IACR Communications in Cryptology Cl\r{a}ss}
@@ -36,7 +39,7 @@
 \newcommand{\EXP}{EXP}
 \newcommand{\BPP}{BPP}
 \newcommand{\impulse}{impulse}
-\keywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
+\addkeywords[Dirac delta function, unit impulse]{Dirac $\delta$ function, unit \impulse, $\delta$-function}
 \begin{document}
 \makeatletter
 \def\foo{On the possibility of basing Cryptography on the assumption that $P \neq NP$}\@writemeta{title: \foo}

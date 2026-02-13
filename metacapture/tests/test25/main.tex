@@ -1,11 +1,6 @@
-%%%% IACR Transactions TEMPLATE %%%%
-% This file shows how to use the iacrtrans class to write a paper.
-% Written by Gaetan Leurent gaetan.leurent@inria.fr (2020)
-% Public Domain (CC0)
-
-
-%%%% 1. DOCUMENTCLASS %%%%
-\documentclass[journal=cic,version=final]{iacrj}
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage[maketitle=iacrj]{metacapture}
 %%%% NOTES:
 % - Add "spthm" for LNCS-like theorems
 
@@ -30,8 +25,6 @@
   country={United States}]{University of California, Santa Barbara\thanks{Work done while working at ABC.}}
 \addaffiliation[country={Elbonia}]{University of Antartica}
 \addaffiliation[country={Turkey}]{Bo{\u g}azi{\c c}i University}
-
-\genericfootnote{This is the full-version of our previous work.}
 
 %%%% 4. TITLE %%%%
 % Note that \thanks and \footnote are forbidden in \title. Please use

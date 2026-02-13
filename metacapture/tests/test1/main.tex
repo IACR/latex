@@ -1,28 +1,14 @@
-\DocumentMetadata{pdfstandard=a-2u,pdfversion=2.0,testphase=phase-II}
-%%%% IACR Transactions TEMPLATE %%%%
-% This file shows how to use the iacrtrans class to write a paper.
-% Written by Gaetan Leurent gaetan.leurent@inria.fr (2020)
-% Public Domain (CC0)
-
-
-%%%% 1. DOCUMENTCLASS %%%%
-\documentclass[journal=cic,version=final]{iacrj}
-%%%% NOTES:
-% - Add "spthm" for LNCS-like theorems
-
-\errorcontextlines=5
+%\DocumentMetadata{pdfstandard=a-2u,pdfversion=2.0,testphase=phase-II}
+\documentclass{article}
+\usepackage{a4}
+\usepackage{metacapture}
+%\errorcontextlines=5
 \newcommand\niceguy{Fester Bestertester}
-%%%% 2. PACKAGES %%%%
 \usepackage{lipsum} % Example package -- can be removed
 \usepackage{amsmath}
-%\usepackage[TU]{fontenc}
-\usepackage[T1]{fontenc}
-%\usepackage[turkish]{babel}
-%%%% 3. AUTHOR, INSTITUTE %%%%
-
+\bibliographystyle{plainurl}
 \license{CC-by}
 
-% NOTE: There are two affiliations, referred to by 1,2
 \addauthor[orcid=0000-0003-1010-8157,inst={1,2}]{Alice Accomplished}
 % NOTE: Only one affiliation for this author.
 \addauthor[inst={1},footnote={Thanks to my mom!},
@@ -34,19 +20,14 @@
 \addaffiliation[country={Elbonia},city={Backwards}]{University of Antartica}
 \addaffiliation[country={Turkey},city={Istanbul}]{Bo{\u g}azi{\c c}i University}
 
-\genericfootnote{This is the full-version of our previous work.}
-
-%%%% 4. TITLE %%%%
-% Note that \thanks and \footnote are forbidden in \title. Please use
-% \genericfootnote.
 \title[running={Thoughts on binary functions},
   plaintext={Thoughts about "binary" functions and \$\ on $GF(p)$ by Fester Bestertester at 30°C}]{%
   Thoughts about "binary" functions and \$\ on $GF(p)$ by \niceguy\ at 30°C}
+\usepackage[T1]{fontenc}
 \begin{document}
 
 \maketitle
 
-%%%% 5. ABSTRACT %%%%
 \begin{abstract}
   In this paper we prove that the One-Time-Pad has perfect security, unless you use
   double encryption with {$\mathsf{SingleKey}$}.
@@ -58,7 +39,6 @@
   Bo{\u g}azi{\c c}i University.
 \end{textabstract}
 
-%%%% 6. PAPER CONTENT %%%%
 \section{Introduction}
 
 Widely used primitives like the AES~\cite{AES} do not have perfect
@@ -85,7 +65,6 @@ title~\cite{ACISP:MurPla19,ACISP:LYLF19,ACISP:WeiSteSha03,CCS:BHKNRS19,ACNS:DurH
 This\footnote{is a footnote}.
 
 This is the unicode degree symbol: 30°
-%%%% 8. BILBIOGRAPHY %%%%
 \bibliography{test1}
 %%%% NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/

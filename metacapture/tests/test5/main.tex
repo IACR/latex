@@ -5,7 +5,10 @@
 
 
 %%%% 1. DOCUMENTCLASS %%%%
-\documentclass[journal=tches,version=final]{iacrj}
+\documentclass{article}
+\usepackage{hyperref}
+\bibliographystyle{plainurl}
+\usepackage[maketitle=acmconf,licensereq]{metacapture}
 %%%% NOTES:
 % - Add "spthm" for LNCS-like theorems
 
@@ -28,8 +31,6 @@
 \addaffiliation[ror=02t274463,country={United States}]{University of California, Santa Barbara}
 \addaffiliation[country={Elbonia}]{University of Antartica}
 \addaffiliation[country={Turkey}]{Bo{\u g}azi{\c c}i University}
-
-\genericfootnote{This is the full-version of our previous work.}
 
 %%%% 4. TITLE %%%%
 % Note that \thanks and \footnote are forbidden in \title. Please use
@@ -76,7 +77,7 @@ This\footnote{is a footnote}.
 
 This is the unicode degree symbol: 30°
 %%%% 8. BILBIOGRAPHY %%%%
-\bibliography{test1}
+\bibliography{test5}
 %%%% NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use biblio.bib for additional references not in the cryptobib database.
