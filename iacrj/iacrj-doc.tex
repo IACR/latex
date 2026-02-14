@@ -109,8 +109,8 @@ There is also a \href{https://github.com/IACR/iacrj}{github
 repository} where you can open issues or to submit pull requests.
 The complete package consists of four files. \texttt{iacrj.cls} is
 the main document class that loads the \texttt{metacapture.sty}
-package. \texttt{iacrdoc.tex} is used to produce this PDF
-file. \texttt{template.tex} can be used as a starting point for
+package. \texttt{iacrj-doc.tex} is used to produce this PDF
+file. \texttt{iacrj-template.tex} can be used as a starting point for
 writing an article for ToSC, TCHES, or CiC. The only difference
 between these is that there is a \texttt{journal} argument
 in \cmd{documentclass}.
@@ -119,7 +119,7 @@ in \cmd{documentclass}.
 \begin{itemize}
 \item The production system to which you submit your final version requires
   that the main \LaTeX\ file should be \texttt{main.tex}. You might as
-  well start that way by copying \texttt{template.tex} to \texttt{main.tex}.
+  well start that way by copying \texttt{iacrj-template.tex} to \texttt{main.tex}.
 \item The default fonts are provided by the document class. Please do not
   change this.
 \item Avoid using too many packages. Many authors are lazy and just
@@ -599,5 +599,5 @@ Some of the stylistic choices were inspired by IACR Transactions class
 file (the \texttt{iacrtrans} class v. 0.92) written by Ga{\"e}tan
 Leurent and Friedrich Wiemer with help from others.
 
-\bibliography{iacrdoc}
+\bibliography{iacrj-doc}
 \end{document}
