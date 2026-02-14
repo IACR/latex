@@ -1,0 +1,44 @@
+name: test of iacrj LaTeX document class.
+
+on:
+  push:
+    paths:
+      'iacrj/**'
+  pull_request:
+    paths:
+      'iacrj/**'
+
+permissions:
+  contents: read
+
+jobs:
+  latex_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+        cache: "pip"
+    - name: Install texlive
+      uses: zauguin/install-texlive@v4
+      with:
+        package_file: .github/workflows/texlive.packages
+        texlive_version: 2025
+    - name: Get TeXLive version
+      run: | 
+         tlmgr --version
+         tlmgr update --all
+    - name: Install dependencies
+      working-directory: iacrj/tests
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pdfplumber pdfminer python-xmp-toolkit nameparser xmp pylatexenc pypdf
+    - name: Tests for iacrj.sty
+      working-directory: iacrj/tests
+      run: |
+        echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
+        python -m pytest compile_tests.py -vv
