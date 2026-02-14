@@ -8,13 +8,14 @@ currently includes three journals:
 * IACR Transactions on Cryptographic Hardware and Embedded Systems.
 
 The iacrj.cls document class is intended as a replacement for
-both iacrcc.cls and iacrtrans.cls.
+both iacrcc.cls and iacrtrans.cls. This document class depends upon
+the `metacapture.sty` package, which is available in CTAN and
+at https://publish.iacr.org/iacrj.
 
 The documentation for the iacrj.cls is contained in iacrj-doc.tex and
 iacrj-doc.pdf. There is additionally a sample file iacrj-template.tex
 that can be used to create articles for the journals.
 
-The iacrj.cls document class has several external dependencies, but
-the most important is the metacapture.sty package. Bugs on both can be
-reported at the shared repository: https://github.com/IACR/latex
+Bugs can be reported at the github repository: https://github.com/IACR/latex
+and questions can be sent to iacrj (at) iacr.org.
 
