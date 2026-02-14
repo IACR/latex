@@ -23,7 +23,7 @@
 \def\filedate{2025/01/28}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\typeout{^^J  ***  LaTeX class for IACR Communications in Cryptology v\fileversion\space ***^^J}
+\typeout{^^J  ***  LaTeX class for IACR Journals v\fileversion\space ***^^J}
 \ProvidesClass{iacrj}[\filedate]
   
 % Common definitions
