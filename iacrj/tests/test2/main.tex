@@ -1,0 +1,235 @@
+% IACR Communications in Cryptology template file
+% This file shows how to use the iacrcc class to write a paper.
+
+%% Document mode
+% [preprint]      Preprint (no copyright info) -- default mode
+% [submission]    Anonymous submission
+% [notanonymous]  Keep author names in submission mode
+% [final]         Final version
+\documentclass[journal=tches,biblatex]{iacrj}
+%\documentclass{iacrcc}
+
+% When the *final* document mode is used
+% the authors need to provide a supported license.
+% In all other modes this information is ignored.
+% The currently provided ones are { CC-by }
+\license{CC-by}
+
+% Include LaTeX packages required by your paper
+% \usepackage{}
+
+% Provide the title of the paper
+% This should look like:
+\title[running  = {The iacrcc class},
+      ]{How to Use the IACR Communications in Cryptology Cl\r{a}ss}
+\subtitle{A Template}
+% Where the options in square brackets “[ ]”are optional and control the following:
+% running: the running title displayed in the headers
+% onclick: define what to do when clicking on the title. 
+%          This could be used to point to a webpage associated with this paper. 
+% subtitle: provide a subtitle
+
+% Define authors and affiliations
+% Authors are listed individually using the \addauthor tag followed by a list of affiliations.
+% The idea is that every author makes a separate call to this command.
+% This should look like:
+% \addauthor[inst      = {1,2},
+%            orcid     = 0000-0000-0000-0000,
+%            footnote  = {Thanks to my supervisor for the support.},
+%            onclick   = {https://www.mypersonalwebpage.com}
+%           ]{Alice Accomplished}
+% Where the options in square brackets “[ ]”are optional 
+% and control the following:
+% inst:     a numerical list pointing to the index of the institutaion 
+%           in the affiliation array.
+% orcid:    create a small clickable orcid logo next to the authors name 
+%           linking to the authors ORCID iD see: orcid.org.
+% footnote: create an author-specific footnote.
+% onclick:  define what to do when clicking on the author name: 
+%           e.g., can point to the academic webpage.
+% email:    define the e-mail address of this author.
+\addauthor[orcid    = {0000-0003-1010-8157},
+           inst     = {1},
+           onclick  = {https://www.joppebos.com},
+	   footnote = {This is an example fö{\"o}tnote.},
+           email    = {joppe.bos@nxp.com},
+	   surname  = {B{\"o}s}
+           ]{Joppe W. B{\"o}s}
+
+\addauthor[orcid   = {0000-0001-7890-5430},
+           inst    = {2},
+           email   = {test2@digicrime.com},
+	   surname = {McCurley}
+          ]{Kevin S. McCurley}
+
+% Affiliations are listed individually using the \affiliations command 
+% *after* the (list of) authors using \addauthor
+% This should look like (full example):
+% \affiliation[ror        = 05f950310,
+%              onclick    = {http://www.kuleuven.be/english},
+%              department = {Computer Security and Industrial Cryptography},              
+%              street     = {Kasteelpark Arenberg 10, box 2452},
+%              city       = {Leuven},
+%              state      = {Vlaams-Brabant},
+%              postcode   = {3001},
+%              country    = {Belgium}
+%             ]{KU Leuven}
+% Where the options in square brackets “[ ]”are optional and control 
+% the following (optional information is mainly used for meta-data collection):
+% ror:        provide the Research Organization Registry (ROR) indetifier 
+%             for this affiliation (see: ror.org). This is used for meta-data 
+%             collection only.
+% onclick:    define what to do when clicking on the affiliation name: 
+%             e.g., can point to the affiliation webpage.
+% department: department or suborganization name
+% street:     street address
+% city:       city name
+% state:      state or province name
+% postcode:   zip or postal code
+% country:    country name
+
+\addaffiliation[ror     = 031v4g827,
+                street  = {Interleuvenlaan 80},
+                city    = {Leuven},
+                postcode= {3001},
+                country = {Belgium}
+	       ]{NXP S\v{e}mïc{\"o}ndúct\o{}rs}
+\addaffiliation[country={Elbonia}]{Self}
+
+
+% A footnote can be placed on the front page without a symbol / numbering using:
+\genericfootnote{This is the f\d{u}ll version of our paper published at \c{c}rypto.}
+
+\addbibresource{test2.bib}
+\typeout{after bibresource}
+\begin{document}
+%\tracingall
+\maketitle
+
+% Provide the keywords *before* the abstract
+\addkeywords{T\'emplate, LaTeX, IACR}
+
+% Provide the abstract of your paper
+\begin{abstract}
+This \LaTeX{} template will show you how to use the IACR
+Communications in Cryptology Class style file.  Except for the
+metadata collection and options related to authors, title and
+affiliation this class file is identical to the IACR Transactions
+class file (the iacrtrans class) written by Ga{\"e}tan Leurent.
+
+NOTE: Your abstract may contain inline mathematics: \(\alpha=b\) and $b=\delta$
+as well as displayed mathematics:
+\[
+  \alpha = \delta
+  \]
+but please avoid using macros that you define yourself in the abstract.
+\end{abstract}
+
+% The content of the paper starts here
+\section{Introduction}
+This is the template showing how to use the IACR Communications in Cryptology \LaTeX{} class. 
+
+\section{Title Page}
+To place a footnote on the first page without a reference (e.g., to indicate this is a full / extended version of a published paper) 
+you can use the {\tt \textbackslash{}genericfootnote} command. 
+
+\subsubsection*{The AddAuthor Command}
+Authors are listed individually using the {\tt \textbackslash{}addauthor} command. 
+There are a number \emph{optional} options to {\tt \textbackslash{}addauthor}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt inst} & A numerical list pointing to the index of the institutaion in the affiliation array.\\
+{\tt orcid} & Create a small clickable orcid logo next to the authors name looking like \OrcidLink{0000-0003-1010-8157} and linking to the authors ORCID iD (see: \url{https://orcid.org}.\\
+{\tt footnote} & Create an author-specific footnote.\\
+{\tt onclick} & Define what to do when clicking on the author name: e.g.,~can point to the academic webpage.\\
+{\tt email} & Define the e-mail address of this author.\\
+\end{tabular}
+
+\noindent Moreover, one can utilize the {\tt \textbackslash{}surname} macro to indicate what part of the author name is the surname:
+this is used for meta-data collection and is especially useful for cases with middle names \emph{and} double 
+surnames which might be confusing. 
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\addauthor[orcid    = 0000-0000-0000-0000,
+           inst     = {1,2},
+           footnote = {Thanks to my supervisor for the support.},
+           onclick  = {https://www.mypersonalwebpage.com},
+           email    = {alice@accomplsihed.com},
+       ]{Alice \surname{Accomplished}}
+\end{verbatim}
+
+\subsubsection*{The Affiliation Command}
+Affiliations are listed individually using the {\tt \textbackslash{}affiliations} command \emph{after}
+the (list of) authors using {\tt \textbackslash{}addauthor}.
+There are a number \emph{optional} options to {\tt \textbackslash{}affiliation}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt ror} & Provide the Research Organization Registry (ROR) indetifier for this affiliation (see: \url{https://ror.org}). This is used for meta-data collection only.\\
+{\tt onclick} & Define what to do when clicking on the affiliation name: e.g.,~can point to the affiliation webpage.\\
+{\tt  department} & Department or suborganization name.\\
+{\tt  street} & Street address.\\
+{\tt  city} & City name.\\
+{\tt  state} & State or province name.\\
+{\tt  postcode} & zip or postal code.\\
+{\tt  country} & Country name.\\
+\end{tabular}
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\affiliation[ror        = 05f950310,
+             onclick    = {http://www.kuleuven.be/english},
+             department = {Computer Security and Industrial Cryptography},              
+             street     = {Kasteelpark Arenberg 10, box 2452},
+             city       = {Leuven},
+             state      = {Vlaams-Brabant},
+             postcode   = {3001},
+             country    = {Belgium}
+            ]{KU Leuven}
+\end{verbatim}
+            
+\subsubsection*{The Title Command}
+The title is provided using {\tt \textbackslash{}title}.
+There are a number \emph{optional} options to {\tt \textbackslash{}title}:
+
+\begin{tabular}{l@{\hspace{1cm}}p{0.7\linewidth}}
+{\tt running} & The running title displayed in the headers.\\
+{\tt onclick} & Define what to do when clicking on the title. This could be used to point to a webpage associated with this paper. \\
+{\tt subtitle} & Provide a subtitle.\\
+\end{tabular}
+
+An example using all the optional options would look like:
+
+\begin{verbatim}
+\title[running  = {The iacrcc class},
+       onclick  = {https://github.com/IACR/latex},
+       subtitle = {A Template}
+      ]{How to Use the IACR Communications in Cryptology Class}
+\end{verbatim}
+
+\subsubsection*{The License Command}
+When the ``final'' document mode is used the author needs to provide a supported license.
+In all other modes this information is ignored.
+The currently provided set of licences are \mbox{\{ CC-by \}}.
+An example would look like:
+
+\begin{verbatim}
+\license{CC-by}
+\end{verbatim}
+
+\section{Bibliography}
+Citing papers is done in the usual way using BibTeX or \texttt{biblatex}
+commands. For example: the RSA paper~\cite{RSA78}, \cite{sample},
+\cite{DBLP:journals/joc/ChillottiGGI20}, \cite{latexproject,fancynames} and \cite{DBLP:conf/crypto/Kocher96}.
+
+It is highly encouraged to use CyptoBib from \url{https://cryptobib.di.ens.fr}
+
+\printbibliography
+% NOTES
+% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
+% - Use bilbio.bib for additional references not in the cryptobib database.
+%   If possible, take them from DBLP.
+
+\end{document}

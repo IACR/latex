@@ -1,0 +1,95 @@
+\DocumentMetadata{pdfstandard=a-2u,pdfversion=2.0,testphase=phase-II}
+%%%% IACR Transactions TEMPLATE %%%%
+% This file shows how to use the iacrtrans class to write a paper.
+% Written by Gaetan Leurent gaetan.leurent@inria.fr (2020)
+% Public Domain (CC0)
+
+
+%%%% 1. DOCUMENTCLASS %%%%
+\documentclass[journal=cic,version=final]{iacrj}
+%%%% NOTES:
+% - Add "spthm" for LNCS-like theorems
+
+\errorcontextlines=5
+\newcommand\niceguy{Fester Bestertester}
+%%%% 2. PACKAGES %%%%
+\usepackage{lipsum} % Example package -- can be removed
+\usepackage{amsmath}
+%\usepackage[TU]{fontenc}
+\usepackage[T1]{fontenc}
+%\usepackage[turkish]{babel}
+%%%% 3. AUTHOR, INSTITUTE %%%%
+
+\license{CC-by}
+
+% NOTE: There are two affiliations, referred to by 1,2
+\addauthor[orcid=0000-0003-1010-8157,inst={1,2}]{Alice Accomplished}
+% NOTE: Only one affiliation for this author.
+\addauthor[inst={1},footnote={Thanks to my mom!},
+  email={bad@example.com}]{Bob Badenuff}
+\addauthor{Tancr{\`e}de Lepoint}
+\addaffiliation[ror=02t274463,
+  country={United States},
+  city={Santa Barbara}]{University of California, Santa Barbara}
+\addaffiliation[country={Elbonia},city={Backwards}]{University of Antartica}
+\addaffiliation[country={Turkey},city={Istanbul}]{Bo{\u g}azi{\c c}i University}
+
+\genericfootnote{This is the full-version of our previous work.}
+
+%%%% 4. TITLE %%%%
+% Note that \thanks and \footnote are forbidden in \title. Please use
+% \genericfootnote.
+\title[running={Thoughts on binary functions},
+  plaintext={Thoughts about "binary" functions and \$\ on $GF(p)$ by Fester Bestertester at 30°C}]{%
+  Thoughts about "binary" functions and \$\ on $GF(p)$ by \niceguy\ at 30°C}
+\begin{document}
+
+\maketitle
+
+%%%% 5. ABSTRACT %%%%
+\begin{abstract}
+  In this paper we prove that the One-Time-Pad has perfect security, unless you use
+  double encryption with {$\mathsf{SingleKey}$}.
+\lipsum[8]
+\end{abstract}
+\begin{textabstract}
+  In this paper we prove that the One-Time-Pad has perfect security, unless you use
+  double encryption with a single key. I also need to mention
+  Bo{\u g}azi{\c c}i University.
+\end{textabstract}
+
+%%%% 6. PAPER CONTENT %%%%
+\section{Introduction}
+
+Widely used primitives like the AES~\cite{AES} do not have perfect
+security, and can be analysed with linear
+cryptanalysis~\cite{EC:Matsui93}, differential
+cryptanalysis~\cite{JC:BihSha91}, or differential power
+analysis~\cite{C:KocJafJun99}.  We show that the One-Time-Pad is
+unconditionally secure in \autoref{sec:main}. Let's not forget
+the work by John~\cite{vonNeumann}.
+
+Note that we can tolerate ampersands~\cite{Dalheimer02} and \TeX
+character codes~\cite{Bohme10} and math in
+title~\cite{ACISP:MurPla19,ACISP:LYLF19,ACISP:WeiSteSha03,CCS:BHKNRS19,ACNS:DurHugVau20}.
+
+\lipsum[9]
+
+\section{Main Result}\label{sec:main}
+
+\lipsum
+
+\section{Section heading with math in it $a=b$}
+\lipsum
+
+This\footnote{is a footnote}.
+
+This is the unicode degree symbol: 30°
+%%%% 8. BILBIOGRAPHY %%%%
+\bibliography{test1}
+%%%% NOTES
+% - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
+% - Use biblio.bib for additional references not in the cryptobib database.
+%   If possible, take them from DBLP.
+
+\end{document}

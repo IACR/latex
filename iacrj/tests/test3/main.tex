@@ -1,0 +1,115 @@
+\documentclass[journal=cic,version=final,biblatex]{iacrj}
+
+\license{CC-by}
+\title{Another example with biblatex}
+\addauthor[inst     = {1},
+           orcid    = {0000-0002-0599-0192},
+           onclick  = {https://www.theonion.com/},
+           footnote = {This is an example footnote.},
+           email    = {nobody@example.com},
+           surname  = {Bestertester}
+          ]{Fester Bestertester}
+\addauthor[inst     = {1},
+           surname  = {McTesterface}]{Chester McTesterface}
+\addaffiliation[country={USA},city={San Jose}]{My university}
+\usepackage{xcolor}
+\addbibresource{biblatex-examples.bib}
+\addbibresource{test3.bib}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  This is an abstract
+\end{abstract}
+\begin{textabstract}
+  This is the text abstract.
+\end{textabstract}
+First we cite \cite{sample} and \cite{noemph}.
+Then we cite things from \texttt{biblatex-examples.bib}: 
+\cite{kowalik}
+\cite{westfahl:space}
+\cite{aksin}
+\cite{angenendt}
+\cite{baez/article}
+\cite{bertram}
+\cite{doody}
+\cite{matuz:doody}
+\cite{gillies}
+\cite{glashow}
+\cite{herrmann}
+\cite{kastenholz}
+\cite{murray}
+\cite{reese}
+\cite{sarfraz}
+\cite{shore}
+\cite{sigfridsson}
+\cite{spiegelberg}
+\cite{springer}
+\cite{weinberg}
+\cite{yoon}
+\cite{augustine}
+\cite{averroes/bland}
+\cite{averroes/hannes}
+\cite{averroes/hercz}
+\cite{cicero}
+\cite{coleridge}
+\cite{companion}
+\cite{cotton}
+\cite{gerhardt}
+\cite{gonzalez}
+\cite{hammond}
+\cite{iliad}
+\cite{knuth:ct:a}
+\cite{knuth:ct:b}
+\cite{knuth:ct:c}
+\cite{knuth:ct:d}
+\cite{knuth:ct:e}
+\cite{kullback}
+\cite{kullback:reprint}
+\cite{malinowski}
+\cite{maron}
+\cite{massa}
+\cite{moore}
+\cite{nietzsche:ksa}
+\cite{nietzsche:ksa1}
+\cite{nussbaum}
+\cite{piccato}
+\cite{vangennep}
+\cite{vangennep:trans}
+\cite{wilde}
+\cite{worman}
+\cite{britannica}
+\cite{gaonkar}
+\cite{gaonkar:in}
+\cite{westfahl:frontier}
+\cite{kant:kpv}
+\cite{kant:ku}
+\cite{nietzsche:historie}
+\cite{brandt}
+\cite{hyman}
+\cite{pines}
+% TODO: this does not work. We cite something in test3.bib
+% \cite{moraux}
+\cite{salam}
+\cite{cms}
+\cite{baez/online}
+\cite{ctan}
+\cite{itzhaki}
+\cite{markey}
+\cite{wassenberg}
+\cite{almendro}
+\cite{kowalik}
+\cite{laufenberg}
+\cite{sorace}
+\cite{jcg}
+\cite{chiu}
+\cite{padhye}
+\cite{geer}
+\cite{loh}
+\cite{deNeville1999}
+\cite{vanDyke2007}
+\cite{DickVanDyke2015}
+
+\printbibliography
+
+\end{document}
