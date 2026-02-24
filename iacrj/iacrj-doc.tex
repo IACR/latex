@@ -105,7 +105,7 @@ other \LaTeX\ document classes.
 The class is still in development and feedback and comments are
 welcome.  The latest version can be found at:
 \href{https://publish.iacr.org/iacrj}{\texttt{publish.iacr.org/iacrj}}.
-There is also a \href{https://github.com/IACR/iacrj}{github
+There is also a \href{https://github.com/IACR/latex}{github
 repository} where you can open issues or to submit pull requests.
 The complete package consists of four files. \texttt{iacrj.cls} is
 the main document class that loads the \texttt{metacapture.sty}
@@ -124,9 +124,8 @@ in \cmd{documentclass}.
   change this.
 \item Avoid using too many packages. Many authors are lazy and just
   copy what they used in the past. This is a very bad habit, and some
-  pckages either won't work or need to be loaded in a prescribed
-  order. See the list of acceptable packages
-  at \url{https://publish.iacr.org}.
+  packages either won't work or need to be loaded in a prescribed
+  order. There is a list of forbidden packages at \url{https://publish.iacr.org/forbidden}.
 \item Don't try to change the \texttt{hyperref} options, the bibliography style,
   the page style, or the page numbering.
 \item Don't use macros like \cmd{if} or \cmd{include} inside any
@@ -393,10 +392,10 @@ overuse them.
 When the \texttt{version=final} document mode is used, the author needs
 to provide a supported license.  In all other modes this information
 is not required and is ignored if it is provided.  At present the only
-acceptable license is \texttt{CC-by}.  An example would look like:
+acceptable license is \texttt{CC-BY-4.0}.  An example would look like:
 
 \begin{verbatim}
-\license{CC-by}
+\license{CC-BY-4.0}
 \end{verbatim}
 
 \subsection{Keywords}
