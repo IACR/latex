@@ -155,7 +155,7 @@ def parse_meta(metastr):
                         parts = author[k].split()
                         author['familyName'] = parts[-1]
                 elif k == 'email':
-                    author['email'] = v.strip()
+                    author['email'] = v.strip().replace(r'\_', '_')
                     # This is just a basic check - not a full validation.
                     if not re.match(r'[^@]+@[^@]+\.[^@]+', author['email']):
                         raise valueError('Invalid email: ' + author['email'])

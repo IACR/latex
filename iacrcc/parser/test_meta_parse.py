@@ -716,3 +716,4 @@ def test_metacapture():
     assert data['license'] == 'CC-BY-4.0'
     assert len(data['affiliations']) == 2
     assert data['affiliations'][0]['countrycode'] == 'BE'
+    assert data['authors'][1]['email'] == 'latex_test@digicrime.com'
