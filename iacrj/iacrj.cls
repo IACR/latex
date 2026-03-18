@@ -452,7 +452,7 @@
           \ifx\IACR@Received\@empty\else Received: \IACR@Received \hfill{}\fi%
           \ifx\IACR@Revised\@empty\else Revised: \IACR@Revised \hfill{}\fi%
           \ifx\IACR@Accepted\@empty\else Accepted: \IACR@Accepted\fi%
-          \ifx\IACR@Published\@empty\else\IfStrEq{\@IACRjournal}{cic}{}{\hfill{}Published: \IACR@Published}\fi%
+          \ifx\IACR@Published\@empty\else\IfStrEq{\@IACRjournal}{cic}{}{\hfill{}Date of final version: \IACR@Published}\fi%
         }{%
           \ifdefined\@IACR@docdate@defined%
             \ifx\@IACR@docdate\@empty%
