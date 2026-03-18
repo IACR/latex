@@ -17,28 +17,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.x"
-        cache: "pip"
-    - name: Install texlive
-      uses: zauguin/install-texlive@v4
-      with:
-        package_file: .github/workflows/texlive.packages
-	texlive_version: 2025
-    - name: Get TeXLive versoin
-      run: | 
-         tlmgr --version
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: "pip"
+      - name: Install texlive
+        uses: zauguin/install-texlive@v4
+        with:
+          package_file: .github/workflows/texlive.packages
+          texlive_version: 2025
+      - name: Get TeXLive versoin
+        run: |
+           tlmgr --version
 #         tlmgr update --all
-    - name: Install dependencies
-      working-directory: iacrcc/tests
-      run: |
-        python -m pip install --upgrade pip
-        pip install pytest pdfplumber python-xmp-toolkit nameparser xmp pylatexenc pypdf
-    - name: Test for compile_tests.py
-      working-directory: iacrcc/tests
-      run: |
-        echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
-        python -m pytest compile_tests.py -vv
+      - name: Install dependencies
+        working-directory: iacrcc/tests
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pdfplumber python-xmp-toolkit
+          pip install nameparser xmp pylatexenc pypdf
+      - name: Test for compile_tests.py
+        working-directory: iacrcc/tests
+        run: |
+          echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
+          python -m pytest compile_tests.py -vv
