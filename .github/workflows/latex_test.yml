@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       'iacrcc/**'
+  on: workflow_dispatch
 
 permissions:
   contents: read
@@ -27,8 +28,8 @@ jobs:
         uses: zauguin/install-texlive@v4
         with:
           package_file: .github/workflows/texlive.packages
-          texlive_version: 2025
-      - name: Get TeXLive versoin
+          texlive_version: 2026
+      - name: Get TeXLive version
         run: |
            tlmgr --version
 #         tlmgr update --all
@@ -41,5 +42,5 @@ jobs:
       - name: Test for compile_tests.py
         working-directory: iacrcc/tests
         run: |
-          echo "/usr/local/texlive/2025/bin/x86_64-linux/" >> "$GITHUB_PATH"
+          echo "/usr/local/texlive/2026/bin/x86_64-linux/" >> "$GITHUB_PATH"
           python -m pytest compile_tests.py -vv
