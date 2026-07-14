@@ -19,7 +19,7 @@
 %% This work consists of the files metacapture.sty, metacapture-doc.tex,
 %% metacapture-doc.pdf, and metacapture-sample.tex.
 
-\def\fileversion{0.9.2}
+\def\fileversion{0.9.3}
 \def\filedate{2026/03/18}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -377,7 +377,7 @@
   \RequirePackage{csquotes} % to fix a conflict with biblatex and doclicense.
   \RequirePackage{xifthen} % to make sure that biblatex does not define \TE@hook.
   % biblatex: sophisticated Bibliographies in LaTeX
-  \RequirePackage[backend=biber,style=trad-alpha,minalphanames=3,maxalphanames=4,maxbibnames=20,useprefix=true]{biblatex}[2019/12/01]
+  \RequirePackage[backend=biber,style=trad-alpha,minalphanames=3,maxalphanames=4,maxbibnames=40,useprefix=true]{biblatex}[2019/12/01]
   \DeclarePrintbibliographyDefaults{heading=bibintoc}%
   \DeclareLabelalphaTemplate{
     \labelelement{
@@ -491,7 +491,7 @@
     \fi%!anonymous
   }
   \if@anonymous
-    \gdef\@author{Anonymous Submission to \publname}%
+    \gdef\@author{Anonymous~Submission~to~\publname}%
     \def\IACR@runningauthors{}%
     \renewcommand{\addauthor}[2][]{}%
     \renewcommand{\addaffiliation}[2][]{}%
