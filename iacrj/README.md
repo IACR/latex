@@ -19,3 +19,9 @@ that can be used to create articles for the journals.
 Bugs can be reported at the github repository: https://github.com/IACR/latex
 and questions can be sent to iacrj (at) iacr.org.
 
+This work is licensed under the LaTeX Project Public License, either
+version 1.3c of this license or (at your option) any later version.
+The latest version of this license is in https://www.latex-project.org/lppl.txt
+
+The authors are Joppe Bos and Kevin McCurley.  The Current Maintainer
+of this work is Kevin S. McCurley, <latex-admin@iacr.org>

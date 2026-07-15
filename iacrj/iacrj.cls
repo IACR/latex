@@ -20,7 +20,7 @@
 %% metacapture-doc.pdf, and metacapture-sample.tex.
 
 \def\fileversion{0.9.3}
-\def\filedate{2026/03/18}
+\def\filedate{2026/07/14}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Journals v\fileversion\space ***^^J}
