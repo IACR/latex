@@ -19,8 +19,8 @@
 %% This work consists of the files metacapture.sty, metacapture-doc.tex,
 %% metacapture-doc.pdf, and metacapture-sample.tex.
 
-\def\fileversion{0.9.3}
-\def\filedate{2026/07/14}
+\def\fileversion{0.9.4}
+\def\filedate{2026/07/15}
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \typeout{^^J  ***  LaTeX class for IACR Journals v\fileversion\space ***^^J}
