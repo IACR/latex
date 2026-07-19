@@ -12,9 +12,16 @@
 \addauthor[orcid=0000-0003-1010-8157,inst={1,2}]{Alice Accomplished}
 % NOTE: Only one affiliation for this author.
 \addauthor[inst={1},footnote={Thanks to my mom!},
-  roles={author,software},
+  roles={author, software, corresponding-author},
   email={bad@example.com}]{Bob Badenuff}
-\addauthor{Tancr{\`e}de Lepoint}
+% Fester has every possible role.
+\addauthor[roles={review-assistant, stats-reviewer, reviewer-external, reader,
+    author, editor, chair, reviewer,
+    data-curation, formal-analysis,  funding-acquisition,
+    investigation, methodology, project-administration, resources,
+    translator, corresponding-author, other, conceptualization,
+    software, supervision, validation, visualization,
+    writing-original-draft, writing-review-editing}]{Fester Bestertester}
 \addaffiliation[ror=02t274463,
   country={United States},
   city={Santa Barbara}]{University of California, Santa Barbara}
@@ -42,17 +49,17 @@
 
 \section{Introduction}
 
-Widely used primitives like the AES~\cite{AES} do not have perfect
+Widely used primitives like the AES do not have perfect
 security, and can be analysed with linear
-cryptanalysis~\cite{EC:Matsui93}, differential
-cryptanalysis~\cite{JC:BihSha91}, or differential power
-analysis~\cite{C:KocJafJun99}.  We show that the One-Time-Pad is
+cryptanalysis, differential
+cryptanalysis, or differential power
+analysis.  We show that the One-Time-Pad is
 unconditionally secure in \autoref{sec:main}. Let's not forget
-the work by John~\cite{vonNeumann}.
+the work by John.
 
-Note that we can tolerate ampersands~\cite{Dalheimer02} and \TeX
-character codes~\cite{Bohme10} and math in
-title~\cite{ACISP:MurPla19,ACISP:LYLF19,ACISP:WeiSteSha03,CCS:BHKNRS19,ACNS:DurHugVau20}.
+Note that we can tolerate ampersands and \TeX
+character codes and math in
+title.
 
 \lipsum[9]
 
@@ -66,11 +73,7 @@ title~\cite{ACISP:MurPla19,ACISP:LYLF19,ACISP:WeiSteSha03,CCS:BHKNRS19,ACNS:DurH
 This\footnote{is a footnote}.
 
 This is the unicode degree symbol: 30°
-\ExplSyntaxOn
-
-\ExplSyntaxOff
-
-\bibliography{test1}
+%\bibliography{test1}
 %%%% NOTES
 % - Download abbrev3.bib and crypto.bib from https://cryptobib.di.ens.fr/
 % - Use biblio.bib for additional references not in the cryptobib database.

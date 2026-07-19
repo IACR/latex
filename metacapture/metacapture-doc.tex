@@ -16,20 +16,21 @@
 %% metacapture-doc.bib, metacapture-doc.pdf, and metacapture-sample.tex.
 
 \DocumentMetadata{lang=en,debug={xmp-export}}
-\def\pkgversion{0.9.1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % It should work with many choices of documentclass.
 \documentclass{article}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\usepackage{float}
+\usepackage{booktabs}
 \usepackage{tcolorbox}
 \newcommand{\BibTeX}{{\rmfamily B\kern-.05em%
    \textsc{i\kern-.025em b}\kern-.08em%
    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \usepackage{verbatim}
 \newcommand{\pkgname}{\texttt{metacapture}}
+\newcommand\CREDIT{CRediT}
 \usepackage{fancyvrb}
-\usepackage{tabularx}
 \usepackage{xurl}
 \newcommand{\iacrcc}{\texttt{iacrcc}}
 \newcommand{\cmd}[2][]{%
@@ -42,9 +43,10 @@
 }
 \newcommand{\pkg}[1]{\texttt{#1}}
 \makeatletter
-\@ifclassloaded{iacrj}{}{\bibliographystyle{plainurl}
-\usepackage[cityrequired]{metacapture}
-}
+\bibliographystyle{plainurl}
+\usepackage[cityrequired,maketitle=acmconf]{metacapture}
+\def\pkgversion{\METAC@fileversion}
+\date{\METAC@filedate}
 \makeatother
 \title[plaintext={The metacapture LaTeX package},
        running={The \pkgname\ \LaTeX\ package v\pkgversion},
@@ -54,15 +56,16 @@
 \addauthor[orcid   = {0000-0003-1010-8157},
            inst    = {1},
            onclick = {https://www.joppebos.com},
-	   email   = {joppe.bos@nxp.com},
-	   surname = {Bos}
+           email   = {joppe.bos@nxp.com},
+           surname = {Bos},
+           roles={author,software}
           ]{Joppe W. Bos}
 \addauthor[orcid   = {0000-0001-7890-5430},
            inst    = {2},
            footnote={Authors are allowed to have footnotes on their name.},
-           email   = {latex@digicrime.com},
-%           onclick = {https://swcp.com/\%7Emccurley/index.html\#humor},
+           email   = {latex-admin@iacr.org},
 	   surname = {McCurley},
+           roles={author,software}
           ]{Kevin S. McCurley}
 \addaffiliation[ror         = {031v4g827},
                 street      = {Interleuvenlaan 80},
@@ -562,12 +565,13 @@ These can only be used in the preamble before \cmd[document]{begin}.
 There is also a \texttt{textabstract} environment
 to capture text-only versions of the abstract.
 \subsection{Title}
-A title is added using the \cmd{title} macro, which has a number of optional arguments:
+A title is added using the \cmd{title} macro, which has two optional arguments:
+
 \newcommand{\argrow}[2]{\texttt{#1} & #2\\}
 \newenvironment{arglist}{%
-  \begin{flushleft}\renewcommand{\arraystretch}{1.2}\begin{tabular}{@{}lp{0.7\linewidth}}%
+  \renewcommand{\arraystretch}{1.2}\begin{tabular}{@{}lp{0.7\linewidth}}%
   }{%
-  \end{tabular}\end{flushleft}
+  \end{tabular}
   }
 \begin{arglist}
     \argrow{running}{The running title intended for display in the headers.}
@@ -630,8 +634,8 @@ it to indexing agencies. The \cmd{author} macro is disabled.
 Authors are listed individually using repeated calls to
 the \cmd{addauthor} command, and these must appear before
 \cmd{begin\{document\}}. The \cmd{addauthor} macro has a number of optional
-arguments shown in Figure~\ref{addauthor}.
-\begin{figure*}
+arguments:
+\begin{center}
 \begin{arglist}
 \argrow{inst}{A numerical list of 1-based indices specifying an institution in the 
                      affiliation array (see below).}
@@ -643,20 +647,52 @@ format \texttt{xxxx-xxxx-xxxx-xxxx}.}
 \argrow{email}{Define the e-mail address of this author. Note that the load
    option \texttt{emailreq} may place restrictions on whether an author needs
    to supply an e-mail address.}
+\argrow{roles}{A comma-separated list of roles that correspond to the values
+   in Table~\ref{rolevalues}.}
 \end{arglist}
-\caption{Arguments to \cmd{addauthor}}
-\label{addauthor}
-\end{figure*}
+\end{center}
 
-The display of these elements by a document class may be customized in
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+Crossref roles & \CREDIT\ roles \\
+\midrule
+\texttt{author} & \texttt{conceptualization} \\
+\texttt{editor} & \texttt{data-curation} \\
+\texttt{chair} & \texttt{formal-analysis} \\
+\texttt{reviewer} & \texttt{funding-acquisition} \\
+\texttt{review-assistant} & \texttt{investigation} \\
+\texttt{stats-reviewer} & \texttt{methodology} \\
+\texttt{reviewer-external} & \texttt{project-administration} \\
+\texttt{reader} & \texttt{resources} \\
+\texttt{translator} & \texttt{software} \\
+\texttt{corresponding-author} & \texttt{supervision} \\
+\texttt{other} & \texttt{validation} \\
+& \texttt{visualization} \\
+& \texttt{writing-original-draft} \\
+& \texttt{writing-review-editing} \\
+\bottomrule
+\end{tabular}
+\caption{Possible value for the \texttt{roles} attribute of \cmd{addauthor}.
+These come from one of two vocabularies that are both supported by Crossref.
+See Appendix~\ref{roles} for more information about these, and see the discussion of
+contributor roles in Section~\ref{missing} for information about how roles might be marked
+up in a document.}
+\label{rolevalues}
+\end{table}
+
+As we mentioned in section~\ref{maketitle}, the display of these
+elements by a document class may be customized in
 any way the document designer sees fit. In some of the \cmd{maketitle}
 implementations provided by \pkgname, the presence of
 the \texttt{orcid} attribute creates a small clickable orcid logo next
 to the authors name looking
-like \OrcidLink{0000-0003-1010-8157}[auth]~that is a hyperlink to the
+like\OrcidLink{0000-0003-1010-8157}[auth]~that is a hyperlink to the
 authors ORCID home page.  This is the authenticated logo for ORCID,
-but the unauthenticated
-version \OrcidLink{0000-0003-1010-8157}[unauth]~is also bundled into
+but the
+\href{https://info.orcid.org/documentation/integration-guide/orcid-id-display-guidelines/#h-unauthenticated-orcid-ids-0}{unauthenticated
+version}\OrcidLink{0000-0003-1010-8157}[unauth]~is also bundled into
 this package if your journal workflow requires it. Similarly, some of
 our implementations of \cmd{maketitle} display the \texttt{onclick}
 attribute with an icon like \AuthorLink{https://theonion.com/}
@@ -685,8 +721,10 @@ entries in the affiliation array.
 Some downstream processors like crossref request author names to be broken
 into \texttt{given-name,surname} but this is in conflict with many existing
 cultural norms for author names (see~\cite{falsehoods}).
-\texttt{crossref} has a required element for
-surname, which is why we include this.
+\texttt{Crossref} currently has a required element for
+surname in their 5.5 schema, which is why we include this. They are
+in the process of revising their requirements in forthcoming schemas, but
+surname will remain here for convenience of sorting.
 %% \todok{We recently had a case in CiC
 %% with the author name ``Arthur Herlédan Le Merdy'' in which their
 %% surname is ``Herlédan Le Merdy''. In this case the bibtex parser
@@ -699,7 +737,7 @@ surname, which is why we include this.
 %% on author names.}
 
 When the URL provided to the {\texttt onclick} option contain characters
-with a ``special'' meaning in \LaTeX{} they might render incorrectly.
+with a ``special'' meaning in \LaTeX{}, they might render incorrectly.
 For example, the URL
 \begin{quote}
     \verb+https://web.com/~foo/the best/#zoo+
@@ -722,19 +760,21 @@ the first and second affiliations that are entered with
            onclick  = {https://www.mypersonalwebpage.com},
            email    = {alice@accomplished.com},
            surname  = {Accomplished},
+           roles    = {author,corresponding-author,software}
           ]{Alice Accomplished}
 \end{Verbatim}
 
 The \cmd{thanks} macro is disabled
 inside \cmd{addauthor}, so use the \verb+footnote+ option
-on \cmd{addauthor} instead. In fact, if an author attempts to use any
-non-accent macros inside the primary argument to \cmd{addauthor} it
-generates an error.
+on \cmd{addauthor} instead. In fact, it
+generates an error if an author attempts to use any
+non-accent macros inside the primary argument to \cmd{addauthor}.
 \subsection{Affiliations}
 Affiliations are listed individually using the \cmd{addaffiliation} command
 \emph{after} the last author has been added using \cmd{addauthor}. It can
 only be used before \cmd{begin\{document\}}, and has several optional arguments:
 
+\begin{center}
 \begin{arglist}
 \argrow{ror}{The Research Organization Registry (ROR) indentifier
              for this affiliation. This is the equivalent of ORCID for organizations. See \url{https://ror.org/}.}
@@ -749,6 +789,8 @@ it eliminates ambiguity in country name
 (e.g., Österreich vs Austria). If \texttt{country} is omitted, this can be used to fill it in.
 A list of these can be found at \url{https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2}.}
 \end{arglist}
+\end{center}
+
 \noindent There is an online tool at
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}}
 to help you find ROR identifiers, and authors are strongly urged to
@@ -789,6 +831,8 @@ National Science Foundation and support from Rambus (with no
 support for a visit.
 
 The complete list of optional arguments for \texttt{\textbackslash addfunding} is:
+
+\begin{center}
 \begin{arglist}
 \argrow{fundref}{An identifier from the
                     \href{https://publish.iacr.org/funding}{Crossref funder registry}.}
@@ -800,6 +844,7 @@ The complete list of optional arguments for \texttt{\textbackslash addfunding} i
 \argrow{grantid}{The identifier of the grant that is assigned by the agency 
                     who provided it.}
 \end{arglist}
+\end{center}
 
 \noindent You can use the online tool at 
 \href{https://publish.iacr.org/funding}{\texttt{publish.iacr.org/funding}} to
@@ -807,8 +852,8 @@ help you find \texttt{fundref} and \texttt{ror} identifiers.
 
 Note that \cmd{addfunding} \textbf{does not} automatically create footnotes or
 an acknowledgements section to identify funding - it only collects the
-metadata for indexing. If you wish to include such visible
-annotations, you can use the \texttt{footnote} option on
+metadata for indexing. If an author wishes to include such visible
+annotations, they can use the \texttt{footnote} option on
 \cmd{addauthor} or add a separate
 acknowledgements section. Some funding agencies have specific
 requirements for how they want to be acknowledged in the article.
@@ -893,23 +938,23 @@ in Figure~\ref{samplemeta}.
 \begin{figure*}
 \begin{smalltcolorbox}
 \begin{verbatim}
-schema:0.9.1
+schema:0.9.2
 title: The metacapture LaTeX package
   subtitle: A demo with different styles and classes
 author:
   name:Paul Erdős
   orcid:0000-1111-2222-3333
   inst:1,2
-  footnote:Paul has a footnote
   email:erdos@att.com
   surname:Erdős
+  roles:author
 author:
   name:P\'al Tur\'an
   orcid:0000-0001-7890-5430
   inst:3
-  footnote:Another remarkable Hungarian mathematician
   email:latex@digicrime.com
   surname:Tur\'an
+  roles:author,methodology
 affiliation:
   name:University of California, San Diego
   ror:0168r3w48
@@ -1096,17 +1141,51 @@ embedding metadata into PDF as well as other document
 formats. Unfortunately the schema lags badly behind other standards
 (it doesn't even have support for ORCID without resorting to
 non-standard extension schema). See Section~\ref{pdfmetadata}.
-\newcommand\CREDIT{CRediT}
-\item[Contributor roles] There have been various attempts to define a taxonomy of roles
-played by authors. The \texttt{amsart.cls} document class allows specifying a {\em contributor} with \cmd{contrib}
-and a {\em role} argument to say things like ``with an appendix by N.\ Bourbaki'' after the list of authors.
-They do not appear to report this information to crossref.
-Perhaps the best known definition of contributor roles is \CREDIT, which stands for
-Contributor Role Taxonomy, and has now become an ISO
-standard.\footnote{See \url{https://credit.niso.org/}} Crossref has
-announced that they will support something like this in version~5.5 of their schema. There
-are several things that remain to be determined, like the role of AI agents in authorship,
-the degree of a role, whether ``translator'' is a recognized role, etc.
+\item[Contributor roles] \label{rolestodo} Author roles were
+added to this package in version 0.9.2. The schema is the same
+as what Crossref supports in version~5.5 of their schema. These expand
+upon the \CREDIT\ roles which are used in JATS.\footnote{See \url{https://casrai.org/credit/jats}}
+We do not yet support varying levels of a role (neither does Crossref).
+
+There are several things that remain to be determined, like whether to
+display a non-author contributor in the front matter produced
+by \cmd{maketitle}.  We only provide roles as part of \cmd{addauthor},
+but a document class might also allow contributors to
+be noted without listing them in \cmd{addauthor}.  This is what
+the \cmd{contrib} macro from \pkg{amsart.cls} does.  We regard this as
+a decision for the document class. It's possible that a document class
+could relegate contributors added by \cmd{addauthor} but with
+non-author roles to simply foot notes or acknowledgements rather than
+listing them in \cmd{maketitle}.  Our implementations
+of \cmd{maketitle} treat all contributors the same and display them as
+authors.
+
+There is also the question of how contributor roles should be displayed
+in the document. There are several common ways that this is done, including
+\begin{itemize}
+\item An author-centric back matter section where roles are listed for each author.
+We implement this with the \cmd{ShowRoles} macro.
+\item Footnotes placed on authors to indicate their roles,
+\item A role-centric back matter section in which the roles are listed, and for each
+role, a list of contributors with that role is provided.
+\item The \pkg{credits} \LaTeX\
+package\footnote{See \url{https://github.com/Pseudomanifold/latex-credits}}
+provides several ways to display the \CREDIT\ roles, including as a
+matrix from role to contributor (or contributor to
+role).
+\end{itemize}
+We regard these layout enhancements as something that is properly left
+to a document style, since they are about \textit{display} rather than
+capture of metadata.
+
+It's noteworthy that multiple articles have pointed out weaknesses in
+the \CREDIT\ taxonomy~(e.g., \cite{Godskesen19052026}), and it may be
+premature to standardize on this (or the Crossref extension).
+
+\item[AI Usage] The usage of AI by authors is becoming ubiquitous, but at present
+the trend seems to be to disallow listing AI as an author. Many journals and conferences
+are starting to place disclosure requirements on authors, but we believe that it is
+too early to standardize such a disclosure as structured data.
 \item[Author bio] IEEE and other publishers may collect an author bio, and JATS
 also supports this. The model in JATS is pretty complex and supports titled sections.
 \item[Other author IDs] ORCID is pretty common now, but some authors may not have them (e.g., a deceased author) and
@@ -1241,7 +1320,45 @@ make the documentation hard to digest.
 
 %\printbibliography
 \bibliography{metacapture-doc}
+\ShowRoles %[layout=list]
 \appendix
+\section{Appendix: Author roles}\label{roles}
+The \texttt{roles} attribute for \cmd{addauthor} contains designations
+for entries in two standard vocabularies, namely \CREDIT\ and Crossref
+(the possible values are listed in Figure~\ref{rolevalues}).  Both
+vocabularies are supported in
+the \href{https://data.crossref.org/reports/help/schema_doc/5.5.0/index.html}{Crossref
+schema version~5.5}.  The \CREDIT\ roles have fairly precise
+definitions, and
+we \href{https://doi.org/10.5281/zenodo.18421448}{refer to those
+directly}.
+
+As far as we know,
+Crossref has never published official defintions for their roles. In order
+to clarify these, we provide our interpretation of their intent below.
+\begin{description}
+
+\item[\texttt{author}] (based on \href{https://www.icmje.org/recommendations/browse/roles-and-responsibilities/defining-the-role-of-authors-and-contributors.html}{ICMJE's four criteria})
+An individual who made substantial intellectual contributions to the design, execution, or interpretation of the work; drafted or revised it; approved the final version; and is accountable for its integrity.
+\item[\texttt{corresponding-author}] This has an ambiguous definition. ICMJE calls it
+``the individual "who takes primary responsibility for communication with the journal
+during the manuscript submission, peer review, and publication process.'' The JATS definition
+is that this is an author who is designated as a person to receive correspondence for
+the article.
+\item[\texttt{editor}] An individual responsible for selecting, evaluating, revising, and organizing the content for publication, ensuring editorial independence and scientific integrity.
+\item[\texttt{translator}] A linguist or scholar responsible for translating the text from its original language into another
+while preserving meaning, register, and technical accuracy, including the translator's own scholarly judgement on terminology, idiom, and disciplinary convention. (see \href{https://casrai.org/dictionary/term/translator-contribution}{CASRAI})
+\item[\texttt{chair}] (from IEEE) The designated leader or coordinator of a conference session, symposium, or working group responsible for oversight of the presented proceedings.
+\item[\texttt{reviewer}] An independent expert in the same field who evaluates the manuscript's methodology, originality,
+validity, and clarity to assist the editor in decision-making. This is probably only relevant if the article is itself
+a peer review.
+\item[\texttt{stats-reviewer}] (from \href{https://www.icmje.org/recommendations/browse/roles-and-responsibilities/responsibilities-in-the-submission-and-peer-peview-process.html}{ICMJE Section II.C})
+A specialized methodology expert explicitly tasked with evaluating the data handling, statistical power, mathematical models, and quantitative logic of the paper.
+\item[\texttt{reviewer-external}] An independent subject-matter expert brought in from outside to adjudicate highly specialized content.
+\item[\texttt{review-assistant}] (from COPE Co-Reviewing) A junior scholar or co-reviewer who assists a primary invited reviewer in reading the text and drafting feedback.
+\item[\texttt{reader}] An individual who participates in the creation of the work by proof-reading or performing an independent evaluation.
+\end{description}
+
 \section{Appendix: Example styles for \cmd{maketitle}\label{appendix}}
 This document was typeset with \texttt{article} class and the
 default \cmd{@title} and \cmd{@author} (i.e.,
@@ -1349,5 +1466,4 @@ This uses \texttt{maketitle=ams}. Title and author names are in small caps.
 Author footnotes are unnumbered (for some reason this is the style
 for \texttt{amsart}). Each author's affiliation is listed at the end of the document as below.
 \end{quote}
-
 \end{document}
