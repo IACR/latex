@@ -28,9 +28,21 @@ document class that is used for IACR journals, but may be used by
 others. There is also a companion open source project for a LaTeX
 workflow located at a separate [github repository](https://github.com/IACR/latex-submit).
 Further information about this can be found at two articles that were
-published by the authors:
+published by the authors (Joppe Bos and Kevin McCurley).
 
 * [An article in arXiv](https://arxiv.org/abs/2504.10424): https://arxiv.org/abs/2504.10424 
 * [An article in TUGboat](https://tug.org/TUGboat/tb46-3/tb144bos-workflow.html): https://tug.org/TUGboat/tb46-3/tb144bos-workflow.html
 
-Bugs on this can be filed at the [github repository](https://github.com/IACR/latex)
+Bugs on this can be filed at the [github repository](https://github.com/IACR/latex). This
+package is maintained by Kevin McCurley. This work is licensed under the LaTeX
+Project Public License, either version 1.3c of this license or (at your option) any later version.
+
+
+Changelog:
+
+```
+Version | Changes
+----------------------------------------------------------------------------------
+0.9.1   | First upload to CTAN. Fix spacing on names in iacrj maketitle style.
+0.9.2   | Added support for author roles.
+```
