@@ -101,19 +101,28 @@
 \maketitle
 \renewenvironment{abstract}{\begin{quote}\noindent\textbf{\textsf{Abstract.}}}{\end{quote}}
 \begin{abstract}
-  This document describes the \pkgname\ \LaTeX\ package that can
-  be used to capture metadata during the compilation of a \LaTeX\
+  This document describes the \pkgname\ \LaTeX\ package that can be
+  used to capture metadata during the compilation of a \LaTeX\
   document. This package is intended for use by document class
-  designers as part of a journal publishing workflow. Authors provide their
-  title, author information, affiliation, license, etc in macros that
-  are used to produce the final document as well as a
-  machine-parseable external text file.  This external text file can
-  then be used in a publishing workflow to provide HTML pages, JATS, and
-  registration with indexing agencies like crossref. This packages comes with
+  designers as part of a journal publishing workflow. Authors provide
+  their title, author information, affiliation, license, etc in macros
+  that are used to produce the final document as well as a
+  machine-parseable external text file. This package comes with
   several implementations of a default \cmd{maketitle} command that
   can be invoked from the package at load time, or the document class
   designer can design their own using documented internal variables of
-  the package.
+  the package. The \pkgname\ package was developed for use in
+  the \texttt{iacrj.cls} document class that is used for IACR
+  journals, but may be used by others.
+
+
+  The external text file can be used in a publishing workflow to
+  provide HTML pages, JATS, and registration with indexing agencies
+  like crossref. There is also a companion open source project for a LaTeX
+  workflow located at a separate [github
+  repository](https://github.com/IACR/latex-submit).  Instead of filling
+  out a form with their metadata, authors simply upload their LaTeX
+  source files because those contain all of the metadata.
 \end{abstract}
 \begin{textabstract}
   This document describes the metacapture LaTeX package that can

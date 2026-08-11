@@ -26,8 +26,11 @@ the many uses of the `metacapture` package.
 The `metacapture` package was developed for use in the `iacrj.cls`
 document class that is used for IACR journals, but may be used by
 others. There is also a companion open source project for a LaTeX
-workflow located at a separate [github repository](https://github.com/IACR/latex-submit).
-Further information about this can be found at two articles that were
+workflow located at a separate [github
+repository](https://github.com/IACR/latex-submit).  Instead of filling
+out a form with their metadata, authors simply upload their LaTeX
+source files because those contain all of the metadata.  Further
+information about this can be found at two articles that were
 published by the authors (Joppe Bos and Kevin McCurley).
 
 * [An article in arXiv](https://arxiv.org/abs/2504.10424): https://arxiv.org/abs/2504.10424 
