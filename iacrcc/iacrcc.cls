@@ -136,7 +136,7 @@
 \setcounter{tocdepth}{2}
 
 \@ifpackageloaded{biblatex}{}{%
-  \bibliographystyle{alphaurl}%
+  \bibliographystyle{iacrcc}%
   \def\bibliographystyle#1{%
     \ClassError{iacrcc}{The bibliography style is set by iacrcc.cls and may not be changed by the author}{}%
   }}
