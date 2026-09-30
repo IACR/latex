@@ -1,6 +1,7 @@
 name: test of iacrj LaTeX document class.
 
 on:
+  workflow_dispatch:
   push:
     paths:
       'iacrj/**'
