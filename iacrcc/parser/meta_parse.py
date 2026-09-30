@@ -164,6 +164,8 @@ def parse_meta(metastr):
                     for i in author['affiliations']:
                         if not i.isdigit():
                             raise ValueError('Invalid list of affiliations {}'.format(v))
+                elif k == 'roles':
+                    author['roles'] = v.rstrip().split(',')
                 elif k == 'orcid':
                     author['orcid'] = v.rstrip()
                     validate_orcid(author['orcid'])
