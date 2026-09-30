@@ -1,6 +1,7 @@
 name: test of metacapture LaTeX package.
 
 on:
+  workflow_dispatch:
   push:
     paths:
       'metacapture/**'
