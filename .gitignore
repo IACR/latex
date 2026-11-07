@@ -2,6 +2,13 @@
 __pycache__
 .pytest_cache
 
+## emacs turds
+*~
+
+## metacapture temporary files
+*.meta
+*.abstract
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

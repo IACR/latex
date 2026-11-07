@@ -45,7 +45,7 @@ def run_engine(eng, filelist, tmpdirpath):
   finally:
     os.chdir(cwd)
 
-_VERSION = '0.9.1'
+_VERSION = '0.9.2'
 def test1_test():
   path = Path('test1')
   # should pass with lualatex and pdflatex
@@ -492,7 +492,7 @@ def test23_test():
         print('key=', key, res[key])
       print('meta=', res['meta'])
       line = res['meta'].splitlines()
-      assert line[0] == r'schema:0.9.1'
+      assert line[0] == r'schema:' + _VERSION
       assert line[1] == r'title: How not to use the IACR Communications in Cryptology Cl\r {a}ss'
       assert line[2] == r'  subtitle: A Template'
       assert line[3] == r'keywords: Dirac delta function, unit impulse'
@@ -1397,3 +1397,50 @@ def test44_toscnocity():
       assert res['proc'].returncode != 0
       print(res['log'])
       assert r'! Package metacapture Error: A city is required for each affiliation.' in res['log']
+
+def test45_badroles():
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      path = Path('badroles')
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode != 0
+      print(res['log'])
+      assert r"! Package metacapture Error: Unknown role 'funder' in \addauthor." in res['log']
+
+def test46_goodroles():
+  for option in ['-pdf']:
+    with tempfile.TemporaryDirectory() as tmpdirpath:
+      path = Path('goodroles')
+      res = run_engine(option, path.iterdir(), tmpdirpath)
+      assert res['proc'].returncode == 0
+      meta = meta_parse.parse_meta(res['meta'])
+      assert len(meta['authors']) == 3
+      assert 'roles' not in meta['authors'][0]
+      assert meta['authors'][1]['roles'] == ['author', 'software', 'corresponding-author']
+      # These are all possible roles. We test for inclusion and order (though it's not clear
+      # if order is important).
+      assert meta['authors'][2]['roles'] == ['review-assistant',
+                                             'stats-reviewer',
+                                             'reviewer-external',
+                                             'reader',
+                                             'author',
+                                             'editor',
+                                             'chair',
+                                             'reviewer',
+                                             'data-curation',
+                                             'formal-analysis',
+                                             'funding-acquisition',
+                                             'investigation',
+                                             'methodology',
+                                             'project-administration',
+                                             'resources',
+                                             'translator',
+                                             'corresponding-author',
+                                             'other',
+                                             'conceptualization',
+                                             'software',
+                                             'supervision',
+                                             'validation',
+                                             'visualization',
+                                             'writing-original-draft',
+                                             'writing-review-editing']
